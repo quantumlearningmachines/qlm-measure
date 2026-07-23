@@ -1,0 +1,63 @@
+{
+  "name": "qlm-measure",
+  "version": "0.1.1",
+  "description": "Open measurement SDK for education AI — evidence events, record verification, and dataset clients",
+  "license": "Apache-2.0",
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    },
+    "./schema": {
+      "import": "./dist/schema/index.js",
+      "types": "./dist/schema/index.d.ts"
+    },
+    "./emitter": {
+      "import": "./dist/emitter/index.js",
+      "types": "./dist/emitter/index.d.ts"
+    },
+    "./verifier": {
+      "import": "./dist/verifier/index.js",
+      "types": "./dist/verifier/index.d.ts"
+    },
+    "./clients": {
+      "import": "./dist/clients/index.js",
+      "types": "./dist/clients/index.d.ts"
+    }
+  },
+  "files": [
+    "dist",
+    "LICENSE",
+    "NOTICE",
+    "README.md"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "lint": "tsc --noEmit",
+    "prepublishOnly": "npm run build && npm test"
+  },
+  "devDependencies": {
+    "@types/node": "^26.1.1",
+    "typescript": "^5.7.0",
+    "vitest": "^3.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/quantumlearningmachines/qlm-measure"
+  },
+  "keywords": [
+    "education",
+    "measurement",
+    "evidence",
+    "learning-analytics",
+    "misconceptions",
+    "open-education"
+  ],
+  "author": "Quantum Learning Machines",
+  "homepage": "https://play.quantumlearningmachines.com/developer"
+}

@@ -1,0 +1,8 @@
+src/
+test/
+examples/
+python/
+.git/
+node_modules/
+tsconfig.json
+.npmignore

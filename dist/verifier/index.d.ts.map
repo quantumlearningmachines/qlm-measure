@@ -1,0 +1,1 @@
+{"version":3,"file":"index.d.ts","sourceRoot":"","sources":["../../src/verifier/index.ts"],"names":[],"mappings":"AAAA,OAAO,EAAE,YAAY,EAAE,MAAM,iBAAiB,CAAC;AAC/C,YAAY,EAAE,kBAAkB,EAAE,SAAS,EAAE,MAAM,iBAAiB,CAAC;AACrE,OAAO,EAAE,eAAe,EAAE,kBAAkB,EAAE,kBAAkB,EAAE,MAAM,UAAU,CAAC;AACnF,OAAO,EAAE,SAAS,EAAE,aAAa,EAAE,YAAY,EAAE,MAAM,EAAE,MAAM,QAAQ,CAAC"}

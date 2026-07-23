@@ -1,0 +1,12 @@
+qlm-measure
+Copyright 2026 Quantum Learning Machines
+
+This product includes software developed at
+Quantum Learning Machines (https://quantumlearningmachines.com).
+
+This SDK provides the public interface layer for the QLM measurement
+infrastructure. The estimation engine is a separate hosted service
+operated by Quantum Learning Machines.
+
+The SDK itself (event schema, emitter, verifier, and dataset clients)
+is licensed under the Apache License, Version 2.0.
