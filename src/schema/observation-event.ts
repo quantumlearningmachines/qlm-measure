@@ -1,5 +1,5 @@
 /**
- * ObservationEvent v0.1 — Public evidence-event schema.
+ * ObservationEvent v0.2 — Public evidence-event schema.
  *
  * A deliberate subset of the internal StudentObservation.
  * This is a deliberate public subset. Fields related to internal estimation,
@@ -77,4 +77,23 @@ export interface ObservationEvent {
 
   /** Reserved extension namespace for integrator-specific fields. */
   ext?: Record<string, unknown>;
+
+  // ── Instrument Provenance (v0.2) ────────────────────────────────────────
+  // These fields enable independent verification that the instrument
+  // producing this event was configured as claimed.
+
+  /** Model identifier used to generate/evaluate this event, if any. */
+  instrumentModel?: string;
+
+  /** Sampling temperature used, if applicable. */
+  instrumentTemperature?: number;
+
+  /** Hash of the prompt/configuration that produced the evaluation. */
+  instrumentPromptHash?: string;
+
+  /** Source path: how this event was produced. */
+  instrumentSource?: "deterministic" | "model_validated" | "model_unvalidated";
+
+  /** If the instrument fell back from model to deterministic, why. */
+  instrumentFallbackReason?: string;
 }
