@@ -1,8 +1,8 @@
-# @qlm/measure
+# qlm-measure
 
 Open measurement SDK for education AI — evidence events, record verification, and dataset clients.
 
-**v0.1.0 · Apache-2.0 · [Documentation](https://play.quantumlearningmachines.com/developer) · [Manifesto](https://play.quantumlearningmachines.com/resources/open-measurement-layer)**
+**v0.2.0 · Apache-2.0 (code) · CC-BY-4.0 (data/schemas) · [Documentation](https://play.quantumlearningmachines.com/developer) · [Manifesto](https://play.quantumlearningmachines.com/resources/open-measurement-layer)**
 
 ## Limitations (read first)
 
@@ -30,7 +30,9 @@ Open measurement SDK for education AI — evidence events, record verification, 
 ## Install
 
 ```bash
-npm install @qlm/measure
+npm install qlm-measure
+# or
+pip install qlm-measure
 ```
 
 ## Quickstart
@@ -38,7 +40,7 @@ npm install @qlm/measure
 ### 1. Query the misconception ontology (no auth)
 
 ```typescript
-import { OntologyClient } from "@qlm/measure/clients";
+import { OntologyClient } from "qlm-measure/clients";
 
 const client = new OntologyClient();
 const misconceptions = await client.getMisconceptions("math");
@@ -48,7 +50,7 @@ console.log(`${misconceptions.length} math misconceptions`);
 ### 2. Emit measurement events
 
 ```typescript
-import { MeasurementEmitter } from "@qlm/measure/emitter";
+import { MeasurementEmitter } from "qlm-measure/emitter";
 
 const emitter = new MeasurementEmitter({
   baseUrl: "https://play.quantumlearningmachines.com",
@@ -67,7 +69,7 @@ emitter.emit({
 ### 3. Verify an evidence record (tamper detection)
 
 ```typescript
-import { verifyRecord } from "@qlm/measure/verifier";
+import { verifyRecord } from "qlm-measure/verifier";
 
 const result = verifyRecord(record);
 if (!result.valid) {
@@ -98,6 +100,11 @@ if (!result.valid) {
 | difficulty | number | no | Item difficulty (0-1) |
 | epistemicMode | EpistemicMode | no | How student arrived at answer |
 | ext | Record | no | Extension namespace |
+| instrumentModel | string | no | Model used to produce this event (v0.2) |
+| instrumentTemperature | number | no | Sampling temperature (v0.2) |
+| instrumentPromptHash | string | no | SHA-256 of prompt/config (v0.2) |
+| instrumentSource | string | no | `deterministic` / `model_validated` / `model_unvalidated` (v0.2) |
+| instrumentFallbackReason | string | no | Why model fell back to deterministic (v0.2) |
 
 ### Enums
 
@@ -133,10 +140,19 @@ This is the design: **verify instead of trust**.
 - Events are buffered locally and sent via sendBeacon/fetch. No cookies are set.
 - The SDK does not store any data persistently.
 
+## Licensing
+
+- **Code** (SDK, emitter, verifier, clients): Apache-2.0
+- **Data** (misconception ontology, learning graph, standards alignments served by the API): **CC-BY-4.0**
+- **Estimation engine**: Proprietary, hosted by QLM. Not included in this package.
+
+When using data from the ontology or alignment APIs in publications, cite as: "QLM Misconception Ontology (CC-BY-4.0), accessed via qlm-measure SDK v0.2.0."
+
 ## Versioning
 
 - Semver from 0.1.0.
 - Schema changes in minor versions (0.2, 0.3).
+- v0.2.0: Added instrument-provenance fields for research reproducibility.
 - Breaking changes in major versions (1.0).
 - Pin your dependency version.
 
