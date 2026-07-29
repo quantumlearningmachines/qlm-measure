@@ -43,6 +43,15 @@ export interface StandardAlignment {
   mappedConstructIds: string[];
 }
 
+export interface ASSISTmentsAlignment {
+  assistmentsSkillId: string;
+  skillName: string;
+  commonCoreStandard: string;
+  domain: string;
+  gradeLevel: number;
+  mappedMisconceptionIds: string[];
+}
+
 export class OntologyClient {
   private readonly baseUrl: string;
 
@@ -90,5 +99,10 @@ export class OntologyClient {
   /** Fetch standards alignment data. */
   async getStandards(domain?: string): Promise<StandardAlignment[]> {
     return this.fetchDataset<StandardAlignment[]>("standards", { domain });
+  }
+
+  /** Fetch ASSISTments skill-to-standard alignment data. */
+  async getASSISTmentsAlignment(domain?: string): Promise<ASSISTmentsAlignment[]> {
+    return this.fetchDataset<ASSISTmentsAlignment[]>("assistments-alignment", { domain });
   }
 }
