@@ -272,6 +272,37 @@ def cmd_import(args: argparse.Namespace) -> int:
     return 0 if report.verified_clean == report.records else 1
 
 
+def cmd_samples(args: argparse.Namespace) -> int:
+    """Write the sample bundle to a local directory."""
+    import os
+    import importlib.resources as pkg_resources
+
+    out = args.out or "samples"
+    os.makedirs(out, exist_ok=True)
+
+    # The samples are bundled with the package
+    samples_dir = os.path.join(os.path.dirname(__file__), "..", "..", "samples")
+    if not os.path.isdir(samples_dir):
+        # Try package-relative
+        samples_dir = os.path.join(os.path.dirname(__file__), "samples")
+    if not os.path.isdir(samples_dir):
+        print("error: sample files not found in package", file=sys.stderr)
+        return 2
+
+    import shutil
+    count = 0
+    for f in os.listdir(samples_dir):
+        if f.endswith(".json") or f.endswith(".jsonl"):
+            shutil.copy2(os.path.join(samples_dir, f), os.path.join(out, f))
+            count += 1
+
+    print(f"Wrote {count} sample files to {out}/")
+    print(f"\nTry:")
+    print(f"  qlm-measure verify {out}/clean.json")
+    print(f"  qlm-measure verify {out}/tampered_value.json")
+    return 0
+
+
 def cmd_version(args: argparse.Namespace) -> int:
     """Print version information."""
     print(f"qlm-measure {__version__}")
@@ -314,6 +345,11 @@ def main(argv: list[str] | None = None) -> int:
     p_import.add_argument("--report", metavar="FILE", help="Write import report JSON")
     p_import.add_argument("--dry-run", action="store_true")
     p_import.set_defaults(func=cmd_import)
+
+    # samples
+    p_samples = subparsers.add_parser("samples", help="Write sample records locally")
+    p_samples.add_argument("--out", default="samples", metavar="DIR", help="Output directory (default: samples)")
+    p_samples.set_defaults(func=cmd_samples)
 
     # version
     p_version = subparsers.add_parser("version", help="Print version info")
