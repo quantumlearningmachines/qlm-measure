@@ -18,8 +18,25 @@ export const CATALOG = [
     { id: "CONSENT.SCOPE", category: "Consent", label: "Consent scope covers export", description: "The learner's consent scope covers the export level.", howToPass: "Include a consent block.", scope: "record", status: "planned", introducedIn: "0.3.0" },
     { id: "CONSENT.WITHDRAWAL", category: "Consent", label: "No active withdrawal", description: "No active withdrawal for this learner.", howToPass: "Include withdrawal status.", scope: "record", status: "planned", introducedIn: "0.3.0" },
 ];
-export const CATALOG_BY_ID = Object.fromEntries(CATALOG.map(c => [c.id, c]));
+// 0.3-specific checks (shipped when verifier_v03 runs them)
+export const CATALOG_V03 = [
+    { id: "SCHEMA.EVENT_UNION", category: "Schema", label: "Event is a known kind", description: "Event must be Observation, Consent, or Redacted.", howToPass: "Use one of the three event types.", scope: "entry", status: "shipped", introducedIn: "0.3.0" },
+    { id: "VERSION.CONTIGUOUS", category: "Sequence", label: "Versions have no gaps", description: "v == prev + 1, except after compaction.", howToPass: "Use the Recorder's append counter.", scope: "entry", status: "shipped", introducedIn: "0.3.0" },
+    { id: "EVENT.COMMITMENT", category: "Hash chain", label: "Event matches its hash", description: "sha256(canonical(event)) == eventHash.", howToPass: "Hash the event before writing.", scope: "entry", status: "shipped", introducedIn: "0.3.0" },
+    { id: "ESTIMATE.DECLARED", category: "Estimation", label: "Estimator declared", description: "Estimate chain has a well-formed estimator declaration.", howToPass: "Declare name, version, and opaque/ruleId.", scope: "record", status: "shipped", introducedIn: "0.3.0" },
+    { id: "ESTIMATE.LINKS_EVIDENCE", category: "Estimation", label: "Estimates reference evidence", description: "Every estimate references an existing evidence entry.", howToPass: "Set evidenceVersion and evidenceEntryHash.", scope: "entry", status: "shipped", introducedIn: "0.3.0" },
+    { id: "ESTIMATE.ORDER", category: "Estimation", label: "Estimates follow evidence order", description: "evidenceVersion strictly increasing.", howToPass: "Append estimates in evidence order.", scope: "entry", status: "shipped", introducedIn: "0.3.0" },
+    { id: "WEIGHT.RANGE", category: "Estimation", label: "Weight in [0,1]", description: "evidentialWeight between 0 and 1.", howToPass: "Clamp weights.", scope: "entry", status: "shipped", introducedIn: "0.3.0" },
+    { id: "POSTERIOR.RANGE", category: "Estimation", label: "Posteriors in (0,1)", description: "priorPosterior and updatedPosterior in open interval.", howToPass: "Clamp posteriors.", scope: "entry", status: "shipped", introducedIn: "0.3.0" },
+    { id: "CONSENT.SCOPE", category: "Consent", label: "Consent scope covers export", description: "Export scope covered by granted consent.", howToPass: "Include consent events before export.", scope: "record", status: "shipped", introducedIn: "0.3.0" },
+    { id: "CONSENT.WITHDRAWAL", category: "Consent", label: "No active withdrawal", description: "Export scope was not withdrawn.", howToPass: "Re-grant before export.", scope: "record", status: "shipped", introducedIn: "0.3.0" },
+    { id: "ATTEST.INTEGRITY", category: "Attestation", label: "Attestation hash valid", description: "payloadHash matches payload.", howToPass: "Hash payload before writing.", scope: "record", status: "shipped", introducedIn: "0.3.0" },
+    { id: "ATTEST.COVERS", category: "Attestation", label: "Attestation covers evidence", description: "Referenced version or hash exists.", howToPass: "Reference existing entries.", scope: "record", status: "shipped", introducedIn: "0.3.0" },
+];
+export const CATALOG_BY_ID = Object.fromEntries([...CATALOG, ...CATALOG_V03].map(c => [c.id, c]));
 export const SHIPPED_CHECKS = CATALOG.filter(c => c.status === "shipped");
 export const PLANNED_CHECKS = CATALOG.filter(c => c.status === "planned");
+export const SHIPPED_CHECKS_V03 = [...SHIPPED_CHECKS, ...CATALOG_V03];
 export const CATEGORIES = [...new Set(SHIPPED_CHECKS.map(c => c.category))];
+export const CATEGORIES_V03 = [...new Set(SHIPPED_CHECKS_V03.map(c => c.category))];
 //# sourceMappingURL=checks.js.map

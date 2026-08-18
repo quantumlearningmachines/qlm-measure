@@ -7,7 +7,7 @@ import { readFileSync, writeFileSync, existsSync } from "fs";
 import { createHash } from "crypto";
 import { verifyRecord } from "./verifier/verify-record.js";
 import { verifyRecordV03 } from "./verifier-v03.js";
-import { CATALOG, SHIPPED_CHECKS, PLANNED_CHECKS, CATALOG_BY_ID, CATEGORIES } from "./checks.js";
+import { CATALOG, SHIPPED_CHECKS, SHIPPED_CHECKS_V03, PLANNED_CHECKS, CATALOG_BY_ID, CATEGORIES, CATEGORIES_V03 } from "./checks.js";
 const VERSION = "0.2.5";
 function loadRecords(path) {
     let raw;
@@ -81,14 +81,17 @@ function buildReport(path, records, results) {
         ? createHash("sha256").update(readFileSync(path)).digest("hex") : "";
     const recordReports = records.map((rec, i) => {
         const result = results[i];
-        const hasCompaction = !!rec.compactedBefore;
-        const hasPosteriors = (rec.entries || []).some((e) => typeof e.updatedPosterior === "number");
+        const isV03 = rec.schemaVersion === "0.3" || !!rec.evidence;
+        const checksList = isV03 ? SHIPPED_CHECKS_V03 : SHIPPED_CHECKS;
+        const entries03 = isV03 ? (rec.evidence?.entries || []) : (rec.entries || []);
+        const hasCompaction = !!rec.compactedBefore || !!(rec.evidence?.compactedBefore);
+        const hasPosteriors = entries03.some((e) => typeof e.updatedPosterior === "number");
         const violsByCheck = {};
         for (const v of result.violations) {
             const cid = v.checkId || inferCheckId(v.category);
             (violsByCheck[cid] ??= []).push(v);
         }
-        const checks = SHIPPED_CHECKS.map(def => {
+        const checks = checksList.map(def => {
             const vlist = violsByCheck[def.id] || [];
             let status;
             if (def.id === "COMPACTION.BOUNDARY" && !hasCompaction)
@@ -152,8 +155,12 @@ function formatText(path, records, results) {
     for (let i = 0; i < records.length; i++) {
         const rec = records[i];
         const result = results[i];
-        const hasCompaction = !!rec.compactedBefore;
-        const hasPosteriors_t = (rec.entries || []).some((e) => typeof e.updatedPosterior === "number");
+        const isV03_t = rec.schemaVersion === "0.3" || !!rec.evidence;
+        const checksList_t = isV03_t ? SHIPPED_CHECKS_V03 : SHIPPED_CHECKS;
+        const categories_t = isV03_t ? CATEGORIES_V03 : CATEGORIES;
+        const entries_t = isV03_t ? (rec.evidence?.entries || []) : (rec.entries || []);
+        const hasCompaction = !!rec.compactedBefore || !!(rec.evidence?.compactedBefore);
+        const hasPosteriors_t = entries_t.some((e) => typeof e.updatedPosterior === "number");
         const violsByCheck = {};
         for (const v of result.violations) {
             const cid = v.checkId || inferCheckId(v.category);
@@ -161,9 +168,9 @@ function formatText(path, records, results) {
         }
         lines.push("");
         lines.push(`record ${rec.studentScopeId || "?"}  (schema ${rec.schemaVersion || "0.2"}, ${(rec.entries || rec.evidence?.entries || []).length} entries)`);
-        for (const cat of CATEGORIES) {
+        for (const cat of categories_t) {
             lines.push(`  ${cat}`);
-            for (const def of SHIPPED_CHECKS.filter(c => c.category === cat)) {
+            for (const def of checksList_t.filter(c => c.category === cat)) {
                 const vlist = violsByCheck[def.id] || [];
                 if (def.id === "COMPACTION.BOUNDARY" && !hasCompaction) {
                     lines.push(`    \u2013 ${def.label}  (not applicable)`);
