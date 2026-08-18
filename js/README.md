@@ -10,6 +10,10 @@ Open measurement SDK for education AI — evidence events, record verification, 
 npm install qlm-measure
 ```
 
+## Quickstart — produce a record from your own tool
+
+See **[docs/recorder-quickstart.md](../docs/recorder-quickstart.md)** — ten lines, no QLM account, no network.
+
 ## Verify a file
 
 ```bash

@@ -24,6 +24,10 @@ pip install qlm-measure
 npm install qlm-measure
 ```
 
+## Produce a record from your own tool
+
+See **[docs/recorder-quickstart.md](docs/recorder-quickstart.md)** — ten lines, no QLM account, no network.
+
 ## Verify a record
 
 ```bash
