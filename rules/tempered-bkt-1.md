@@ -2,23 +2,27 @@
 
 **Rule ID:** `tempered-bkt-1`
 **Version:** 1.0.0
-**Status:** Draft — awaiting owner review before release
+**Status:** Draft — becomes Published in the release that ships `ESTIMATE.REPRODUCE`. A published rule never changes; any change is a new rule ID. A record reproduces under the rule it declares, forever.
 
 This is the complete, public specification of the update rule used by the `qlm-tempered-bkt` estimator. Given these inputs, any implementation must produce the same posterior. Where the weight comes from is not part of this rule; the weight is an input.
+
+**Lineage.** This is the evidence-update step of Bayesian Knowledge Tracing (Corbett & Anderson, 1995) with the observation likelihoods tempered by an evidential weight, in the manner of help-conditioned assessment (Beck et al., 2008). It omits the learning transition. Nothing in this rule is claimed as novel. QLM's system differs in how weights are chosen and calibrated, which this rule does not describe.
 
 ---
 
 ## Inputs
 
-| Name | Type | Domain | Description |
-|------|------|--------|-------------|
-| `prior` | float | (0, 1) exclusive | P(L) — probability of mastery before this observation |
-| `correct` | bool | | Whether the learner's response was correct |
-| `weight` | float | [0, 1] inclusive | Evidential weight. 0 = observation carries no evidence. 1 = full BKT update. |
-| `slip` | float | [0, 1] | P(incorrect response given mastery). Carried in the estimator declaration's `params.slip`. |
-| `guess` | float | [0, 1] | P(correct response given no mastery). Carried in the estimator declaration's `params.guess`. |
+| Name | Type | Domain | Source in a record |
+|------|------|--------|--------------------|
+| `prior` | float | (0, 1) exclusive | The entry's stored `priorPosterior`. |
+| `correct` | bool | | `event.correct` on the referenced evidence entry (schema 0.3), or on the entry's own `event` (schema 0.2). |
+| `weight` | float | [0, 1] inclusive | The entry's stored `evidentialWeight`. 0 means the observation carries no evidence; 1 is a full BKT update. |
+| `slip` | float | [0, 1] | P(incorrect response given mastery). The estimator declaration's `params.slip`, unless the entry carries its own `params.slip`, which overrides it for that entry. |
+| `guess` | float | [0, 1] | P(correct response given no mastery). Same sourcing as `slip`. |
 
-No other inputs. There is no learn rate, no transit term, and no forgetting factor in this rule version. The weight is the only tempering mechanism.
+No other inputs. There is no learn rate, transit term, or forgetting factor in this rule version. The weight is the only tempering mechanism.
+
+**Scope.** The rule is defined only for entries whose referenced event carries a boolean `correct`. For any other entry, the estimator declares per entry either a different `ruleId` or `opaque: true`; the verifier reports those entries as `not_applicable` or `opaque` and never guesses.
 
 ---
 
@@ -36,7 +40,7 @@ posterior = prior * (1 - slip)^weight / [prior * (1 - slip)^weight + (1 - prior)
 posterior = prior * slip^weight / [prior * slip^weight + (1 - prior) * (1 - guess)^weight]
 ```
 
-In both cases: standard Bayesian update with the observation terms raised to the power `weight`. When `weight = 1`, this is the standard BKT update. When `weight = 0`, `posterior = prior` (no change).
+A standard Bayesian update with the observation terms raised to the power `weight`. When `weight = 1`, this is the standard BKT evidence update. When `weight = 0`, `posterior = prior`.
 
 ---
 
@@ -45,34 +49,41 @@ In both cases: standard Bayesian update with the observation terms raised to the
 | Condition | Result |
 |-----------|--------|
 | `weight = 0` | Return `prior` unchanged. No division. |
-| `prior <= 0` or `prior >= 1` | Error. The rule is undefined at the boundaries. |
+| `prior <= 0` or `prior >= 1` | Error. The rule is undefined at the boundaries. Stored posteriors are clamped (below), so a stored prior is never at a boundary. |
 | `weight < 0` or `weight > 1` | Error. |
-| Numerical result exactly 0 or 1 | Clamp to `[1e-15, 1 - 1e-15]`. This prevents log-domain errors in downstream consumers. |
+| `slip` or `guess` outside [0, 1] | Error. |
+| Result exactly 0 or 1 (for example `guess = 0` with a correct response, or `slip = 1`) | Clamp to `[1e-15, 1 - 1e-15]`. Prevents log-domain errors in downstream consumers. |
 
 ---
 
-## Rounding
+## Reproduction
 
-No rounding is applied by the rule. The posterior is a 64-bit IEEE 754 float. Verification tolerance is `1e-4` absolute (configurable in the verifier).
+The verifier reproduces each entry from its stored inputs: `posterior' = rule(priorPosterior, correct, evidentialWeight, slip, guess)`, and compares `posterior'` to the stored `updatedPosterior`. Tolerance is `1e-4` absolute (configurable). The estimator declares its storage precision in `params.precision` (QLM: 4 decimal places). Because each step is reproduced from the stored prior, rounding does not accumulate across steps.
+
+The rule itself applies no rounding; the posterior is a 64-bit IEEE 754 float.
 
 ---
 
 ## Golden vectors
 
-Generated by running the reference implementation (`depth_engine/update.py`) on a grid of inputs. Every vector must reproduce under this spec.
+Generated by running the reference implementation on a grid of inputs. Every vector must reproduce under this spec, in every implementation.
 
-### Engineering-spec golden case
+### Engineering golden case
 
 ```
-Step 1: prior=0.35, correct=true,  weight=0.42, slip=0.10, guess=0.20
-  (1-0.10)^0.42 = 0.956603…
-  (0.20)^0.42   = 0.473518…
-  numerator     = 0.35 * 0.956603 = 0.334811
-  denominator   = 0.334811 + (1-0.35) * 0.473518 = 0.334811 + 0.307787 = 0.642598
-  posterior     = 0.334811 / 0.642598 = 0.503168 (code: 0.503168…)
+Step 1: prior=0.35, correct=true, weight=0.42, slip=0.10, guess=0.20
+  (1-0.10)^0.42 = 0.956713…
+  (0.20)^0.42   = 0.508666…
+  numerator     = 0.35 × 0.956713 = 0.334850
+  denominator   = 0.334850 + (1-0.35) × 0.508666 = 0.334850 + 0.330633 = 0.665483
+  posterior     = 0.334850 / 0.665483 = 0.503168…   stored as 0.5032
 
-Step 2: prior=0.5032, correct=true,  weight=0.95, slip=0.10, guess=0.20
-  posterior     = 0.8087 (exact from code: 0.808729…)
+Step 2: prior=0.5032 (stored), correct=true, weight=0.95, slip=0.10, guess=0.20
+  (1-0.10)^0.95 = 0.904754…
+  (0.20)^0.95   = 0.216760…
+  numerator     = 0.5032 × 0.904754 = 0.455272
+  denominator   = 0.455272 + 0.4968 × 0.216760 = 0.455272 + 0.107686 = 0.562958
+  posterior     = 0.455272 / 0.562958 = 0.808714…   stored as 0.8087
 ```
 
 The sequence 0.35 → 0.5032 → 0.8087 must reproduce. If it does not, stop and reconcile before shipping.
@@ -94,13 +105,23 @@ The sequence 0.35 → 0.5032 → 0.8087 must reproduce. If it does not, stop and
 | 0.50 | false | 1.00 | 0.05 | 0.25 | 0.0625 |
 | 0.35 | true | 0.42 | 0.05 | 0.25 | 0.4854 |
 
+The machine-readable form of these vectors is `schema/vectors/estimate-tempered-bkt-1.json`. Both files must agree; the JSON is authoritative for CI.
+
 ---
 
 ## What this rule does not specify
 
 - How the weight is chosen, calibrated, or indexed.
-- How slip and guess are estimated or stored beyond the declaration.
+- How slip and guess are estimated, or stored beyond the declaration.
 - Whether or how weights change over time or across skills.
 - Any learn rate, transit probability, or forgetting factor.
 
-These are properties of the estimator, not the update rule.
+These are properties of the estimator, not of the update rule.
+
+---
+
+## References
+
+Corbett, A. T., & Anderson, J. R. (1995). Knowledge tracing: Modeling the acquisition of procedural knowledge. *User Modeling and User-Adapted Interaction*, 4(4), 253–278.
+
+Beck, J. E., Chang, K., Mostow, J., & Corbett, A. (2008). Does help help? Introducing the Bayesian Evaluation and Assessment methodology. In *Intelligent Tutoring Systems* (pp. 383–394). Springer.
