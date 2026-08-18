@@ -63,25 +63,9 @@ function pyNumberFormat(n) {
     // Python uses scientific notation for abs < 1e-4
     const abs = Math.abs(n);
     if (abs > 0 && abs < 1e-4) {
-        // Force scientific notation matching Python
         if (!best.includes("e") && !best.includes("E")) {
-            const exp = Math.floor(Math.log10(abs));
-            const mantissa = n / Math.pow(10, exp);
-            // Use shortest mantissa
-            let mBest = String(mantissa);
-            for (let p = 17; p >= 1; p--) {
-                const mc = mantissa.toPrecision(p);
-                if (parseFloat(mc) * Math.pow(10, exp) === n) {
-                    mBest = mc;
-                }
-                else
-                    break;
-            }
-            // Clean mantissa
-            if (mBest.includes(".")) {
-                mBest = mBest.replace(/0+$/, "").replace(/\.$/, "");
-            }
-            best = `${mBest}e-${String(-exp).padStart(2, "0")}`;
+            // Use toExponential() for JS's shortest digits (no division noise)
+            best = n.toExponential();
         }
     }
     // Fix exponent padding: e-7 → e-07, e+2 → e+02
