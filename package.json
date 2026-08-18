@@ -39,6 +39,7 @@
   ],
   "scripts": {
     "build": "tsc",
+    "postbuild": "chmod +x dist/cli.js 2>/dev/null || true",
     "test": "vitest run",
     "test:watch": "vitest",
     "lint": "tsc --noEmit",

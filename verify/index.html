@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>qlm-measure — Verify a Record</title>
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data: blob:; font-src data:; connect-src 'none'; form-action 'none'; base-uri 'none';">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:-apple-system,BlinkMacSystemFont,sans-serif;background:#FDFBF8;color:#20303F;min-height:100vh}
+.c{max-width:720px;margin:0 auto;padding:40px 20px}
+h1{font-size:24px;font-weight:800;margin-bottom:4px}
+.sub{color:#5A6673;font-size:14px;margin-bottom:32px}
+.dz{border:2px dashed #E2DDD3;border-radius:12px;padding:48px 24px;text-align:center;cursor:pointer;margin-bottom:24px}
+.dz:hover,.dz.over{border-color:#00A896;background:rgba(0,168,150,0.04)}
+.dz p{color:#5A6673;font-size:14px}
+.chips{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:24px}
+.chip{padding:6px 14px;border-radius:20px;border:1px solid #E2DDD3;font-size:12px;font-weight:600;cursor:pointer;background:#fff}
+.chip:hover{border-color:#00A896;color:#00A896}
+.chip.on{background:#00A896;color:#fff;border-color:#00A896}
+#res{display:none}
+.rh{padding:16px;background:#fff;border:1px solid #E2DDD3;border-radius:10px;margin-bottom:12px}
+.rh h2{font-size:16px;font-weight:700}
+.rm{font-size:12px;color:#5A6673;margin-top:4px}
+.gl{font-size:11px;font-weight:700;color:#5A6673;text-transform:uppercase;letter-spacing:1px;padding:8px 16px 4px}
+.cr{display:flex;align-items:center;gap:10px;padding:6px 16px;font-size:13px}
+.ci{width:18px;text-align:center;font-weight:700}
+.p{color:#10B981}.f{color:#EF4444}.n{color:#9CA3AF}
+.vb{padding:16px;border-radius:10px;margin:16px 0;font-weight:700;font-size:14px}
+.vc{background:#D1FAE5;color:#065F46;border:1px solid #A7F3D0}
+.vd{background:#FEE2E2;color:#991B1B;border:1px solid #FECACA}
+.cav{font-size:12px;color:#5A6673;line-height:1.6;padding:12px 16px;background:#F9FAFB;border-radius:8px;margin-top:12px}
+.sm{font-size:13px;color:#5A6673;margin-top:16px}
+footer{text-align:center;font-size:11px;color:#9CA3AF;margin-top:48px;padding-top:16px;border-top:1px solid #E2DDD3}
+input[type=file]{display:none}
+.tog{display:flex;gap:12px;margin-bottom:16px}
+.tb{padding:4px 12px;border-radius:6px;font-size:11px;font-weight:700;cursor:pointer;border:1px solid #E2DDD3;background:#fff}
+.tb.on{background:#0B1929;color:#fff;border-color:#0B1929}
+</style>
+</head>
+<body>
+<div class="c">
+<h1>qlm-measure</h1>
+<p class="sub">Verify a measurement record. Nothing leaves your device.</p>
+<div class="tog">
+<button class="tb on" id="mt" onclick="sm('t')">Technical</button>
+<button class="tb" id="mp" onclick="sm('p')">Plain language</button>
+</div>
+<div class="dz" id="dz" onclick="document.getElementById('fi').click()">
+<p>Drop a record here, or click to browse</p>
+<p style="font-size:12px;color:#8A9AAB;margin-top:8px">Accepts .json and .jsonl. Nothing leaves your device. This page cannot make network requests.</p>
+</div>
+<input type="file" id="fi" accept=".json,.jsonl,.ndjson">
+<div class="chips">
+<span class="chip" onclick="ls('clean')">Clean</span>
+<span class="chip" onclick="ls('tampered')">Tampered</span>
+<span class="chip" onclick="ls('level1')">Level 1 only</span>
+</div>
+<div id="res"></div>
+<footer>qlm-measure 0.2.3 · catalog v1 · Apache-2.0</footer>
+</div>
+<script>
+
+// ── Inline verifier (from dist/, single source) ──
+const crypto_subtle = crypto.subtle;
+
+async function sha256(input) {
+  const data = new TextEncoder().encode(input);
+  const hash = await crypto_subtle.digest('SHA-256', data);
+  return Array.from(new Uint8Array(hash)).map(b => b.toString(16).padStart(2, '0')).join('');
+}
+
+
+function pyStringFormat(s) {
+  let r = JSON.stringify(s);
+  r = r.replace(/[\u0080-\uffff]/g, ch => '\\u' + ch.charCodeAt(0).toString(16).padStart(4, '0'));
+  return r;
+}
+
+function pyNumberFormat(n) {
+  if (Object.is(n, -0)) return "-0.0";
+  if (!Number.isFinite(n)) return String(n);
+  if (Number.isInteger(n) && Math.abs(n) < Number.MAX_SAFE_INTEGER) return n.toString();
+  let best = JSON.stringify(n);
+  for (let p = 17; p >= 1; p--) {
+    const c = n.toPrecision(p);
+    if (parseFloat(c) === n) best = c; else break;
+  }
+  if (best.includes('.') && !best.includes('e')) {
+    best = best.replace(/0+$/, '');
+    if (best.endsWith('.')) best += '0';
+  }
+  const abs = Math.abs(n);
+  if (abs > 0 && abs < 1e-4 && !best.includes('e')) {
+    const exp = Math.floor(Math.log10(abs));
+    const m = n / Math.pow(10, exp);
+    let mb = String(m);
+    for (let p = 17; p >= 1; p--) {
+      const mc = m.toPrecision(p);
+      if (parseFloat(mc) * Math.pow(10, exp) === n) mb = mc; else break;
+    }
+    if (mb.includes('.')) mb = mb.replace(/0+$/, '').replace(/\.$/, '');
+    best = mb + 'e-' + String(-exp).padStart(2, '0');
+  }
+  best = best.replace(/e([+-])(\d)$/, 'e$10$2');
+  return best;
+}
+
+function _cv(val) {
+  if (val === null || val === undefined) return 'null';
+  if (typeof val === 'boolean') return val ? 'true' : 'false';
+  if (typeof val === 'number') return pyNumberFormat(val);
+  if (typeof val === 'string') return pyStringFormat(val);
+  if (Array.isArray(val)) return '[' + val.map(_cv).join(',') + ']';
+  if (typeof val === 'object') {
+    const keys = Object.keys(val).sort();
+    return '{' + keys.map(k => JSON.stringify(k) + ':' + _cv(val[k])).join(',') + '}';
+  }
+  return JSON.stringify(val);
+}
+
+function canonicalize(obj) { return _cv(obj); }
+
+async function hashEntry02(entry) {
+  const h = {
+    version: entry.version, timestamp: entry.timestamp, event: entry.event,
+    scaffoldType: entry.scaffoldType ?? null, depthLevel: entry.depthLevel ?? null,
+    epistemicMode: entry.epistemicMode ?? null, triageResult: entry.triageResult ?? null,
+    evidentialWeight: entry.evidentialWeight, priorPosterior: entry.priorPosterior,
+    updatedPosterior: entry.updatedPosterior, nonInterventionDecision: entry.nonInterventionDecision ?? null,
+  };
+  let c = _cv(h);
+  for (const f of ['evidentialWeight','priorPosterior','updatedPosterior']) {
+    const v = h[f];
+    if (typeof v === 'number' && Number.isInteger(v)) {
+      c = c.replace(new RegExp('"' + f + '":(-?\\d+)(?=[,}\\]])'), '"' + f + '":$1.0');
+    }
+  }
+  return await sha256(c);
+}
+
+
+const CHECKS=[
+{id:'SCHEMA.REQUIRED',cat:'Schema',l:'Required fields present'},
+{id:'SCHEMA.TYPES',cat:'Schema',l:'Field types valid'},
+{id:'SCHEMA.TIMESTAMP_FORMAT',cat:'Schema',l:'Timestamp is ISO 8601'},
+{id:'VERSION.MONOTONIC',cat:'Sequence',l:'Versions strictly increase'},
+{id:'TIMESTAMP.MONOTONIC',cat:'Sequence',l:'Timestamps do not go backward'},
+{id:'ENUM.VALID',cat:'Enums',l:'Enum values permitted'},
+{id:'HASH.PREV_LINK',cat:'Hash chain',l:'Chain link valid'},
+{id:'HASH.ENTRY_RECOMPUTE',cat:'Hash chain',l:'Entry hash recomputes'},
+{id:'POSTERIOR.CHAIN',cat:'Posterior chain',l:'Posterior chain consistent'},
+{id:'COMPACTION.BOUNDARY',cat:'Compaction',l:'Compaction boundary intact'},
+];
+const CATS=[...new Set(CHECKS.map(c=>c.cat))];
+const VST=new Set(["none","socratic","probing","metacognitive","scaffolding","explain","hint","demonstrate"]);
+const VDL=new Set(["surface","conceptual","transfer","integration"]);
+const VEM=new Set(["experience","inference","analogy","testimony"]);
+const VTR=new Set(["correct","slip","misconception","disengagement","ambiguous"]);
+
+async function vr(rec){
+  const vs=[];const V=(v,c,m,id)=>vs.push({version:v,category:c,message:m,checkId:id});
+  if(!rec.studentScopeId)V(0,'schema','Missing studentScopeId','SCHEMA.REQUIRED');
+  const es=rec.entries||[];const comp=rec.compactedBefore;
+  let pv=comp?.version??0,ph=comp?.summaryHash??'',pts='',lu=null;
+  const hasPosteriors=es.some(e=>typeof e.updatedPosterior==='number');
+  for(const e of es){
+    const v=e.version??-1;
+    if(typeof v!=='number'||v<1)V(v,'schema','version must be positive','SCHEMA.REQUIRED');
+    if(!e.timestamp)V(v,'schema','timestamp required','SCHEMA.REQUIRED');
+    for(const f of['evidentialWeight','priorPosterior','updatedPosterior']){if(!(f in e))V(v,'schema',f+' must be a number','SCHEMA.REQUIRED');else if(typeof e[f]!=='number')V(v,'schema',f+' must be a number','SCHEMA.TYPES');}
+    // SCHEMA.TYPES: checked per-field in the loop above
+    const ts=e.timestamp||'';
+    if(ts&&isNaN(new Date(ts).getTime()))V(v,'timestamp','Not ISO 8601','SCHEMA.TIMESTAMP_FORMAT');
+    if(v<=pv)V(v,'version','Version '+v+' <= previous '+pv,'VERSION.MONOTONIC');
+    if(pts&&ts){const pm=new Date(pts).getTime(),cm=new Date(ts).getTime();
+      if(!isNaN(pm)&&!isNaN(cm)&&cm<pm-1000)V(v,'timestamp','Timestamp goes backward','TIMESTAMP.MONOTONIC');}
+    if(e.scaffoldType&&!VST.has(e.scaffoldType))V(v,'enum','Invalid scaffoldType','ENUM.VALID');
+    if(e.depthLevel&&!VDL.has(e.depthLevel))V(v,'enum','Invalid depthLevel','ENUM.VALID');
+    if(e.epistemicMode&&!VEM.has(e.epistemicMode))V(v,'enum','Invalid epistemicMode','ENUM.VALID');
+    if(e.triageResult&&!VTR.has(e.triageResult))V(v,'enum','Invalid triageResult','ENUM.VALID');
+    if(e.prevHash!==ph)V(v,'hash','prevHash mismatch','HASH.PREV_LINK');
+    const ch=await hashEntry02(e);
+    if(e.entryHash!==ch)V(v,'hash','entryHash mismatch','HASH.ENTRY_RECOMPUTE');
+    if(lu!==null&&typeof e.priorPosterior==='number'&&Math.abs(e.priorPosterior-lu)>1e-9)
+      V(v,'posterior','priorPosterior ('+e.priorPosterior+') != previous updatedPosterior ('+lu+')','POSTERIOR.CHAIN');
+    pv=v;pts=ts;ph=e.entryHash;if(typeof e.updatedPosterior==='number')lu=e.updatedPosterior;
+  }
+  return{valid:vs.length===0,violations:vs,entriesChecked:es.length,hasCompaction:!!comp,hasPosteriors};
+}
+
+let mode='t',lr=null,lrec=null;
+function sm(m){mode=m;document.getElementById('mt').className='tb'+(m==='t'?' on':'');
+document.getElementById('mp').className='tb'+(m==='p'?' on':'');if(lr)render(lrec,lr);}
+
+function render(rec,r){lr=r;lrec=rec;const el=document.getElementById('res');
+const sid=rec.studentScopeId||'?',sv=rec.schemaVersion||'0.2',n=(rec.entries||[]).length;
+const vbc=r.violations.reduce((a,v)=>{(a[v.checkId]??=[]).push(v);return a;},{});
+let h='<div class="rh"><h2>record '+sid+'</h2><div class="rm">schema '+sv+', '+n+' entries</div></div>';
+for(const cat of CATS){h+='<div class="gl">'+cat+'</div>';
+for(const ck of CHECKS.filter(c=>c.cat===cat)){const vl=vbc[ck.id]||[];
+if(ck.id==='COMPACTION.BOUNDARY'&&!r.hasCompaction)h+='<div class="cr"><span class="ci n">&ndash;</span>'+ck.l+' <span style="color:#9CA3AF">(not applicable)</span></div>';
+else if(ck.id==='POSTERIOR.CHAIN'&&!r.hasPosteriors)h+='<div class="cr"><span class="ci n">&ndash;</span>'+ck.l+' <span style="color:#9CA3AF">(not applicable)</span></div>';
+else if(vl.length)h+='<div class="cr"><span class="ci f">&times;</span>'+ck.l+' <span style="color:#9CA3AF;font-size:11px">('+vl.length+' failure'+(vl.length>1?'s':'')+'; first at v'+vl[0].version+': '+vl[0].message+')</span></div>';
+else h+='<div class="cr"><span class="ci p">&check;</span>'+ck.l+'</div>';}}
+if(r.valid)h+='<div class="vb vc">VERDICT: CLEAN &mdash; record is verifiable</div>';
+else h+='<div class="vb vd">VERDICT: NOT CLEAN &mdash; '+r.violations.length+' violation(s)</div>';
+h+='<div class="cav">'+(mode==='p'?
+'This file holds '+n+' recorded interactions. '+(r.valid?'It was not changed after it was written.':'It was changed: '+r.violations.length+' entries do not match.')+' It does not say whether the learner learned. No record can.':
+'A clean verdict means this record was not altered, its entries are in order, and its fields are well-formed. It does not mean the estimates are accurate or that the tool is effective. The verifier checks the record, not the claim.')+'</div>';
+el.innerHTML=h;el.style.display='block';}
+
+const SAMPLES={clean:"{\n  \"studentScopeId\": \"syn-8f2c-0042\",\n  \"schemaVersion\": \"0.2\",\n  \"entries\": [\n    {\n      \"version\": 1,\n      \"timestamp\": \"2026-08-15T14:20:00.000Z\",\n      \"event\": {\n        \"studentId\": \"syn-8f2c-0042\",\n        \"sessionId\": \"sess-2026-08-15-003\",\n        \"source\": \"qlm-measure-samples\",\n        \"timestamp\": \"2026-08-15T14:20:00.000Z\",\n        \"correct\": false,\n        \"responseTimeMs\": 9200,\n        \"domain\": \"math\",\n        \"skillId\": \"fractions.equivalence\",\n        \"scaffoldType\": \"none\",\n        \"ext\": {\n          \"itemId\": \"FR-EQ-01\",\n          \"synthetic\": true\n        },\n        \"misconceptionId\": \"sample:frac-add-across\",\n        \"epistemicMode\": \"inference\"\n      },\n      \"scaffoldType\": \"none\",\n      \"triageResult\": \"misconception\",\n      \"epistemicMode\": \"inference\",\n      \"evidentialWeight\": 1.0,\n      \"priorPosterior\": 0.35,\n      \"updatedPosterior\": 0.0631,\n      \"prevHash\": \"\",\n      \"entryHash\": \"9667a8bb6b2a4b6246f10d4f5d4e071a71037374b101cbbdea70ce368257e5c8\"\n    },\n    {\n      \"version\": 2,\n      \"timestamp\": \"2026-08-15T14:20:41.000Z\",\n      \"event\": {\n        \"studentId\": \"syn-8f2c-0042\",\n        \"sessionId\": \"sess-2026-08-15-003\",\n        \"source\": \"qlm-measure-samples\",\n        \"timestamp\": \"2026-08-15T14:20:41.000Z\",\n        \"correct\": true,\n        \"responseTimeMs\": 6100,\n        \"domain\": \"math\",\n        \"skillId\": \"fractions.equivalence\",\n        \"scaffoldType\": \"hint\",\n        \"ext\": {\n          \"itemId\": \"FR-EQ-02\",\n          \"synthetic\": true\n        },\n        \"epistemicMode\": \"inference\"\n      },\n      \"scaffoldType\": \"hint\",\n      \"triageResult\": \"correct\",\n      \"epistemicMode\": \"inference\",\n      \"evidentialWeight\": 0.42,\n      \"priorPosterior\": 0.0631,\n      \"updatedPosterior\": 0.1124,\n      \"prevHash\": \"9667a8bb6b2a4b6246f10d4f5d4e071a71037374b101cbbdea70ce368257e5c8\",\n      \"entryHash\": \"61c1501ed3c8a6011ddfd65012cc730833a504f3b8ac516f2ac12b10aa7d7c58\"\n    },\n    {\n      \"version\": 3,\n      \"timestamp\": \"2026-08-15T14:21:39.000Z\",\n      \"event\": {\n        \"studentId\": \"syn-8f2c-0042\",\n        \"sessionId\": \"sess-2026-08-15-003\",\n        \"source\": \"qlm-measure-samples\",\n        \"timestamp\": \"2026-08-15T14:21:39.000Z\",\n        \"correct\": true,\n        \"responseTimeMs\": 4300,\n        \"domain\": \"math\",\n        \"skillId\": \"fractions.equivalence\",\n        \"scaffoldType\": \"none\",\n        \"ext\": {\n          \"itemId\": \"FR-EQ-03\",\n          \"synthetic\": true\n        }\n      },\n      \"scaffoldType\": \"none\",\n      \"triageResult\": \"correct\",\n      \"evidentialWeight\": 1.0,\n      \"priorPosterior\": 0.1124,\n      \"updatedPosterior\": 0.363,\n      \"prevHash\": \"61c1501ed3c8a6011ddfd65012cc730833a504f3b8ac516f2ac12b10aa7d7c58\",\n      \"entryHash\": \"a373130a25db98f14c321787d34cb5ae3360d17693e1a21bca3d5a680b394c83\"\n    },\n    {\n      \"version\": 4,\n      \"timestamp\": \"2026-08-15T14:22:52.000Z\",\n      \"event\": {\n        \"studentId\": \"syn-8f2c-0042\",\n        \"sessionId\": \"sess-2026-08-15-003\",\n        \"source\": \"qlm-measure-samples\",\n        \"timestamp\": \"2026-08-15T14:22:52.000Z\",\n        \"correct\": true,\n        \"responseTimeMs\": 3800,\n        \"domain\": \"math\",\n        \"skillId\": \"fractions.equivalence\",\n        \"scaffoldType\": \"explain\",\n        \"ext\": {\n          \"itemId\": \"FR-EQ-04\",\n          \"synthetic\": true\n        },\n        \"epistemicMode\": \"testimony\"\n      },\n      \"scaffoldType\": \"explain\",\n      \"triageResult\": \"correct\",\n      \"epistemicMode\": \"testimony\",\n      \"evidentialWeight\": 0.3,\n      \"priorPosterior\": 0.363,\n      \"updatedPosterior\": 0.4723,\n      \"prevHash\": \"a373130a25db98f14c321787d34cb5ae3360d17693e1a21bca3d5a680b394c83\",\n      \"entryHash\": \"be6db1a0deb40833228bc5d5d65cab1e3c9a5ff06c44e91ee4922c5ad6ea6a27\"\n    },\n    {\n      \"version\": 5,\n      \"timestamp\": \"2026-08-15T14:23:58.000Z\",\n      \"event\": {\n        \"studentId\": \"syn-8f2c-0042\",\n        \"sessionId\": \"sess-2026-08-15-003\",\n        \"source\": \"qlm-measure-samples\",\n        \"timestamp\": \"2026-08-15T14:23:58.000Z\",\n        \"correct\": true,\n        \"responseTimeMs\": 5200,\n        \"domain\": \"math\",\n        \"skillId\": \"fractions.equivalence\",\n        \"scaffoldType\": \"probing\",\n        \"ext\": {\n          \"itemId\": \"FR-EQ-05\",\n          \"synthetic\": true\n        },\n        \"epistemicMode\": \"inference\",\n        \"explanationQuality\": 0.7\n      },\n      \"scaffoldType\": \"probing\",\n      \"triageResult\": \"correct\",\n      \"epistemicMode\": \"inference\",\n      \"evidentialWeight\": 0.75,\n      \"priorPosterior\": 0.4723,\n      \"updatedPosterior\": 0.7344,\n      \"prevHash\": \"be6db1a0deb40833228bc5d5d65cab1e3c9a5ff06c44e91ee4922c5ad6ea6a27\",\n      \"entryHash\": \"cde0c819370ca6bb0660907f8ff563644a0029983c7940db79aecf7cb569dc3e\"\n    },\n    {\n      \"version\": 6,\n      \"timestamp\": \"2026-08-15T14:24:47.000Z\",\n      \"event\": {\n        \"studentId\": \"syn-8f2c-0042\",\n        \"sessionId\": \"sess-2026-08-15-003\",\n        \"source\": \"qlm-measure-samples\",\n        \"timestamp\": \"2026-08-15T14:24:47.000Z\",\n        \"correct\": true,\n        \"responseTimeMs\": 3100,\n        \"domain\": \"math\",\n        \"skillId\": \"fractions.equivalence\",\n        \"scaffoldType\": \"none\",\n        \"ext\": {\n          \"itemId\": \"FR-EQ-06\",\n          \"synthetic\": true\n        },\n        \"isTransferProblem\": true\n      },\n      \"scaffoldType\": \"none\",\n      \"triageResult\": \"correct\",\n      \"evidentialWeight\": 1.0,\n      \"priorPosterior\": 0.7344,\n      \"updatedPosterior\": 0.9256,\n      \"prevHash\": \"cde0c819370ca6bb0660907f8ff563644a0029983c7940db79aecf7cb569dc3e\",\n      \"entryHash\": \"af100be1706e1c7b83706efb10be7d71c2d51ac09894fa4afb14a8360ba5090b\"\n    }\n  ]\n}\n",tampered:"{\n  \"studentScopeId\": \"syn-8f2c-0042\",\n  \"schemaVersion\": \"0.2\",\n  \"entries\": [\n    {\n      \"version\": 1,\n      \"timestamp\": \"2026-08-15T14:20:00.000Z\",\n      \"event\": {\n        \"studentId\": \"syn-8f2c-0042\",\n        \"sessionId\": \"sess-2026-08-15-003\",\n        \"source\": \"qlm-measure-samples\",\n        \"timestamp\": \"2026-08-15T14:20:00.000Z\",\n        \"correct\": false,\n        \"responseTimeMs\": 9200,\n        \"domain\": \"math\",\n        \"skillId\": \"fractions.equivalence\",\n        \"scaffoldType\": \"none\",\n        \"ext\": {\n          \"itemId\": \"FR-EQ-01\",\n          \"synthetic\": true\n        },\n        \"misconceptionId\": \"sample:frac-add-across\",\n        \"epistemicMode\": \"inference\"\n      },\n      \"scaffoldType\": \"none\",\n      \"triageResult\": \"misconception\",\n      \"epistemicMode\": \"inference\",\n      \"evidentialWeight\": 1.0,\n      \"priorPosterior\": 0.35,\n      \"updatedPosterior\": 0.0631,\n      \"prevHash\": \"\",\n      \"entryHash\": \"9667a8bb6b2a4b6246f10d4f5d4e071a71037374b101cbbdea70ce368257e5c8\"\n    },\n    {\n      \"version\": 2,\n      \"timestamp\": \"2026-08-15T14:20:41.000Z\",\n      \"event\": {\n        \"studentId\": \"syn-8f2c-0042\",\n        \"sessionId\": \"sess-2026-08-15-003\",\n        \"source\": \"qlm-measure-samples\",\n        \"timestamp\": \"2026-08-15T14:20:41.000Z\",\n        \"correct\": true,\n        \"responseTimeMs\": 6100,\n        \"domain\": \"math\",\n        \"skillId\": \"fractions.equivalence\",\n        \"scaffoldType\": \"hint\",\n        \"ext\": {\n          \"itemId\": \"FR-EQ-02\",\n          \"synthetic\": true\n        },\n        \"epistemicMode\": \"inference\"\n      },\n      \"scaffoldType\": \"hint\",\n      \"triageResult\": \"correct\",\n      \"epistemicMode\": \"inference\",\n      \"evidentialWeight\": 0.42,\n      \"priorPosterior\": 0.0631,\n      \"updatedPosterior\": 0.1124,\n      \"prevHash\": \"9667a8bb6b2a4b6246f10d4f5d4e071a71037374b101cbbdea70ce368257e5c8\",\n      \"entryHash\": \"61c1501ed3c8a6011ddfd65012cc730833a504f3b8ac516f2ac12b10aa7d7c58\"\n    },\n    {\n      \"version\": 3,\n      \"timestamp\": \"2026-08-15T14:21:39.000Z\",\n      \"event\": {\n        \"studentId\": \"syn-8f2c-0042\",\n        \"sessionId\": \"sess-2026-08-15-003\",\n        \"source\": \"qlm-measure-samples\",\n        \"timestamp\": \"2026-08-15T14:21:39.000Z\",\n        \"correct\": true,\n        \"responseTimeMs\": 4300,\n        \"domain\": \"math\",\n        \"skillId\": \"fractions.equivalence\",\n        \"scaffoldType\": \"none\",\n        \"ext\": {\n          \"itemId\": \"FR-EQ-03\",\n          \"synthetic\": true\n        }\n      },\n      \"scaffoldType\": \"none\",\n      \"triageResult\": \"correct\",\n      \"evidentialWeight\": 1.0,\n      \"priorPosterior\": 0.1124,\n      \"updatedPosterior\": 0.463,\n      \"prevHash\": \"61c1501ed3c8a6011ddfd65012cc730833a504f3b8ac516f2ac12b10aa7d7c58\",\n      \"entryHash\": \"a373130a25db98f14c321787d34cb5ae3360d17693e1a21bca3d5a680b394c83\"\n    },\n    {\n      \"version\": 4,\n      \"timestamp\": \"2026-08-15T14:22:52.000Z\",\n      \"event\": {\n        \"studentId\": \"syn-8f2c-0042\",\n        \"sessionId\": \"sess-2026-08-15-003\",\n        \"source\": \"qlm-measure-samples\",\n        \"timestamp\": \"2026-08-15T14:22:52.000Z\",\n        \"correct\": true,\n        \"responseTimeMs\": 3800,\n        \"domain\": \"math\",\n        \"skillId\": \"fractions.equivalence\",\n        \"scaffoldType\": \"explain\",\n        \"ext\": {\n          \"itemId\": \"FR-EQ-04\",\n          \"synthetic\": true\n        },\n        \"epistemicMode\": \"testimony\"\n      },\n      \"scaffoldType\": \"explain\",\n      \"triageResult\": \"correct\",\n      \"epistemicMode\": \"testimony\",\n      \"evidentialWeight\": 0.3,\n      \"priorPosterior\": 0.363,\n      \"updatedPosterior\": 0.4723,\n      \"prevHash\": \"a373130a25db98f14c321787d34cb5ae3360d17693e1a21bca3d5a680b394c83\",\n      \"entryHash\": \"be6db1a0deb40833228bc5d5d65cab1e3c9a5ff06c44e91ee4922c5ad6ea6a27\"\n    },\n    {\n      \"version\": 5,\n      \"timestamp\": \"2026-08-15T14:23:58.000Z\",\n      \"event\": {\n        \"studentId\": \"syn-8f2c-0042\",\n        \"sessionId\": \"sess-2026-08-15-003\",\n        \"source\": \"qlm-measure-samples\",\n        \"timestamp\": \"2026-08-15T14:23:58.000Z\",\n        \"correct\": true,\n        \"responseTimeMs\": 5200,\n        \"domain\": \"math\",\n        \"skillId\": \"fractions.equivalence\",\n        \"scaffoldType\": \"probing\",\n        \"ext\": {\n          \"itemId\": \"FR-EQ-05\",\n          \"synthetic\": true\n        },\n        \"epistemicMode\": \"inference\",\n        \"explanationQuality\": 0.7\n      },\n      \"scaffoldType\": \"probing\",\n      \"triageResult\": \"correct\",\n      \"epistemicMode\": \"inference\",\n      \"evidentialWeight\": 0.75,\n      \"priorPosterior\": 0.4723,\n      \"updatedPosterior\": 0.7344,\n      \"prevHash\": \"be6db1a0deb40833228bc5d5d65cab1e3c9a5ff06c44e91ee4922c5ad6ea6a27\",\n      \"entryHash\": \"cde0c819370ca6bb0660907f8ff563644a0029983c7940db79aecf7cb569dc3e\"\n    },\n    {\n      \"version\": 6,\n      \"timestamp\": \"2026-08-15T14:24:47.000Z\",\n      \"event\": {\n        \"studentId\": \"syn-8f2c-0042\",\n        \"sessionId\": \"sess-2026-08-15-003\",\n        \"source\": \"qlm-measure-samples\",\n        \"timestamp\": \"2026-08-15T14:24:47.000Z\",\n        \"correct\": true,\n        \"responseTimeMs\": 3100,\n        \"domain\": \"math\",\n        \"skillId\": \"fractions.equivalence\",\n        \"scaffoldType\": \"none\",\n        \"ext\": {\n          \"itemId\": \"FR-EQ-06\",\n          \"synthetic\": true\n        },\n        \"isTransferProblem\": true\n      },\n      \"scaffoldType\": \"none\",\n      \"triageResult\": \"correct\",\n      \"evidentialWeight\": 1.0,\n      \"priorPosterior\": 0.7344,\n      \"updatedPosterior\": 0.9256,\n      \"prevHash\": \"cde0c819370ca6bb0660907f8ff563644a0029983c7940db79aecf7cb569dc3e\",\n      \"entryHash\": \"af100be1706e1c7b83706efb10be7d71c2d51ac09894fa4afb14a8360ba5090b\"\n    }\n  ]\n}\n",level1:"{\n  \"studentScopeId\": \"syn-8f2c-0042\",\n  \"schemaVersion\": \"0.2\",\n  \"entries\": [\n    {\n      \"version\": 1,\n      \"timestamp\": \"2026-08-15T14:20:00.000Z\",\n      \"event\": {\n        \"studentId\": \"syn-8f2c-0042\",\n        \"sessionId\": \"sess-2026-08-15-003\",\n        \"source\": \"qlm-measure-samples\",\n        \"timestamp\": \"2026-08-15T14:20:00.000Z\",\n        \"correct\": false,\n        \"responseTimeMs\": 9200,\n        \"domain\": \"math\",\n        \"skillId\": \"fractions.equivalence\",\n        \"scaffoldType\": \"none\",\n        \"ext\": {\n          \"itemId\": \"FR-EQ-01\",\n          \"synthetic\": true\n        },\n        \"misconceptionId\": \"sample:frac-add-across\",\n        \"epistemicMode\": \"inference\"\n      },\n      \"scaffoldType\": \"none\",\n      \"prevHash\": \"\",\n      \"entryHash\": \"b1a8ee2ceac439a60c5e0fead46b2641ff30ebaa750b3bc1983688d55a87accc\"\n    },\n    {\n      \"version\": 2,\n      \"timestamp\": \"2026-08-15T14:20:41.000Z\",\n      \"event\": {\n        \"studentId\": \"syn-8f2c-0042\",\n        \"sessionId\": \"sess-2026-08-15-003\",\n        \"source\": \"qlm-measure-samples\",\n        \"timestamp\": \"2026-08-15T14:20:41.000Z\",\n        \"correct\": true,\n        \"responseTimeMs\": 6100,\n        \"domain\": \"math\",\n        \"skillId\": \"fractions.equivalence\",\n        \"scaffoldType\": \"hint\",\n        \"ext\": {\n          \"itemId\": \"FR-EQ-02\",\n          \"synthetic\": true\n        },\n        \"epistemicMode\": \"inference\"\n      },\n      \"scaffoldType\": \"hint\",\n      \"prevHash\": \"b1a8ee2ceac439a60c5e0fead46b2641ff30ebaa750b3bc1983688d55a87accc\",\n      \"entryHash\": \"7f64fe64278d7dbb3f3674b98156f9519f2fb67277d710e56c6c7d622ad5bdea\"\n    },\n    {\n      \"version\": 3,\n      \"timestamp\": \"2026-08-15T14:21:39.000Z\",\n      \"event\": {\n        \"studentId\": \"syn-8f2c-0042\",\n        \"sessionId\": \"sess-2026-08-15-003\",\n        \"source\": \"qlm-measure-samples\",\n        \"timestamp\": \"2026-08-15T14:21:39.000Z\",\n        \"correct\": true,\n        \"responseTimeMs\": 4300,\n        \"domain\": \"math\",\n        \"skillId\": \"fractions.equivalence\",\n        \"scaffoldType\": \"none\",\n        \"ext\": {\n          \"itemId\": \"FR-EQ-03\",\n          \"synthetic\": true\n        }\n      },\n      \"scaffoldType\": \"none\",\n      \"prevHash\": \"7f64fe64278d7dbb3f3674b98156f9519f2fb67277d710e56c6c7d622ad5bdea\",\n      \"entryHash\": \"69d02a4e183a263ee404581232b2e8ca8a47d13a10a89fd2e16a29a1abef1bcb\"\n    },\n    {\n      \"version\": 4,\n      \"timestamp\": \"2026-08-15T14:22:52.000Z\",\n      \"event\": {\n        \"studentId\": \"syn-8f2c-0042\",\n        \"sessionId\": \"sess-2026-08-15-003\",\n        \"source\": \"qlm-measure-samples\",\n        \"timestamp\": \"2026-08-15T14:22:52.000Z\",\n        \"correct\": true,\n        \"responseTimeMs\": 3800,\n        \"domain\": \"math\",\n        \"skillId\": \"fractions.equivalence\",\n        \"scaffoldType\": \"explain\",\n        \"ext\": {\n          \"itemId\": \"FR-EQ-04\",\n          \"synthetic\": true\n        },\n        \"epistemicMode\": \"testimony\"\n      },\n      \"scaffoldType\": \"explain\",\n      \"prevHash\": \"69d02a4e183a263ee404581232b2e8ca8a47d13a10a89fd2e16a29a1abef1bcb\",\n      \"entryHash\": \"b4e41e8a471d1aec909d1efcd99071d30879207bf4c4e8277801002bdd178a79\"\n    },\n    {\n      \"version\": 5,\n      \"timestamp\": \"2026-08-15T14:23:58.000Z\",\n      \"event\": {\n        \"studentId\": \"syn-8f2c-0042\",\n        \"sessionId\": \"sess-2026-08-15-003\",\n        \"source\": \"qlm-measure-samples\",\n        \"timestamp\": \"2026-08-15T14:23:58.000Z\",\n        \"correct\": true,\n        \"responseTimeMs\": 5200,\n        \"domain\": \"math\",\n        \"skillId\": \"fractions.equivalence\",\n        \"scaffoldType\": \"probing\",\n        \"ext\": {\n          \"itemId\": \"FR-EQ-05\",\n          \"synthetic\": true\n        },\n        \"epistemicMode\": \"inference\",\n        \"explanationQuality\": 0.7\n      },\n      \"scaffoldType\": \"probing\",\n      \"prevHash\": \"b4e41e8a471d1aec909d1efcd99071d30879207bf4c4e8277801002bdd178a79\",\n      \"entryHash\": \"4d514f43dbc2ae0de860ae33128c37c4efe37866a051501887755ed7854928b3\"\n    },\n    {\n      \"version\": 6,\n      \"timestamp\": \"2026-08-15T14:24:47.000Z\",\n      \"event\": {\n        \"studentId\": \"syn-8f2c-0042\",\n        \"sessionId\": \"sess-2026-08-15-003\",\n        \"source\": \"qlm-measure-samples\",\n        \"timestamp\": \"2026-08-15T14:24:47.000Z\",\n        \"correct\": true,\n        \"responseTimeMs\": 3100,\n        \"domain\": \"math\",\n        \"skillId\": \"fractions.equivalence\",\n        \"scaffoldType\": \"none\",\n        \"ext\": {\n          \"itemId\": \"FR-EQ-06\",\n          \"synthetic\": true\n        },\n        \"isTransferProblem\": true\n      },\n      \"scaffoldType\": \"none\",\n      \"prevHash\": \"4d514f43dbc2ae0de860ae33128c37c4efe37866a051501887755ed7854928b3\",\n      \"entryHash\": \"f8a0e25a1bb3ae1486e505d286e1dd650360b3ee5caab507b5e321a5f99a320e\"\n    }\n  ]\n}\n"};
+async function ls(name){document.querySelectorAll('.chip').forEach(c=>c.classList.remove('on'));
+event.target.classList.add('on');const rec=JSON.parse(SAMPLES[name]);render(rec,await vr(rec));}
+async function hf(text){try{const obj=JSON.parse(text.trim());
+if(!obj.entries&&!obj.evidence){document.getElementById('res').innerHTML='<div class="rh"><h2>Not a record</h2><div class="rm">A record needs studentScopeId and entries. Try a sample above.</div></div>';document.getElementById('res').style.display='block';return;}
+render(obj,await vr(obj));}catch(e){document.getElementById('res').innerHTML='<div class="rh"><h2>Parse error</h2><div class="rm">'+e.message+'</div></div>';document.getElementById('res').style.display='block';}}
+const dz=document.getElementById('dz');
+dz.addEventListener('dragover',e=>{e.preventDefault();dz.classList.add('over');});
+dz.addEventListener('dragleave',()=>dz.classList.remove('over'));
+dz.addEventListener('drop',e=>{e.preventDefault();dz.classList.remove('over');const f=e.dataTransfer.files[0];if(f)f.text().then(hf);});
+document.getElementById('fi').addEventListener('change',e=>{const f=e.target.files[0];if(f)f.text().then(hf);});
+</script>
+</body>
+</html>

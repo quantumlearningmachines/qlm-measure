@@ -8,7 +8,7 @@ import type { EvidenceEntry } from "../schema/evidence-record.js";
 /**
  * Canonical JSON serialization — sorted keys, no whitespace.
  * Matches Python's json.dumps(sort_keys=True, separators=(",",":"), default=str)
- * byte-for-byte, including number formatting.
+ * byte-for-byte, including number and string formatting.
  */
 export declare function canonicalize(obj: unknown): string;
 /**
