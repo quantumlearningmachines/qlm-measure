@@ -221,7 +221,8 @@
         "nonInterventionDecision": null,
         "prevHash": "",
         "entryHash": "a7c8d70d2e5f8cf05275e5fe2d3177afa2540b9494c366255c298c8ec85d7aa8"
-      }
+      },
+      "entryHash": "a7c8d70d2e5f8cf05275e5fe2d3177afa2540b9494c366255c298c8ec85d7aa8"
     },
     {
       "label": "integer_float_score_in_event",
@@ -245,7 +246,8 @@
         "nonInterventionDecision": null,
         "prevHash": "",
         "entryHash": "bd7aac6a458a59e806f5a11df1a03dc315273cda2c40d62f328ada31bd4d068c"
-      }
+      },
+      "entryHash": "bd7aac6a458a59e806f5a11df1a03dc315273cda2c40d62f328ada31bd4d068c"
     },
     {
       "label": "small_posterior",
@@ -267,7 +269,8 @@
         "nonInterventionDecision": null,
         "prevHash": "",
         "entryHash": "010395017fd8ae09a43af9fe92c39a7c5c1f08766e236b675c86e5df426d1c4f"
-      }
+      },
+      "entryHash": "010395017fd8ae09a43af9fe92c39a7c5c1f08766e236b675c86e5df426d1c4f"
     },
     {
       "label": "js_integer_weight",
@@ -290,7 +293,8 @@
         "nonInterventionDecision": null,
         "prevHash": "",
         "entryHash": "56a56819907ceb91f408d0b8a82e4aa0b0248d5a02098bd7b0c57ec4b6394916"
-      }
+      },
+      "entryHash": "56a56819907ceb91f408d0b8a82e4aa0b0248d5a02098bd7b0c57ec4b6394916"
     }
   ]
 }
