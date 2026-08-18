@@ -1,0 +1,226 @@
+{
+  "schemaVersion": "0.3",
+  "studentScopeId": "syn-engine-001",
+  "evidence": {
+    "entries": [
+      {
+        "version": 1,
+        "timestamp": "2026-08-18T14:20:00.000Z",
+        "eventHash": "b69f7cf516d70964b998ee1f6a0439a3dcd4acb87e1c52d790d338b1e7545c11",
+        "event": {
+          "studentId": "syn-engine-001",
+          "sessionId": "sess-2026-08-18-engine",
+          "source": "qlm-engine-sim",
+          "timestamp": "2026-08-18T14:20:00.000Z",
+          "correct": false,
+          "responseTimeMs": 9200,
+          "domain": "math",
+          "skillId": "fractions.equivalence",
+          "scaffoldType": "none",
+          "ext": {
+            "itemId": "FR-EQ-01",
+            "synthetic": true
+          },
+          "epistemicMode": "inference"
+        },
+        "prevHash": "",
+        "entryHash": "53d46aea5dabee4e8b184f1690a44cb8a064894a3d23aaa21a14b5477e30728b"
+      },
+      {
+        "version": 2,
+        "timestamp": "2026-08-18T14:20:41.000Z",
+        "eventHash": "a47861b382687889ab236ece324385daa99e0cdeae25f51fa518c1e7f59caf28",
+        "event": {
+          "studentId": "syn-engine-001",
+          "sessionId": "sess-2026-08-18-engine",
+          "source": "qlm-engine-sim",
+          "timestamp": "2026-08-18T14:20:41.000Z",
+          "correct": true,
+          "responseTimeMs": 6100,
+          "domain": "math",
+          "skillId": "fractions.equivalence",
+          "scaffoldType": "hint",
+          "ext": {
+            "itemId": "FR-EQ-02",
+            "synthetic": true
+          },
+          "epistemicMode": "inference"
+        },
+        "prevHash": "53d46aea5dabee4e8b184f1690a44cb8a064894a3d23aaa21a14b5477e30728b",
+        "entryHash": "0663dfa74e01be8391db1484739bc0208fee0f5c7946f73614162aa94dab7d9d"
+      },
+      {
+        "version": 3,
+        "timestamp": "2026-08-18T14:21:39.000Z",
+        "eventHash": "07a8b5a5d5beffa2fa5b74d04085ee3bfc76e4590c26acc194c403691a0f90b1",
+        "event": {
+          "studentId": "syn-engine-001",
+          "sessionId": "sess-2026-08-18-engine",
+          "source": "qlm-engine-sim",
+          "timestamp": "2026-08-18T14:21:39.000Z",
+          "correct": true,
+          "responseTimeMs": 4300,
+          "domain": "math",
+          "skillId": "fractions.equivalence",
+          "scaffoldType": "none",
+          "ext": {
+            "itemId": "FR-EQ-03",
+            "synthetic": true
+          }
+        },
+        "prevHash": "0663dfa74e01be8391db1484739bc0208fee0f5c7946f73614162aa94dab7d9d",
+        "entryHash": "762322b6908c40da2a9e4b2d1c525a50a8c81e2291b0f596a0e2344d1e23418b"
+      },
+      {
+        "version": 4,
+        "timestamp": "2026-08-18T14:22:52.000Z",
+        "eventHash": "b230ae999922c2e447c3f298069db9305c4964f00e60d670a99a04e37bfe4b49",
+        "event": {
+          "studentId": "syn-engine-001",
+          "sessionId": "sess-2026-08-18-engine",
+          "source": "qlm-engine-sim",
+          "timestamp": "2026-08-18T14:22:52.000Z",
+          "correct": true,
+          "responseTimeMs": 5800,
+          "domain": "math",
+          "skillId": "fractions.equivalence",
+          "scaffoldType": "hint",
+          "ext": {
+            "itemId": "FR-EQ-04",
+            "synthetic": true
+          },
+          "epistemicMode": "inference"
+        },
+        "prevHash": "762322b6908c40da2a9e4b2d1c525a50a8c81e2291b0f596a0e2344d1e23418b",
+        "entryHash": "185be957b4087dd0718471c49c9338c173235121a68e42ef212861e5751b8bb5"
+      },
+      {
+        "version": 5,
+        "timestamp": "2026-08-18T14:23:58.000Z",
+        "eventHash": "7b2a52ed03505396fd5a8db91e1a452f1d093a78f02dca1e4cb9ba8d23230748",
+        "event": {
+          "studentId": "syn-engine-001",
+          "sessionId": "sess-2026-08-18-engine",
+          "source": "qlm-engine-sim",
+          "timestamp": "2026-08-18T14:23:58.000Z",
+          "correct": false,
+          "responseTimeMs": 7200,
+          "domain": "math",
+          "skillId": "fractions.equivalence",
+          "scaffoldType": "none",
+          "ext": {
+            "itemId": "FR-EQ-05",
+            "synthetic": true
+          },
+          "epistemicMode": "inference"
+        },
+        "prevHash": "185be957b4087dd0718471c49c9338c173235121a68e42ef212861e5751b8bb5",
+        "entryHash": "4dd40a8f3f1853f6256e02c9059eebe9f1173cfcdc39af44c809fe615d884732"
+      },
+      {
+        "version": 6,
+        "timestamp": "2026-08-18T14:24:47.000Z",
+        "eventHash": "acec649e319788a2a2f8feaaa9374e4c7ebb247b12c4cbe5ed131d7b620c37f8",
+        "event": {
+          "studentId": "syn-engine-001",
+          "sessionId": "sess-2026-08-18-engine",
+          "source": "qlm-engine-sim",
+          "timestamp": "2026-08-18T14:24:47.000Z",
+          "correct": true,
+          "responseTimeMs": 3100,
+          "domain": "math",
+          "skillId": "fractions.equivalence",
+          "scaffoldType": "none",
+          "ext": {
+            "itemId": "FR-EQ-06",
+            "synthetic": true
+          }
+        },
+        "prevHash": "4dd40a8f3f1853f6256e02c9059eebe9f1173cfcdc39af44c809fe615d884732",
+        "entryHash": "eff6d38f7b6e85bf54a4c6fd8f5b4d0ad1a2dcb215dcba45ffc49d21d027c0fe"
+      }
+    ]
+  },
+  "estimates": [
+    {
+      "estimator": {
+        "name": "qlm-tempered-bkt",
+        "version": "1.2.0",
+        "ruleId": "tempered-bkt-1",
+        "params": {
+          "slip": 0.1,
+          "guess": 0.2
+        },
+        "opaque": false
+      },
+      "entries": [
+        {
+          "version": 1,
+          "evidenceVersion": 1,
+          "evidenceEntryHash": "53d46aea5dabee4e8b184f1690a44cb8a064894a3d23aaa21a14b5477e30728b",
+          "evidentialWeight": 0.9,
+          "priorPosterior": 0.35,
+          "updatedPosterior": 0.0765,
+          "prevHash": "",
+          "triageResult": "misconception",
+          "entryHash": "cfd1c518e5518946074e272d7314b4a1f2310c91d5a778628c2e22dafdd3d958"
+        },
+        {
+          "version": 2,
+          "evidenceVersion": 2,
+          "evidenceEntryHash": "0663dfa74e01be8391db1484739bc0208fee0f5c7946f73614162aa94dab7d9d",
+          "evidentialWeight": 0.45,
+          "priorPosterior": 0.0765,
+          "updatedPosterior": 0.1401,
+          "prevHash": "cfd1c518e5518946074e272d7314b4a1f2310c91d5a778628c2e22dafdd3d958",
+          "triageResult": "correct",
+          "entryHash": "c01bacde4f70c5846033f90884f03d23a3c42fcb65fd65b1803f7f195352f961"
+        },
+        {
+          "version": 3,
+          "evidenceVersion": 3,
+          "evidenceEntryHash": "762322b6908c40da2a9e4b2d1c525a50a8c81e2291b0f596a0e2344d1e23418b",
+          "evidentialWeight": 0.9,
+          "priorPosterior": 0.1401,
+          "updatedPosterior": 0.3868,
+          "prevHash": "c01bacde4f70c5846033f90884f03d23a3c42fcb65fd65b1803f7f195352f961",
+          "triageResult": "correct",
+          "entryHash": "9e2bdbce00c71c8cb552d2d977629e6a940fc3568f14cd046d908b81f16d9ef1"
+        },
+        {
+          "version": 4,
+          "evidenceVersion": 4,
+          "evidenceEntryHash": "185be957b4087dd0718471c49c9338c173235121a68e42ef212861e5751b8bb5",
+          "evidentialWeight": 0.45,
+          "priorPosterior": 0.3868,
+          "updatedPosterior": 0.5538,
+          "prevHash": "9e2bdbce00c71c8cb552d2d977629e6a940fc3568f14cd046d908b81f16d9ef1",
+          "triageResult": "correct",
+          "entryHash": "d204ff9b93abdfc47265b980442ffb1d62dfc11bf42080d907c70846f282ddc9"
+        },
+        {
+          "version": 5,
+          "evidenceVersion": 5,
+          "evidenceEntryHash": "4dd40a8f3f1853f6256e02c9059eebe9f1173cfcdc39af44c809fe615d884732",
+          "evidentialWeight": 0.95,
+          "priorPosterior": 0.5538,
+          "updatedPosterior": 0.1469,
+          "prevHash": "d204ff9b93abdfc47265b980442ffb1d62dfc11bf42080d907c70846f282ddc9",
+          "triageResult": "slip",
+          "entryHash": "9226143794b3775281dcbc992953cf4782d1c3888e1d89d23cc33b2d0deae63d"
+        },
+        {
+          "version": 6,
+          "evidenceVersion": 6,
+          "evidenceEntryHash": "eff6d38f7b6e85bf54a4c6fd8f5b4d0ad1a2dcb215dcba45ffc49d21d027c0fe",
+          "evidentialWeight": 0.95,
+          "priorPosterior": 0.1469,
+          "updatedPosterior": 0.4182,
+          "prevHash": "9226143794b3775281dcbc992953cf4782d1c3888e1d89d23cc33b2d0deae63d",
+          "triageResult": "correct",
+          "entryHash": "90b46921c5f5f86c4652fdff69e2f66a009cb17068c588f858ec5cd897b0721a"
+        }
+      ]
+    }
+  ]
+}

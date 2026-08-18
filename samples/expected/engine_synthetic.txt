@@ -1,0 +1,39 @@
+qlm-measure verify engine_synthetic.json
+records: 1
+
+record syn-engine-001  (schema 0.3, 6 entries)
+  Schema
+    ✓ Required fields present
+    ✓ Field types valid
+    ✓ Timestamp is ISO 8601
+    ✓ Event is a known kind
+  Sequence
+    ✓ Versions strictly increase
+    ✓ Timestamps do not go backward
+    ✓ Versions have no gaps
+  Enums
+    ✓ Enum values permitted
+  Hash chain
+    ✓ Chain link valid
+    ✓ Entry hash recomputes
+    ✓ Event matches its hash
+  Posterior chain
+    – Posterior chain consistent  (not applicable)
+  Compaction
+    – Compaction boundary intact  (not applicable)
+  Estimation
+    ✓ Estimator declared
+    ✓ Estimates reference evidence
+    ✓ Estimates follow evidence order
+    ✓ Weight in [0,1]
+    ✓ Posteriors in (0,1)
+  Consent
+    ✓ Consent scope covers export
+    ✓ No active withdrawal
+  Attestation
+    ✓ Attestation hash valid
+    ✓ Attestation covers evidence
+  violations: 0
+  VERDICT: CLEAN — record is verifiable
+
+summary: 1 record(s), 1 valid, 0 invalid; checks run 20, passed 20, failed 0, not applicable 2

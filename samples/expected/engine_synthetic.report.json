@@ -1,0 +1,144 @@
+{
+  "tool": {
+    "name": "qlm-measure",
+    "version": "0.2.8",
+    "language": "python",
+    "catalog_version": "1"
+  },
+  "input": {
+    "path": "engine_synthetic.json",
+    "sha256": "22319ebcfcf006683dee110ad97a825175f9afc423a605612f621b9722227274",
+    "records": 1
+  },
+  "generated_at": "2026-08-18T07:05:58Z",
+  "records": [
+    {
+      "studentScopeId": "syn-engine-001",
+      "schemaVersion": "0.3",
+      "entries_checked": 12,
+      "valid": true,
+      "checks": [
+        {
+          "id": "SCHEMA.REQUIRED",
+          "status": "pass",
+          "failures": 0
+        },
+        {
+          "id": "SCHEMA.TYPES",
+          "status": "pass",
+          "failures": 0
+        },
+        {
+          "id": "SCHEMA.TIMESTAMP_FORMAT",
+          "status": "pass",
+          "failures": 0
+        },
+        {
+          "id": "VERSION.MONOTONIC",
+          "status": "pass",
+          "failures": 0
+        },
+        {
+          "id": "TIMESTAMP.MONOTONIC",
+          "status": "pass",
+          "failures": 0
+        },
+        {
+          "id": "ENUM.VALID",
+          "status": "pass",
+          "failures": 0
+        },
+        {
+          "id": "HASH.PREV_LINK",
+          "status": "pass",
+          "failures": 0
+        },
+        {
+          "id": "HASH.ENTRY_RECOMPUTE",
+          "status": "pass",
+          "failures": 0
+        },
+        {
+          "id": "POSTERIOR.CHAIN",
+          "status": "not_applicable",
+          "failures": 0
+        },
+        {
+          "id": "COMPACTION.BOUNDARY",
+          "status": "not_applicable",
+          "failures": 0
+        },
+        {
+          "id": "SCHEMA.EVENT_UNION",
+          "status": "pass",
+          "failures": 0
+        },
+        {
+          "id": "VERSION.CONTIGUOUS",
+          "status": "pass",
+          "failures": 0
+        },
+        {
+          "id": "EVENT.COMMITMENT",
+          "status": "pass",
+          "failures": 0
+        },
+        {
+          "id": "ESTIMATE.DECLARED",
+          "status": "pass",
+          "failures": 0
+        },
+        {
+          "id": "ESTIMATE.LINKS_EVIDENCE",
+          "status": "pass",
+          "failures": 0
+        },
+        {
+          "id": "ESTIMATE.ORDER",
+          "status": "pass",
+          "failures": 0
+        },
+        {
+          "id": "WEIGHT.RANGE",
+          "status": "pass",
+          "failures": 0
+        },
+        {
+          "id": "POSTERIOR.RANGE",
+          "status": "pass",
+          "failures": 0
+        },
+        {
+          "id": "CONSENT.SCOPE",
+          "status": "pass",
+          "failures": 0
+        },
+        {
+          "id": "CONSENT.WITHDRAWAL",
+          "status": "pass",
+          "failures": 0
+        },
+        {
+          "id": "ATTEST.INTEGRITY",
+          "status": "pass",
+          "failures": 0
+        },
+        {
+          "id": "ATTEST.COVERS",
+          "status": "pass",
+          "failures": 0
+        }
+      ],
+      "violations": []
+    }
+  ],
+  "summary": {
+    "records": 1,
+    "valid": 1,
+    "invalid": 0,
+    "checks_run": 20,
+    "checks_passed": 20,
+    "checks_failed": 0,
+    "checks_not_applicable": 2
+  }
+}
