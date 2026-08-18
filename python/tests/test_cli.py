@@ -18,8 +18,7 @@ from qlm_measure.report import format_text, build_report
 from qlm_measure.checks import CATALOG, SHIPPED_CHECKS, PLANNED_CHECKS, CATALOG_BY_ID
 from qlm_measure.rules import reproduce
 
-SAMPLES = os.path.join(os.path.dirname(__file__), "..", "..",
-                       "samples", "qlm-measure-samples", "samples")
+SAMPLES = os.path.join(os.path.dirname(__file__), "..", "..", "samples")
 EXPECTED = os.path.join(SAMPLES, "expected")
 
 

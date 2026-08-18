@@ -6,6 +6,7 @@
 import { readFileSync, writeFileSync, existsSync } from "fs";
 import { createHash } from "crypto";
 import { verifyRecord } from "./verifier/verify-record.js";
+import { verifyRecordV03 } from "./verifier-v03.js";
 import { CATALOG, SHIPPED_CHECKS, PLANNED_CHECKS, CATALOG_BY_ID, CATEGORIES } from "./checks.js";
 const VERSION = "0.2.3";
 function loadRecords(path) {
@@ -81,6 +82,7 @@ function buildReport(path, records, results) {
     const recordReports = records.map((rec, i) => {
         const result = results[i];
         const hasCompaction = !!rec.compactedBefore;
+        const hasPosteriors = (rec.entries || []).some((e) => typeof e.updatedPosterior === "number");
         const violsByCheck = {};
         for (const v of result.violations) {
             const cid = v.checkId || inferCheckId(v.category);
@@ -90,6 +92,8 @@ function buildReport(path, records, results) {
             const vlist = violsByCheck[def.id] || [];
             let status;
             if (def.id === "COMPACTION.BOUNDARY" && !hasCompaction)
+                status = "not_applicable";
+            else if (def.id === "POSTERIOR.CHAIN" && !hasPosteriors)
                 status = "not_applicable";
             else if (vlist.length > 0)
                 status = "fail";
@@ -149,18 +153,22 @@ function formatText(path, records, results) {
         const rec = records[i];
         const result = results[i];
         const hasCompaction = !!rec.compactedBefore;
+        const hasPosteriors_t = (rec.entries || []).some((e) => typeof e.updatedPosterior === "number");
         const violsByCheck = {};
         for (const v of result.violations) {
             const cid = v.checkId || inferCheckId(v.category);
             (violsByCheck[cid] ??= []).push(v);
         }
         lines.push("");
-        lines.push(`record ${rec.studentScopeId || "?"}  (schema ${rec.schemaVersion || "0.2"}, ${(rec.entries || []).length} entries)`);
+        lines.push(`record ${rec.studentScopeId || "?"}  (schema ${rec.schemaVersion || "0.2"}, ${(rec.entries || rec.evidence?.entries || []).length} entries)`);
         for (const cat of CATEGORIES) {
             lines.push(`  ${cat}`);
             for (const def of SHIPPED_CHECKS.filter(c => c.category === cat)) {
                 const vlist = violsByCheck[def.id] || [];
                 if (def.id === "COMPACTION.BOUNDARY" && !hasCompaction) {
+                    lines.push(`    \u2013 ${def.label}  (not applicable)`);
+                }
+                else if (def.id === "POSTERIOR.CHAIN" && !hasPosteriors_t) {
                     lines.push(`    \u2013 ${def.label}  (not applicable)`);
                 }
                 else if (vlist.length > 0) {
@@ -225,7 +233,17 @@ function cmdVerify(args) {
             const records = loadRecords(p);
             for (const r of records) {
                 allRecords.push(r);
-                allResults.push(verifyRecord(r));
+                // Dispatch by schema version
+                const sv = r.schemaVersion || "0.2";
+                if (sv === "0.3" || r.evidence) {
+                    const r03 = verifyRecordV03(r);
+                    allResults.push({ valid: r03.valid, violations: r03.violations.map(v => ({
+                            version: v.version, category: v.category, message: v.message, checkId: v.checkId,
+                        })), entriesChecked: r03.entriesChecked });
+                }
+                else {
+                    allResults.push(verifyRecord(r));
+                }
             }
         }
         catch (e) {

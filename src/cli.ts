@@ -8,6 +8,7 @@ import { readFileSync, writeFileSync, existsSync } from "fs";
 import { createHash } from "crypto";
 import { verifyRecord } from "./verifier/verify-record.js";
 import type { VerificationResult, Violation } from "./verifier/verify-record.js";
+import { verifyRecordV03 } from "./verifier-v03.js";
 import { CATALOG, SHIPPED_CHECKS, PLANNED_CHECKS, CATALOG_BY_ID, CATEGORIES } from "./checks.js";
 
 const VERSION = "0.2.3";
@@ -90,6 +91,7 @@ function buildReport(path: string, records: EvidenceRecord[], results: Verificat
   const recordReports = records.map((rec, i) => {
     const result = results[i];
     const hasCompaction = !!(rec as any).compactedBefore;
+    const hasPosteriors = ((rec as any).entries || []).some((e: any) => typeof e.updatedPosterior === "number");
     const violsByCheck: Record<string, Violation[]> = {};
     for (const v of result.violations) {
       const cid = v.checkId || inferCheckId(v.category);
@@ -100,6 +102,7 @@ function buildReport(path: string, records: EvidenceRecord[], results: Verificat
       const vlist = violsByCheck[def.id] || [];
       let status: string;
       if (def.id === "COMPACTION.BOUNDARY" && !hasCompaction) status = "not_applicable";
+      else if (def.id === "POSTERIOR.CHAIN" && !hasPosteriors) status = "not_applicable";
       else if (vlist.length > 0) status = "fail";
       else status = "pass";
       const entry: any = { id: def.id, status, failures: vlist.length };
@@ -154,6 +157,7 @@ function formatText(path: string, records: EvidenceRecord[], results: Verificati
     const rec = records[i] as any;
     const result = results[i];
     const hasCompaction = !!rec.compactedBefore;
+    const hasPosteriors_t = (rec.entries || []).some((e: any) => typeof e.updatedPosterior === "number");
     const violsByCheck: Record<string, Violation[]> = {};
     for (const v of result.violations) {
       const cid = v.checkId || inferCheckId(v.category);
@@ -161,13 +165,15 @@ function formatText(path: string, records: EvidenceRecord[], results: Verificati
     }
 
     lines.push("");
-    lines.push(`record ${rec.studentScopeId || "?"}  (schema ${rec.schemaVersion || "0.2"}, ${(rec.entries || []).length} entries)`);
+    lines.push(`record ${rec.studentScopeId || "?"}  (schema ${rec.schemaVersion || "0.2"}, ${(rec.entries || rec.evidence?.entries || []).length} entries)`);
 
     for (const cat of CATEGORIES) {
       lines.push(`  ${cat}`);
       for (const def of SHIPPED_CHECKS.filter(c => c.category === cat)) {
         const vlist = violsByCheck[def.id] || [];
         if (def.id === "COMPACTION.BOUNDARY" && !hasCompaction) {
+          lines.push(`    \u2013 ${def.label}  (not applicable)`);
+        } else if (def.id === "POSTERIOR.CHAIN" && !hasPosteriors_t) {
           lines.push(`    \u2013 ${def.label}  (not applicable)`);
         } else if (vlist.length > 0) {
           const first = vlist[0];
@@ -219,7 +225,16 @@ function cmdVerify(args: string[]): number {
       const records = loadRecords(p);
       for (const r of records) {
         allRecords.push(r);
-        allResults.push(verifyRecord(r as any));
+        // Dispatch by schema version
+        const sv = (r as any).schemaVersion || "0.2";
+        if (sv === "0.3" || (r as any).evidence) {
+          const r03 = verifyRecordV03(r as any);
+          allResults.push({ valid: r03.valid, violations: r03.violations.map(v => ({
+            version: v.version, category: v.category as any, message: v.message, checkId: v.checkId,
+          })), entriesChecked: r03.entriesChecked });
+        } else {
+          allResults.push(verifyRecord(r as any));
+        }
       }
     } catch (e: any) {
       console.error(`error: ${e.message}`);

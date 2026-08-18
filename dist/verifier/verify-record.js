@@ -53,15 +53,14 @@ export function verifyRecord(record, timestampToleranceMs = 1000) {
         if (typeof entry.timestamp !== "string" || !entry.timestamp) {
             violations.push({ version: v, category: "schema", message: "timestamp is required", checkId: "SCHEMA.REQUIRED" });
         }
-        // SCHEMA.TYPES
-        if (typeof entry.evidentialWeight !== "number") {
-            violations.push({ version: v, category: "schema", message: "evidentialWeight must be a number", checkId: "SCHEMA.TYPES" });
-        }
-        if (typeof entry.priorPosterior !== "number") {
-            violations.push({ version: v, category: "schema", message: "priorPosterior must be a number", checkId: "SCHEMA.TYPES" });
-        }
-        if (typeof entry.updatedPosterior !== "number") {
-            violations.push({ version: v, category: "schema", message: "updatedPosterior must be a number", checkId: "SCHEMA.TYPES" });
+        // SCHEMA.REQUIRED + SCHEMA.TYPES for numeric fields
+        for (const f of ["evidentialWeight", "priorPosterior", "updatedPosterior"]) {
+            if (!(f in entry)) {
+                violations.push({ version: v, category: "schema", message: `${f} must be a number`, checkId: "SCHEMA.REQUIRED" });
+            }
+            else if (typeof entry[f] !== "number") {
+                violations.push({ version: v, category: "schema", message: `${f} must be a number`, checkId: "SCHEMA.TYPES" });
+            }
         }
         // SCHEMA.TIMESTAMP_FORMAT
         if (typeof entry.timestamp === "string" && entry.timestamp && !isValidISO8601(entry.timestamp)) {

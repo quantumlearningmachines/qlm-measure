@@ -1,7 +1,7 @@
 {
-  "description": "Entry-hash vectors from samples/clean.json (schema 0.2)",
+  "description": "Entry-hash vectors including 4 adversarial cross-language cases",
   "canonicalizer": "json.dumps(sort_keys=True, separators=(\",\",\":\"), default=str)",
-  "note": "JS must produce identical hashes for these entries. See canonicalization.md for known 0.2 limits.",
+  "note": "must_pass vectors must match in both languages. known_limit vectors are documented 0.2 limits.",
   "source": "samples/qlm-measure-samples/samples/clean.json",
   "vectors": [
     {
@@ -39,6 +39,46 @@
       "entryHash": "af100be1706e1c7b83706efb10be7d71c2d51ac09894fa4afb14a8360ba5090b",
       "computed": "af100be1706e1c7b83706efb10be7d71c2d51ac09894fa4afb14a8360ba5090b",
       "match": true
+    },
+    {
+      "label": "non_ascii_event",
+      "description": "Event contains accented text. v02_limit: Python escapes to \\uXXXX, JS may not escape keys.",
+      "version": 99,
+      "entryHash": "a7c8d70d2e5f8cf05275e5fe2d3177afa2540b9494c366255c298c8ec85d7aa8",
+      "computed": "a7c8d70d2e5f8cf05275e5fe2d3177afa2540b9494c366255c298c8ec85d7aa8",
+      "match": true,
+      "v02_status": "must_pass",
+      "v02_note": ""
+    },
+    {
+      "label": "integer_float_score_in_event",
+      "description": "Event has score: 1.0 (Python float). v02_limit: JS writes 1, Python writes 1.0.",
+      "version": 100,
+      "entryHash": "bd7aac6a458a59e806f5a11df1a03dc315273cda2c40d62f328ada31bd4d068c",
+      "computed": "bd7aac6a458a59e806f5a11df1a03dc315273cda2c40d62f328ada31bd4d068c",
+      "match": true,
+      "v02_status": "known_limit",
+      "v02_note": "score:1.0 inside event is Python float; JS reads as int 1. Hash differs."
+    },
+    {
+      "label": "small_posterior",
+      "description": "Posterior of 3e-05. Must match across languages.",
+      "version": 101,
+      "entryHash": "010395017fd8ae09a43af9fe92c39a7c5c1f08766e236b675c86e5df426d1c4f",
+      "computed": "010395017fd8ae09a43af9fe92c39a7c5c1f08766e236b675c86e5df426d1c4f",
+      "match": true,
+      "v02_status": "must_pass",
+      "v02_note": ""
+    },
+    {
+      "label": "js_integer_weight",
+      "description": "Weight of 1 (JS integer). v02_limit: JS writes 1, Python float would write 1.0.",
+      "version": 102,
+      "entryHash": "56a56819907ceb91f408d0b8a82e4aa0b0248d5a02098bd7b0c57ec4b6394916",
+      "computed": "56a56819907ceb91f408d0b8a82e4aa0b0248d5a02098bd7b0c57ec4b6394916",
+      "match": true,
+      "v02_status": "known_limit",
+      "v02_note": "evidentialWeight:1 is int in JSON. hashEntry post-processes to 1.0, but if a JS Recorder wrote this, the source hash used 1."
     }
   ]
 }
