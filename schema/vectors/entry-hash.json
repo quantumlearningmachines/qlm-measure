@@ -1,84 +1,296 @@
 {
-  "description": "Entry-hash vectors including 4 adversarial cross-language cases",
+  "description": "Entry-hash vectors with embedded entries (executable in both languages)",
   "canonicalizer": "json.dumps(sort_keys=True, separators=(\",\",\":\"), default=str)",
   "note": "must_pass vectors must match in both languages. known_limit vectors are documented 0.2 limits.",
-  "source": "samples/qlm-measure-samples/samples/clean.json",
   "vectors": [
     {
-      "version": 1,
+      "label": "v1",
+      "entry": {
+        "version": 1,
+        "timestamp": "2026-08-15T14:20:00.000Z",
+        "event": {
+          "studentId": "syn-8f2c-0042",
+          "sessionId": "sess-2026-08-15-003",
+          "source": "qlm-measure-samples",
+          "timestamp": "2026-08-15T14:20:00.000Z",
+          "correct": false,
+          "responseTimeMs": 9200,
+          "domain": "math",
+          "skillId": "fractions.equivalence",
+          "scaffoldType": "none",
+          "ext": {
+            "itemId": "FR-EQ-01",
+            "synthetic": true
+          },
+          "misconceptionId": "sample:frac-add-across",
+          "epistemicMode": "inference"
+        },
+        "scaffoldType": "none",
+        "triageResult": "misconception",
+        "epistemicMode": "inference",
+        "evidentialWeight": 1.0,
+        "priorPosterior": 0.35,
+        "updatedPosterior": 0.0631,
+        "prevHash": "",
+        "entryHash": "9667a8bb6b2a4b6246f10d4f5d4e071a71037374b101cbbdea70ce368257e5c8"
+      },
       "entryHash": "9667a8bb6b2a4b6246f10d4f5d4e071a71037374b101cbbdea70ce368257e5c8",
-      "computed": "9667a8bb6b2a4b6246f10d4f5d4e071a71037374b101cbbdea70ce368257e5c8",
-      "match": true
+      "v02_status": "must_pass"
     },
     {
-      "version": 2,
+      "label": "v2",
+      "entry": {
+        "version": 2,
+        "timestamp": "2026-08-15T14:20:41.000Z",
+        "event": {
+          "studentId": "syn-8f2c-0042",
+          "sessionId": "sess-2026-08-15-003",
+          "source": "qlm-measure-samples",
+          "timestamp": "2026-08-15T14:20:41.000Z",
+          "correct": true,
+          "responseTimeMs": 6100,
+          "domain": "math",
+          "skillId": "fractions.equivalence",
+          "scaffoldType": "hint",
+          "ext": {
+            "itemId": "FR-EQ-02",
+            "synthetic": true
+          },
+          "epistemicMode": "inference"
+        },
+        "scaffoldType": "hint",
+        "triageResult": "correct",
+        "epistemicMode": "inference",
+        "evidentialWeight": 0.42,
+        "priorPosterior": 0.0631,
+        "updatedPosterior": 0.1124,
+        "prevHash": "9667a8bb6b2a4b6246f10d4f5d4e071a71037374b101cbbdea70ce368257e5c8",
+        "entryHash": "61c1501ed3c8a6011ddfd65012cc730833a504f3b8ac516f2ac12b10aa7d7c58"
+      },
       "entryHash": "61c1501ed3c8a6011ddfd65012cc730833a504f3b8ac516f2ac12b10aa7d7c58",
-      "computed": "61c1501ed3c8a6011ddfd65012cc730833a504f3b8ac516f2ac12b10aa7d7c58",
-      "match": true
+      "v02_status": "must_pass"
     },
     {
-      "version": 3,
+      "label": "v3",
+      "entry": {
+        "version": 3,
+        "timestamp": "2026-08-15T14:21:39.000Z",
+        "event": {
+          "studentId": "syn-8f2c-0042",
+          "sessionId": "sess-2026-08-15-003",
+          "source": "qlm-measure-samples",
+          "timestamp": "2026-08-15T14:21:39.000Z",
+          "correct": true,
+          "responseTimeMs": 4300,
+          "domain": "math",
+          "skillId": "fractions.equivalence",
+          "scaffoldType": "none",
+          "ext": {
+            "itemId": "FR-EQ-03",
+            "synthetic": true
+          }
+        },
+        "scaffoldType": "none",
+        "triageResult": "correct",
+        "evidentialWeight": 1.0,
+        "priorPosterior": 0.1124,
+        "updatedPosterior": 0.363,
+        "prevHash": "61c1501ed3c8a6011ddfd65012cc730833a504f3b8ac516f2ac12b10aa7d7c58",
+        "entryHash": "a373130a25db98f14c321787d34cb5ae3360d17693e1a21bca3d5a680b394c83"
+      },
       "entryHash": "a373130a25db98f14c321787d34cb5ae3360d17693e1a21bca3d5a680b394c83",
-      "computed": "a373130a25db98f14c321787d34cb5ae3360d17693e1a21bca3d5a680b394c83",
-      "match": true
+      "v02_status": "must_pass"
     },
     {
-      "version": 4,
+      "label": "v4",
+      "entry": {
+        "version": 4,
+        "timestamp": "2026-08-15T14:22:52.000Z",
+        "event": {
+          "studentId": "syn-8f2c-0042",
+          "sessionId": "sess-2026-08-15-003",
+          "source": "qlm-measure-samples",
+          "timestamp": "2026-08-15T14:22:52.000Z",
+          "correct": true,
+          "responseTimeMs": 3800,
+          "domain": "math",
+          "skillId": "fractions.equivalence",
+          "scaffoldType": "explain",
+          "ext": {
+            "itemId": "FR-EQ-04",
+            "synthetic": true
+          },
+          "epistemicMode": "testimony"
+        },
+        "scaffoldType": "explain",
+        "triageResult": "correct",
+        "epistemicMode": "testimony",
+        "evidentialWeight": 0.3,
+        "priorPosterior": 0.363,
+        "updatedPosterior": 0.4723,
+        "prevHash": "a373130a25db98f14c321787d34cb5ae3360d17693e1a21bca3d5a680b394c83",
+        "entryHash": "be6db1a0deb40833228bc5d5d65cab1e3c9a5ff06c44e91ee4922c5ad6ea6a27"
+      },
       "entryHash": "be6db1a0deb40833228bc5d5d65cab1e3c9a5ff06c44e91ee4922c5ad6ea6a27",
-      "computed": "be6db1a0deb40833228bc5d5d65cab1e3c9a5ff06c44e91ee4922c5ad6ea6a27",
-      "match": true
+      "v02_status": "must_pass"
     },
     {
-      "version": 5,
+      "label": "v5",
+      "entry": {
+        "version": 5,
+        "timestamp": "2026-08-15T14:23:58.000Z",
+        "event": {
+          "studentId": "syn-8f2c-0042",
+          "sessionId": "sess-2026-08-15-003",
+          "source": "qlm-measure-samples",
+          "timestamp": "2026-08-15T14:23:58.000Z",
+          "correct": true,
+          "responseTimeMs": 5200,
+          "domain": "math",
+          "skillId": "fractions.equivalence",
+          "scaffoldType": "probing",
+          "ext": {
+            "itemId": "FR-EQ-05",
+            "synthetic": true
+          },
+          "epistemicMode": "inference",
+          "explanationQuality": 0.7
+        },
+        "scaffoldType": "probing",
+        "triageResult": "correct",
+        "epistemicMode": "inference",
+        "evidentialWeight": 0.75,
+        "priorPosterior": 0.4723,
+        "updatedPosterior": 0.7344,
+        "prevHash": "be6db1a0deb40833228bc5d5d65cab1e3c9a5ff06c44e91ee4922c5ad6ea6a27",
+        "entryHash": "cde0c819370ca6bb0660907f8ff563644a0029983c7940db79aecf7cb569dc3e"
+      },
       "entryHash": "cde0c819370ca6bb0660907f8ff563644a0029983c7940db79aecf7cb569dc3e",
-      "computed": "cde0c819370ca6bb0660907f8ff563644a0029983c7940db79aecf7cb569dc3e",
-      "match": true
+      "v02_status": "must_pass"
     },
     {
-      "version": 6,
+      "label": "v6",
+      "entry": {
+        "version": 6,
+        "timestamp": "2026-08-15T14:24:47.000Z",
+        "event": {
+          "studentId": "syn-8f2c-0042",
+          "sessionId": "sess-2026-08-15-003",
+          "source": "qlm-measure-samples",
+          "timestamp": "2026-08-15T14:24:47.000Z",
+          "correct": true,
+          "responseTimeMs": 3100,
+          "domain": "math",
+          "skillId": "fractions.equivalence",
+          "scaffoldType": "none",
+          "ext": {
+            "itemId": "FR-EQ-06",
+            "synthetic": true
+          },
+          "isTransferProblem": true
+        },
+        "scaffoldType": "none",
+        "triageResult": "correct",
+        "evidentialWeight": 1.0,
+        "priorPosterior": 0.7344,
+        "updatedPosterior": 0.9256,
+        "prevHash": "cde0c819370ca6bb0660907f8ff563644a0029983c7940db79aecf7cb569dc3e",
+        "entryHash": "af100be1706e1c7b83706efb10be7d71c2d51ac09894fa4afb14a8360ba5090b"
+      },
       "entryHash": "af100be1706e1c7b83706efb10be7d71c2d51ac09894fa4afb14a8360ba5090b",
-      "computed": "af100be1706e1c7b83706efb10be7d71c2d51ac09894fa4afb14a8360ba5090b",
-      "match": true
+      "v02_status": "must_pass"
     },
     {
       "label": "non_ascii_event",
-      "description": "Event contains accented text. v02_limit: Python escapes to \\uXXXX, JS may not escape keys.",
-      "version": 99,
-      "entryHash": "a7c8d70d2e5f8cf05275e5fe2d3177afa2540b9494c366255c298c8ec85d7aa8",
-      "computed": "a7c8d70d2e5f8cf05275e5fe2d3177afa2540b9494c366255c298c8ec85d7aa8",
-      "match": true,
       "v02_status": "must_pass",
-      "v02_note": ""
+      "entry": {
+        "version": 99,
+        "timestamp": "2026-08-18T00:00:00Z",
+        "event": {
+          "studentId": "test",
+          "correct": true,
+          "domain": "caf\u00e9 studies"
+        },
+        "scaffoldType": null,
+        "depthLevel": null,
+        "epistemicMode": null,
+        "triageResult": null,
+        "evidentialWeight": 0.5,
+        "priorPosterior": 0.35,
+        "updatedPosterior": 0.5,
+        "nonInterventionDecision": null,
+        "prevHash": "",
+        "entryHash": "a7c8d70d2e5f8cf05275e5fe2d3177afa2540b9494c366255c298c8ec85d7aa8"
+      }
     },
     {
       "label": "integer_float_score_in_event",
-      "description": "Event has score: 1.0 (Python float). v02_limit: JS writes 1, Python writes 1.0.",
-      "version": 100,
-      "entryHash": "bd7aac6a458a59e806f5a11df1a03dc315273cda2c40d62f328ada31bd4d068c",
-      "computed": "bd7aac6a458a59e806f5a11df1a03dc315273cda2c40d62f328ada31bd4d068c",
-      "match": true,
       "v02_status": "known_limit",
-      "v02_note": "score:1.0 inside event is Python float; JS reads as int 1. Hash differs."
+      "v02_note": "event.score:1.0 is Python float; JS reads as int 1. Hash differs. Not reachable through hashEntry post-processing (only top-level float fields are fixed).",
+      "entry": {
+        "version": 100,
+        "timestamp": "2026-08-18T00:01:00Z",
+        "event": {
+          "studentId": "test",
+          "correct": true,
+          "score": 1.0
+        },
+        "scaffoldType": null,
+        "depthLevel": null,
+        "epistemicMode": null,
+        "triageResult": null,
+        "evidentialWeight": 1.0,
+        "priorPosterior": 0.5,
+        "updatedPosterior": 0.8,
+        "nonInterventionDecision": null,
+        "prevHash": "",
+        "entryHash": "bd7aac6a458a59e806f5a11df1a03dc315273cda2c40d62f328ada31bd4d068c"
+      }
     },
     {
       "label": "small_posterior",
-      "description": "Posterior of 3e-05. Must match across languages.",
-      "version": 101,
-      "entryHash": "010395017fd8ae09a43af9fe92c39a7c5c1f08766e236b675c86e5df426d1c4f",
-      "computed": "010395017fd8ae09a43af9fe92c39a7c5c1f08766e236b675c86e5df426d1c4f",
-      "match": true,
       "v02_status": "must_pass",
-      "v02_note": ""
+      "entry": {
+        "version": 101,
+        "timestamp": "2026-08-18T00:02:00Z",
+        "event": {
+          "studentId": "test",
+          "correct": false
+        },
+        "scaffoldType": null,
+        "depthLevel": null,
+        "epistemicMode": null,
+        "triageResult": null,
+        "evidentialWeight": 0.5,
+        "priorPosterior": 0.001,
+        "updatedPosterior": 3e-05,
+        "nonInterventionDecision": null,
+        "prevHash": "",
+        "entryHash": "010395017fd8ae09a43af9fe92c39a7c5c1f08766e236b675c86e5df426d1c4f"
+      }
     },
     {
       "label": "js_integer_weight",
-      "description": "Weight of 1 (JS integer). v02_limit: JS writes 1, Python float would write 1.0.",
-      "version": 102,
-      "entryHash": "56a56819907ceb91f408d0b8a82e4aa0b0248d5a02098bd7b0c57ec4b6394916",
-      "computed": "56a56819907ceb91f408d0b8a82e4aa0b0248d5a02098bd7b0c57ec4b6394916",
-      "match": true,
       "v02_status": "known_limit",
-      "v02_note": "evidentialWeight:1 is int in JSON. hashEntry post-processes to 1.0, but if a JS Recorder wrote this, the source hash used 1."
+      "v02_note": "evidentialWeight:1 after JSON round-trip loses float type. hashEntry post-processes to 1.0, but a JS-produced record stores 1.",
+      "entry": {
+        "version": 102,
+        "timestamp": "2026-08-18T00:03:00Z",
+        "event": {
+          "studentId": "test",
+          "correct": true
+        },
+        "scaffoldType": null,
+        "depthLevel": null,
+        "epistemicMode": null,
+        "triageResult": null,
+        "evidentialWeight": 1,
+        "priorPosterior": 0.5,
+        "updatedPosterior": 0.8,
+        "nonInterventionDecision": null,
+        "prevHash": "",
+        "entryHash": "56a56819907ceb91f408d0b8a82e4aa0b0248d5a02098bd7b0c57ec4b6394916"
+      }
     }
   ]
 }

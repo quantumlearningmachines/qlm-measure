@@ -47,8 +47,17 @@ def cmd_verify(args: argparse.Namespace) -> int:
             # Dispatch by schema version
             sv = record.get("schemaVersion", "0.2")
             if sv == "0.3" or "evidence" in record:
-                from .verifier_v03 import verify_record_v03
-                result = verify_record_v03(record, timestamp_tolerance_ms=args.tolerance_ms)
+                from .verifier_v03 import verify_record_v03, VerificationResult_v03
+                r03 = verify_record_v03(record, timestamp_tolerance_ms=args.tolerance_ms)
+                # Convert to VerificationResult for shared reporting
+                from .verifier import VerificationResult, Violation
+                result = VerificationResult(
+                    valid=r03.valid,
+                    violations=[Violation(v.version, v.category, v.message, v.check_id) for v in r03.violations],
+                    entries_checked=r03.entries_checked,
+                )
+                # Tag record so reporter knows it's 0.3
+                record["_v03_result"] = r03
             else:
                 result = verify_record(record, timestamp_tolerance_ms=args.tolerance_ms)
             all_records.append(record)

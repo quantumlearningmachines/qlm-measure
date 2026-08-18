@@ -13,7 +13,7 @@ from datetime import datetime, timezone
 from typing import Any
 
 from . import __version__
-from .checks import SHIPPED_CHECKS, CATALOG_BY_ID, CATEGORIES, CheckDef
+from .checks import SHIPPED_CHECKS, SHIPPED_CHECKS_V03, CATALOG_BY_ID, CATEGORIES, CATEGORIES_V03, CheckDef
 from .verifier import VerificationResult, Violation
 
 
@@ -52,7 +52,9 @@ def build_report(
         if redact:
             scope_id = _redact_scope_id(scope_id)
         schema_version = record.get("schemaVersion", "0.2")
-        has_compaction = record.get("compactedBefore") is not None
+        is_v03 = record.get("schemaVersion") == "0.3" or "evidence" in record
+        checks_list = SHIPPED_CHECKS_V03 if is_v03 else SHIPPED_CHECKS
+        has_compaction = record.get("compactedBefore") is not None or (record.get("evidence", {}).get("compactedBefore") is not None if is_v03 else False)
         has_posteriors = any(
             isinstance(e.get("updatedPosterior"), (int, float))
             for e in record.get("entries", [])
@@ -65,7 +67,7 @@ def build_report(
             check_id = v.check_id if hasattr(v, "check_id") else _infer_check_id(v.category)
             violations_by_check.setdefault(check_id, []).append(v)
 
-        for check_def in SHIPPED_CHECKS:
+        for check_def in checks_list:
             vlist = violations_by_check.get(check_def.id, [])
             # Compaction check is not_applicable when no compaction
             if check_def.id == "COMPACTION.BOUNDARY" and not has_compaction:
@@ -185,14 +187,20 @@ def format_text(
             scope_id = _redact_scope_id(scope_id)
         schema_version = record.get("schemaVersion", "0.2")
         n_entries = len(record.get("entries", []))
-        has_compaction = record.get("compactedBefore") is not None
+        is_v03_t = record.get("schemaVersion") == "0.3" or "evidence" in record
+        checks_list_t = SHIPPED_CHECKS_V03 if is_v03_t else SHIPPED_CHECKS
+        categories_t = CATEGORIES_V03 if is_v03_t else CATEGORIES
+        entries_t = record.get("entries", []) or (record.get("evidence", {}).get("entries", []) if is_v03_t else [])
+        has_compaction = record.get("compactedBefore") is not None or (record.get("evidence", {}).get("compactedBefore") is not None if is_v03_t else False)
         has_posteriors_t = any(
             isinstance(e.get("updatedPosterior"), (int, float))
-            for e in record.get("entries", [])
+            for e in entries_t
         )
+        n_entries = len(entries_t)
 
         lines.append("")
         lines.append(f"record {scope_id}  (schema {schema_version}, {n_entries} entries)")
+        # Override n_entries for header (was computed from entries_t above)
 
         # Group violations by check_id
         violations_by_check: dict[str, list[Violation]] = {}
@@ -201,9 +209,9 @@ def format_text(
             violations_by_check.setdefault(check_id, []).append(v)
 
         # Print by category
-        for category in CATEGORIES:
+        for category in categories_t:
             lines.append(f"  {category}")
-            category_checks = [c for c in SHIPPED_CHECKS if c.category == category]
+            category_checks = [c for c in checks_list_t if c.category == category]
             for check_def in category_checks:
                 vlist = violations_by_check.get(check_def.id, [])
                 if check_def.id == "COMPACTION.BOUNDARY" and not has_compaction:

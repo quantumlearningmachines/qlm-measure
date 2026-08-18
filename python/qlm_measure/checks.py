@@ -189,7 +189,27 @@ CATALOG: list[CheckDef] = [
     ),
 ]
 
-CATALOG_BY_ID = {c.id: c for c in CATALOG}
+
+# 0.3-specific checks (shipped when verifier_v03 runs them)
+CATALOG_V03: list[CheckDef] = [
+    CheckDef(id="SCHEMA.EVENT_UNION", category="Schema", label="Event is a known kind", description="Event must be Observation, Consent, or Redacted.", how_to_pass="Use one of the three event types.", scope="entry", status="shipped", introduced_in="0.3.0"),
+    CheckDef(id="VERSION.CONTIGUOUS", category="Sequence", label="Versions have no gaps", description="v == prev + 1, except after compaction.", how_to_pass="Use the Recorder's append counter.", scope="entry", status="shipped", introduced_in="0.3.0"),
+    CheckDef(id="EVENT.COMMITMENT", category="Hash chain", label="Event matches its hash", description="sha256(canonical(event)) == eventHash.", how_to_pass="Hash the event before writing.", scope="entry", status="shipped", introduced_in="0.3.0"),
+    CheckDef(id="ESTIMATE.DECLARED", category="Estimation", label="Estimator declared", description="Estimate chain has a well-formed estimator declaration.", how_to_pass="Declare name, version, and opaque/ruleId.", scope="record", status="shipped", introduced_in="0.3.0"),
+    CheckDef(id="ESTIMATE.LINKS_EVIDENCE", category="Estimation", label="Estimates reference evidence", description="Every estimate entry references an existing evidence entry.", how_to_pass="Set evidenceVersion and evidenceEntryHash.", scope="entry", status="shipped", introduced_in="0.3.0"),
+    CheckDef(id="ESTIMATE.ORDER", category="Estimation", label="Estimates follow evidence order", description="evidenceVersion strictly increasing.", how_to_pass="Append estimates in evidence order.", scope="entry", status="shipped", introduced_in="0.3.0"),
+    CheckDef(id="WEIGHT.RANGE", category="Estimation", label="Weight in [0,1]", description="evidentialWeight between 0 and 1.", how_to_pass="Clamp weights.", scope="entry", status="shipped", introduced_in="0.3.0"),
+    CheckDef(id="POSTERIOR.RANGE", category="Estimation", label="Posteriors in (0,1)", description="priorPosterior and updatedPosterior in open interval (0,1).", how_to_pass="Clamp posteriors.", scope="entry", status="shipped", introduced_in="0.3.0"),
+    CheckDef(id="CONSENT.SCOPE", category="Consent", label="Consent scope covers export", description="Export scope is covered by a granted consent.", how_to_pass="Include consent events before export.", scope="record", status="shipped", introduced_in="0.3.0"),
+    CheckDef(id="CONSENT.WITHDRAWAL", category="Consent", label="No active withdrawal", description="Export scope was not withdrawn.", how_to_pass="Re-grant before export.", scope="record", status="shipped", introduced_in="0.3.0"),
+    CheckDef(id="ATTEST.INTEGRITY", category="Attestation", label="Attestation hash valid", description="payloadHash matches payload.", how_to_pass="Hash payload before writing.", scope="record", status="shipped", introduced_in="0.3.0"),
+    CheckDef(id="ATTEST.COVERS", category="Attestation", label="Attestation covers evidence", description="Referenced version or hash exists.", how_to_pass="Reference existing entries.", scope="record", status="shipped", introduced_in="0.3.0"),
+]
+
+ALL_CHECKS_V03 = CATALOG + CATALOG_V03
+CATALOG_BY_ID = {c.id: c for c in ALL_CHECKS_V03}
 SHIPPED_CHECKS = [c for c in CATALOG if c.status == "shipped"]
 PLANNED_CHECKS = [c for c in CATALOG if c.status == "planned"]
+SHIPPED_CHECKS_V03 = SHIPPED_CHECKS + CATALOG_V03
 CATEGORIES = list(dict.fromkeys(c.category for c in SHIPPED_CHECKS))
+CATEGORIES_V03 = list(dict.fromkeys(c.category for c in SHIPPED_CHECKS_V03))

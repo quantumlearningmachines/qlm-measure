@@ -20,7 +20,7 @@
       "canonical": "{\"value\":1.0}",
       "sha256": "3a7d647740ec6f86b72e0bf3948ab456551e07e9605e3a2785de1c66842ebb48",
       "v02_status": "known_limit",
-      "v02_note": "v02_limit: integer-valued float (1 vs 1.0). Ambiguous after JSON round-trip."
+      "v02_note": "Integer-valued float (1.0 vs 1). Not reachable through hashEntry (top-level float fields are post-processed). Fixed in schema 0.3 via RFC 8785."
     },
     {
       "label": "float_ieee754",
@@ -58,7 +58,7 @@
       "canonical": "{\"cl\\u00e9\":\"valeur\",\"\\u952e\":\"\\u503c\"}",
       "sha256": "105d8e40aa109c3d887c2e616ec2ec68660500e23c55bf1c11e6dbbc6eb8e43c",
       "v02_status": "known_limit",
-      "v02_note": "v02_limit: non-ASCII key escaping. Python escapes keys, JS value-only fix."
+      "v02_note": "Non-ASCII keys. Python escapes keys to \\uXXXX; JS canonicalize only escapes values. Not reachable in evidence records (all keys are ASCII). Fixed in 0.3."
     },
     {
       "label": "null_value",

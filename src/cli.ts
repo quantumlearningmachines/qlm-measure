@@ -11,7 +11,7 @@ import type { VerificationResult, Violation } from "./verifier/verify-record.js"
 import { verifyRecordV03 } from "./verifier-v03.js";
 import { CATALOG, SHIPPED_CHECKS, PLANNED_CHECKS, CATALOG_BY_ID, CATEGORIES } from "./checks.js";
 
-const VERSION = "0.2.4";
+const VERSION = "0.2.5";
 
 // ── Loader ──────────────────────────────────────────────────
 
@@ -48,7 +48,7 @@ function loadRecords(path: string): EvidenceRecord[] {
     const arr = JSON.parse(raw);
     if (!Array.isArray(arr)) throw new Error(`${path}: expected array`);
     for (const item of arr) {
-      if (!item.entries) throw new Error(`${path}: element missing entries`);
+      if (!item.entries && !item.evidence) throw new Error(`${path}: element missing entries`);
     }
     return arr;
   }
@@ -56,14 +56,14 @@ function loadRecords(path: string): EvidenceRecord[] {
     // Try as single JSON object first
     try {
       const obj = JSON.parse(raw);
-      if (obj.entries) return [obj];
+      if (obj.entries || obj.evidence) return [obj];
     } catch { /* not a single object, try JSONL */ }
     // JSONL: multiple JSON objects, one per line
     const lines = raw.split("\n").filter(l => l.trim());
     if (lines.length > 1 && lines.every(l => l.trim().startsWith("{"))) {
       return lines.map((line, i) => {
         const obj = JSON.parse(line);
-        if (!obj.entries) throw new Error(`${path}: line ${i + 1} missing entries`);
+        if (!obj.entries && !obj.evidence) throw new Error(`${path}: line ${i + 1} missing entries`);
         return obj;
       });
     }

@@ -8,7 +8,7 @@ import { createHash } from "crypto";
 import { verifyRecord } from "./verifier/verify-record.js";
 import { verifyRecordV03 } from "./verifier-v03.js";
 import { CATALOG, SHIPPED_CHECKS, PLANNED_CHECKS, CATALOG_BY_ID, CATEGORIES } from "./checks.js";
-const VERSION = "0.2.4";
+const VERSION = "0.2.5";
 function loadRecords(path) {
     let raw;
     if (path === "-") {
@@ -39,7 +39,7 @@ function loadRecords(path) {
         if (!Array.isArray(arr))
             throw new Error(`${path}: expected array`);
         for (const item of arr) {
-            if (!item.entries)
+            if (!item.entries && !item.evidence)
                 throw new Error(`${path}: element missing entries`);
         }
         return arr;
@@ -48,7 +48,7 @@ function loadRecords(path) {
         // Try as single JSON object first
         try {
             const obj = JSON.parse(raw);
-            if (obj.entries)
+            if (obj.entries || obj.evidence)
                 return [obj];
         }
         catch { /* not a single object, try JSONL */ }
@@ -57,7 +57,7 @@ function loadRecords(path) {
         if (lines.length > 1 && lines.every(l => l.trim().startsWith("{"))) {
             return lines.map((line, i) => {
                 const obj = JSON.parse(line);
-                if (!obj.entries)
+                if (!obj.entries && !obj.evidence)
                     throw new Error(`${path}: line ${i + 1} missing entries`);
                 return obj;
             });
