@@ -1,0 +1,64 @@
+name: Verify page integrity
+
+on:
+  push:
+    branches: [main]
+    paths: [verify/**, tools/stamp-page-hash.py]
+  schedule:
+    - cron: '0 8 * * 1'  # Weekly Monday 8am UTC
+
+jobs:
+  check-source:
+    name: Page hash round-trip (source)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Verify footer hash matches README procedure
+        run: |
+          H=$(grep -oP 'id="ph">\K[a-f0-9]{64}' verify/index.html)
+          echo "Footer hash: $H"
+          PLACEHOLDER="PAGE_HASH_PLACEHOLDER_64CHARS_PADDING_XXXXXXXXXXXXXXXXXXXXXXXXXX"
+          COMPUTED=$(sed "s/$H/$PLACEHOLDER/" verify/index.html | shasum -a 256 | cut -d' ' -f1)
+          echo "Computed:    $COMPUTED"
+          if [ "$H" != "$COMPUTED" ]; then
+            echo "FAIL: footer hash does not reproduce under README procedure"
+            exit 1
+          fi
+          echo "PASS: source page hash verifies"
+
+      - name: Verify SHA256SUMS matches raw file
+        run: |
+          shasum -a 256 -c SHA256SUMS
+          echo "PASS: SHA256SUMS matches"
+
+  check-live:
+    name: Page hash round-trip (live)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Fetch live page and verify
+        run: |
+          curl -sfL https://verify.quantumlearningmachines.com -o /tmp/live.html
+          H=$(grep -oP 'id="ph">\K[a-f0-9]{64}' /tmp/live.html)
+          echo "Live footer hash: $H"
+          PLACEHOLDER="PAGE_HASH_PLACEHOLDER_64CHARS_PADDING_XXXXXXXXXXXXXXXXXXXXXXXXXX"
+          COMPUTED=$(sed "s/$H/$PLACEHOLDER/" /tmp/live.html | shasum -a 256 | cut -d' ' -f1)
+          echo "Computed:         $COMPUTED"
+          if [ "$H" != "$COMPUTED" ]; then
+            echo "FAIL: live page hash does not reproduce"
+            exit 1
+          fi
+          echo "PASS: live page hash verifies"
+
+      - name: Verify live matches source
+        run: |
+          curl -sfL https://verify.quantumlearningmachines.com -o /tmp/live.html
+          LIVE_HASH=$(shasum -a 256 /tmp/live.html | cut -d' ' -f1)
+          SOURCE_HASH=$(shasum -a 256 verify/index.html | cut -d' ' -f1)
+          echo "Live:   $LIVE_HASH"
+          echo "Source: $SOURCE_HASH"
+          if [ "$LIVE_HASH" != "$SOURCE_HASH" ]; then
+            echo "WARN: live page differs from source (deploy may be pending)"
+          else
+            echo "PASS: live matches source"
+          fi

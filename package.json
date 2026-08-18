@@ -38,7 +38,7 @@
     "README.md"
   ],
   "scripts": {
-    "build": "tsc",
+    "build": "tsc && python3 tools/stamp-page-hash.py",
     "postbuild": "chmod +x dist/cli.js 2>/dev/null || true",
     "test": "vitest run",
     "test:watch": "vitest",
