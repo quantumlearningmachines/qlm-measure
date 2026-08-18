@@ -1,0 +1,202 @@
+{
+  "tool": {
+    "name": "qlm-measure",
+    "version": "0.2.2",
+    "language": "python",
+    "catalog_version": "1"
+  },
+  "input": {
+    "path": "clean.jsonl",
+    "sha256": "d6f7e3f4468c321c00404f651a1ebc80e20e78a8b461b0f427337ae059631eea",
+    "records": 3
+  },
+  "generated_at": "2026-08-18T00:00:00Z",
+  "records": [
+    {
+      "studentScopeId": "syn-8f2c-0042",
+      "schemaVersion": "0.2",
+      "entries_checked": 6,
+      "valid": true,
+      "checks": [
+        {
+          "id": "SCHEMA.REQUIRED",
+          "status": "pass",
+          "failures": 0
+        },
+        {
+          "id": "SCHEMA.TYPES",
+          "status": "pass",
+          "failures": 0
+        },
+        {
+          "id": "SCHEMA.TIMESTAMP_FORMAT",
+          "status": "pass",
+          "failures": 0
+        },
+        {
+          "id": "VERSION.MONOTONIC",
+          "status": "pass",
+          "failures": 0
+        },
+        {
+          "id": "TIMESTAMP.MONOTONIC",
+          "status": "pass",
+          "failures": 0
+        },
+        {
+          "id": "ENUM.VALID",
+          "status": "pass",
+          "failures": 0
+        },
+        {
+          "id": "HASH.PREV_LINK",
+          "status": "pass",
+          "failures": 0
+        },
+        {
+          "id": "HASH.ENTRY_RECOMPUTE",
+          "status": "pass",
+          "failures": 0
+        },
+        {
+          "id": "POSTERIOR.CHAIN",
+          "status": "pass",
+          "failures": 0
+        },
+        {
+          "id": "COMPACTION.BOUNDARY",
+          "status": "not_applicable",
+          "failures": 0
+        }
+      ],
+      "violations": []
+    },
+    {
+      "studentScopeId": "syn-8f2c-0043",
+      "schemaVersion": "0.2",
+      "entries_checked": 4,
+      "valid": true,
+      "checks": [
+        {
+          "id": "SCHEMA.REQUIRED",
+          "status": "pass",
+          "failures": 0
+        },
+        {
+          "id": "SCHEMA.TYPES",
+          "status": "pass",
+          "failures": 0
+        },
+        {
+          "id": "SCHEMA.TIMESTAMP_FORMAT",
+          "status": "pass",
+          "failures": 0
+        },
+        {
+          "id": "VERSION.MONOTONIC",
+          "status": "pass",
+          "failures": 0
+        },
+        {
+          "id": "TIMESTAMP.MONOTONIC",
+          "status": "pass",
+          "failures": 0
+        },
+        {
+          "id": "ENUM.VALID",
+          "status": "pass",
+          "failures": 0
+        },
+        {
+          "id": "HASH.PREV_LINK",
+          "status": "pass",
+          "failures": 0
+        },
+        {
+          "id": "HASH.ENTRY_RECOMPUTE",
+          "status": "pass",
+          "failures": 0
+        },
+        {
+          "id": "POSTERIOR.CHAIN",
+          "status": "pass",
+          "failures": 0
+        },
+        {
+          "id": "COMPACTION.BOUNDARY",
+          "status": "not_applicable",
+          "failures": 0
+        }
+      ],
+      "violations": []
+    },
+    {
+      "studentScopeId": "syn-8f2c-0044",
+      "schemaVersion": "0.2",
+      "entries_checked": 5,
+      "valid": true,
+      "checks": [
+        {
+          "id": "SCHEMA.REQUIRED",
+          "status": "pass",
+          "failures": 0
+        },
+        {
+          "id": "SCHEMA.TYPES",
+          "status": "pass",
+          "failures": 0
+        },
+        {
+          "id": "SCHEMA.TIMESTAMP_FORMAT",
+          "status": "pass",
+          "failures": 0
+        },
+        {
+          "id": "VERSION.MONOTONIC",
+          "status": "pass",
+          "failures": 0
+        },
+        {
+          "id": "TIMESTAMP.MONOTONIC",
+          "status": "pass",
+          "failures": 0
+        },
+        {
+          "id": "ENUM.VALID",
+          "status": "pass",
+          "failures": 0
+        },
+        {
+          "id": "HASH.PREV_LINK",
+          "status": "pass",
+          "failures": 0
+        },
+        {
+          "id": "HASH.ENTRY_RECOMPUTE",
+          "status": "pass",
+          "failures": 0
+        },
+        {
+          "id": "POSTERIOR.CHAIN",
+          "status": "pass",
+          "failures": 0
+        },
+        {
+          "id": "COMPACTION.BOUNDARY",
+          "status": "not_applicable",
+          "failures": 0
+        }
+      ],
+      "violations": []
+    }
+  ],
+  "summary": {
+    "records": 3,
+    "valid": 3,
+    "invalid": 0,
+    "checks_run": 27,
+    "checks_passed": 27,
+    "checks_failed": 0,
+    "checks_not_applicable": 3
+  }
+}

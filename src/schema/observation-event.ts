@@ -9,7 +9,7 @@
  * Integrators needing excluded fields use the `ext` namespace.
  */
 
-import type { ScaffoldType, EpistemicMode } from "./enums";
+import type { ScaffoldType, EpistemicMode } from "./enums.js";
 
 export interface ObservationEvent {
   /** Pseudonymous student identifier. MUST NOT contain PII. */

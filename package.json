@@ -1,6 +1,6 @@
 {
   "name": "qlm-measure",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "description": "Open measurement SDK for education AI — evidence events, record verification, and dataset clients",
   "license": "Apache-2.0",
   "type": "module",
@@ -27,6 +27,9 @@
       "import": "./dist/clients/index.js",
       "types": "./dist/clients/index.d.ts"
     }
+  },
+  "bin": {
+    "qlm-measure": "./dist/cli.js"
   },
   "files": [
     "dist",

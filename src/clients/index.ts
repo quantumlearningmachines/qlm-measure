@@ -1,4 +1,4 @@
-export { OntologyClient } from "./ontology-client";
-export type { OntologyClientConfig, DatasetName, MisconceptionEntry, LearningGraphNode, StandardAlignment, ASSISTmentsAlignment } from "./ontology-client";
-export { EngineClient } from "./engine-client";
-export type { EngineClientConfig, ModelStateSummary } from "./engine-client";
+export { OntologyClient } from "./ontology-client.js";
+export type { OntologyClientConfig, DatasetName, MisconceptionEntry, LearningGraphNode, StandardAlignment, ASSISTmentsAlignment } from "./ontology-client.js";
+export { EngineClient } from "./engine-client.js";
+export type { EngineClientConfig, ModelStateSummary } from "./engine-client.js";

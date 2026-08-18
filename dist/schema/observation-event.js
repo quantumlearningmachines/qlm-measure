@@ -1,5 +1,5 @@
 /**
- * ObservationEvent v0.1 — Public evidence-event schema.
+ * ObservationEvent v0.2 — Public evidence-event schema.
  *
  * A deliberate subset of the internal StudentObservation.
  * This is a deliberate public subset. Fields related to internal estimation,

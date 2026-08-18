@@ -1,2 +1,2 @@
-export { MeasurementEmitter } from "./measurement-emitter";
-export type { EmitterConfig } from "./measurement-emitter";
+export { MeasurementEmitter } from "./measurement-emitter.js";
+export type { EmitterConfig } from "./measurement-emitter.js";

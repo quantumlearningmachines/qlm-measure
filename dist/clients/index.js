@@ -1,3 +1,3 @@
-export { OntologyClient } from "./ontology-client";
-export { EngineClient } from "./engine-client";
+export { OntologyClient } from "./ontology-client.js";
+export { EngineClient } from "./engine-client.js";
 //# sourceMappingURL=index.js.map

@@ -7,8 +7,8 @@
  * Authentication is required. Contact QLM for API access.
  */
 
-import type { ObservationEvent } from "../schema/observation-event";
-import { toPublicEpistemicMode } from "../schema/enums";
+import type { ObservationEvent } from "../schema/observation-event.js";
+import { toPublicEpistemicMode } from "../schema/enums.js";
 
 export interface EngineClientConfig {
   /** Base URL of the QLM measurement service. */

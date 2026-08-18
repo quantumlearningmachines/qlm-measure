@@ -1,0 +1,49 @@
+{
+  "generated_at": "2026-08-18T00:00:00Z",
+  "generator": "tools/make_samples.py",
+  "hashed_with": "qlm_measure 0.1.1 verifier._hash_entry (canonical JSON: sorted keys, no whitespace)",
+  "files": {
+    "clean.json": {
+      "sha256": "52a455a5e9f2e3ec223bd2d726b4ceabcab3b7fbc672daaaf4febcbd06dd466c",
+      "bytes": 5593,
+      "records": 1,
+      "expected_valid": true
+    },
+    "clean.jsonl": {
+      "sha256": "d6f7e3f4468c321c00404f651a1ebc80e20e78a8b461b0f427337ae059631eea",
+      "bytes": 10705,
+      "records": 3,
+      "expected_valid": true
+    },
+    "tampered_value.json": {
+      "sha256": "9a87fdc52df3a79d1e69296ca1b801ecbaf6e8f77a4ec42118de649a9d61fc77",
+      "bytes": 5593,
+      "records": 1,
+      "expected_valid": false
+    },
+    "dropped_entry.json": {
+      "sha256": "7fe0ce98be687e83382cb4b3ce8990d33cee161deca983b8670187f799b46a19",
+      "bytes": 4658,
+      "records": 1,
+      "expected_valid": false
+    },
+    "reordered.json": {
+      "sha256": "c9630b8d47b016e5a6d70415b259693420384da2a5f9123f5735b1040b812d33",
+      "bytes": 5593,
+      "records": 1,
+      "expected_valid": false
+    },
+    "level1_only.json": {
+      "sha256": "b36a7daa1c3e33839c1d9d6c55666060a4c62f79cfcddd58624e64186db4c159",
+      "bytes": 4665,
+      "records": 1,
+      "expected_valid": false
+    },
+    "compacted_clean.json": {
+      "sha256": "9898aaf01a91b0b1d214e5f9079bff4112c2f2d6afa0735424a6283ee2b5092f",
+      "bytes": 2080,
+      "records": 1,
+      "expected_valid": true
+    }
+  }
+}

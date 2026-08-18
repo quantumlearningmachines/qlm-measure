@@ -1,0 +1,84 @@
+{
+  "tool": {
+    "name": "qlm-measure",
+    "version": "0.2.2",
+    "language": "python",
+    "catalog_version": "1"
+  },
+  "input": {
+    "path": "compacted_clean.json",
+    "sha256": "9898aaf01a91b0b1d214e5f9079bff4112c2f2d6afa0735424a6283ee2b5092f",
+    "records": 1
+  },
+  "generated_at": "2026-08-18T00:00:00Z",
+  "records": [
+    {
+      "studentScopeId": "syn-8f2c-0042",
+      "schemaVersion": "0.2",
+      "entries_checked": 2,
+      "valid": true,
+      "checks": [
+        {
+          "id": "SCHEMA.REQUIRED",
+          "status": "pass",
+          "failures": 0
+        },
+        {
+          "id": "SCHEMA.TYPES",
+          "status": "pass",
+          "failures": 0
+        },
+        {
+          "id": "SCHEMA.TIMESTAMP_FORMAT",
+          "status": "pass",
+          "failures": 0
+        },
+        {
+          "id": "VERSION.MONOTONIC",
+          "status": "pass",
+          "failures": 0
+        },
+        {
+          "id": "TIMESTAMP.MONOTONIC",
+          "status": "pass",
+          "failures": 0
+        },
+        {
+          "id": "ENUM.VALID",
+          "status": "pass",
+          "failures": 0
+        },
+        {
+          "id": "HASH.PREV_LINK",
+          "status": "pass",
+          "failures": 0
+        },
+        {
+          "id": "HASH.ENTRY_RECOMPUTE",
+          "status": "pass",
+          "failures": 0
+        },
+        {
+          "id": "POSTERIOR.CHAIN",
+          "status": "pass",
+          "failures": 0
+        },
+        {
+          "id": "COMPACTION.BOUNDARY",
+          "status": "pass",
+          "failures": 0
+        }
+      ],
+      "violations": []
+    }
+  ],
+  "summary": {
+    "records": 1,
+    "valid": 1,
+    "invalid": 0,
+    "checks_run": 10,
+    "checks_passed": 10,
+    "checks_failed": 0,
+    "checks_not_applicable": 0
+  }
+}

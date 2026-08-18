@@ -1,0 +1,24 @@
+qlm-measure verify reordered.json
+records: 1
+
+record syn-8f2c-0042  (schema 0.2, 6 entries)
+  Schema
+    ✓ Required fields present
+    ✓ Field types valid
+    ✓ Timestamp is ISO 8601
+  Sequence
+    ✗ Versions strictly increase  (1 failure; first at v3: Version 3 <= previous 4)
+    ✗ Timestamps do not go backward  (1 failure; first at v3: Timestamp goes backward)
+  Enums
+    ✓ Enum values permitted
+  Hash chain
+    ✗ Chain link valid  (3 failures; first at v4: prevHash mismatch)
+    ✓ Entry hash recomputes
+  Posterior chain
+    ✗ Posterior chain consistent  (3 failures; first at v4: priorPosterior (0.363) != previous updatedPosterior (0.1124))
+  Compaction
+    – Compaction boundary intact  (not applicable)
+  violations: 8
+  VERDICT: NOT CLEAN — 8 violation(s); see report
+
+summary: 1 record(s), 0 valid, 1 invalid; checks run 9, passed 5, failed 4, not applicable 1

@@ -1,0 +1,86 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "qlm-measure verification report",
+  "type": "object",
+  "required": ["tool", "input", "generated_at", "records", "summary"],
+  "properties": {
+    "tool": {
+      "type": "object",
+      "required": ["name", "version", "language", "catalog_version"],
+      "properties": {
+        "name": {"type": "string", "const": "qlm-measure"},
+        "version": {"type": "string"},
+        "language": {"type": "string", "enum": ["python", "javascript"]},
+        "catalog_version": {"type": "string"}
+      }
+    },
+    "input": {
+      "type": "object",
+      "required": ["path", "sha256", "records"],
+      "properties": {
+        "path": {"type": "string"},
+        "sha256": {"type": "string"},
+        "records": {"type": "integer", "minimum": 0}
+      }
+    },
+    "generated_at": {"type": "string", "format": "date-time"},
+    "records": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["studentScopeId", "schemaVersion", "entries_checked", "valid", "checks", "violations"],
+        "properties": {
+          "studentScopeId": {"type": "string"},
+          "schemaVersion": {"type": "string"},
+          "entries_checked": {"type": "integer"},
+          "valid": {"type": "boolean"},
+          "checks": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": ["id", "status", "failures"],
+              "properties": {
+                "id": {"type": "string"},
+                "status": {"type": "string", "enum": ["pass", "fail", "not_applicable", "opaque"]},
+                "failures": {"type": "integer"},
+                "first_failure": {
+                  "type": "object",
+                  "properties": {
+                    "version": {"type": "integer"},
+                    "message": {"type": "string"}
+                  }
+                }
+              }
+            }
+          },
+          "violations": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": ["version", "check_id", "category", "message"],
+              "properties": {
+                "version": {"type": "integer"},
+                "check_id": {"type": "string"},
+                "category": {"type": "string"},
+                "message": {"type": "string"}
+              }
+            }
+          }
+        }
+      }
+    },
+    "summary": {
+      "type": "object",
+      "required": ["records", "valid", "invalid", "checks_run", "checks_passed", "checks_failed", "checks_not_applicable"],
+      "properties": {
+        "records": {"type": "integer"},
+        "valid": {"type": "integer"},
+        "invalid": {"type": "integer"},
+        "checks_run": {"type": "integer"},
+        "checks_passed": {"type": "integer"},
+        "checks_failed": {"type": "integer"},
+        "checks_not_applicable": {"type": "integer"}
+      }
+    }
+  }
+}

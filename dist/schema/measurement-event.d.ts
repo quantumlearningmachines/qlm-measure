@@ -3,7 +3,7 @@
  *
  * Ported from the production measurement-emitter.
  */
-import type { EventCategory } from "./enums";
+import type { EventCategory } from "./enums.js";
 export interface MeasurementEvent {
     /** Event type identifier. */
     eventType: string;

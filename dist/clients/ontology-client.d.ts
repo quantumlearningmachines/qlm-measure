@@ -33,6 +33,14 @@ export interface StandardAlignment {
     description: string;
     mappedConstructIds: string[];
 }
+export interface ASSISTmentsAlignment {
+    assistmentsSkillId: string;
+    skillName: string;
+    commonCoreStandard: string;
+    domain: string;
+    gradeLevel: number;
+    mappedMisconceptionIds: string[];
+}
 export declare class OntologyClient {
     private readonly baseUrl;
     constructor(config?: OntologyClientConfig);
@@ -53,5 +61,7 @@ export declare class OntologyClient {
     getLearningGraph(domain?: string): Promise<LearningGraphNode[]>;
     /** Fetch standards alignment data. */
     getStandards(domain?: string): Promise<StandardAlignment[]>;
+    /** Fetch ASSISTments skill-to-standard alignment data. */
+    getASSISTmentsAlignment(domain?: string): Promise<ASSISTmentsAlignment[]>;
 }
 //# sourceMappingURL=ontology-client.d.ts.map

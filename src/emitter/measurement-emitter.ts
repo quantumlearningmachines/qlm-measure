@@ -5,7 +5,7 @@
  * Survives page unload. Configurable endpoint and buffer size.
  */
 
-import type { MeasurementEvent } from "../schema/measurement-event";
+import type { MeasurementEvent } from "../schema/measurement-event.js";
 
 export interface EmitterConfig {
   /** Base URL of the measurement service. */

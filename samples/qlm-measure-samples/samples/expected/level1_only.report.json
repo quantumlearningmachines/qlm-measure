@@ -1,0 +1,197 @@
+{
+  "tool": {
+    "name": "qlm-measure",
+    "version": "0.2.2",
+    "language": "python",
+    "catalog_version": "1"
+  },
+  "input": {
+    "path": "level1_only.json",
+    "sha256": "b36a7daa1c3e33839c1d9d6c55666060a4c62f79cfcddd58624e64186db4c159",
+    "records": 1
+  },
+  "generated_at": "2026-08-18T00:00:00Z",
+  "records": [
+    {
+      "studentScopeId": "syn-8f2c-0042",
+      "schemaVersion": "0.2",
+      "entries_checked": 6,
+      "valid": false,
+      "checks": [
+        {
+          "id": "SCHEMA.REQUIRED",
+          "status": "fail",
+          "failures": 18,
+          "first_failure": {
+            "version": 1,
+            "message": "evidentialWeight must be a number"
+          }
+        },
+        {
+          "id": "SCHEMA.TYPES",
+          "status": "pass",
+          "failures": 0
+        },
+        {
+          "id": "SCHEMA.TIMESTAMP_FORMAT",
+          "status": "pass",
+          "failures": 0
+        },
+        {
+          "id": "VERSION.MONOTONIC",
+          "status": "pass",
+          "failures": 0
+        },
+        {
+          "id": "TIMESTAMP.MONOTONIC",
+          "status": "pass",
+          "failures": 0
+        },
+        {
+          "id": "ENUM.VALID",
+          "status": "pass",
+          "failures": 0
+        },
+        {
+          "id": "HASH.PREV_LINK",
+          "status": "pass",
+          "failures": 0
+        },
+        {
+          "id": "HASH.ENTRY_RECOMPUTE",
+          "status": "pass",
+          "failures": 0
+        },
+        {
+          "id": "POSTERIOR.CHAIN",
+          "status": "not_applicable",
+          "failures": 0
+        },
+        {
+          "id": "COMPACTION.BOUNDARY",
+          "status": "not_applicable",
+          "failures": 0
+        }
+      ],
+      "violations": [
+        {
+          "version": 1,
+          "check_id": "SCHEMA.REQUIRED",
+          "category": "schema",
+          "message": "evidentialWeight must be a number"
+        },
+        {
+          "version": 1,
+          "check_id": "SCHEMA.REQUIRED",
+          "category": "schema",
+          "message": "priorPosterior must be a number"
+        },
+        {
+          "version": 1,
+          "check_id": "SCHEMA.REQUIRED",
+          "category": "schema",
+          "message": "updatedPosterior must be a number"
+        },
+        {
+          "version": 2,
+          "check_id": "SCHEMA.REQUIRED",
+          "category": "schema",
+          "message": "evidentialWeight must be a number"
+        },
+        {
+          "version": 2,
+          "check_id": "SCHEMA.REQUIRED",
+          "category": "schema",
+          "message": "priorPosterior must be a number"
+        },
+        {
+          "version": 2,
+          "check_id": "SCHEMA.REQUIRED",
+          "category": "schema",
+          "message": "updatedPosterior must be a number"
+        },
+        {
+          "version": 3,
+          "check_id": "SCHEMA.REQUIRED",
+          "category": "schema",
+          "message": "evidentialWeight must be a number"
+        },
+        {
+          "version": 3,
+          "check_id": "SCHEMA.REQUIRED",
+          "category": "schema",
+          "message": "priorPosterior must be a number"
+        },
+        {
+          "version": 3,
+          "check_id": "SCHEMA.REQUIRED",
+          "category": "schema",
+          "message": "updatedPosterior must be a number"
+        },
+        {
+          "version": 4,
+          "check_id": "SCHEMA.REQUIRED",
+          "category": "schema",
+          "message": "evidentialWeight must be a number"
+        },
+        {
+          "version": 4,
+          "check_id": "SCHEMA.REQUIRED",
+          "category": "schema",
+          "message": "priorPosterior must be a number"
+        },
+        {
+          "version": 4,
+          "check_id": "SCHEMA.REQUIRED",
+          "category": "schema",
+          "message": "updatedPosterior must be a number"
+        },
+        {
+          "version": 5,
+          "check_id": "SCHEMA.REQUIRED",
+          "category": "schema",
+          "message": "evidentialWeight must be a number"
+        },
+        {
+          "version": 5,
+          "check_id": "SCHEMA.REQUIRED",
+          "category": "schema",
+          "message": "priorPosterior must be a number"
+        },
+        {
+          "version": 5,
+          "check_id": "SCHEMA.REQUIRED",
+          "category": "schema",
+          "message": "updatedPosterior must be a number"
+        },
+        {
+          "version": 6,
+          "check_id": "SCHEMA.REQUIRED",
+          "category": "schema",
+          "message": "evidentialWeight must be a number"
+        },
+        {
+          "version": 6,
+          "check_id": "SCHEMA.REQUIRED",
+          "category": "schema",
+          "message": "priorPosterior must be a number"
+        },
+        {
+          "version": 6,
+          "check_id": "SCHEMA.REQUIRED",
+          "category": "schema",
+          "message": "updatedPosterior must be a number"
+        }
+      ]
+    }
+  ],
+  "summary": {
+    "records": 1,
+    "valid": 0,
+    "invalid": 1,
+    "checks_run": 8,
+    "checks_passed": 7,
+    "checks_failed": 1,
+    "checks_not_applicable": 2
+  }
+}

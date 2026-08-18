@@ -1,0 +1,137 @@
+{
+  "description": "Canonicalization test vectors for qlm-measure 0.2.2",
+  "rule": "json.dumps(obj, sort_keys=True, separators=(',',':'), default=str)",
+  "note": "Both Python and JS implementations must produce identical canonical strings and SHA-256 digests for every vector.",
+  "vectors": [
+    {
+      "label": "integer",
+      "input": {
+        "value": 42
+      },
+      "canonical": "{\"value\":42}",
+      "sha256": "dc60e632a90329ccfd34fbe904d94704dbbb6669575185e26389854ff64139c3"
+    },
+    {
+      "label": "float_one",
+      "input": {
+        "value": 1.0
+      },
+      "canonical": "{\"value\":1.0}",
+      "sha256": "3a7d647740ec6f86b72e0bf3948ab456551e07e9605e3a2785de1c66842ebb48"
+    },
+    {
+      "label": "float_ieee754",
+      "input": {
+        "value": 0.30000000000000004
+      },
+      "canonical": "{\"value\":0.30000000000000004}",
+      "sha256": "036c1902dbf44cd0afd8ccc8665d3156840d0278a131877c0b67dc483efdf4bf"
+    },
+    {
+      "label": "scientific_notation",
+      "input": {
+        "value": 1e-07
+      },
+      "canonical": "{\"value\":1e-07}",
+      "sha256": "aece37dfda4992947222ea73b79996bba4aa181345a1fbb7f8c2b56b3fbd6a44"
+    },
+    {
+      "label": "negative_zero",
+      "input": {
+        "value": -0.0
+      },
+      "canonical": "{\"value\":-0.0}",
+      "sha256": "c848a4efa987f46ba3bfd46242333afcb1c68c3240e0f35ae9d269b1c980648b"
+    },
+    {
+      "label": "unicode_keys",
+      "input": {
+        "cl\u00e9": "valeur",
+        "\u952e": "\u503c"
+      },
+      "canonical": "{\"cl\\u00e9\":\"valeur\",\"\\u952e\":\"\\u503c\"}",
+      "sha256": "105d8e40aa109c3d887c2e616ec2ec68660500e23c55bf1c11e6dbbc6eb8e43c"
+    },
+    {
+      "label": "null_value",
+      "input": {
+        "a": null,
+        "b": 1
+      },
+      "canonical": "{\"a\":null,\"b\":1}",
+      "sha256": "c0bf82ad036cb0a5a03d6759c1b7b8b1f70a39b32dd96ed3977c7f2831ee3b56"
+    },
+    {
+      "label": "nested_event",
+      "input": {
+        "version": 1,
+        "event": {
+          "correct": true,
+          "scaffoldType": "hint"
+        }
+      },
+      "canonical": "{\"event\":{\"correct\":true,\"scaffoldType\":\"hint\"},\"version\":1}",
+      "sha256": "c6a4eb405281e8b88a80e47a5e826a0c50349141e7f325dc6a2c1a047e6d438f"
+    },
+    {
+      "label": "booleans",
+      "input": {
+        "t": true,
+        "f": false
+      },
+      "canonical": "{\"f\":false,\"t\":true}",
+      "sha256": "c22848c47426fcf4d27e55573c22f1d23546315c251e8e4bc384820ba5fae568"
+    },
+    {
+      "label": "redacted_event",
+      "input": {
+        "redacted": true,
+        "eventHash": "abc123"
+      },
+      "canonical": "{\"eventHash\":\"abc123\",\"redacted\":true}",
+      "sha256": "9f4aa19194087c1c5ac95aaf279b11d008438f3294d553859db271891673d48f"
+    },
+    {
+      "label": "full_evidence_entry",
+      "input": {
+        "version": 3,
+        "timestamp": "2026-08-15T14:21:22.000Z",
+        "event": {
+          "studentId": "syn-0042",
+          "correct": true,
+          "scaffoldType": "none"
+        },
+        "scaffoldType": "none",
+        "depthLevel": "conceptual",
+        "epistemicMode": "inference",
+        "triageResult": "correct",
+        "evidentialWeight": 0.95,
+        "priorPosterior": 0.5032,
+        "updatedPosterior": 0.8087,
+        "nonInterventionDecision": null
+      },
+      "canonical": "{\"depthLevel\":\"conceptual\",\"epistemicMode\":\"inference\",\"event\":{\"correct\":true,\"scaffoldType\":\"none\",\"studentId\":\"syn-0042\"},\"evidentialWeight\":0.95,\"nonInterventionDecision\":null,\"priorPosterior\":0.5032,\"scaffoldType\":\"none\",\"timestamp\":\"2026-08-15T14:21:22.000Z\",\"triageResult\":\"correct\",\"updatedPosterior\":0.8087,\"version\":3}",
+      "sha256": "12c302241e62850c964d4cd6f1b766d2707cb94cd760d1708d60590bd21fa7c4"
+    },
+    {
+      "label": "post_compaction_entry",
+      "input": {
+        "version": 5,
+        "timestamp": "2026-08-15T15:00:00.000Z",
+        "event": {
+          "correct": false
+        },
+        "scaffoldType": "hint",
+        "evidentialWeight": 0.42,
+        "priorPosterior": 0.8087,
+        "updatedPosterior": 0.6841,
+        "depthLevel": null,
+        "epistemicMode": null,
+        "triageResult": null,
+        "nonInterventionDecision": null
+      },
+      "canonical": "{\"depthLevel\":null,\"epistemicMode\":null,\"event\":{\"correct\":false},\"evidentialWeight\":0.42,\"nonInterventionDecision\":null,\"priorPosterior\":0.8087,\"scaffoldType\":\"hint\",\"timestamp\":\"2026-08-15T15:00:00.000Z\",\"triageResult\":null,\"updatedPosterior\":0.6841,\"version\":5}",
+      "sha256": "5bf423c08b7068a2f4314a28a015c2f68dc13ea0b440f816d0bfd0b870d71697"
+    }
+  ]
+}

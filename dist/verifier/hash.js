@@ -1,73 +1,122 @@
 /**
  * Hash utilities for evidence record integrity.
  *
- * Uses SHA-256 via the Web Crypto API (browser) or Node crypto module.
+ * Uses SHA-256 via Node's crypto module (ESM import).
  * Canonical serialization ensures deterministic hashing.
  */
+import { createHash } from "crypto";
+/**
+ * Format a number to match Python's json.dumps output.
+ *
+ * Python's json.dumps uses different formatting for int vs float:
+ *   int 9200     → "9200"     (no decimal point)
+ *   float 1.0    → "1.0"     (always has decimal point)
+ *   float 3e-05  → "3e-05"   (2-digit exponent minimum)
+ *
+ * JS has no int/float distinction. We use Number.isInteger() as the
+ * heuristic: if the JSON source had no decimal point, Python stored
+ * it as int and wrote it without .0.
+ *
+ * For the entry-hash hashable subset, only evidentialWeight,
+ * priorPosterior, and updatedPosterior are Python floats. version is
+ * an int. Everything inside event follows Python's own int/float typing
+ * from the original JSON (which round-trips through JSON.parse identically).
+ */
+function pyNumberFormat(n) {
+    if (Object.is(n, -0))
+        return "-0.0";
+    // Python int path: no decimal point
+    if (Number.isInteger(n) && Math.abs(n) < Number.MAX_SAFE_INTEGER) {
+        return n.toString();
+    }
+    // Python float path
+    let s = JSON.stringify(n);
+    // Fix scientific notation exponent padding: JS e-7 → Python e-07
+    s = s.replace(/e([+-])(\d)$/, "e$10$2");
+    // JS may not use scientific notation where Python does
+    // Python uses it for |n| < 1e-4
+    const abs = Math.abs(n);
+    if (abs > 0 && abs < 1e-4 && !s.includes("e")) {
+        const exp = Math.floor(Math.log10(abs));
+        const mantissa = n / Math.pow(10, exp);
+        let mStr = mantissa.toPrecision(17).replace(/0+$/, "").replace(/\.$/, "");
+        const pyRepr = `${mStr}e-${String(-exp).padStart(2, "0")}`;
+        if (parseFloat(pyRepr) === n)
+            return pyRepr;
+    }
+    return s;
+}
 /**
  * Canonical JSON serialization — sorted keys, no whitespace.
- * Ensures the same object always produces the same hash regardless
- * of property insertion order.
+ * Matches Python's json.dumps(sort_keys=True, separators=(",",":"), default=str)
+ * byte-for-byte, including number formatting.
  */
 export function canonicalize(obj) {
-    return JSON.stringify(obj, (_, value) => {
-        if (value && typeof value === "object" && !Array.isArray(value)) {
-            return Object.keys(value).sort().reduce((sorted, key) => {
-                sorted[key] = value[key];
-                return sorted;
-            }, {});
-        }
-        return value;
-    });
+    return _canonicalizeValue(obj);
+}
+function _canonicalizeValue(val) {
+    if (val === null)
+        return "null";
+    if (val === undefined)
+        return "null";
+    if (typeof val === "boolean")
+        return val ? "true" : "false";
+    if (typeof val === "number")
+        return pyNumberFormat(val);
+    if (typeof val === "string")
+        return JSON.stringify(val);
+    if (Array.isArray(val)) {
+        return "[" + val.map(_canonicalizeValue).join(",") + "]";
+    }
+    if (typeof val === "object") {
+        const keys = Object.keys(val).sort();
+        const pairs = keys.map(k => {
+            const v = val[k];
+            return JSON.stringify(k) + ":" + _canonicalizeValue(v);
+        });
+        return "{" + pairs.join(",") + "}";
+    }
+    return JSON.stringify(val);
 }
 /**
  * Compute SHA-256 hash of a string.
- * Works in both browser (Web Crypto) and Node (crypto module).
  */
 export function sha256(input) {
-    // Node.js path
-    try {
-        // eslint-disable-next-line @typescript-eslint/no-require-imports
-        const crypto = require("crypto");
-        return crypto.createHash("sha256").update(input).digest("hex");
-    }
-    catch {
-        // Browser path — synchronous fallback using a simple hash
-        // Note: in production, use Web Crypto API (async) for true SHA-256
-        return simpleHash(input);
-    }
-}
-/** Simple non-cryptographic hash for browser environments without crypto. */
-function simpleHash(str) {
-    let hash = 0;
-    for (let i = 0; i < str.length; i++) {
-        const char = str.charCodeAt(i);
-        hash = ((hash << 5) - hash + char) | 0;
-    }
-    return Math.abs(hash).toString(16).padStart(8, "0");
+    return createHash("sha256").update(input).digest("hex");
 }
 /**
  * Compute the canonical hash of an evidence entry.
- * Hashes all fields EXCEPT entryHash and prevHash (which are the chain links).
+ * Every field must be explicitly null (not undefined) to match Python.
  */
 export function hashEntry(entry) {
     const hashable = {
         version: entry.version,
         timestamp: entry.timestamp,
         event: entry.event,
-        scaffoldType: entry.scaffoldType,
-        depthLevel: entry.depthLevel,
-        epistemicMode: entry.epistemicMode,
-        triageResult: entry.triageResult,
+        scaffoldType: entry.scaffoldType ?? null,
+        depthLevel: entry.depthLevel ?? null,
+        epistemicMode: entry.epistemicMode ?? null,
+        triageResult: entry.triageResult ?? null,
         evidentialWeight: entry.evidentialWeight,
         priorPosterior: entry.priorPosterior,
         updatedPosterior: entry.updatedPosterior,
         nonInterventionDecision: entry.nonInterventionDecision ?? null,
     };
-    return sha256(canonicalize(hashable));
+    // Build canonical, then fix the three Python-float fields:
+    // evidentialWeight, priorPosterior, updatedPosterior are Python floats.
+    // Python writes 1.0 for float(1), but JS Number.isInteger(1) returns true
+    // and pyNumberFormat writes "1". Fix by post-processing these three fields.
+    let canonical = _canonicalizeValue(hashable);
+    for (const field of ["evidentialWeight", "priorPosterior", "updatedPosterior"]) {
+        const val = hashable[field];
+        if (typeof val === "number" && Number.isInteger(val)) {
+            canonical = canonical.replace(new RegExp(`"${field}":(-?\\d+)(?=[,}\\]])`), `"${field}":$1.0`);
+        }
+    }
+    return sha256(canonical);
 }
 /**
- * Compute a hash over a canonical string (for summary hashes, etc.).
+ * Compute a hash over a canonical string.
  */
 export function hashCanonical(input) {
     return sha256(input);

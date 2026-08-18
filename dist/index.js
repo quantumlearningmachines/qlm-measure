@@ -17,15 +17,23 @@
  * @see https://play.quantumlearningmachines.com/developer
  * @license Apache-2.0
  */
-export { toPublicEpistemicMode } from "./schema/enums";
-export { COMPACTION_RETENTION } from "./schema/evidence-record";
+export { toPublicEpistemicMode } from "./schema/enums.js";
+export { COMPACTION_RETENTION } from "./schema/evidence-record.js";
 // Emitter
-export { MeasurementEmitter } from "./emitter/measurement-emitter";
+export { MeasurementEmitter } from "./emitter/measurement-emitter.js";
 // Verifier
-export { verifyRecord } from "./verifier/verify-record";
-export { replayToVersion, posteriorAtVersion, summarizeToVersion } from "./verifier/replay";
-export { hashEntry, hashCanonical, canonicalize, sha256 } from "./verifier/hash";
+export { verifyRecord } from "./verifier/verify-record.js";
+export { replayToVersion, posteriorAtVersion, summarizeToVersion } from "./verifier/replay.js";
+export { hashEntry, hashCanonical, canonicalize, sha256 } from "./verifier/hash.js";
+// Check catalog
+export { CATALOG, CATALOG_BY_ID, SHIPPED_CHECKS, PLANNED_CHECKS, CATEGORIES } from "./checks.js";
+// Rules
+export { reproduce, registerRule, getRule } from "./rules.js";
+// Recorder (schema 0.3)
+export { Recorder } from "./recorder.js";
+// Verifier v0.3
+export { verifyRecordV03 } from "./verifier-v03.js";
 // Clients
-export { OntologyClient } from "./clients/ontology-client";
-export { EngineClient } from "./clients/engine-client";
+export { OntologyClient } from "./clients/ontology-client.js";
+export { EngineClient } from "./clients/engine-client.js";
 //# sourceMappingURL=index.js.map

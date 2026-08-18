@@ -1,0 +1,145 @@
+{
+  "studentScopeId": "syn-8f2c-0042",
+  "schemaVersion": "0.2",
+  "entries": [
+    {
+      "version": 1,
+      "timestamp": "2026-08-15T14:20:00.000Z",
+      "event": {
+        "studentId": "syn-8f2c-0042",
+        "sessionId": "sess-2026-08-15-003",
+        "source": "qlm-measure-samples",
+        "timestamp": "2026-08-15T14:20:00.000Z",
+        "correct": false,
+        "responseTimeMs": 9200,
+        "domain": "math",
+        "skillId": "fractions.equivalence",
+        "scaffoldType": "none",
+        "ext": {
+          "itemId": "FR-EQ-01",
+          "synthetic": true
+        },
+        "misconceptionId": "sample:frac-add-across",
+        "epistemicMode": "inference"
+      },
+      "scaffoldType": "none",
+      "triageResult": "misconception",
+      "epistemicMode": "inference",
+      "evidentialWeight": 1.0,
+      "priorPosterior": 0.35,
+      "updatedPosterior": 0.0631,
+      "prevHash": "",
+      "entryHash": "9667a8bb6b2a4b6246f10d4f5d4e071a71037374b101cbbdea70ce368257e5c8"
+    },
+    {
+      "version": 2,
+      "timestamp": "2026-08-15T14:20:41.000Z",
+      "event": {
+        "studentId": "syn-8f2c-0042",
+        "sessionId": "sess-2026-08-15-003",
+        "source": "qlm-measure-samples",
+        "timestamp": "2026-08-15T14:20:41.000Z",
+        "correct": true,
+        "responseTimeMs": 6100,
+        "domain": "math",
+        "skillId": "fractions.equivalence",
+        "scaffoldType": "hint",
+        "ext": {
+          "itemId": "FR-EQ-02",
+          "synthetic": true
+        },
+        "epistemicMode": "inference"
+      },
+      "scaffoldType": "hint",
+      "triageResult": "correct",
+      "epistemicMode": "inference",
+      "evidentialWeight": 0.42,
+      "priorPosterior": 0.0631,
+      "updatedPosterior": 0.1124,
+      "prevHash": "9667a8bb6b2a4b6246f10d4f5d4e071a71037374b101cbbdea70ce368257e5c8",
+      "entryHash": "61c1501ed3c8a6011ddfd65012cc730833a504f3b8ac516f2ac12b10aa7d7c58"
+    },
+    {
+      "version": 3,
+      "timestamp": "2026-08-15T14:21:39.000Z",
+      "event": {
+        "studentId": "syn-8f2c-0042",
+        "sessionId": "sess-2026-08-15-003",
+        "source": "qlm-measure-samples",
+        "timestamp": "2026-08-15T14:21:39.000Z",
+        "correct": true,
+        "responseTimeMs": 4300,
+        "domain": "math",
+        "skillId": "fractions.equivalence",
+        "scaffoldType": "none",
+        "ext": {
+          "itemId": "FR-EQ-03",
+          "synthetic": true
+        }
+      },
+      "scaffoldType": "none",
+      "triageResult": "correct",
+      "evidentialWeight": 1.0,
+      "priorPosterior": 0.1124,
+      "updatedPosterior": 0.363,
+      "prevHash": "61c1501ed3c8a6011ddfd65012cc730833a504f3b8ac516f2ac12b10aa7d7c58",
+      "entryHash": "a373130a25db98f14c321787d34cb5ae3360d17693e1a21bca3d5a680b394c83"
+    },
+    {
+      "version": 5,
+      "timestamp": "2026-08-15T14:23:58.000Z",
+      "event": {
+        "studentId": "syn-8f2c-0042",
+        "sessionId": "sess-2026-08-15-003",
+        "source": "qlm-measure-samples",
+        "timestamp": "2026-08-15T14:23:58.000Z",
+        "correct": true,
+        "responseTimeMs": 5200,
+        "domain": "math",
+        "skillId": "fractions.equivalence",
+        "scaffoldType": "probing",
+        "ext": {
+          "itemId": "FR-EQ-05",
+          "synthetic": true
+        },
+        "epistemicMode": "inference",
+        "explanationQuality": 0.7
+      },
+      "scaffoldType": "probing",
+      "triageResult": "correct",
+      "epistemicMode": "inference",
+      "evidentialWeight": 0.75,
+      "priorPosterior": 0.4723,
+      "updatedPosterior": 0.7344,
+      "prevHash": "be6db1a0deb40833228bc5d5d65cab1e3c9a5ff06c44e91ee4922c5ad6ea6a27",
+      "entryHash": "cde0c819370ca6bb0660907f8ff563644a0029983c7940db79aecf7cb569dc3e"
+    },
+    {
+      "version": 6,
+      "timestamp": "2026-08-15T14:24:47.000Z",
+      "event": {
+        "studentId": "syn-8f2c-0042",
+        "sessionId": "sess-2026-08-15-003",
+        "source": "qlm-measure-samples",
+        "timestamp": "2026-08-15T14:24:47.000Z",
+        "correct": true,
+        "responseTimeMs": 3100,
+        "domain": "math",
+        "skillId": "fractions.equivalence",
+        "scaffoldType": "none",
+        "ext": {
+          "itemId": "FR-EQ-06",
+          "synthetic": true
+        },
+        "isTransferProblem": true
+      },
+      "scaffoldType": "none",
+      "triageResult": "correct",
+      "evidentialWeight": 1.0,
+      "priorPosterior": 0.7344,
+      "updatedPosterior": 0.9256,
+      "prevHash": "cde0c819370ca6bb0660907f8ff563644a0029983c7940db79aecf7cb569dc3e",
+      "entryHash": "af100be1706e1c7b83706efb10be7d71c2d51ac09894fa4afb14a8360ba5090b"
+    }
+  ]
+}

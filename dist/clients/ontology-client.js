@@ -43,5 +43,9 @@ export class OntologyClient {
     async getStandards(domain) {
         return this.fetchDataset("standards", { domain });
     }
+    /** Fetch ASSISTments skill-to-standard alignment data. */
+    async getASSISTmentsAlignment(domain) {
+        return this.fetchDataset("assistments-alignment", { domain });
+    }
 }
 //# sourceMappingURL=ontology-client.js.map

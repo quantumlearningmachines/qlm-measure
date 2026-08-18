@@ -7,8 +7,8 @@
  * bookkeeping integrity without any estimation mathematics.
  */
 
-import type { ObservationEvent } from "./observation-event";
-import type { ScaffoldType, DepthLevel, EpistemicMode, TriageResult } from "./enums";
+import type { ObservationEvent } from "./observation-event.js";
+import type { ScaffoldType, DepthLevel, EpistemicMode, TriageResult } from "./enums.js";
 
 /**
  * A single evidence entry in the record.

@@ -6,7 +6,7 @@
  *
  * Authentication is required. Contact QLM for API access.
  */
-import { toPublicEpistemicMode } from "../schema/enums";
+import { toPublicEpistemicMode } from "../schema/enums.js";
 export class EngineClient {
     config;
     constructor(config) {

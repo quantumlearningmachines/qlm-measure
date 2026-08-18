@@ -1,5 +1,5 @@
 /**
- * ObservationEvent v0.1 — Public evidence-event schema.
+ * ObservationEvent v0.2 — Public evidence-event schema.
  *
  * A deliberate subset of the internal StudentObservation.
  * This is a deliberate public subset. Fields related to internal estimation,
@@ -8,7 +8,7 @@
  *
  * Integrators needing excluded fields use the `ext` namespace.
  */
-import type { ScaffoldType, EpistemicMode } from "./enums";
+import type { ScaffoldType, EpistemicMode } from "./enums.js";
 export interface ObservationEvent {
     /** Pseudonymous student identifier. MUST NOT contain PII. */
     studentId: string;
@@ -54,5 +54,15 @@ export interface ObservationEvent {
     selfCorrected?: boolean;
     /** Reserved extension namespace for integrator-specific fields. */
     ext?: Record<string, unknown>;
+    /** Model identifier used to generate/evaluate this event, if any. */
+    instrumentModel?: string;
+    /** Sampling temperature used, if applicable. */
+    instrumentTemperature?: number;
+    /** Hash of the prompt/configuration that produced the evaluation. */
+    instrumentPromptHash?: string;
+    /** Source path: how this event was produced. */
+    instrumentSource?: "deterministic" | "model_validated" | "model_unvalidated";
+    /** If the instrument fell back from model to deterministic, why. */
+    instrumentFallbackReason?: string;
 }
 //# sourceMappingURL=observation-event.d.ts.map

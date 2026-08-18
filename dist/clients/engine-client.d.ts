@@ -6,7 +6,7 @@
  *
  * Authentication is required. Contact QLM for API access.
  */
-import type { ObservationEvent } from "../schema/observation-event";
+import type { ObservationEvent } from "../schema/observation-event.js";
 export interface EngineClientConfig {
     /** Base URL of the QLM measurement service. */
     baseUrl: string;

@@ -1,0 +1,64 @@
+qlm-measure verify clean.jsonl
+records: 3
+
+record syn-8f2c-0042  (schema 0.2, 6 entries)
+  Schema
+    ✓ Required fields present
+    ✓ Field types valid
+    ✓ Timestamp is ISO 8601
+  Sequence
+    ✓ Versions strictly increase
+    ✓ Timestamps do not go backward
+  Enums
+    ✓ Enum values permitted
+  Hash chain
+    ✓ Chain link valid
+    ✓ Entry hash recomputes
+  Posterior chain
+    ✓ Posterior chain consistent
+  Compaction
+    – Compaction boundary intact  (not applicable)
+  violations: 0
+  VERDICT: CLEAN — record is verifiable
+
+record syn-8f2c-0043  (schema 0.2, 4 entries)
+  Schema
+    ✓ Required fields present
+    ✓ Field types valid
+    ✓ Timestamp is ISO 8601
+  Sequence
+    ✓ Versions strictly increase
+    ✓ Timestamps do not go backward
+  Enums
+    ✓ Enum values permitted
+  Hash chain
+    ✓ Chain link valid
+    ✓ Entry hash recomputes
+  Posterior chain
+    ✓ Posterior chain consistent
+  Compaction
+    – Compaction boundary intact  (not applicable)
+  violations: 0
+  VERDICT: CLEAN — record is verifiable
+
+record syn-8f2c-0044  (schema 0.2, 5 entries)
+  Schema
+    ✓ Required fields present
+    ✓ Field types valid
+    ✓ Timestamp is ISO 8601
+  Sequence
+    ✓ Versions strictly increase
+    ✓ Timestamps do not go backward
+  Enums
+    ✓ Enum values permitted
+  Hash chain
+    ✓ Chain link valid
+    ✓ Entry hash recomputes
+  Posterior chain
+    ✓ Posterior chain consistent
+  Compaction
+    – Compaction boundary intact  (not applicable)
+  violations: 0
+  VERDICT: CLEAN — record is verifiable
+
+summary: 3 record(s), 3 valid, 0 invalid; checks run 27, passed 27, failed 0, not applicable 3

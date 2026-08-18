@@ -2,12 +2,14 @@
 Evidence Record Verifier — Python mirror.
 
 Checks bookkeeping integrity WITHOUT any estimation mathematics.
+verify makes no network calls. Records never leave your machine.
 """
 
 from __future__ import annotations
 import hashlib
 import json
 from dataclasses import dataclass, field
+from datetime import datetime
 from typing import Optional
 
 from .schema import EvidenceRecord, EvidenceEntry
@@ -23,6 +25,7 @@ class Violation:
     version: int
     category: str  # schema | version | timestamp | hash | posterior | compaction | enum
     message: str
+    check_id: str = ""  # e.g. HASH.ENTRY_RECOMPUTE
 
 
 @dataclass
@@ -58,6 +61,14 @@ def _hash_entry(entry: EvidenceEntry) -> str:
     return _sha256(_canonicalize(hashable))
 
 
+def _parse_timestamp(ts_str: str) -> Optional[float]:
+    """Parse ISO 8601 timestamp. Returns epoch ms or None on failure."""
+    try:
+        return datetime.fromisoformat(ts_str.replace("Z", "+00:00")).timestamp() * 1000
+    except (ValueError, TypeError, AttributeError):
+        return None
+
+
 def verify_record(
     record: EvidenceRecord,
     timestamp_tolerance_ms: int = 1000,
@@ -67,11 +78,11 @@ def verify_record(
 
     scope_id = record.get("studentScopeId", "")
     if not scope_id:
-        violations.append(Violation(0, "schema", "Missing or empty studentScopeId"))
+        violations.append(Violation(0, "schema", "Missing or empty studentScopeId", "SCHEMA.REQUIRED"))
 
     entries = record.get("entries", [])
     if not isinstance(entries, list):
-        violations.append(Violation(0, "schema", "entries must be a list"))
+        violations.append(Violation(0, "schema", "entries must be a list", "SCHEMA.REQUIRED"))
         return VerificationResult(valid=False, violations=violations, entries_checked=0)
 
     compacted = record.get("compactedBefore")
@@ -79,67 +90,81 @@ def verify_record(
     prev_hash = compacted.get("summaryHash", "") if compacted else ""
     last_updated: Optional[float] = None
 
-    from datetime import datetime
-
     prev_ts_str = ""
     for entry in entries:
         v = entry.get("version", -1)
 
-        # Schema
+        # SCHEMA.REQUIRED
         if not isinstance(v, int) or v < 1:
-            violations.append(Violation(v, "schema", "version must be a positive integer"))
+            violations.append(Violation(v, "schema", "version must be a positive integer", "SCHEMA.REQUIRED"))
         if not entry.get("timestamp"):
-            violations.append(Violation(v, "schema", "timestamp is required"))
-        if not isinstance(entry.get("evidentialWeight"), (int, float)):
-            violations.append(Violation(v, "schema", "evidentialWeight must be a number"))
-        if not isinstance(entry.get("priorPosterior"), (int, float)):
-            violations.append(Violation(v, "schema", "priorPosterior must be a number"))
-        if not isinstance(entry.get("updatedPosterior"), (int, float)):
-            violations.append(Violation(v, "schema", "updatedPosterior must be a number"))
+            violations.append(Violation(v, "schema", "timestamp is required", "SCHEMA.REQUIRED"))
+        for req_field in ("evidentialWeight", "priorPosterior", "updatedPosterior"):
+            if req_field not in entry:
+                violations.append(Violation(v, "schema", f"{req_field} must be a number", "SCHEMA.REQUIRED"))
+        if "entryHash" not in entry:
+            violations.append(Violation(v, "schema", "entryHash is required", "SCHEMA.REQUIRED"))
+        if "prevHash" not in entry:
+            violations.append(Violation(v, "schema", "prevHash is required", "SCHEMA.REQUIRED"))
 
-        # Monotonic version
-        if v <= prev_version:
-            violations.append(Violation(v, "version", f"Version {v} <= previous {prev_version}"))
+        # SCHEMA.TYPES — only when field exists but has wrong type
+        if "evidentialWeight" in entry and not isinstance(entry["evidentialWeight"], (int, float)):
+            violations.append(Violation(v, "schema", "evidentialWeight must be a number", "SCHEMA.TYPES"))
+        if "priorPosterior" in entry and not isinstance(entry["priorPosterior"], (int, float)):
+            violations.append(Violation(v, "schema", "priorPosterior must be a number", "SCHEMA.TYPES"))
+        if "updatedPosterior" in entry and not isinstance(entry["updatedPosterior"], (int, float)):
+            violations.append(Violation(v, "schema", "updatedPosterior must be a number", "SCHEMA.TYPES"))
 
-        # Timestamp monotonicity
+        # SCHEMA.TIMESTAMP_FORMAT (fixes F7: no longer silently skipped)
         ts_str = entry.get("timestamp", "")
-        if prev_ts_str and ts_str:
-            try:
-                prev_ms = datetime.fromisoformat(prev_ts_str.replace("Z", "+00:00")).timestamp() * 1000
-                curr_ms = datetime.fromisoformat(ts_str.replace("Z", "+00:00")).timestamp() * 1000
-                if curr_ms < prev_ms - timestamp_tolerance_ms:
-                    violations.append(Violation(v, "timestamp", f"Timestamp goes backward"))
-            except (ValueError, TypeError):
-                pass
+        ts_ms = _parse_timestamp(ts_str) if ts_str else None
+        if ts_str and ts_ms is None:
+            violations.append(Violation(v, "timestamp", f"Timestamp is not valid ISO 8601: {ts_str!r}", "SCHEMA.TIMESTAMP_FORMAT"))
 
-        # Enum validation
+        # VERSION.MONOTONIC
+        if isinstance(v, int) and v <= prev_version:
+            violations.append(Violation(v, "version", f"Version {v} <= previous {prev_version}", "VERSION.MONOTONIC"))
+
+        # TIMESTAMP.MONOTONIC
+        if prev_ts_str and ts_str and ts_ms is not None:
+            prev_ms = _parse_timestamp(prev_ts_str)
+            if prev_ms is not None and ts_ms < prev_ms - timestamp_tolerance_ms:
+                violations.append(Violation(v, "timestamp", "Timestamp goes backward", "TIMESTAMP.MONOTONIC"))
+
+        # ENUM.VALID
         st = entry.get("scaffoldType")
         if st and st not in VALID_SCAFFOLD_TYPES:
-            violations.append(Violation(v, "enum", f"Invalid scaffoldType: {st}"))
+            violations.append(Violation(v, "enum", f"Invalid scaffoldType: {st}", "ENUM.VALID"))
         dl = entry.get("depthLevel")
         if dl and dl not in VALID_DEPTH_LEVELS:
-            violations.append(Violation(v, "enum", f"Invalid depthLevel: {dl}"))
+            violations.append(Violation(v, "enum", f"Invalid depthLevel: {dl}", "ENUM.VALID"))
         em = entry.get("epistemicMode")
         if em and em not in VALID_EPISTEMIC_MODES:
-            violations.append(Violation(v, "enum", f"Invalid epistemicMode: {em}"))
+            violations.append(Violation(v, "enum", f"Invalid epistemicMode: {em}", "ENUM.VALID"))
         tr = entry.get("triageResult")
         if tr and tr not in VALID_TRIAGE_RESULTS:
-            violations.append(Violation(v, "enum", f"Invalid triageResult: {tr}"))
+            violations.append(Violation(v, "enum", f"Invalid triageResult: {tr}", "ENUM.VALID"))
 
-        # Hash chain
+        # HASH.PREV_LINK
         if entry.get("prevHash") != prev_hash:
-            violations.append(Violation(v, "hash", f"prevHash mismatch"))
+            violations.append(Violation(v, "hash", "prevHash mismatch", "HASH.PREV_LINK"))
+
+        # HASH.ENTRY_RECOMPUTE
         computed = _hash_entry(entry)
         if entry.get("entryHash") != computed:
-            violations.append(Violation(v, "hash", f"entryHash mismatch"))
+            violations.append(Violation(v, "hash", "entryHash mismatch", "HASH.ENTRY_RECOMPUTE"))
 
-        # Posterior chain
+        # POSTERIOR.CHAIN
         if last_updated is not None:
             prior = entry.get("priorPosterior")
             if isinstance(prior, (int, float)) and abs(prior - last_updated) > 1e-9:
-                violations.append(Violation(v, "posterior", f"priorPosterior ({prior}) != previous updatedPosterior ({last_updated})"))
+                violations.append(Violation(
+                    v, "posterior",
+                    f"priorPosterior ({prior}) != previous updatedPosterior ({last_updated})",
+                    "POSTERIOR.CHAIN",
+                ))
 
-        prev_version = v
+        prev_version = v if isinstance(v, int) else prev_version
         prev_ts_str = ts_str
         prev_hash = entry.get("entryHash", "")
         up = entry.get("updatedPosterior")

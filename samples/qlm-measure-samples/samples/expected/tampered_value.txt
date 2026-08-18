@@ -1,0 +1,24 @@
+qlm-measure verify tampered_value.json
+records: 1
+
+record syn-8f2c-0042  (schema 0.2, 6 entries)
+  Schema
+    ✓ Required fields present
+    ✓ Field types valid
+    ✓ Timestamp is ISO 8601
+  Sequence
+    ✓ Versions strictly increase
+    ✓ Timestamps do not go backward
+  Enums
+    ✓ Enum values permitted
+  Hash chain
+    ✓ Chain link valid
+    ✗ Entry hash recomputes  (1 failure; first at v3: entryHash mismatch)
+  Posterior chain
+    ✗ Posterior chain consistent  (1 failure; first at v4: priorPosterior (0.363) != previous updatedPosterior (0.463))
+  Compaction
+    – Compaction boundary intact  (not applicable)
+  violations: 2
+  VERDICT: NOT CLEAN — 2 violation(s); see report
+
+summary: 1 record(s), 0 valid, 1 invalid; checks run 9, passed 7, failed 2, not applicable 1

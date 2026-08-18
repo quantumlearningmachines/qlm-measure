@@ -1,0 +1,24 @@
+qlm-measure verify level1_only.json
+records: 1
+
+record syn-8f2c-0042  (schema 0.2, 6 entries)
+  Schema
+    ✗ Required fields present  (18 failures; first at v1: evidentialWeight must be a number)
+    ✓ Field types valid
+    ✓ Timestamp is ISO 8601
+  Sequence
+    ✓ Versions strictly increase
+    ✓ Timestamps do not go backward
+  Enums
+    ✓ Enum values permitted
+  Hash chain
+    ✓ Chain link valid
+    ✓ Entry hash recomputes
+  Posterior chain
+    – Posterior chain consistent  (not applicable)
+  Compaction
+    – Compaction boundary intact  (not applicable)
+  violations: 18
+  VERDICT: NOT CLEAN — 18 violation(s); see report
+
+summary: 1 record(s), 0 valid, 1 invalid; checks run 8, passed 7, failed 1, not applicable 2

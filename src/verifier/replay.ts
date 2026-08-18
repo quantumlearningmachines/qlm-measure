@@ -5,7 +5,7 @@
  * and returns the logged values. It does NOT recompute any posteriors.
  */
 
-import type { EvidenceRecord, EvidenceEntry } from "../schema/evidence-record";
+import type { EvidenceRecord, EvidenceEntry } from "../schema/evidence-record.js";
 
 /**
  * Replay an evidence record to a specific version.

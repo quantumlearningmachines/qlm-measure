@@ -4,7 +4,7 @@
  * This is pure bookkeeping: it slices the entry array to version N
  * and returns the logged values. It does NOT recompute any posteriors.
  */
-import type { EvidenceRecord, EvidenceEntry } from "../schema/evidence-record";
+import type { EvidenceRecord, EvidenceEntry } from "../schema/evidence-record.js";
 /**
  * Replay an evidence record to a specific version.
  *

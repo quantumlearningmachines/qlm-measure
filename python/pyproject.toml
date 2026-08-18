@@ -4,13 +4,13 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "qlm-measure"
-version = "0.1.1"
+version = "0.2.2"
 description = "Open measurement SDK for education AI — evidence events, record verification, and dataset clients"
 readme = "README.md"
 license = {text = "Apache-2.0"}
 requires-python = ">=3.9"
 authors = [{name = "Quantum Learning Machines"}]
-keywords = ["education", "measurement", "evidence", "learning-analytics", "misconceptions"]
+keywords = ["education", "measurement", "evidence", "learning-analytics", "verification"]
 classifiers = [
     "Development Status :: 3 - Alpha",
     "License :: OSI Approved :: Apache Software License",
@@ -18,6 +18,9 @@ classifiers = [
     "Topic :: Education",
     "Topic :: Scientific/Engineering",
 ]
+
+[project.scripts]
+qlm-measure = "qlm_measure.cli:cli_entry"
 
 [project.urls]
 Homepage = "https://play.quantumlearningmachines.com/developer"

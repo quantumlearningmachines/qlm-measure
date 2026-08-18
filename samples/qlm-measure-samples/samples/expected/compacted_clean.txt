@@ -1,0 +1,24 @@
+qlm-measure verify compacted_clean.json
+records: 1
+
+record syn-8f2c-0042  (schema 0.2, 2 entries)
+  Schema
+    ✓ Required fields present
+    ✓ Field types valid
+    ✓ Timestamp is ISO 8601
+  Sequence
+    ✓ Versions strictly increase
+    ✓ Timestamps do not go backward
+  Enums
+    ✓ Enum values permitted
+  Hash chain
+    ✓ Chain link valid
+    ✓ Entry hash recomputes
+  Posterior chain
+    ✓ Posterior chain consistent
+  Compaction
+    ✓ Compaction boundary intact
+  violations: 0
+  VERDICT: CLEAN — record is verifiable
+
+summary: 1 record(s), 1 valid, 0 invalid; checks run 10, passed 10, failed 0, not applicable 0

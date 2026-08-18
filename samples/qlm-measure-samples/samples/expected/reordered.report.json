@@ -1,0 +1,149 @@
+{
+  "tool": {
+    "name": "qlm-measure",
+    "version": "0.2.2",
+    "language": "python",
+    "catalog_version": "1"
+  },
+  "input": {
+    "path": "reordered.json",
+    "sha256": "c9630b8d47b016e5a6d70415b259693420384da2a5f9123f5735b1040b812d33",
+    "records": 1
+  },
+  "generated_at": "2026-08-18T00:00:00Z",
+  "records": [
+    {
+      "studentScopeId": "syn-8f2c-0042",
+      "schemaVersion": "0.2",
+      "entries_checked": 6,
+      "valid": false,
+      "checks": [
+        {
+          "id": "SCHEMA.REQUIRED",
+          "status": "pass",
+          "failures": 0
+        },
+        {
+          "id": "SCHEMA.TYPES",
+          "status": "pass",
+          "failures": 0
+        },
+        {
+          "id": "SCHEMA.TIMESTAMP_FORMAT",
+          "status": "pass",
+          "failures": 0
+        },
+        {
+          "id": "VERSION.MONOTONIC",
+          "status": "fail",
+          "failures": 1,
+          "first_failure": {
+            "version": 3,
+            "message": "Version 3 <= previous 4"
+          }
+        },
+        {
+          "id": "TIMESTAMP.MONOTONIC",
+          "status": "fail",
+          "failures": 1,
+          "first_failure": {
+            "version": 3,
+            "message": "Timestamp goes backward"
+          }
+        },
+        {
+          "id": "ENUM.VALID",
+          "status": "pass",
+          "failures": 0
+        },
+        {
+          "id": "HASH.PREV_LINK",
+          "status": "fail",
+          "failures": 3,
+          "first_failure": {
+            "version": 4,
+            "message": "prevHash mismatch"
+          }
+        },
+        {
+          "id": "HASH.ENTRY_RECOMPUTE",
+          "status": "pass",
+          "failures": 0
+        },
+        {
+          "id": "POSTERIOR.CHAIN",
+          "status": "fail",
+          "failures": 3,
+          "first_failure": {
+            "version": 4,
+            "message": "priorPosterior (0.363) != previous updatedPosterior (0.1124)"
+          }
+        },
+        {
+          "id": "COMPACTION.BOUNDARY",
+          "status": "not_applicable",
+          "failures": 0
+        }
+      ],
+      "violations": [
+        {
+          "version": 4,
+          "check_id": "HASH.PREV_LINK",
+          "category": "hash",
+          "message": "prevHash mismatch"
+        },
+        {
+          "version": 4,
+          "check_id": "POSTERIOR.CHAIN",
+          "category": "posterior",
+          "message": "priorPosterior (0.363) != previous updatedPosterior (0.1124)"
+        },
+        {
+          "version": 3,
+          "check_id": "VERSION.MONOTONIC",
+          "category": "version",
+          "message": "Version 3 <= previous 4"
+        },
+        {
+          "version": 3,
+          "check_id": "TIMESTAMP.MONOTONIC",
+          "category": "timestamp",
+          "message": "Timestamp goes backward"
+        },
+        {
+          "version": 3,
+          "check_id": "HASH.PREV_LINK",
+          "category": "hash",
+          "message": "prevHash mismatch"
+        },
+        {
+          "version": 3,
+          "check_id": "POSTERIOR.CHAIN",
+          "category": "posterior",
+          "message": "priorPosterior (0.1124) != previous updatedPosterior (0.4723)"
+        },
+        {
+          "version": 5,
+          "check_id": "HASH.PREV_LINK",
+          "category": "hash",
+          "message": "prevHash mismatch"
+        },
+        {
+          "version": 5,
+          "check_id": "POSTERIOR.CHAIN",
+          "category": "posterior",
+          "message": "priorPosterior (0.4723) != previous updatedPosterior (0.363)"
+        }
+      ]
+    }
+  ],
+  "summary": {
+    "records": 1,
+    "valid": 0,
+    "invalid": 1,
+    "checks_run": 9,
+    "checks_passed": 5,
+    "checks_failed": 4,
+    "checks_not_applicable": 1
+  }
+}

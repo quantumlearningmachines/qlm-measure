@@ -1,0 +1,27 @@
+{
+  "ruleId": "tempered-bkt-1",
+  "ruleVersion": "1.0.0",
+  "generatedFrom": "depth_engine/update.py:tempered_evidence_update",
+  "tolerance": 1e-4,
+  "goldenSequence": {
+    "description": "The engineering-spec golden case. Must reproduce or stop.",
+    "steps": [
+      {"prior": 0.35, "correct": true, "weight": 0.42, "slip": 0.10, "guess": 0.20, "posterior": 0.503168},
+      {"prior": 0.503168, "correct": true, "weight": 0.95, "slip": 0.10, "guess": 0.20, "posterior": 0.808714}
+    ]
+  },
+  "vectors": [
+    {"prior": 0.35, "correct": true, "weight": 0.42, "slip": 0.10, "guess": 0.20, "posterior": 0.503168},
+    {"prior": 0.503168, "correct": true, "weight": 0.95, "slip": 0.10, "guess": 0.20, "posterior": 0.808714},
+    {"prior": 0.35, "correct": false, "weight": 1.00, "slip": 0.10, "guess": 0.20, "posterior": 0.063063},
+    {"prior": 0.50, "correct": true, "weight": 1.00, "slip": 0.10, "guess": 0.20, "posterior": 0.818182},
+    {"prior": 0.50, "correct": false, "weight": 1.00, "slip": 0.10, "guess": 0.20, "posterior": 0.111111},
+    {"prior": 0.50, "correct": true, "weight": 0.00, "slip": 0.10, "guess": 0.20, "posterior": 0.500000},
+    {"prior": 0.50, "correct": true, "weight": 0.50, "slip": 0.10, "guess": 0.20, "posterior": 0.679623},
+    {"prior": 0.90, "correct": false, "weight": 1.00, "slip": 0.10, "guess": 0.20, "posterior": 0.529412},
+    {"prior": 0.10, "correct": true, "weight": 1.00, "slip": 0.10, "guess": 0.20, "posterior": 0.333333},
+    {"prior": 0.50, "correct": true, "weight": 1.00, "slip": 0.05, "guess": 0.25, "posterior": 0.791667},
+    {"prior": 0.50, "correct": false, "weight": 1.00, "slip": 0.05, "guess": 0.25, "posterior": 0.062500},
+    {"prior": 0.35, "correct": true, "weight": 0.42, "slip": 0.05, "guess": 0.25, "posterior": 0.485419}
+  ]
+}
