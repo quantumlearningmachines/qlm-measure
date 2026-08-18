@@ -11,7 +11,7 @@ import type { VerificationResult, Violation } from "./verifier/verify-record.js"
 import { verifyRecordV03 } from "./verifier-v03.js";
 import { CATALOG, SHIPPED_CHECKS, PLANNED_CHECKS, CATALOG_BY_ID, CATEGORIES } from "./checks.js";
 
-const VERSION = "0.2.3";
+const VERSION = "0.2.4";
 
 // ── Loader ──────────────────────────────────────────────────
 
