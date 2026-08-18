@@ -1,55 +1,49 @@
-# Canonicalization Spec — qlm-measure 0.2.2
+# Canonicalization Spec — qlm-measure
 
-## Rule
+## Schema 0.2 (current, legacy)
 
-Both Python and JS implementations produce the same canonical string and SHA-256 digest for the same input object. The canonical form is:
+### Rule
 
-```
-json.dumps(obj, sort_keys=True, separators=(",", ":"), default=str)   # Python
-JSON.stringify(obj, sortedKeysReplacer)                                 # JS, with null coercion
-```
+Python: `json.dumps(obj, sort_keys=True, separators=(",",":"), default=str)`
+JS: Custom recursive serializer matching Python's output for the hashable subset.
 
-### Key ordering
+### Known limits of 0.2 canonicalization
 
-Keys are sorted lexicographically at every nesting level.
+JSON has no int/float distinction. Python's `json.dumps` formats `int(1)` as `1` and `float(1.0)` as `1.0`, but after a JSON round-trip through JS, the type information is lost. This makes byte-identical cross-language canonicalization **impossible in general** for schema 0.2 records.
 
-### Separators
+The JS implementation handles the three hashable float fields (`evidentialWeight`, `priorPosterior`, `updatedPosterior`) by post-processing, but **cannot** handle:
 
-No whitespace: `,` between items, `:` between key and value.
+| Case | Python | JS | Impact |
+|------|--------|-----|--------|
+| Non-ASCII event text | `\u00e9` | `é` | Hash mismatch if event contains accented or non-Latin characters |
+| Integer float inside event | `1.0` (for `float`) | `1` | Hash mismatch for `score: 1.0` or similar inside the event object |
+| Values under 1e-4 | `3e-05` | `3.0000000000000004e-05` (floating-point noise) | Hash mismatch on very small posteriors or weights |
+| JS→Python direction | JS Recorder writes `weight: 1` | Python reads as int, hashes as `1` not `1.0` | Hash mismatch on records produced by JS, verified by Python |
 
-### Null vs undefined
+**Consequence:** Schema 0.2 cross-language verification is reliable for records containing only ASCII text, standard-range posteriors (above 1e-4), and consistent emitter/verifier language. It is **not reliable** for the general case.
 
-Python serializes `None` as `null`. JS `JSON.stringify` omits `undefined`. All optional fields in the hashable subset MUST be set to `null` explicitly (not left undefined) before canonicalization. The JS SDK does this via `?? null` on every optional field in `hashEntry`.
+Records produced and verified within the same language are always correct.
 
-### Number formatting
+### Recommendation
 
-Python's `json.dumps` writes `1.0` for a float whose value is an integer. JS writes `1`. The JS SDK post-processes the canonical string to match Python's output for known numeric fields: `evidentialWeight`, `priorPosterior`, `updatedPosterior`, `score`, `difficulty`, `classifierConfidence`.
-
-This is a targeted fix documented as a deviation. A future version may adopt RFC 8785 (JSON Canonicalization Scheme) which specifies number formatting unambiguously.
+Use schema 0.3 (when available) for cross-language interoperability. Schema 0.3 adopts RFC 8785 (JSON Canonicalization Scheme), which specifies number formatting unambiguously.
 
 ### Float tolerance
 
-Posterior chain consistency is checked with absolute tolerance `1e-9` in both languages. This tolerance is documented and identical across implementations.
+- Posterior chain consistency: absolute `1e-9`, identical in both languages.
+- ESTIMATE.REPRODUCE: absolute `1e-4`, configurable per rule.
 
-`ESTIMATE.REPRODUCE` (planned) uses absolute tolerance `1e-4`, configurable per rule.
+---
 
-### Known cross-language discrepancies (non-blocking)
+## Schema 0.3 (planned)
 
-4 of 12 canonicalization test vectors differ between Python and JS:
+Adopts RFC 8785 (JSON Canonicalization Scheme) for all hashes. Number formatting is specified by the standard:
+- No positive sign
+- No leading zeros
+- No trailing zeros after decimal
+- `0` for zero (no negative zero)
+- Scientific notation for |n| >= 10^21 or |n| < 10^-6 with specific formatting
 
-| Vector | Python | JS | Impact |
-|--------|--------|-----|--------|
-| `float_one` | `1.0` | `1` | None for records (numeric fields use the targeted `.0` fix) |
-| `scientific_notation` | `1e-07` | `1e-7` | None (no record field produces this) |
-| `negative_zero` | `-0.0` | `0` | None (no record field is negative zero) |
-| `unicode_keys` | `\u00e9` | `é` | None (record keys are ASCII) |
+The verifier selects canonicalizer by `schemaVersion`. 0.2 records continue to use the legacy canonicalizer. 0.3 records use RFC 8785.
 
-These are fundamental differences in how Python and JS serialize JSON. They do NOT affect entry-hash parity because the hashable subset of evidence entries uses only ASCII keys and the targeted numeric-field fix handles integer-valued floats. All 7 fixture records verify identically in both languages.
-
-A future version adopting RFC 8785 would resolve all 4 cases.
-
-### Golden vectors
-
-12 canonicalization vectors are in `schema/vectors/canonicalization.json`. 8 of 12 are parity-tested across languages; 4 are documented discrepancies (above). All entry-hash vectors pass in both languages.
-
-12 entry-hash vectors for the `tempered-bkt-1` rule are in `schema/vectors/estimate-tempered-bkt-1.json`.
+Golden vectors for 0.3 will be in `schema/vectors/canonicalization-0.3.json` and `schema/vectors/entry-hash-0.3.json`, CI-gated in both languages.

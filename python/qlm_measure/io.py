@@ -76,8 +76,9 @@ def _parse_json_object(text: str, label: str) -> list[dict]:
         raise LoadError(f"{label}: JSON parse error at line {e.lineno}: {e.msg}")
     if not isinstance(obj, dict):
         raise LoadError(f"{label}: expected a JSON object, got {type(obj).__name__}")
-    if "entries" not in obj:
-        raise LoadError(f"{label}: object has no 'entries' field — not an EvidenceRecord")
+    # Schema 0.2: entries at top level. Schema 0.3: evidence.entries.
+    if "entries" not in obj and "evidence" not in obj:
+        raise LoadError(f"{label}: object has no 'entries' or 'evidence' field — not an EvidenceRecord")
     return [obj]
 
 
@@ -91,7 +92,7 @@ def _parse_json_array(text: str, label: str) -> list[dict]:
     for i, item in enumerate(arr):
         if not isinstance(item, dict):
             raise LoadError(f"{label}: array element {i} is not an object")
-        if "entries" not in item:
+        if "entries" not in item and "evidence" not in item:
             raise LoadError(f"{label}: array element {i} has no 'entries' field")
     return arr
 

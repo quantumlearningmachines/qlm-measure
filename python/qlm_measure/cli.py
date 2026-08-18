@@ -44,7 +44,13 @@ def cmd_verify(args: argparse.Namespace) -> int:
             return 2
 
         for record in records:
-            result = verify_record(record, timestamp_tolerance_ms=args.tolerance_ms)
+            # Dispatch by schema version
+            sv = record.get("schemaVersion", "0.2")
+            if sv == "0.3" or "evidence" in record:
+                from .verifier_v03 import verify_record_v03
+                result = verify_record_v03(record, timestamp_tolerance_ms=args.tolerance_ms)
+            else:
+                result = verify_record(record, timestamp_tolerance_ms=args.tolerance_ms)
             all_records.append(record)
             all_results.append(result)
 

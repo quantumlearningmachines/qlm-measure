@@ -1,0 +1,44 @@
+{
+  "description": "Entry-hash vectors from samples/clean.json (schema 0.2)",
+  "canonicalizer": "json.dumps(sort_keys=True, separators=(\",\",\":\"), default=str)",
+  "note": "JS must produce identical hashes for these entries. See canonicalization.md for known 0.2 limits.",
+  "source": "samples/qlm-measure-samples/samples/clean.json",
+  "vectors": [
+    {
+      "version": 1,
+      "entryHash": "9667a8bb6b2a4b6246f10d4f5d4e071a71037374b101cbbdea70ce368257e5c8",
+      "computed": "9667a8bb6b2a4b6246f10d4f5d4e071a71037374b101cbbdea70ce368257e5c8",
+      "match": true
+    },
+    {
+      "version": 2,
+      "entryHash": "61c1501ed3c8a6011ddfd65012cc730833a504f3b8ac516f2ac12b10aa7d7c58",
+      "computed": "61c1501ed3c8a6011ddfd65012cc730833a504f3b8ac516f2ac12b10aa7d7c58",
+      "match": true
+    },
+    {
+      "version": 3,
+      "entryHash": "a373130a25db98f14c321787d34cb5ae3360d17693e1a21bca3d5a680b394c83",
+      "computed": "a373130a25db98f14c321787d34cb5ae3360d17693e1a21bca3d5a680b394c83",
+      "match": true
+    },
+    {
+      "version": 4,
+      "entryHash": "be6db1a0deb40833228bc5d5d65cab1e3c9a5ff06c44e91ee4922c5ad6ea6a27",
+      "computed": "be6db1a0deb40833228bc5d5d65cab1e3c9a5ff06c44e91ee4922c5ad6ea6a27",
+      "match": true
+    },
+    {
+      "version": 5,
+      "entryHash": "cde0c819370ca6bb0660907f8ff563644a0029983c7940db79aecf7cb569dc3e",
+      "computed": "cde0c819370ca6bb0660907f8ff563644a0029983c7940db79aecf7cb569dc3e",
+      "match": true
+    },
+    {
+      "version": 6,
+      "entryHash": "af100be1706e1c7b83706efb10be7d71c2d51ac09894fa4afb14a8360ba5090b",
+      "computed": "af100be1706e1c7b83706efb10be7d71c2d51ac09894fa4afb14a8360ba5090b",
+      "match": true
+    }
+  ]
+}

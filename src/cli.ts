@@ -10,7 +10,7 @@ import { verifyRecord } from "./verifier/verify-record.js";
 import type { VerificationResult, Violation } from "./verifier/verify-record.js";
 import { CATALOG, SHIPPED_CHECKS, PLANNED_CHECKS, CATALOG_BY_ID, CATEGORIES } from "./checks.js";
 
-const VERSION = "0.2.2";
+const VERSION = "0.2.3";
 
 // ── Loader ──────────────────────────────────────────────────
 
