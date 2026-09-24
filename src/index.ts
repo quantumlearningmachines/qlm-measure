@@ -62,3 +62,12 @@ export { OntologyClient } from "./clients/ontology-client.js";
 export type { OntologyClientConfig, DatasetName } from "./clients/ontology-client.js";
 export { EngineClient } from "./clients/engine-client.js";
 export type { EngineClientConfig, ModelStateSummary } from "./clients/engine-client.js";
+
+// ── Chain schemes (per-event hash chains sealed by QLM products; 0.4.0) ──────
+export {
+  SCHEMES, getScheme, familySchemes, listSchemes, sortKeysDeep,
+  TPC_CLINICAL_V1, TPC_CLINICAL_V2, TPC_CLINICAL_V3, PLAY_CLINICAL_1_0, TPC_SIGNALS,
+  computeEventHashWith, computeEventHashAsyncWith, sealEventWith, detectSchemeWith, verifyChainWith,
+} from "./schemes/index.js";
+export type { ChainScheme, ChainEvent, ChainVerification, VerifyChainOptions, HashFn, AsyncHashFn } from "./schemes/index.js";
+export { computeEventHash, sealEvent, detectScheme, verifyChain, sha256Hex } from "./schemes/node.js";

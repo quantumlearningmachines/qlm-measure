@@ -1,0 +1,89 @@
+{
+  "scheme": "tpc/clinical-v1",
+  "family": "tpc/clinical",
+  "source": "teachproof scripts/qlm-measure-verify.mjs hashV1",
+  "expect": {
+    "clean": true,
+    "hash_scheme": "tpc/clinical-v1"
+  },
+  "events": [
+    {
+      "type": "clinical_evidence",
+      "learner": "L-7f3a",
+      "encounter": "RN-R4-01",
+      "turn": 0,
+      "construct": "review_of_systems",
+      "signal": "demonstrated",
+      "scaffold": 0,
+      "extractor": "llm_extractor_v2",
+      "confidence": 0.85,
+      "prev_hash": "genesis",
+      "hash": "76204f0e82be5f603ecaa0ee6b7e8646a1f9bfdd97228e756b96eb7d63ccee0b"
+    },
+    {
+      "type": "clinical_evidence",
+      "learner": "L-7f3a",
+      "encounter": "RN-R4-01",
+      "turn": 1,
+      "construct": "medication_history",
+      "signal": "partial",
+      "scaffold": 1,
+      "extractor": "llm_extractor_v2",
+      "confidence": 0.5,
+      "prev_hash": "76204f0e82be5f603ecaa0ee6b7e8646a1f9bfdd97228e756b96eb7d63ccee0b",
+      "hash": "354b2b9688b9663d92b9743e4e2168a8c1c0db67b479fcece843daa41274f76d"
+    },
+    {
+      "type": "clinical_evidence",
+      "learner": "L-7f3a",
+      "encounter": "RN-R4-01",
+      "turn": 2,
+      "construct": "escalation",
+      "signal": "missed_opportunity",
+      "scaffold": 2,
+      "extractor": "llm_extractor_v2",
+      "confidence": 1,
+      "prev_hash": "354b2b9688b9663d92b9743e4e2168a8c1c0db67b479fcece843daa41274f76d",
+      "hash": "70a85ea871f2c9a480f934da9a39eac282f041c87e57001f8eb1f9c1c19cea99"
+    },
+    {
+      "type": "clinical_evidence",
+      "learner": "L-7f3a",
+      "encounter": "RN-R4-01",
+      "turn": 3,
+      "construct": "review_of_systems",
+      "signal": "not_observable",
+      "scaffold": 3,
+      "extractor": "session_resume",
+      "confidence": 0.000001,
+      "prev_hash": "70a85ea871f2c9a480f934da9a39eac282f041c87e57001f8eb1f9c1c19cea99",
+      "hash": "99d473279959b979d8a2b1d4102284a3337927f9367158dab0189a1d51c05c9c"
+    },
+    {
+      "type": "clinical_evidence",
+      "learner": "L-7f3a",
+      "encounter": "RN-R4-01",
+      "turn": 4,
+      "construct": "medication_history",
+      "signal": "demonstrated",
+      "scaffold": 0,
+      "extractor": "llm_extractor_v2",
+      "confidence": 1e-7,
+      "prev_hash": "99d473279959b979d8a2b1d4102284a3337927f9367158dab0189a1d51c05c9c",
+      "hash": "f3f336d837dd1915260a3358b1bbd78f5bd5725d0d2536e1305551d70e32535e"
+    },
+    {
+      "type": "clinical_evidence",
+      "learner": "L-7f3a",
+      "encounter": "RN-R4-01",
+      "turn": 5,
+      "construct": "escalation",
+      "signal": "partial",
+      "scaffold": 1,
+      "extractor": "llm_extractor_v2",
+      "confidence": 0.123456789012345,
+      "prev_hash": "f3f336d837dd1915260a3358b1bbd78f5bd5725d0d2536e1305551d70e32535e",
+      "hash": "7aeefa1ccb59139f217e30659d047b51fd35c7846211d84e813c402a768f328b"
+    }
+  ]
+}

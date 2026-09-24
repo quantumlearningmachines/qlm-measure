@@ -1,0 +1,87 @@
+{
+  "scheme": "play/clinical-clin-1.0",
+  "family": "play/clinical",
+  "source": "qlm-games src/lib/residency/clinical-event-schema.ts computeEventHash",
+  "expect": {
+    "clean": true,
+    "hash_scheme": "play/clinical-clin-1.0"
+  },
+  "events": [
+    {
+      "eventId": "evt-0",
+      "ts": "2026-09-24T18:00:00.000Z",
+      "encounterId": "enc-optometry-9",
+      "actor": "learner",
+      "source": "world",
+      "type": "encounter_start",
+      "payload": {
+        "caseId": "OD-CAP-02",
+        "role": "learner",
+        "station": 1
+      },
+      "consentRef": "consent-42",
+      "schemaVersion": "clin-1.0",
+      "prevHash": "",
+      "hash": "a28425086856f34aa2614f2a6ea896d6cd6a2e24deacd6fd1b1bab056586655a"
+    },
+    {
+      "eventId": "evt-1",
+      "ts": "2026-09-24T18:00:01.000Z",
+      "encounterId": "enc-optometry-9",
+      "actor": "learner",
+      "source": "world",
+      "type": "finding_recorded",
+      "payload": {
+        "finding": {
+          "site": "right eye",
+          "value": 21.5,
+          "unit": "mmHg"
+        },
+        "method": "tonometry"
+      },
+      "consentRef": null,
+      "schemaVersion": "clin-1.0",
+      "prevHash": "a28425086856f34aa2614f2a6ea896d6cd6a2e24deacd6fd1b1bab056586655a",
+      "hash": "f911279e8310fc8fc125f5afc947e0c8595d8b1fdff81af662d8ce0473299463"
+    },
+    {
+      "eventId": "evt-2",
+      "ts": "2026-09-24T18:00:02.000Z",
+      "encounterId": "enc-optometry-9",
+      "actor": "learner",
+      "source": "world",
+      "type": "hypothesis_stated",
+      "payload": {
+        "hypothesis": "ocular hypertension",
+        "confidence": 0.6,
+        "differentials": [
+          "glaucoma suspect",
+          "normal"
+        ]
+      },
+      "consentRef": null,
+      "schemaVersion": "clin-1.0",
+      "prevHash": "f911279e8310fc8fc125f5afc947e0c8595d8b1fdff81af662d8ce0473299463",
+      "hash": "d2d0523892f1ad8051eb81f2e611d94d30e9e9468f0586f8d6282df83d1a1bf0"
+    },
+    {
+      "eventId": "evt-3",
+      "ts": "2026-09-24T18:00:03.000Z",
+      "encounterId": "enc-optometry-9",
+      "actor": "learner",
+      "source": "world",
+      "type": "plan_proposed",
+      "payload": {
+        "plan": [
+          "repeat IOP",
+          "pachymetry"
+        ],
+        "rationale": "borderline reading — confirm"
+      },
+      "consentRef": null,
+      "schemaVersion": "clin-1.0",
+      "prevHash": "d2d0523892f1ad8051eb81f2e611d94d30e9e9468f0586f8d6282df83d1a1bf0",
+      "hash": "eaef642d2ae1dd3f6c8af54b359dbb769a6574fabfdb450fd9b7eee7cefd702e"
+    }
+  ]
+}

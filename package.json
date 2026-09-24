@@ -1,7 +1,7 @@
 {
   "name": "qlm-measure",
-  "version": "0.2.8",
-  "description": "Open measurement SDK for education AI — evidence events, record verification, and dataset clients",
+  "version": "0.4.0",
+  "description": "Open measurement SDK for education AI \u2014 evidence events, record verification, and dataset clients",
   "license": "Apache-2.0",
   "type": "module",
   "main": "dist/index.js",
@@ -9,23 +9,38 @@
   "exports": {
     ".": {
       "import": "./dist/index.js",
-      "types": "./dist/index.d.ts"
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
     },
     "./schema": {
       "import": "./dist/schema/index.js",
-      "types": "./dist/schema/index.d.ts"
+      "types": "./dist/schema/index.d.ts",
+      "default": "./dist/schema/index.js"
     },
     "./emitter": {
       "import": "./dist/emitter/index.js",
-      "types": "./dist/emitter/index.d.ts"
+      "types": "./dist/emitter/index.d.ts",
+      "default": "./dist/emitter/index.js"
     },
     "./verifier": {
       "import": "./dist/verifier/index.js",
-      "types": "./dist/verifier/index.d.ts"
+      "types": "./dist/verifier/index.d.ts",
+      "default": "./dist/verifier/index.js"
     },
     "./clients": {
       "import": "./dist/clients/index.js",
-      "types": "./dist/clients/index.d.ts"
+      "types": "./dist/clients/index.d.ts",
+      "default": "./dist/clients/index.js"
+    },
+    "./schemes": {
+      "import": "./dist/schemes/index.js",
+      "types": "./dist/schemes/index.d.ts",
+      "default": "./dist/schemes/index.js"
+    },
+    "./schemes/node": {
+      "import": "./dist/schemes/node.js",
+      "types": "./dist/schemes/node.d.ts",
+      "default": "./dist/schemes/node.js"
     }
   },
   "bin": {

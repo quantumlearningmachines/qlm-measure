@@ -18,6 +18,8 @@ import sys
 from pathlib import Path
 
 from . import __version__
+
+VERSION = __version__
 from .checks import CATALOG, CATALOG_BY_ID, SHIPPED_CHECKS, PLANNED_CHECKS
 from .io import load_records, LoadError
 from .report import build_report, format_text
@@ -311,6 +313,53 @@ def cmd_version(args: argparse.Namespace) -> int:
     return 0
 
 
+
+def cmd_verify_chain(args) -> int:
+    """Verify a per-event hash chain sealed by a QLM product (see qlm_measure.schemes)."""
+    from datetime import datetime, timezone
+    from .schemes import list_schemes, verify_chain
+    if args.list:
+        for s in list_schemes():
+            print(f"{s['id']}\t{s['family']}\tsince {s['since']}\t{s['hash_field']}/{s['prev_field']}")
+        return 0
+    if not args.path:
+        print("ERROR: pass an events file, or --list", file=sys.stderr)
+        return 2
+    if not args.family and not args.scheme:
+        print("ERROR: pass --family (e.g. tpc/clinical) or --scheme (e.g. tpc/clinical-v2)", file=sys.stderr)
+        return 2
+    try:
+        with open(args.path, encoding="utf-8") as fh:
+            events = json.load(fh)
+    except (OSError, ValueError) as e:
+        print(f"ERROR: {e}", file=sys.stderr)
+        return 2
+    if isinstance(events, dict) and isinstance(events.get("events"), list):
+        events = events["events"]  # {events: [...]} wrapper (vectors, exports with metadata)
+    if not isinstance(events, list):
+        print("ERROR: not an array of events (or an object with an events array)", file=sys.stderr)
+        return 2
+    try:
+        r = verify_chain(events, family=args.family, scheme=args.scheme, reject_mixed=not args.allow_mixed)
+    except ValueError as e:
+        print(f"ERROR: {e}", file=sys.stderr)
+        return 2
+    if args.format == "json":
+        print(json.dumps({"verifier": f"qlm-measure {VERSION}", "file": args.path, "clean": r.clean, "errors": r.errors, "stats": r.stats}, indent=2))
+        return 0 if r.clean else 1
+    print(f"qlm-measure verify-chain {VERSION}")
+    print(f"file: {args.path}")
+    print(f"timestamp: {datetime.now(timezone.utc).isoformat().replace('+00:00', 'Z')}")
+    print(f"result: {'CLEAN' if r.clean else 'FAIL'}")
+    for k in ("total", "gaps", "duplicates", "tampered", "schema_errors", "hash_scheme"):
+        print(f"{'events' if k == 'total' else k}: {r.stats[k]}")
+    print(f"schemes: {json.dumps(r.stats['schemes'], separators=(',', ':'))}")
+    if not r.clean:
+        print("\nerrors:")
+        for e in r.errors:
+            print(f"  {e}")
+    return 0 if r.clean else 1
+
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(
         prog="qlm-measure",
@@ -351,6 +400,15 @@ def main(argv: list[str] | None = None) -> int:
     p_samples.add_argument("--out", default="samples", metavar="DIR", help="Output directory (default: samples)")
     p_samples.set_defaults(func=cmd_samples)
 
+    # verify-chain
+    p_chain = subparsers.add_parser("verify-chain", help="Verify a per-event hash chain sealed by a QLM product")
+    p_chain.add_argument("path", nargs="?", metavar="EVENTS_JSON", help="JSON array of events")
+    p_chain.add_argument("--family", help="Detect the scheme per event within this family (e.g. tpc/clinical)")
+    p_chain.add_argument("--scheme", help="Require exactly this scheme (e.g. tpc/clinical-v2)")
+    p_chain.add_argument("--allow-mixed", action="store_true", help="Do not fail a chain that mixes schemes")
+    p_chain.add_argument("--format", choices=["text", "json"], default="text")
+    p_chain.add_argument("--list", action="store_true", help="List known schemes")
+    p_chain.set_defaults(func=cmd_verify_chain)
     # version
     p_version = subparsers.add_parser("version", help="Print version info")
     p_version.set_defaults(func=cmd_version)
