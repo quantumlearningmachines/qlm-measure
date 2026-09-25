@@ -21,21 +21,40 @@ def test_vector_verifies(path):
     if "tampered" in v["expect"]:
         assert r.stats["tampered"] == v["expect"]["tampered"]
         assert any(e.startswith(f"[{v['expect']['tampered_index']}] hash mismatch") for e in r.errors)
+    if "schemes" in v["expect"]:
+        assert r.stats["schemes"] == v["expect"]["schemes"]
 
 
 @pytest.mark.parametrize("path", [p for p in VECTORS if "tampered" not in p.stem], ids=[p.stem for p in VECTORS if "tampered" not in p.stem])
 def test_vector_reseals_byte_for_byte(path):
     v = json.loads(path.read_text())
-    scheme = get_scheme(v["scheme"])
     for e in v["events"]:
+        sid = detect_scheme(e, v["family"])
+        assert sid is not None
+        scheme = get_scheme(sid)
         rest = {k: x for k, x in e.items() if k != scheme.hash_field}
-        assert compute_event_hash(rest, v["scheme"]) == e[scheme.hash_field]
-        assert seal_event(rest, v["scheme"])[scheme.hash_field] == e[scheme.hash_field]
-        assert detect_scheme(e, v["family"]) == v["scheme"]
+        assert compute_event_hash(rest, sid) == e[scheme.hash_field]
+        assert seal_event(rest, sid)[scheme.hash_field] == e[scheme.hash_field]
 
 
 def test_registry_order_matches_typescript():
-    assert [s["id"] for s in list_schemes()] == ["tpc/clinical-v3", "tpc/clinical-v2", "tpc/clinical-v1", "play/clinical-clin-1.0"]
+    assert [s["id"] for s in list_schemes()] == ["tpc/clinical-v4", "tpc/clinical-v3", "tpc/clinical-v2", "tpc/clinical-v1", "play/clinical-clin-1.0"]
+
+
+def test_v4_canonical_and_applies_and_coexistence():
+    base = {"type": "clinical_evidence", "learner": "l", "encounter": "e", "turn": 0, "construct": "c", "signal": "partial",
+            "scaffold": 1, "extractor": "x", "confidence": 0.5, "prev_hash": "genesis"}
+    proc = {**base, "event_kind": "chart.item", "payload": {"z": 1, "a": {"y": [3, {"q": 1, "p": 2}], "x": None}}}
+    assert get_scheme("tpc/clinical-v4").canonical(proc) == (
+        '["clinical_evidence","l","e",0,"c","partial",1,"x",0.5,"genesis",null,null,null,"chart.item",{"a":{"x":null,"y":[3,{"p":2,"q":1}]},"z":1}]')
+    for sid in ("tpc/clinical-v1", "tpc/clinical-v2", "tpc/clinical-v3"):
+        assert not get_scheme(sid).applies(proc)
+    assert not get_scheme("tpc/clinical-v4").applies(base)
+    bad = seal_event({**proc, "event_kind": "Chart", "payload": []}, "tpc/clinical-v4")
+    assert verify_chain([bad], scheme="tpc/clinical-v4").errors == ["[0] invalid event_kind: Chart", "[0] payload must be an object"]
+    v = json.loads((VEC / "tpc-clinical-v3-v4-coexist.json").read_text())
+    r = verify_chain(v["events"], family="tpc/clinical")
+    assert r.clean and r.stats["hash_scheme"] == "tpc/clinical-v4" and not any(e.startswith("mixed") for e in r.errors)
 
 
 def test_mixed_chain_is_rejected_unless_allowed():

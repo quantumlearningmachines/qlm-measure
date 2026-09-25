@@ -37,6 +37,8 @@ export interface ChainScheme {
     canonical(event: ChainEvent): string;
     /** Schema errors for one event (not integrity errors). Empty when valid. */
     validate(event: ChainEvent): string[];
+    /** Scheme ids that may appear in the same chain as this one without the chain counting as mixed. */
+    coexists?: string[];
 }
 /** Recursively sorts object keys; arrays keep their order. Mirrors Play's residency canonicalize(). */
 export declare function sortKeysDeep(value: unknown): unknown;
@@ -46,6 +48,14 @@ export declare const TPC_CLINICAL_V1: ChainScheme;
 export declare const TPC_CLINICAL_V2: ChainScheme;
 /** 2026-09-14: mapping_version joins the hash on events that carry it. */
 export declare const TPC_CLINICAL_V3: ChainScheme;
+/**
+ * 2026-09-25 (teachproof schema 0.4, TPC-SPEC-002 A6): an event may carry
+ * event_kind ("chart.view", "chart.item", ...) and a per-kind payload. Both
+ * join the hash: the v3 fields (mapping_version null when absent), then
+ * event_kind, then the payload with its keys sorted at every depth. Only
+ * events with event_kind use it; the rest of the chain stays v3.
+ */
+export declare const TPC_CLINICAL_V4: ChainScheme;
 export declare const PLAY_CLINICAL_1_0: ChainScheme;
 export declare const SCHEMES: Readonly<Record<string, ChainScheme>>;
 export declare function getScheme(id: string): ChainScheme;

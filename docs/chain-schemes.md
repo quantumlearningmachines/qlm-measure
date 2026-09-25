@@ -1,4 +1,4 @@
-# Chain schemes (0.4.0)
+# Chain schemes (0.4.1)
 
 QLM products store one row per evidence event, each carrying its own hash and
 a link to the previous event's hash. Before 0.4.0 every product computed that
@@ -17,6 +17,7 @@ which were generated from verbatim copies of the original product functions.
 | `tpc/clinical-v1` | `tpc/clinical` | 2026-08-31 | `hash` / `prev_hash`, genesis `"genesis"` | `JSON.stringify([type, learner, encounter, turn, construct, signal, scaffold, extractor, confidence, prev_hash])` |
 | `tpc/clinical-v2` | `tpc/clinical` | 2026-09-10 | same | v1 + `[triage_class ?? null, engine_version ?? null]` |
 | `tpc/clinical-v3` | `tpc/clinical` | 2026-09-14 | same | v2 + `[mapping_version]`; applies only when `mapping_version` is present |
+| `tpc/clinical-v4` | `tpc/clinical` | 2026-09-25 | same | v2 fields + `[mapping_version ?? null, event_kind, payload with keys sorted at every depth]`; applies only to events carrying `event_kind` (schema 0.4 process events); coexists with v3 in one chain, which then reports v4 |
 | `play/clinical-clin-1.0` | `play/clinical` | 2026-08-16 | `hash` / `prevHash`, genesis `""` | `JSON.stringify` of `{eventId, ts, encounterId, actor, source, type, payload, consentRef, schemaVersion, prevHash}` with keys sorted recursively |
 
 ## Seal

@@ -18,15 +18,17 @@ describe("chain schemes: vectors sealed by the original product code", () => {
         expect(r.stats.tampered).toBe(v.expect.tampered);
         expect(r.errors.some((e) => e.startsWith(`[${v.expect.tampered_index}] hash mismatch`))).toBe(true);
       }
+      if (v.expect.schemes) expect(r.stats.schemes).toEqual(v.expect.schemes);
     });
     if (v.expect.clean) {
-      it(`${v.name}: re-sealing every event with ${v.scheme} reproduces the stored hash byte for byte`, () => {
+      it(`${v.name}: re-sealing every event with its scheme reproduces the stored hash byte for byte`, () => {
         for (const e of v.events) {
-          const scheme = getScheme(v.scheme);
+          const id = detectScheme(e, v.family)!;
+          expect(id).not.toBeNull();
+          const scheme = getScheme(id);
           const { [scheme.hashField]: stored, ...rest } = e;
-          expect(computeEventHash(rest, v.scheme)).toBe(stored);
-          expect(sealEvent(rest, v.scheme)[scheme.hashField]).toBe(stored);
-          expect(detectScheme(e, v.family)).toBe(v.scheme);
+          expect(computeEventHash(rest, id)).toBe(stored);
+          expect(sealEvent(rest, id)[scheme.hashField]).toBe(stored);
         }
       });
     }
@@ -34,9 +36,24 @@ describe("chain schemes: vectors sealed by the original product code", () => {
 });
 
 describe("chain schemes: behaviour", () => {
-  it("lists four schemes across two families", () => {
+  it("lists five schemes across two families, newest first", () => {
     const ids = listSchemes().map((s) => s.id);
-    expect(ids).toEqual(["tpc/clinical-v3", "tpc/clinical-v2", "tpc/clinical-v1", "play/clinical-clin-1.0"]);
+    expect(ids).toEqual(["tpc/clinical-v4", "tpc/clinical-v3", "tpc/clinical-v2", "tpc/clinical-v1", "play/clinical-clin-1.0"]);
+  });
+  it("v4: only events with event_kind; payload keys sorted at every depth; v1-v3 never claim such events", () => {
+    const base = { type: "clinical_evidence", learner: "l", encounter: "e", turn: 0, construct: "c", signal: "partial", scaffold: 1, extractor: "x", confidence: 0.5, prev_hash: "genesis" };
+    const proc = { ...base, event_kind: "chart.item", payload: { z: 1, a: { y: [3, { q: 1, p: 2 }], x: null } } };
+    expect(getScheme("tpc/clinical-v4").canonical(proc)).toBe('["clinical_evidence","l","e",0,"c","partial",1,"x",0.5,"genesis",null,null,null,"chart.item",{"a":{"x":null,"y":[3,{"p":2,"q":1}]},"z":1}]');
+    for (const id of ["tpc/clinical-v1", "tpc/clinical-v2", "tpc/clinical-v3"]) expect(getScheme(id).applies(proc)).toBe(false);
+    expect(getScheme("tpc/clinical-v4").applies(base)).toBe(false);
+    const r = verifyChain([sealEvent({ ...proc, event_kind: "Chart", payload: [] }, "tpc/clinical-v4")], { scheme: "tpc/clinical-v4" });
+    expect(r.errors).toEqual(["[0] invalid event_kind: Chart", "[0] payload must be an object"]);
+  });
+  it("v3 and v4 coexist in one chain (newest reported); v1 and v2 still count as mixed", () => {
+    const v = vectors.find((v) => v.name === "tpc-clinical-v3-v4-coexist.json")!;
+    const r = verifyChain(v.events, { family: "tpc/clinical" });
+    expect(r.clean).toBe(true); expect(r.stats.hash_scheme).toBe("tpc/clinical-v4");
+    expect(r.errors.some((e) => e.startsWith("mixed"))).toBe(false);
   });
   it("rejects a chain that mixes schemes, and reports each scheme's count", () => {
     const v1 = vectors.find((v) => v.name === "tpc-clinical-v1.json")!.events;

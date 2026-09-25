@@ -46,8 +46,12 @@ function tpcArray(event, variant) {
         arr.push(event.triage_class ?? null, event.engine_version ?? null);
     if (variant === 3)
         arr.push(event.mapping_version);
+    if (variant === 4)
+        arr.push(event.mapping_version ?? null, event.event_kind, sortKeysDeep(event.payload ?? {}));
     return arr;
 }
+/** A schema 0.4 event: one with event_kind. Only tpc/clinical-v4 seals it, so its payload is always covered. */
+const hasEventKind = (e) => e.event_kind !== undefined;
 function tpcValidate(event) {
     const errors = [];
     if (event.type !== "clinical_evidence")
@@ -71,20 +75,43 @@ function tpcValidate(event) {
 const tpcCommon = { family: "tpc/clinical", hashField: "hash", prevField: "prev_hash", genesis: "genesis", validate: tpcValidate };
 export const TPC_CLINICAL_V1 = {
     ...tpcCommon, id: "tpc/clinical-v1", since: "2026-08-31",
-    applies: () => true,
+    applies: (e) => !hasEventKind(e),
     canonical: (e) => JSON.stringify(tpcArray(e, 1)),
 };
 /** 2026-09-10 (teachproof ac9375b): triage_class and engine_version join the hash, null when absent. */
 export const TPC_CLINICAL_V2 = {
     ...tpcCommon, id: "tpc/clinical-v2", since: "2026-09-10",
-    applies: () => true,
+    applies: (e) => !hasEventKind(e),
     canonical: (e) => JSON.stringify(tpcArray(e, 2)),
 };
 /** 2026-09-14: mapping_version joins the hash on events that carry it. */
 export const TPC_CLINICAL_V3 = {
     ...tpcCommon, id: "tpc/clinical-v3", since: "2026-09-14",
-    applies: (e) => e.mapping_version !== undefined,
+    applies: (e) => e.mapping_version !== undefined && !hasEventKind(e),
     canonical: (e) => JSON.stringify(tpcArray(e, 3)),
+    coexists: ["tpc/clinical-v4"],
+};
+const TPC_EVENT_KIND = /^[a-z]+\.[a-z_]+$/;
+/**
+ * 2026-09-25 (teachproof schema 0.4, TPC-SPEC-002 A6): an event may carry
+ * event_kind ("chart.view", "chart.item", ...) and a per-kind payload. Both
+ * join the hash: the v3 fields (mapping_version null when absent), then
+ * event_kind, then the payload with its keys sorted at every depth. Only
+ * events with event_kind use it; the rest of the chain stays v3.
+ */
+export const TPC_CLINICAL_V4 = {
+    ...tpcCommon, id: "tpc/clinical-v4", since: "2026-09-25",
+    applies: hasEventKind,
+    canonical: (e) => JSON.stringify(tpcArray(e, 4)),
+    validate: (e) => {
+        const errors = tpcValidate(e);
+        if (typeof e.event_kind !== "string" || !TPC_EVENT_KIND.test(e.event_kind))
+            errors.push(`invalid event_kind: ${String(e.event_kind)}`);
+        if (!e.payload || typeof e.payload !== "object" || Array.isArray(e.payload))
+            errors.push("payload must be an object");
+        return errors;
+    },
+    coexists: ["tpc/clinical-v3"],
 };
 // ── Play clinical events, schemaVersion "clin-1.0" (play/clinical) ────────
 // Source of truth until this module: qlm-games
@@ -116,7 +143,7 @@ export const PLAY_CLINICAL_1_0 = {
     },
 };
 // ── Registry ──────────────────────────────────────────────────────────────
-const ALL = [TPC_CLINICAL_V3, TPC_CLINICAL_V2, TPC_CLINICAL_V1, PLAY_CLINICAL_1_0];
+const ALL = [TPC_CLINICAL_V4, TPC_CLINICAL_V3, TPC_CLINICAL_V2, TPC_CLINICAL_V1, PLAY_CLINICAL_1_0];
 export const SCHEMES = Object.freeze(Object.fromEntries(ALL.map((s) => [s.id, s])));
 export function getScheme(id) {
     const s = SCHEMES[id];
@@ -210,8 +237,13 @@ export function verifyChainWith(hash, events, opts) {
         }
     });
     const ids = Object.keys(perScheme);
-    const hashScheme = ids.length === 0 ? "none" : ids.length === 1 ? ids[0] : "mixed";
-    if (ids.length > 1 && rejectMixed) {
+    // Schemes that declare they coexist do not make a chain mixed; the chain
+    // reports the newest of them (family order is newest first).
+    const coexist = (a, b) => (getScheme(a).coexists ?? []).includes(b) || (getScheme(b).coexists ?? []).includes(a);
+    const mixed = ids.some((a, i) => ids.slice(i + 1).some((b) => !coexist(a, b)));
+    const newest = candidates.find((s) => ids.includes(s.id))?.id;
+    const hashScheme = ids.length === 0 ? "none" : !mixed ? (ids.length === 1 ? ids[0] : newest) : "mixed";
+    if (mixed && rejectMixed) {
         errors.push(`mixed hash schemes: ${ids.map((id) => `${perScheme[id]} ${id}`).join(", ")}`);
     }
     return {

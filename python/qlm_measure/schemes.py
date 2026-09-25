@@ -14,6 +14,7 @@ from __future__ import annotations
 
 import hashlib
 import math
+import re
 from dataclasses import dataclass, field
 from decimal import Decimal
 from typing import Any, Callable, Iterable
@@ -125,6 +126,7 @@ class ChainScheme:
     applies: Callable[[dict], bool]
     canonical: Callable[[dict], str]
     validate: Callable[[dict], list[str]]
+    coexists: tuple[str, ...] = ()
 
 
 TPC_SIGNALS = ("demonstrated", "partial", "missed_opportunity", "not_observable")
@@ -140,7 +142,16 @@ def _tpc_array(e: dict, variant: int) -> list:
         arr.append(e.get("engine_version") if e.get("engine_version") is not None else None)
     if variant == 3:
         arr.append(e.get("mapping_version"))
+    if variant == 4:
+        arr.append(e.get("mapping_version"))  # null when absent, like ?? null
+        arr.append(e.get("event_kind"))
+        arr.append(sort_keys_deep(e.get("payload") if e.get("payload") is not None else {}))
     return arr
+
+
+def _has_event_kind(e: dict) -> bool:
+    """A schema 0.4 event: one with event_kind. Only tpc/clinical-v4 seals it."""
+    return "event_kind" in e
 
 
 def _is_num(v: Any) -> bool:
@@ -168,15 +179,36 @@ def _tpc_validate(e: dict) -> list[str]:
     return errors
 
 
-def _tpc(id_: str, since: str, variant: int, applies: Callable[[dict], bool]) -> ChainScheme:
+def _tpc(id_: str, since: str, variant: int, applies: Callable[[dict], bool],
+         validate: Callable[[dict], list[str]] = _tpc_validate, coexists: tuple[str, ...] = ()) -> ChainScheme:
     return ChainScheme(id=id_, family="tpc/clinical", since=since, hash_field="hash", prev_field="prev_hash",
                        genesis="genesis", applies=applies,
-                       canonical=lambda e, v=variant: js_json_dumps(_tpc_array(e, v)), validate=_tpc_validate)
+                       canonical=lambda e, v=variant: js_json_dumps(_tpc_array(e, v)), validate=validate, coexists=coexists)
 
 
-TPC_CLINICAL_V1 = _tpc("tpc/clinical-v1", "2026-08-31", 1, lambda e: True)
-TPC_CLINICAL_V2 = _tpc("tpc/clinical-v2", "2026-09-10", 2, lambda e: True)
-TPC_CLINICAL_V3 = _tpc("tpc/clinical-v3", "2026-09-14", 3, lambda e: "mapping_version" in e)
+TPC_CLINICAL_V1 = _tpc("tpc/clinical-v1", "2026-08-31", 1, lambda e: not _has_event_kind(e))
+TPC_CLINICAL_V2 = _tpc("tpc/clinical-v2", "2026-09-10", 2, lambda e: not _has_event_kind(e))
+TPC_CLINICAL_V3 = _tpc("tpc/clinical-v3", "2026-09-14", 3, lambda e: "mapping_version" in e and not _has_event_kind(e),
+                       coexists=("tpc/clinical-v4",))
+
+_TPC_EVENT_KIND = re.compile(r"^[a-z]+\.[a-z_]+$")
+
+
+def _tpc4_validate(e: dict) -> list[str]:
+    errors = _tpc_validate(e)
+    if not isinstance(e.get("event_kind"), str) or not _TPC_EVENT_KIND.match(e["event_kind"]):
+        errors.append(f"invalid event_kind: {e.get('event_kind')}")
+    if not isinstance(e.get("payload"), dict):
+        errors.append("payload must be an object")
+    return errors
+
+
+# 2026-09-25 (teachproof schema 0.4, TPC-SPEC-002 A6): event_kind and the
+# per-kind payload (keys sorted at every depth) join the hash after the v3
+# fields (mapping_version null when absent). Only events with event_kind use
+# it; the rest of the chain stays v3, and the two coexist in one chain.
+TPC_CLINICAL_V4 = _tpc("tpc/clinical-v4", "2026-09-25", 4, _has_event_kind, validate=_tpc4_validate,
+                       coexists=("tpc/clinical-v3",))
 
 _PLAY_FIELDS = ("eventId", "ts", "encounterId", "actor", "source", "type", "payload", "consentRef", "schemaVersion", "prevHash")
 
@@ -203,7 +235,7 @@ PLAY_CLINICAL_1_0 = ChainScheme(id="play/clinical-clin-1.0", family="play/clinic
                                 applies=lambda e: e.get("schemaVersion") == "clin-1.0",
                                 canonical=_play_canonical, validate=_play_validate)
 
-_ALL: tuple[ChainScheme, ...] = (TPC_CLINICAL_V3, TPC_CLINICAL_V2, TPC_CLINICAL_V1, PLAY_CLINICAL_1_0)
+_ALL: tuple[ChainScheme, ...] = (TPC_CLINICAL_V4, TPC_CLINICAL_V3, TPC_CLINICAL_V2, TPC_CLINICAL_V1, PLAY_CLINICAL_1_0)
 SCHEMES: dict[str, ChainScheme] = {s.id: s for s in _ALL}
 
 
@@ -294,8 +326,14 @@ def verify_chain(events: Iterable[dict], *, family: str | None = None, scheme: s
                 duplicates += 1
             seen.add(h)
     ids = list(per_scheme)
-    hash_scheme = "none" if not ids else ids[0] if len(ids) == 1 else "mixed"
-    if len(ids) > 1 and reject_mixed:
+    # Schemes that declare they coexist do not make a chain mixed; the chain
+    # reports the newest of them (family order is newest first).
+    def coexist(a: str, b: str) -> bool:
+        return b in get_scheme(a).coexists or a in get_scheme(b).coexists
+    mixed = any(not coexist(a, b) for i, a in enumerate(ids) for b in ids[i + 1:])
+    newest = next((s.id for s in candidates if s.id in ids), None)
+    hash_scheme = "none" if not ids else ("mixed" if mixed else (ids[0] if len(ids) == 1 else newest))
+    if mixed and reject_mixed:
         errors.append("mixed hash schemes: " + ", ".join(f"{per_scheme[i]} {i}" for i in ids))
     return ChainVerification(clean=not errors, errors=errors, stats={
         "total": len(events), "gaps": gaps, "duplicates": duplicates, "tampered": tampered,

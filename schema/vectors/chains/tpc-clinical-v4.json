@@ -1,0 +1,140 @@
+{
+  "scheme": "tpc/clinical-v4",
+  "family": "tpc/clinical",
+  "source": "teachproof vendor/qlm-measure-0.4.1.tgz dist/schemes (production sealer, 2026-09-25), tpcArray variant 4",
+  "expect": {
+    "clean": true,
+    "hash_scheme": "tpc/clinical-v4"
+  },
+  "events": [
+    {
+      "type": "clinical_evidence",
+      "learner": "L-7f3a",
+      "encounter": "RN-R4-01",
+      "turn": 0,
+      "construct": "review_of_systems",
+      "signal": "demonstrated",
+      "scaffold": 0,
+      "extractor": "llm_extractor_v2",
+      "confidence": 0.85,
+      "prev_hash": "genesis",
+      "triage_class": null,
+      "engine_version": "tpc-engine-1.6.0",
+      "event_kind": "chart.view",
+      "payload": {
+        "section": "history",
+        "ms": 1200
+      },
+      "hash": "72f538ca1296ea5e561cc6f054c191d5c70bac4d4f4098a2094448a5602c5c20"
+    },
+    {
+      "type": "clinical_evidence",
+      "learner": "L-7f3a",
+      "encounter": "RN-R4-01",
+      "turn": 1,
+      "construct": "medication_history",
+      "signal": "partial",
+      "scaffold": 1,
+      "extractor": "llm_extractor_v2",
+      "confidence": 0.5,
+      "prev_hash": "72f538ca1296ea5e561cc6f054c191d5c70bac4d4f4098a2094448a5602c5c20",
+      "triage_class": "yellow",
+      "engine_version": "tpc-engine-1.6.0",
+      "mapping_version": "cco-2026-09-14",
+      "event_kind": "chart.item",
+      "payload": {
+        "item": "allergies",
+        "value": {
+          "list": [
+            "penicillin"
+          ],
+          "verified": false
+        }
+      },
+      "hash": "2698de4868141a43ef71ccb2b68d2d340383040c9b4f878e9579dbd04763282e"
+    },
+    {
+      "type": "clinical_evidence",
+      "learner": "L-7f3a",
+      "encounter": "RN-R4-01",
+      "turn": 2,
+      "construct": "escalation",
+      "signal": "missed_opportunity",
+      "scaffold": 2,
+      "extractor": "llm_extractor_v2",
+      "confidence": 1,
+      "prev_hash": "2698de4868141a43ef71ccb2b68d2d340383040c9b4f878e9579dbd04763282e",
+      "triage_class": "yellow",
+      "engine_version": "tpc-engine-1.6.0",
+      "event_kind": "vitals.read",
+      "payload": {
+        "hr": 112,
+        "bp": "138/86",
+        "spo2": 0.94
+      },
+      "hash": "c6c16800b6a2a335e6cdd030fe4401cec817dd979917bb3d9f3c0a41e136b0c3"
+    },
+    {
+      "type": "clinical_evidence",
+      "learner": "L-7f3a",
+      "encounter": "RN-R4-01",
+      "turn": 3,
+      "construct": "review_of_systems",
+      "signal": "not_observable",
+      "scaffold": 3,
+      "extractor": "session_resume",
+      "confidence": 0.000001,
+      "prev_hash": "c6c16800b6a2a335e6cdd030fe4401cec817dd979917bb3d9f3c0a41e136b0c3",
+      "triage_class": null,
+      "engine_version": "tpc-engine-1.6.0",
+      "mapping_version": "cco-2026-09-14",
+      "event_kind": "chart.item",
+      "payload": {
+        "item": "med_list",
+        "value": null
+      },
+      "hash": "24c7cb3872279bd5b39ea249c1db7944823abd86211c313f299e6fca11af0f5f"
+    },
+    {
+      "type": "clinical_evidence",
+      "learner": "L-7f3a",
+      "encounter": "RN-R4-01",
+      "turn": 4,
+      "construct": "medication_history",
+      "signal": "demonstrated",
+      "scaffold": 0,
+      "extractor": "llm_extractor_v2",
+      "confidence": 1e-7,
+      "prev_hash": "24c7cb3872279bd5b39ea249c1db7944823abd86211c313f299e6fca11af0f5f",
+      "triage_class": "yellow",
+      "engine_version": "tpc-engine-1.6.0",
+      "event_kind": "checkpoint.answer",
+      "payload": {
+        "answer": "escalate",
+        "rationale": "désaturation — call RRT"
+      },
+      "hash": "7cf7209f057d12087fb9ec85e71771429c315d19bffe0a3994dc66c987f80f3b"
+    },
+    {
+      "type": "clinical_evidence",
+      "learner": "L-7f3a",
+      "encounter": "RN-R4-01",
+      "turn": 5,
+      "construct": "escalation",
+      "signal": "partial",
+      "scaffold": 1,
+      "extractor": "llm_extractor_v2",
+      "confidence": 0.123456789012345,
+      "prev_hash": "7cf7209f057d12087fb9ec85e71771429c315d19bffe0a3994dc66c987f80f3b",
+      "triage_class": "yellow",
+      "engine_version": "tpc-engine-1.6.0",
+      "mapping_version": "cco-2026-09-14",
+      "event_kind": "chart.view",
+      "payload": {
+        "section": "orders",
+        "ms": 300
+      },
+      "hash": "0ee68a6c996637183d6ea536ccf4cb24615c3cd335d716637cc2dec1ab340d1c"
+    }
+  ]
+}
