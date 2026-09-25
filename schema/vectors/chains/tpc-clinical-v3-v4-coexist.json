@@ -1,0 +1,131 @@
+{
+  "scheme": "tpc/clinical-v4",
+  "family": "tpc/clinical",
+  "source": "v3 evidence events interleaved with v4 process events; coexistence reports the newest scheme",
+  "expect": {
+    "clean": true,
+    "hash_scheme": "tpc/clinical-v4",
+    "schemes": {
+      "tpc/clinical-v3": 3,
+      "tpc/clinical-v4": 3
+    }
+  },
+  "events": [
+    {
+      "type": "clinical_evidence",
+      "learner": "L-7f3a",
+      "encounter": "RN-R4-01",
+      "turn": 0,
+      "construct": "review_of_systems",
+      "signal": "demonstrated",
+      "scaffold": 0,
+      "extractor": "llm_extractor_v2",
+      "confidence": 0.85,
+      "prev_hash": "genesis",
+      "triage_class": "green",
+      "engine_version": "tpc-engine-1.6.0",
+      "mapping_version": "cco-2026-09-14",
+      "hash": "1018c929e2e30ee728fac87b08e50e9cb870310bfbc8d4e392f18b80b394a67d"
+    },
+    {
+      "type": "clinical_evidence",
+      "learner": "L-7f3a",
+      "encounter": "RN-R4-01",
+      "turn": 1,
+      "construct": "medication_history",
+      "signal": "partial",
+      "scaffold": 1,
+      "extractor": "llm_extractor_v2",
+      "confidence": 0.5,
+      "prev_hash": "1018c929e2e30ee728fac87b08e50e9cb870310bfbc8d4e392f18b80b394a67d",
+      "triage_class": "green",
+      "engine_version": "tpc-engine-1.6.0",
+      "mapping_version": "cco-2026-09-14",
+      "event_kind": "chart.item",
+      "payload": {
+        "item": "allergies",
+        "value": {
+          "list": [
+            "penicillin"
+          ],
+          "verified": false
+        }
+      },
+      "hash": "b0a74ce38112a85944a63be5127a9669cd53b16ef814c3ce7c603450dc9811db"
+    },
+    {
+      "type": "clinical_evidence",
+      "learner": "L-7f3a",
+      "encounter": "RN-R4-01",
+      "turn": 2,
+      "construct": "escalation",
+      "signal": "missed_opportunity",
+      "scaffold": 2,
+      "extractor": "llm_extractor_v2",
+      "confidence": 1,
+      "prev_hash": "b0a74ce38112a85944a63be5127a9669cd53b16ef814c3ce7c603450dc9811db",
+      "triage_class": "green",
+      "engine_version": "tpc-engine-1.6.0",
+      "mapping_version": "cco-2026-09-14",
+      "hash": "ef49196252cdd358d8eaafe9de96296f90e04fe0aac753a1d12b39ab47408f00"
+    },
+    {
+      "type": "clinical_evidence",
+      "learner": "L-7f3a",
+      "encounter": "RN-R4-01",
+      "turn": 3,
+      "construct": "review_of_systems",
+      "signal": "not_observable",
+      "scaffold": 3,
+      "extractor": "session_resume",
+      "confidence": 0.000001,
+      "prev_hash": "ef49196252cdd358d8eaafe9de96296f90e04fe0aac753a1d12b39ab47408f00",
+      "triage_class": "green",
+      "engine_version": "tpc-engine-1.6.0",
+      "mapping_version": "cco-2026-09-14",
+      "event_kind": "chart.item",
+      "payload": {
+        "item": "med_list",
+        "value": null
+      },
+      "hash": "949112dbc9ef1e1421f928e11b4b700cfa868de60f36eedb28d766e54b5ab212"
+    },
+    {
+      "type": "clinical_evidence",
+      "learner": "L-7f3a",
+      "encounter": "RN-R4-01",
+      "turn": 4,
+      "construct": "medication_history",
+      "signal": "demonstrated",
+      "scaffold": 0,
+      "extractor": "llm_extractor_v2",
+      "confidence": 1e-7,
+      "prev_hash": "949112dbc9ef1e1421f928e11b4b700cfa868de60f36eedb28d766e54b5ab212",
+      "triage_class": "green",
+      "engine_version": "tpc-engine-1.6.0",
+      "mapping_version": "cco-2026-09-14",
+      "hash": "439b6c378516b083b069a92d4f9d0b2234f5a5ed0029cdfe5904d4e11778ad8b"
+    },
+    {
+      "type": "clinical_evidence",
+      "learner": "L-7f3a",
+      "encounter": "RN-R4-01",
+      "turn": 5,
+      "construct": "escalation",
+      "signal": "partial",
+      "scaffold": 1,
+      "extractor": "llm_extractor_v2",
+      "confidence": 0.123456789012345,
+      "prev_hash": "439b6c378516b083b069a92d4f9d0b2234f5a5ed0029cdfe5904d4e11778ad8b",
+      "triage_class": "green",
+      "engine_version": "tpc-engine-1.6.0",
+      "mapping_version": "cco-2026-09-14",
+      "event_kind": "chart.view",
+      "payload": {
+        "section": "orders",
+        "ms": 300
+      },
+      "hash": "f42d5e72fc5d1e9e59752fadbee2476599a6f44d33cdd3cf2924ac65c191036a"
+    }
+  ]
+}

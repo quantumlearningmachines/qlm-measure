@@ -9,7 +9,7 @@ import { verifyRecord } from "./verifier/verify-record.js";
 import { verifyRecordV03 } from "./verifier-v03.js";
 import { verifyChain, listSchemes } from "./schemes/node.js";
 import { CATALOG, SHIPPED_CHECKS, SHIPPED_CHECKS_V03, PLANNED_CHECKS, CATALOG_BY_ID, CATEGORIES, CATEGORIES_V03 } from "./checks.js";
-const VERSION = "0.4.0";
+const VERSION = "0.4.1";
 function loadRecords(path) {
     let raw;
     if (path === "-") {

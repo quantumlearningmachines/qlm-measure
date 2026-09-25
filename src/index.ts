@@ -66,7 +66,7 @@ export type { EngineClientConfig, ModelStateSummary } from "./clients/engine-cli
 // ── Chain schemes (per-event hash chains sealed by QLM products; 0.4.0) ──────
 export {
   SCHEMES, getScheme, familySchemes, listSchemes, sortKeysDeep,
-  TPC_CLINICAL_V1, TPC_CLINICAL_V2, TPC_CLINICAL_V3, PLAY_CLINICAL_1_0, TPC_SIGNALS,
+  TPC_CLINICAL_V1, TPC_CLINICAL_V2, TPC_CLINICAL_V3, TPC_CLINICAL_V4, PLAY_CLINICAL_1_0, TPC_SIGNALS,
   computeEventHashWith, computeEventHashAsyncWith, sealEventWith, detectSchemeWith, verifyChainWith,
 } from "./schemes/index.js";
 export type { ChainScheme, ChainEvent, ChainVerification, VerifyChainOptions, HashFn, AsyncHashFn } from "./schemes/index.js";
