@@ -1,0 +1,38 @@
+name: ci
+on:
+  push:
+    branches: [main]
+  pull_request:
+jobs:
+  typescript:
+    name: typescript (build + vitest)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npx tsc -p tsconfig.json
+      - name: committed dist matches the source
+        run: git diff --exit-code -- dist || (echo "::error::dist/ is stale — run npm run build and commit" && exit 1)
+      - run: npx vitest run
+      - name: CLI verifies every chain vector
+        run: |
+          for f in schema/vectors/chains/*.json; do
+            fam=$(node -e "console.log(require('./$f').family)")
+            exp=$(node -e "console.log(require('./$f').expect.clean)")
+            if node dist/cli.js verify-chain "$f" --family "$fam" > /tmp/out.txt; then got=true; else got=false; fi
+            [ "$got" = "$exp" ] || (echo "::error::$f expected clean=$exp got $got" && cat /tmp/out.txt && exit 1)
+          done
+  python:
+    name: python (pytest)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install -e ./python pytest
+      - run: python -m pytest -q python/tests
