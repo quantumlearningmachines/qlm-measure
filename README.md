@@ -39,6 +39,18 @@ qlm-measure version
 
 Exit codes: `0` all valid, `1` at least one invalid, `2` usage or parse error.
 
+
+## Verify a product hash chain
+
+Per-event chains sealed by QLM products (TeachProof clinical evidence, Play
+clinical events) are defined once, by name and version, in
+`qlm-measure/schemes` — see [docs/chain-schemes.md](docs/chain-schemes.md).
+
+```bash
+qlm-measure verify-chain events.json --family tpc/clinical
+qlm-measure verify-chain --list
+```
+
 ## Packages
 
 - **[Python](python/README.md)** — `pip install qlm-measure`

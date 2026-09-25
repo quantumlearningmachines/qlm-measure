@@ -7,8 +7,9 @@ import { readFileSync, writeFileSync, existsSync } from "fs";
 import { createHash } from "crypto";
 import { verifyRecord } from "./verifier/verify-record.js";
 import { verifyRecordV03 } from "./verifier-v03.js";
+import { verifyChain, listSchemes } from "./schemes/node.js";
 import { CATALOG, SHIPPED_CHECKS, SHIPPED_CHECKS_V03, PLANNED_CHECKS, CATALOG_BY_ID, CATEGORIES, CATEGORIES_V03 } from "./checks.js";
-const VERSION = "0.2.8";
+const VERSION = "0.4.0";
 function loadRecords(path) {
     let raw;
     if (path === "-") {
@@ -315,12 +316,95 @@ function cmdVersion() {
     return 0;
 }
 // ── Main ────────────────────────────────────────────────────
+// ── verify-chain: per-event hash chains sealed by QLM products ─────────────
+function cmdVerifyChain(argv) {
+    const opts = {};
+    const positional = [];
+    for (let i = 0; i < argv.length; i++) {
+        const a = argv[i];
+        if (a === "--family" || a === "--scheme" || a === "--format") {
+            opts[a.slice(2)] = argv[++i];
+        }
+        else if (a === "--allow-mixed") {
+            opts.allowMixed = "1";
+        }
+        else if (a === "--list") {
+            opts.list = "1";
+        }
+        else
+            positional.push(a);
+    }
+    if (opts.list) {
+        for (const s of listSchemes())
+            console.log(`${s.id}\t${s.family}\tsince ${s.since}\t${s.hashField}/${s.prevField}`);
+        return 0;
+    }
+    const file = positional[0];
+    if (!file) {
+        console.error("Usage: qlm-measure verify-chain <events.json> (--family F | --scheme S) [--allow-mixed] [--format text|json] | --list");
+        return 2;
+    }
+    if (!opts.family && !opts.scheme) {
+        console.error("ERROR: pass --family (e.g. tpc/clinical) or --scheme (e.g. tpc/clinical-v2)");
+        return 2;
+    }
+    if (!existsSync(file)) {
+        console.error(`ERROR: ${file} not found`);
+        return 2;
+    }
+    let events;
+    try {
+        events = JSON.parse(readFileSync(file, "utf-8"));
+    }
+    catch (e) {
+        console.error(`ERROR: parse failed: ${e}`);
+        return 2;
+    }
+    if (!Array.isArray(events) && events && typeof events === "object" && Array.isArray(events.events)) {
+        events = events.events; // { events: [...] } wrapper (vectors, exports with metadata)
+    }
+    if (!Array.isArray(events)) {
+        console.error("ERROR: not an array of events (or an object with an events array)");
+        return 2;
+    }
+    let r;
+    try {
+        r = verifyChain(events, { family: opts.family, scheme: opts.scheme, rejectMixed: !opts.allowMixed });
+    }
+    catch (e) {
+        console.error(`ERROR: ${e.message}`);
+        return 2;
+    }
+    if (opts.format === "json") {
+        console.log(JSON.stringify({ verifier: `qlm-measure ${VERSION}`, file, ...r }, null, 2));
+        return r.clean ? 0 : 1;
+    }
+    console.log(`qlm-measure verify-chain ${VERSION}`);
+    console.log(`file: ${file}`);
+    console.log(`timestamp: ${new Date().toISOString()}`);
+    console.log(`result: ${r.clean ? "CLEAN" : "FAIL"}`);
+    console.log(`events: ${r.stats.total}`);
+    console.log(`gaps: ${r.stats.gaps}`);
+    console.log(`duplicates: ${r.stats.duplicates}`);
+    console.log(`tampered: ${r.stats.tampered}`);
+    console.log(`schema_errors: ${r.stats.schema_errors}`);
+    console.log(`hash_scheme: ${r.stats.hash_scheme}`);
+    console.log(`schemes: ${JSON.stringify(r.stats.schemes)}`);
+    if (!r.clean) {
+        console.log("\nerrors:");
+        r.errors.forEach((e) => console.log(`  ${e}`));
+    }
+    return r.clean ? 0 : 1;
+}
 const args = process.argv.slice(2);
 const cmd = args[0];
 let exitCode;
 switch (cmd) {
     case "verify":
         exitCode = cmdVerify(args.slice(1));
+        break;
+    case "verify-chain":
+        exitCode = cmdVerifyChain(args.slice(1));
         break;
     case "explain":
         exitCode = cmdExplain(args.slice(1));
@@ -329,7 +413,7 @@ switch (cmd) {
         exitCode = cmdVersion();
         break;
     default:
-        console.log("Usage: qlm-measure <verify|explain|version> [options]");
+        console.log("Usage: qlm-measure <verify|verify-chain|explain|version> [options]");
         console.log("  verify PATH [--format text|json] [--report FILE] [--quiet]");
         console.log("  explain [CHECK_ID]");
         console.log("  version");

@@ -11,7 +11,7 @@ Provides:
 Apache-2.0
 """
 
-__version__ = "0.2.8"
+__version__ = "0.4.0"
 
 from .schema import (
     ObservationEvent,
@@ -44,3 +44,5 @@ def verify(record: dict, **kwargs):
     if version == "0.3":
         return verify_record_v03(record, **kwargs)
     return verify_record(record, **kwargs)
+
+from . import schemes  # noqa: E402,F401  (chain schemes, 0.4.0)
