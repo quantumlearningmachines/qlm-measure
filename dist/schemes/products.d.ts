@@ -18,5 +18,7 @@ export declare function canonicalizeRfc8785(value: unknown): string;
 export declare const DP_LEDGER_V3: ChainScheme;
 export declare const TPC_DSE_JOURNAL_1: ChainScheme;
 export declare const YARDSTICK_SPINE_1: ChainScheme;
+export declare function sortObjectLocale(value: unknown): unknown;
+export declare const LABPATH_LEARNING_EVIDENCE_V1: ChainScheme;
 export declare const PRODUCT_SCHEMES: ChainScheme[];
 //# sourceMappingURL=products.d.ts.map

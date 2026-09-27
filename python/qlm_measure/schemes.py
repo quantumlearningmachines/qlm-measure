@@ -417,8 +417,39 @@ YARDSTICK_SPINE_1 = ChainScheme(
     canonical=lambda e, prev=None: f"{e.get('previous_hash') or ''}:{_py_text(e.get('enrollment_id'))}:{_py_text(e.get('item_id'))}:{_py_text(e.get('response'))}:{_py_text(e.get('correct'))}",
     validate=lambda e: _missing_str(e, ("enrollment_id", "item_id")))
 
+
+def _locale_key(k: str):
+    """Emulates String.prototype.localeCompare (ICU root) for ASCII keys: punctuation
+    < digits < letters at the primary level, case-insensitive, then lowercase
+    before uppercase. Non-ASCII keys are compared by code point."""
+    def cls(ch: str):
+        if ch.isdigit():
+            return 1
+        if ch.isalpha():
+            return 2
+        return 0
+    primary = tuple((cls(ch), ch.lower()) for ch in k)
+    tertiary = tuple(0 if ch.islower() or not ch.isalpha() else 1 for ch in k)
+    return (primary, tertiary)
+
+
+def sort_object_locale(value: Any) -> Any:
+    if isinstance(value, list):
+        return [sort_object_locale(v) for v in value]
+    if isinstance(value, dict):
+        return {k: sort_object_locale(value[k]) for k in sorted(value.keys(), key=_locale_key)}
+    return value
+
+
+LABPATH_LEARNING_EVIDENCE_V1 = ChainScheme(
+    id="labpath/learning-evidence-v1", family="labpath/learning-evidence", since="2026-09-12", hash_field="hash", prev_field="prev_hash", genesis=None,
+    applies=lambda e: isinstance(e.get("event_id"), str),
+    canonical=lambda e, prev=None: js_json_dumps(sort_object_locale({k: v for k, v in e.items() if k != "hash"})),
+    validate=lambda e: _missing_str(e, ("event_id", "learner_id", "ts", "world_id", "session_id")))
+
 PRODUCT_SCHEMES: tuple[ChainScheme, ...] = (PLAY_EMIT_1, PLAY_MEASURE_SESSION_1, PLAY_ENCOUNTER_FNV64_1, PLAY_RESEARCH_PROVENANCE_1,
-                                            QCORE_QINVERSE_DJB2_1, STUDIO_LOOP_1, DP_LEDGER_V3, TPC_DSE_JOURNAL_1, YARDSTICK_SPINE_1)
+                                            QCORE_QINVERSE_DJB2_1, STUDIO_LOOP_1, DP_LEDGER_V3, TPC_DSE_JOURNAL_1, YARDSTICK_SPINE_1,
+                                            LABPATH_LEARNING_EVIDENCE_V1)
 
 _ALL: tuple[ChainScheme, ...] = (TPC_CLINICAL_V4, TPC_CLINICAL_V3, TPC_CLINICAL_V2, TPC_CLINICAL_V1, PLAY_CLINICAL_1_0, *PRODUCT_SCHEMES)
 SCHEMES: dict[str, ChainScheme] = {s.id: s for s in _ALL}
