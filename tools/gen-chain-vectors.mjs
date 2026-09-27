@@ -257,4 +257,25 @@ function journalComputeEntryHash(prevHash, entry) {
   write("play-encounter-fnv64-1-tampered", { ...f, source: "FNV vector with payload.finding.value edited on event 1", expect: { clean: false, hash_scheme: "play/encounter-fnv64-1", tampered: 1, tampered_index: 1 } });
 }
 
-console.log("wrote 18 chain vectors");
+// qlm-games src/lib/ecogenesis/labpath/learning-evidence-event.ts @ c1e6091 — sortObject + canonicalizeEvidencePayload + sha256EvidenceHash
+function lpSortObject(value) {
+  if (Array.isArray(value)) return value.map(lpSortObject);
+  if (!value || typeof value !== "object") return value;
+  return Object.fromEntries(Object.entries(value).sort(([a], [b]) => a.localeCompare(b)).map(([key, nested]) => [key, lpSortObject(nested)]));
+}
+function lpHash(draft) { return sha(JSON.stringify(lpSortObject(draft))); }
+{ // labpath/learning-evidence-v1
+  const events = []; let prev = null;
+  for (let i = 0; i < 4; i++) {
+    const draft = { event_id: `lev-${i}`, learner_id: "L-77", ts: `2026-09-26T15:0${i}:00.000Z`, world_id: "fraction-forge", world_version: "2.0", mode: i === 3 ? "assessment" : "practice", session_id: "s-3",
+      action: { type: "compare", label: "Compare 3/4 and 2/3", input: { Left: "3/4", right: "2/3", zeta: 1, Alpha: 2, _meta: { k: 1 } }, result: i % 2 ? { correct: true } : undefined },
+      state_ref: { world_state_id: `ws-${i}`, snapshot_hash: "ab12" }, strand_tags: ["NF.A.2", "NF.B.3"],
+      demonstration: { kind: "explanation", claim: "3/4 is larger", evidence: "common denominator 12 — 9/12 > 8/12", rubricSignal: i === 3 ? "strong" : undefined },
+      event_role: "assessment", agency: i === 2 ? { kind: "self_check", note: "re-checked" } : undefined, weight: 1, confidence: [0.5, 0.75, 0.9, 1][i],
+      conditions: { evidence_class: "practice", attestation_tier: "remote_self" }, misconception_tags: i === 1 ? ["numerator-only"] : undefined, prev_hash: prev };
+    const hash = lpHash(draft); events.push(JSON.parse(JSON.stringify({ ...draft, hash }))); prev = hash;
+  }
+  write("labpath-learning-evidence-v1", { scheme: "labpath/learning-evidence-v1", family: "labpath/learning-evidence", source: "qlm-games src/lib/ecogenesis/labpath/learning-evidence-event.ts hashLearningEvidenceEvent (sortObject with localeCompare at every depth; undefined values dropped as JSON.stringify does)", expect: { clean: true, hash_scheme: "labpath/learning-evidence-v1" }, events });
+}
+
+console.log("wrote 19 chain vectors");

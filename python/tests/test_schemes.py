@@ -43,7 +43,8 @@ def test_registry_order_matches_typescript():
     ids = [s["id"] for s in list_schemes()]
     assert ids[:5] == ["tpc/clinical-v4", "tpc/clinical-v3", "tpc/clinical-v2", "tpc/clinical-v1", "play/clinical-clin-1.0"]
     assert ids[5:] == ["play/emit-1", "play/measure-session-1", "play/encounter-fnv64-1", "play/research-provenance-1",
-                       "qcore/qinverse-djb2-1", "studio/loop-1", "dp/ledger-v3", "tpc/dse-journal-1", "yardstick/spine-1"]
+                       "qcore/qinverse-djb2-1", "studio/loop-1", "dp/ledger-v3", "tpc/dse-journal-1", "yardstick/spine-1",
+                       "labpath/learning-evidence-v1"]
 
 
 def test_builtin_digests_match_typescript():
@@ -132,3 +133,8 @@ def test_unknown_scheme_or_family():
         verify_chain([], family="nope")
     with pytest.raises(ValueError, match="pass family= or scheme="):
         verify_chain([])
+
+
+def test_labpath_locale_key_order():
+    e = {"event_id": "x", "hash": "junk", "prev_hash": None, "action": {"zeta": 1, "Alpha": 2, "_meta": 3}}
+    assert get_scheme("labpath/learning-evidence-v1").canonical(e, None) == '{"action":{"_meta":3,"Alpha":2,"zeta":1},"event_id":"x","prev_hash":null}'

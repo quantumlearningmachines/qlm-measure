@@ -1,0 +1,201 @@
+{
+  "scheme": "labpath/learning-evidence-v1",
+  "family": "labpath/learning-evidence",
+  "source": "qlm-games src/lib/ecogenesis/labpath/learning-evidence-event.ts hashLearningEvidenceEvent (sortObject with localeCompare at every depth; undefined values dropped as JSON.stringify does)",
+  "expect": {
+    "clean": true,
+    "hash_scheme": "labpath/learning-evidence-v1"
+  },
+  "events": [
+    {
+      "event_id": "lev-0",
+      "learner_id": "L-77",
+      "ts": "2026-09-26T15:00:00.000Z",
+      "world_id": "fraction-forge",
+      "world_version": "2.0",
+      "mode": "practice",
+      "session_id": "s-3",
+      "action": {
+        "type": "compare",
+        "label": "Compare 3/4 and 2/3",
+        "input": {
+          "Left": "3/4",
+          "right": "2/3",
+          "zeta": 1,
+          "Alpha": 2,
+          "_meta": {
+            "k": 1
+          }
+        }
+      },
+      "state_ref": {
+        "world_state_id": "ws-0",
+        "snapshot_hash": "ab12"
+      },
+      "strand_tags": [
+        "NF.A.2",
+        "NF.B.3"
+      ],
+      "demonstration": {
+        "kind": "explanation",
+        "claim": "3/4 is larger",
+        "evidence": "common denominator 12 — 9/12 > 8/12"
+      },
+      "event_role": "assessment",
+      "weight": 1,
+      "confidence": 0.5,
+      "conditions": {
+        "evidence_class": "practice",
+        "attestation_tier": "remote_self"
+      },
+      "prev_hash": null,
+      "hash": "952481cbd2232058c7d0d6ef879484262a1cc9003ea24f7ad94393f12cc5b4ea"
+    },
+    {
+      "event_id": "lev-1",
+      "learner_id": "L-77",
+      "ts": "2026-09-26T15:01:00.000Z",
+      "world_id": "fraction-forge",
+      "world_version": "2.0",
+      "mode": "practice",
+      "session_id": "s-3",
+      "action": {
+        "type": "compare",
+        "label": "Compare 3/4 and 2/3",
+        "input": {
+          "Left": "3/4",
+          "right": "2/3",
+          "zeta": 1,
+          "Alpha": 2,
+          "_meta": {
+            "k": 1
+          }
+        },
+        "result": {
+          "correct": true
+        }
+      },
+      "state_ref": {
+        "world_state_id": "ws-1",
+        "snapshot_hash": "ab12"
+      },
+      "strand_tags": [
+        "NF.A.2",
+        "NF.B.3"
+      ],
+      "demonstration": {
+        "kind": "explanation",
+        "claim": "3/4 is larger",
+        "evidence": "common denominator 12 — 9/12 > 8/12"
+      },
+      "event_role": "assessment",
+      "weight": 1,
+      "confidence": 0.75,
+      "conditions": {
+        "evidence_class": "practice",
+        "attestation_tier": "remote_self"
+      },
+      "misconception_tags": [
+        "numerator-only"
+      ],
+      "prev_hash": "952481cbd2232058c7d0d6ef879484262a1cc9003ea24f7ad94393f12cc5b4ea",
+      "hash": "07f628acef1a590ac80077ffc80a4a62fc00a5fc608f55864bef3a92685f7a79"
+    },
+    {
+      "event_id": "lev-2",
+      "learner_id": "L-77",
+      "ts": "2026-09-26T15:02:00.000Z",
+      "world_id": "fraction-forge",
+      "world_version": "2.0",
+      "mode": "practice",
+      "session_id": "s-3",
+      "action": {
+        "type": "compare",
+        "label": "Compare 3/4 and 2/3",
+        "input": {
+          "Left": "3/4",
+          "right": "2/3",
+          "zeta": 1,
+          "Alpha": 2,
+          "_meta": {
+            "k": 1
+          }
+        }
+      },
+      "state_ref": {
+        "world_state_id": "ws-2",
+        "snapshot_hash": "ab12"
+      },
+      "strand_tags": [
+        "NF.A.2",
+        "NF.B.3"
+      ],
+      "demonstration": {
+        "kind": "explanation",
+        "claim": "3/4 is larger",
+        "evidence": "common denominator 12 — 9/12 > 8/12"
+      },
+      "event_role": "assessment",
+      "agency": {
+        "kind": "self_check",
+        "note": "re-checked"
+      },
+      "weight": 1,
+      "confidence": 0.9,
+      "conditions": {
+        "evidence_class": "practice",
+        "attestation_tier": "remote_self"
+      },
+      "prev_hash": "07f628acef1a590ac80077ffc80a4a62fc00a5fc608f55864bef3a92685f7a79",
+      "hash": "d12f9a11fe648749eaf2ef74c0f0a8050743364fc408e2ff85b8158a62ccd982"
+    },
+    {
+      "event_id": "lev-3",
+      "learner_id": "L-77",
+      "ts": "2026-09-26T15:03:00.000Z",
+      "world_id": "fraction-forge",
+      "world_version": "2.0",
+      "mode": "assessment",
+      "session_id": "s-3",
+      "action": {
+        "type": "compare",
+        "label": "Compare 3/4 and 2/3",
+        "input": {
+          "Left": "3/4",
+          "right": "2/3",
+          "zeta": 1,
+          "Alpha": 2,
+          "_meta": {
+            "k": 1
+          }
+        },
+        "result": {
+          "correct": true
+        }
+      },
+      "state_ref": {
+        "world_state_id": "ws-3",
+        "snapshot_hash": "ab12"
+      },
+      "strand_tags": [
+        "NF.A.2",
+        "NF.B.3"
+      ],
+      "demonstration": {
+        "kind": "explanation",
+        "claim": "3/4 is larger",
+        "evidence": "common denominator 12 — 9/12 > 8/12",
+        "rubricSignal": "strong"
+      },
+      "event_role": "assessment",
+      "weight": 1,
+      "confidence": 1,
+      "conditions": {
+        "evidence_class": "practice",
+        "attestation_tier": "remote_self"
+      },
+      "prev_hash": "d12f9a11fe648749eaf2ef74c0f0a8050743364fc408e2ff85b8158a62ccd982",
+      "hash": "060fa959e2d27b0887d17145b33cfd3f11797eb8f64d8ce68c3a041f274544b0"
+    }
+  ]
+}

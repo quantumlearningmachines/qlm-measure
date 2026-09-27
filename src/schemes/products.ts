@@ -236,7 +236,37 @@ export const YARDSTICK_SPINE_1: ChainScheme = {
   },
 };
 
+// ── labpath/learning-evidence-v1 — qlm-games src/lib/ecogenesis/labpath/learning-evidence-event.ts
+// hashLearningEvidenceEvent(draft): sha256 of JSON.stringify(sortObject(draft))
+// where draft is the whole event minus `hash` and sortObject orders keys at
+// every depth with String.prototype.localeCompare. Fields hash / prev_hash
+// (null on the first event).
+export function sortObjectLocale(value: unknown): unknown {
+  if (Array.isArray(value)) return value.map(sortObjectLocale);
+  if (!value || typeof value !== "object") return value;
+  return Object.fromEntries(
+    Object.entries(value as Record<string, unknown>)
+      .sort(([a], [b]) => a.localeCompare(b))
+      .map(([key, nested]) => [key, sortObjectLocale(nested)]),
+  );
+}
+export const LABPATH_LEARNING_EVIDENCE_V1: ChainScheme = {
+  id: "labpath/learning-evidence-v1", family: "labpath/learning-evidence", since: "2026-09-12",
+  hashField: "hash", prevField: "prev_hash", genesis: null,
+  applies: (e) => typeof e.event_id === "string",
+  canonical: (e) => {
+    const { hash: _h, ...draft } = e;
+    void _h;
+    return JSON.stringify(sortObjectLocale(draft));
+  },
+  validate: (e) => {
+    const errors: string[] = [];
+    for (const f of ["event_id", "learner_id", "ts", "world_id", "session_id"]) if (typeof e[f] !== "string" || !e[f]) errors.push(`missing ${f}`);
+    return errors;
+  },
+};
+
 export const PRODUCT_SCHEMES: ChainScheme[] = [
   PLAY_EMIT_1, PLAY_MEASURE_SESSION_1, PLAY_ENCOUNTER_FNV64_1, PLAY_RESEARCH_PROVENANCE_1,
-  QCORE_QINVERSE_DJB2_1, STUDIO_LOOP_1, DP_LEDGER_V3, TPC_DSE_JOURNAL_1, YARDSTICK_SPINE_1,
+  QCORE_QINVERSE_DJB2_1, STUDIO_LOOP_1, DP_LEDGER_V3, TPC_DSE_JOURNAL_1, YARDSTICK_SPINE_1, LABPATH_LEARNING_EVIDENCE_V1,
 ];
