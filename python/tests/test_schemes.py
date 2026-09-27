@@ -73,6 +73,7 @@ def test_dp_first_event_absent_prev_and_yardstick_text_forms():
     assert any("must be absent" in e for e in verify_chain([{**v["events"][0], "previousEventHash": "genesis"}], scheme="dp/ledger-v3").errors)
     e = {"enrollment_id": "e1", "item_id": "i1", "response": "B", "correct": True, "previous_hash": ""}
     assert get_scheme("yardstick/spine-1").canonical(e, None) == ":e1:i1:B:True"
+    assert get_scheme("yardstick/spine-1").canonical({**e, "previous_hash": None}, None) == "None:e1:i1:B:True"
 
 
 def test_v4_canonical_and_applies_and_coexistence():

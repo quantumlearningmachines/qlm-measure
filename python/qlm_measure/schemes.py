@@ -419,7 +419,7 @@ def _py_text(v: Any) -> str:
 YARDSTICK_SPINE_1 = ChainScheme(
     id="yardstick/spine-1", family="yardstick/spine", since="2026-08-30", hash_field="chain_hash", prev_field="previous_hash", genesis="",
     applies=lambda e: True,
-    canonical=lambda e, prev=None: f"{e.get('previous_hash') or ''}:{_py_text(e.get('enrollment_id'))}:{_py_text(e.get('item_id'))}:{_py_text(e.get('response'))}:{_py_text(e.get('correct'))}",
+    canonical=lambda e, prev=None: f"{_py_text(e.get('previous_hash'))}:{_py_text(e.get('enrollment_id'))}:{_py_text(e.get('item_id'))}:{_py_text(e.get('response'))}:{_py_text(e.get('correct'))}",
     validate=lambda e: _missing_str(e, ("enrollment_id", "item_id")))
 
 

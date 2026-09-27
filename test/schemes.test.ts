@@ -87,6 +87,7 @@ describe("chain schemes: behaviour", () => {
     const e = { enrollment_id: "e1", item_id: "i1", response: "B", correct: true, previous_hash: "" };
     expect(getScheme("yardstick/spine-1").canonical(e)).toBe(":e1:i1:B:True");
     expect(getScheme("yardstick/spine-1").canonical({ ...e, correct: false, previous_hash: "ab" })).toBe("ab:e1:i1:B:False");
+    expect(getScheme("yardstick/spine-1").canonical({ ...e, previous_hash: null })).toBe("None:e1:i1:B:True"); // f"{None}"
   });
   it("v4: only events with event_kind; payload keys sorted at every depth; v1-v3 never claim such events", () => {
     const base = { type: "clinical_evidence", learner: "l", encounter: "e", turn: 0, construct: "c", signal: "partial", scaffold: 1, extractor: "x", confidence: 0.5, prev_hash: "genesis" };

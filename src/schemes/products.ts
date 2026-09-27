@@ -226,8 +226,9 @@ export const YARDSTICK_SPINE_1: ChainScheme = {
   hashField: "chain_hash", prevField: "previous_hash", genesis: "",
   applies: () => true,
   canonical: (e) => {
+    // Python's f-string forms: True/False for booleans, None for a missing value — including previous_hash.
     const py = (v: unknown): string => (v === true ? "True" : v === false ? "False" : v === null || v === undefined ? "None" : String(v));
-    return `${str(e.previous_hash)}:${py(e.enrollment_id)}:${py(e.item_id)}:${py(e.response)}:${py(e.correct)}`;
+    return `${py(e.previous_hash)}:${py(e.enrollment_id)}:${py(e.item_id)}:${py(e.response)}:${py(e.correct)}`;
   },
   validate: (e) => {
     const errors: string[] = [];
