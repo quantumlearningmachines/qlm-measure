@@ -86,6 +86,8 @@ function tpcArray(event, variant) {
 }
 /** A schema 0.4 event: one with event_kind. Only tpc/clinical-v4 seals it, so its payload is always covered. */
 const hasEventKind = (e) => e.event_kind !== undefined;
+/** Commit/skip events share the clinical chain but have their own scheme (tpc/differential-commit-1). */
+const isCommitEvent = (e) => e.type === "differential_commit" || e.type === "commit_skipped";
 function tpcValidate(event) {
     const errors = [];
     if (event.type !== "clinical_evidence")
@@ -109,19 +111,19 @@ function tpcValidate(event) {
 const tpcCommon = { family: "tpc/clinical", hashField: "hash", prevField: "prev_hash", genesis: "genesis", validate: tpcValidate };
 export const TPC_CLINICAL_V1 = {
     ...tpcCommon, id: "tpc/clinical-v1", since: "2026-08-31",
-    applies: (e) => !hasEventKind(e),
+    applies: (e) => !hasEventKind(e) && !isCommitEvent(e),
     canonical: (e) => JSON.stringify(tpcArray(e, 1)),
 };
 /** 2026-09-10 (teachproof ac9375b): triage_class and engine_version join the hash, null when absent. */
 export const TPC_CLINICAL_V2 = {
     ...tpcCommon, id: "tpc/clinical-v2", since: "2026-09-10",
-    applies: (e) => !hasEventKind(e),
+    applies: (e) => !hasEventKind(e) && !isCommitEvent(e),
     canonical: (e) => JSON.stringify(tpcArray(e, 2)),
 };
 /** 2026-09-14: mapping_version joins the hash on events that carry it. */
 export const TPC_CLINICAL_V3 = {
     ...tpcCommon, id: "tpc/clinical-v3", since: "2026-09-14",
-    applies: (e) => e.mapping_version !== undefined && !hasEventKind(e),
+    applies: (e) => e.mapping_version !== undefined && !hasEventKind(e) && !isCommitEvent(e),
     canonical: (e) => JSON.stringify(tpcArray(e, 3)),
     coexists: ["tpc/clinical-v4"],
 };
@@ -135,7 +137,7 @@ const TPC_EVENT_KIND = /^[a-z]+\.[a-z_]+$/;
  */
 export const TPC_CLINICAL_V4 = {
     ...tpcCommon, id: "tpc/clinical-v4", since: "2026-09-25",
-    applies: hasEventKind,
+    applies: (e) => hasEventKind(e) && !isCommitEvent(e),
     canonical: (e) => JSON.stringify(tpcArray(e, 4)),
     validate: (e) => {
         const errors = tpcValidate(e);

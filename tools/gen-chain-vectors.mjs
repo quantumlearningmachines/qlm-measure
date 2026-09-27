@@ -278,4 +278,42 @@ function lpHash(draft) { return sha(JSON.stringify(lpSortObject(draft))); }
   write("labpath-learning-evidence-v1", { scheme: "labpath/learning-evidence-v1", family: "labpath/learning-evidence", source: "qlm-games src/lib/ecogenesis/labpath/learning-evidence-event.ts hashLearningEvidenceEvent (sortObject with localeCompare at every depth; undefined values dropped as JSON.stringify does)", expect: { clean: true, hash_scheme: "labpath/learning-evidence-v1" }, events });
 }
 
-console.log("wrote 19 chain vectors");
+// teachproof src/app/api/clinical/evidence/process/route.ts @ bc1bdaf — Stage 3 hash (prev_hash stored, not hashed)
+function tpcTranscriptHash(transcriptJson) { return sha(JSON.stringify(transcriptJson)); }
+// teachproof src/lib/clinical/longitudinal/events/differential-commit.ts @ bc1bdaf — hashCommit + createCommitEvent/createSkipEvent canonicals
+function hashCommit(fields) { return sha(JSON.stringify(fields)); }
+// teachproof src/lib/rct/result-ledger.ts @ bc1bdaf — computeInputHash over ledgerFromAnalysis's inputData
+function rctInputHash(analysis) {
+  return sha(JSON.stringify({ studyId: analysis.studyId, nTreatment: analysis.nTreatment, nControl: analysis.nControl, totalOutcomeEvents: analysis.totalOutcomeEvents, sourcePipes: analysis.sourcePipes,
+    dimensions: analysis.dimensions.map(d => ({ dimension: d.dimension, treatmentN: d.treatmentN, controlN: d.controlN, treatmentMean: d.treatmentMean, controlMean: d.controlMean })) }));
+}
+{ // tpc/transcript-1
+  const events = []; let prev = null;
+  const turns = [[{ speaker: "learner", text: "Hello — how are you feeling?" }, { speaker: "patient", text: "Dizzy." }], [{ speaker: "learner", text: "Any chest pain?" }]];
+  for (let i = 0; i < 2; i++) {
+    const transcript = { text: turns[i].map((t) => t.text).join(" "), turns: turns[i], sourceType: i ? "upload" : "live", duration: [612.5, 88][i] };
+    const hash = tpcTranscriptHash(transcript); events.push({ id: `item-${i}`, learner_id: "L-9", transcript, hash, prev_hash: prev, duration_s: transcript.duration }); prev = hash;
+  }
+  write("tpc-transcript-1", { scheme: "tpc/transcript-1", family: "tpc/transcript", source: "teachproof api/clinical/evidence/process/route.ts Stage 3 (sha256 of the transcript column; prev_hash stored, not hashed)", expect: { clean: true, hash_scheme: "tpc/transcript-1" }, events });
+}
+{ // tpc/differential-commit-1 inside a tpc/clinical-v3 chain (coexistence)
+  const events = []; let prev = "genesis";
+  const base = (i, extra) => ({ type: "clinical_evidence", learner: "L-7f3a", encounter: "RN-R4-01", turn: i, construct: "escalation", signal: "demonstrated", scaffold: 0, extractor: "llm_extractor_v2", confidence: 0.8, prev_hash: prev, triage_class: null, engine_version: "tpc-engine-1.6.0", mapping_version: "cco-2026-09-14", ...extra });
+  const e0 = base(0, {}); e0.hash = tpcComputeEventHash(e0); events.push(e0); prev = e0.hash;
+  const c1 = { type: "differential_commit", learner: "L-7f3a", encounter: "RN-R4-01", turn: 1, checkpoint: "after_history", rankedDifferential: ["sepsis", "hypovolemia", "PE é"], nextAction: "order lactate", whyText: "Fever, tachycardia, \"hypotension\"", discipline: "nursing", prev_hash: prev };
+  c1.hash = hashCommit(["differential_commit", c1.learner, c1.encounter, c1.checkpoint, c1.rankedDifferential, c1.whyText, c1.nextAction, c1.discipline, prev]); events.push(c1); prev = c1.hash;
+  const e2 = base(2, {}); e2.prev_hash = prev; e2.hash = tpcComputeEventHash(e2); events.push(e2); prev = e2.hash;
+  for (const reason of ["skip", "timeout", "not_reached"]) {
+    const s = { type: "commit_skipped", learner: "L-7f3a", encounter: "RN-R4-01", turn: events.length, checkpoint: "after_assessment", reason, prev_hash: prev };
+    s.hash = hashCommit(["commit_skipped", s.learner, s.encounter, s.checkpoint, reason, prev]); events.push(s); prev = s.hash;
+  }
+  write("tpc-differential-commit-1", { scheme: "tpc/differential-commit-1", family: "tpc/clinical", source: "teachproof differential-commit.ts createCommitEvent/createSkipEvent (hashCommit) interleaved with tpc/clinical-v3 evidence events", expect: { clean: true, hash_scheme: "tpc/clinical-v3", schemes: { "tpc/clinical-v3": 2, "tpc/differential-commit-1": 4 } }, events });
+}
+{ // tpc/rct-input-1 (unlinked)
+  const analysis = { studyId: "BINV-002", nTreatment: 48, nControl: 47, totalOutcomeEvents: 1093, sourcePipes: ["pipe3", "pipe5"], primaryDimension: "escalation", primaryFrozen: true,
+    dimensions: [{ dimension: "escalation", treatmentN: 48, controlN: 47, treatmentMean: 0.71, controlMean: 0.58, extra: "not hashed" }, { dimension: "review_of_systems", treatmentN: 48, controlN: 47, treatmentMean: 0.5, controlMean: 0.5 }] };
+  const { primaryDimension: _pd, primaryFrozen: _pf, ...rec } = analysis;
+  write("tpc-rct-input-1", { scheme: "tpc/rct-input-1", family: "tpc/rct-input", source: "teachproof rct/result-ledger.ts ledgerFromAnalysis inputData → computeInputHash", expect: { clean: true, hash_scheme: "tpc/rct-input-1" }, events: [{ ...rec, inputHash: rctInputHash(analysis) }] });
+}
+
+console.log("wrote 22 chain vectors");

@@ -205,6 +205,11 @@ def _has_event_kind(e: dict) -> bool:
     return "event_kind" in e
 
 
+def _is_commit_event(e: dict) -> bool:
+    """Commit/skip events share the clinical chain but have their own scheme (tpc/differential-commit-1)."""
+    return e.get("type") in ("differential_commit", "commit_skipped")
+
+
 def _is_num(v: Any) -> bool:
     return isinstance(v, (int, float)) and not isinstance(v, bool)
 
@@ -237,9 +242,9 @@ def _tpc(id_: str, since: str, variant: int, applies: Callable[[dict], bool],
                        canonical=lambda e, prev=None, v=variant: js_json_dumps(_tpc_array(e, v)), validate=validate, coexists=coexists)
 
 
-TPC_CLINICAL_V1 = _tpc("tpc/clinical-v1", "2026-08-31", 1, lambda e: not _has_event_kind(e))
-TPC_CLINICAL_V2 = _tpc("tpc/clinical-v2", "2026-09-10", 2, lambda e: not _has_event_kind(e))
-TPC_CLINICAL_V3 = _tpc("tpc/clinical-v3", "2026-09-14", 3, lambda e: "mapping_version" in e and not _has_event_kind(e),
+TPC_CLINICAL_V1 = _tpc("tpc/clinical-v1", "2026-08-31", 1, lambda e: not _has_event_kind(e) and not _is_commit_event(e))
+TPC_CLINICAL_V2 = _tpc("tpc/clinical-v2", "2026-09-10", 2, lambda e: not _has_event_kind(e) and not _is_commit_event(e))
+TPC_CLINICAL_V3 = _tpc("tpc/clinical-v3", "2026-09-14", 3, lambda e: "mapping_version" in e and not _has_event_kind(e) and not _is_commit_event(e),
                        coexists=("tpc/clinical-v4",))
 
 _TPC_EVENT_KIND = re.compile(r"^[a-z]+\.[a-z_]+$")
@@ -258,7 +263,7 @@ def _tpc4_validate(e: dict) -> list[str]:
 # per-kind payload (keys sorted at every depth) join the hash after the v3
 # fields (mapping_version null when absent). Only events with event_kind use
 # it; the rest of the chain stays v3, and the two coexist in one chain.
-TPC_CLINICAL_V4 = _tpc("tpc/clinical-v4", "2026-09-25", 4, _has_event_kind, validate=_tpc4_validate,
+TPC_CLINICAL_V4 = _tpc("tpc/clinical-v4", "2026-09-25", 4, lambda e: _has_event_kind(e) and not _is_commit_event(e), validate=_tpc4_validate,
                        coexists=("tpc/clinical-v3",))
 
 _PLAY_FIELDS = ("eventId", "ts", "encounterId", "actor", "source", "type", "payload", "consentRef", "schemaVersion", "prevHash")
@@ -447,9 +452,55 @@ LABPATH_LEARNING_EVIDENCE_V1 = ChainScheme(
     canonical=lambda e, prev=None: js_json_dumps(sort_object_locale({k: v for k, v in e.items() if k != "hash"})),
     validate=lambda e: _missing_str(e, ("event_id", "learner_id", "ts", "world_id", "session_id")))
 
+
+def _transcript_canonical(e: dict, prev: str | None = None) -> str:
+    t = e["transcript"]
+    return js_json_dumps({"text": t.get("text"), "turns": t.get("turns"), "sourceType": t.get("sourceType"), "duration": t.get("duration")})
+
+
+TPC_TRANSCRIPT_1 = ChainScheme(
+    id="tpc/transcript-1", family="tpc/transcript", since="2026-08-20", hash_field="hash", prev_field="prev_hash", genesis=None,
+    applies=lambda e: isinstance(e.get("transcript"), dict), canonical=_transcript_canonical,
+    validate=lambda e: [] if isinstance(e.get("transcript"), dict) else ["missing transcript"])
+
+
+def _commit_canonical(e: dict, prev: str | None = None) -> str:
+    if e.get("type") == "differential_commit":
+        arr = ["differential_commit", e.get("learner"), e.get("encounter"), e.get("checkpoint"), e.get("rankedDifferential"), e.get("whyText"),
+               e.get("nextAction"), e.get("discipline"), e.get("prev_hash")]
+    else:
+        arr = ["commit_skipped", e.get("learner"), e.get("encounter"), e.get("checkpoint"), e.get("reason"), e.get("prev_hash")]
+    return js_json_dumps(arr)
+
+
+def _commit_validate(e: dict) -> list[str]:
+    errors = _missing_str(e, ("learner", "encounter", "checkpoint"))
+    if e.get("type") == "commit_skipped" and e.get("reason") not in ("skip", "timeout", "not_reached"):
+        errors.append(f"invalid reason: {e.get('reason')}")
+    return errors
+
+
+TPC_DIFFERENTIAL_COMMIT_1 = ChainScheme(
+    id="tpc/differential-commit-1", family="tpc/clinical", since="2026-09-14", hash_field="hash", prev_field="prev_hash", genesis="genesis",
+    applies=_is_commit_event, canonical=_commit_canonical, validate=_commit_validate,
+    coexists=("tpc/clinical-v1", "tpc/clinical-v2", "tpc/clinical-v3", "tpc/clinical-v4"))
+
+
+def _rct_canonical(e: dict, prev: str | None = None) -> str:
+    dims = [{"dimension": d.get("dimension"), "treatmentN": d.get("treatmentN"), "controlN": d.get("controlN"), "treatmentMean": d.get("treatmentMean"),
+             "controlMean": d.get("controlMean")} for d in e.get("dimensions", [])]
+    return js_json_dumps({"studyId": e.get("studyId"), "nTreatment": e.get("nTreatment"), "nControl": e.get("nControl"),
+                          "totalOutcomeEvents": e.get("totalOutcomeEvents"), "sourcePipes": e.get("sourcePipes"), "dimensions": dims})
+
+
+TPC_RCT_INPUT_1 = ChainScheme(
+    id="tpc/rct-input-1", family="tpc/rct-input", since="2026-09-22", hash_field="inputHash", prev_field=None, genesis=None, link="none",
+    applies=lambda e: isinstance(e.get("dimensions"), list), canonical=_rct_canonical,
+    validate=lambda e: _missing_str(e, ("studyId",)))
+
 PRODUCT_SCHEMES: tuple[ChainScheme, ...] = (PLAY_EMIT_1, PLAY_MEASURE_SESSION_1, PLAY_ENCOUNTER_FNV64_1, PLAY_RESEARCH_PROVENANCE_1,
                                             QCORE_QINVERSE_DJB2_1, STUDIO_LOOP_1, DP_LEDGER_V3, TPC_DSE_JOURNAL_1, YARDSTICK_SPINE_1,
-                                            LABPATH_LEARNING_EVIDENCE_V1)
+                                            LABPATH_LEARNING_EVIDENCE_V1, TPC_TRANSCRIPT_1, TPC_DIFFERENTIAL_COMMIT_1, TPC_RCT_INPUT_1)
 
 _ALL: tuple[ChainScheme, ...] = (TPC_CLINICAL_V4, TPC_CLINICAL_V3, TPC_CLINICAL_V2, TPC_CLINICAL_V1, PLAY_CLINICAL_1_0, *PRODUCT_SCHEMES)
 SCHEMES: dict[str, ChainScheme] = {s.id: s for s in _ALL}

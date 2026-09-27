@@ -44,7 +44,7 @@ def test_registry_order_matches_typescript():
     assert ids[:5] == ["tpc/clinical-v4", "tpc/clinical-v3", "tpc/clinical-v2", "tpc/clinical-v1", "play/clinical-clin-1.0"]
     assert ids[5:] == ["play/emit-1", "play/measure-session-1", "play/encounter-fnv64-1", "play/research-provenance-1",
                        "qcore/qinverse-djb2-1", "studio/loop-1", "dp/ledger-v3", "tpc/dse-journal-1", "yardstick/spine-1",
-                       "labpath/learning-evidence-v1"]
+                       "labpath/learning-evidence-v1", "tpc/transcript-1", "tpc/differential-commit-1", "tpc/rct-input-1"]
 
 
 def test_builtin_digests_match_typescript():
