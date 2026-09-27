@@ -1,0 +1,101 @@
+{
+  "scheme": "dp/ledger-v3",
+  "family": "dp/ledger",
+  "source": "art-of-kings src/lib/engine/v3/event-ledger.ts computeEventHash (RFC 8785-style canonical, prev || canonical); rows as stored (undefined keys dropped, receivedAt present)",
+  "expect": {
+    "clean": true,
+    "hash_scheme": "dp/ledger-v3"
+  },
+  "events": [
+    {
+      "eventId": "00000000-0000-4000-8000-000000000000",
+      "tenantId": "mcu",
+      "sessionId": "s-9",
+      "learnerId": "l-4",
+      "actorUserId": "u-4",
+      "actorRole": "learner",
+      "eventSeq": 1,
+      "eventType": "session_started",
+      "occurredAt": "2026-09-26T12:00:00.000Z",
+      "requestId": "r-0",
+      "idempotencyKey": "k-0",
+      "scenarioId": "convoy-3",
+      "scenarioVersion": "1.4",
+      "stateBeforeHash": "sb",
+      "stateAfterHash": "sa",
+      "payloadSchema": "dp.decision",
+      "payloadVersion": "3",
+      "payload": {
+        "choice": "hold",
+        "confidence": 0.7,
+        "tags": [
+          "risk",
+          "time"
+        ]
+      },
+      "eventHash": "ee4f9b9456ac59cc440c0c1ad22c936f357d04205896d3fe2c7c5365cccc3e21",
+      "receivedAt": "2026-09-26T12:05:00.000Z"
+    },
+    {
+      "eventId": "00000000-0000-4000-8000-000000000001",
+      "tenantId": "mcu",
+      "sessionId": "s-9",
+      "learnerId": "l-4",
+      "actorUserId": "u-4",
+      "actorRole": "learner",
+      "eventSeq": 2,
+      "eventType": "decision_submitted",
+      "occurredAt": "2026-09-26T12:01:00.000Z",
+      "requestId": "r-1",
+      "idempotencyKey": "k-1",
+      "scenarioId": "convoy-3",
+      "scenarioVersion": "1.4",
+      "turnId": "t-2",
+      "stateBeforeHash": "sb",
+      "stateAfterHash": "sa",
+      "payloadSchema": "dp.decision",
+      "payloadVersion": "3",
+      "payload": {
+        "choice": "hold",
+        "confidence": 0.7,
+        "tags": [
+          "risk",
+          "time"
+        ]
+      },
+      "previousEventHash": "ee4f9b9456ac59cc440c0c1ad22c936f357d04205896d3fe2c7c5365cccc3e21",
+      "eventHash": "265f3f78ac6af76d4c2a0a07b14d74896f79f2eaf652f250ceb4490049daa74b",
+      "receivedAt": "2026-09-26T12:05:00.000Z"
+    },
+    {
+      "eventId": "00000000-0000-4000-8000-000000000002",
+      "tenantId": "mcu",
+      "sessionId": "s-9",
+      "learnerId": "l-4",
+      "actorUserId": "u-4",
+      "actorRole": "learner",
+      "eventSeq": 3,
+      "eventType": "session_closed",
+      "occurredAt": "2026-09-26T12:02:00.000Z",
+      "requestId": "r-2",
+      "idempotencyKey": "k-2",
+      "scenarioId": "convoy-3",
+      "scenarioVersion": "1.4",
+      "stateBeforeHash": "sb",
+      "stateAfterHash": "sa",
+      "payloadSchema": "dp.decision",
+      "payloadVersion": "3",
+      "payload": {
+        "choice": "hold",
+        "confidence": 0.7,
+        "tags": [
+          "risk",
+          "time"
+        ]
+      },
+      "previousEventHash": "265f3f78ac6af76d4c2a0a07b14d74896f79f2eaf652f250ceb4490049daa74b",
+      "eventHash": "672eef61faf0ce1cc520f7ee31cd934d93c73bed129fa2079ed9dcad128c5a81",
+      "receivedAt": "2026-09-26T12:05:00.000Z"
+    }
+  ]
+}

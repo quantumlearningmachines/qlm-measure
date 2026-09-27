@@ -28,17 +28,50 @@ def test_vector_verifies(path):
 @pytest.mark.parametrize("path", [p for p in VECTORS if "tampered" not in p.stem], ids=[p.stem for p in VECTORS if "tampered" not in p.stem])
 def test_vector_reseals_byte_for_byte(path):
     v = json.loads(path.read_text())
-    for e in v["events"]:
-        sid = detect_scheme(e, v["family"])
+    fam = get_scheme(v["scheme"])
+    for i, e in enumerate(v["events"]):
+        prev = (fam.genesis if fam.genesis is not None else "") if i == 0 else str(v["events"][i - 1][fam.hash_field])
+        sid = detect_scheme(e, v["family"], prev=prev)
         assert sid is not None
         scheme = get_scheme(sid)
         rest = {k: x for k, x in e.items() if k != scheme.hash_field}
-        assert compute_event_hash(rest, sid) == e[scheme.hash_field]
-        assert seal_event(rest, sid)[scheme.hash_field] == e[scheme.hash_field]
+        assert compute_event_hash(rest, sid, prev=prev) == e[scheme.hash_field]
+        assert seal_event(rest, sid, prev=prev)[scheme.hash_field] == e[scheme.hash_field]
 
 
 def test_registry_order_matches_typescript():
-    assert [s["id"] for s in list_schemes()] == ["tpc/clinical-v4", "tpc/clinical-v3", "tpc/clinical-v2", "tpc/clinical-v1", "play/clinical-clin-1.0"]
+    ids = [s["id"] for s in list_schemes()]
+    assert ids[:5] == ["tpc/clinical-v4", "tpc/clinical-v3", "tpc/clinical-v2", "tpc/clinical-v1", "play/clinical-clin-1.0"]
+    assert ids[5:] == ["play/emit-1", "play/measure-session-1", "play/encounter-fnv64-1", "play/research-provenance-1",
+                       "qcore/qinverse-djb2-1", "studio/loop-1", "dp/ledger-v3", "tpc/dse-journal-1", "yardstick/spine-1"]
+
+
+def test_builtin_digests_match_typescript():
+    from qlm_measure.schemes import djb2_hex, fnv1a64_hex
+    assert fnv1a64_hex("") == "cbf29ce484222325" and fnv1a64_hex("a") == "af63dc4c8601ec8c"
+    assert djb2_hex("") == "00001505" and djb2_hex("abc") == "0b885c8b"
+    assert fnv1a64_hex("\U0001F600") != fnv1a64_hex("\ud83d")  # two UTF-16 units, as charCodeAt sees it
+
+
+def test_journal_implicit_link_and_truncated_content_hash():
+    with pytest.raises(ValueError, match="prev is required"):
+        seal_event({"seq": 0, "eventType": "tick", "data": {}}, "tpc/dse-journal-1")
+    v = json.loads((VEC / "tpc-dse-journal-1.json").read_text())
+    edited = [dict(e) for e in v["events"]]
+    edited[1]["data"] = {"changed": True}
+    assert verify_chain(edited, scheme="tpc/dse-journal-1").stats["tampered"] == 1
+    ms = json.loads((VEC / "play-measure-session-1.json").read_text())
+    assert all(len(e["event_hash"]) == 32 for e in ms["events"])
+    assert verify_chain([ms["events"][0], ms["events"][0]], scheme="play/measure-session-1").stats["duplicates"] == 1
+
+
+def test_dp_first_event_absent_prev_and_yardstick_text_forms():
+    v = json.loads((VEC / "dp-ledger-v3.json").read_text())
+    assert "previousEventHash" not in v["events"][0]
+    assert verify_chain(v["events"], scheme="dp/ledger-v3").clean
+    assert any("must be absent" in e for e in verify_chain([{**v["events"][0], "previousEventHash": "genesis"}], scheme="dp/ledger-v3").errors)
+    e = {"enrollment_id": "e1", "item_id": "i1", "response": "B", "correct": True, "previous_hash": ""}
+    assert get_scheme("yardstick/spine-1").canonical(e, None) == ":e1:i1:B:True"
 
 
 def test_v4_canonical_and_applies_and_coexistence():

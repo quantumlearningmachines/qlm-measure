@@ -1,0 +1,53 @@
+{
+  "scheme": "play/research-provenance-1",
+  "family": "play/research-provenance",
+  "source": "qlm-games src/lib/research/evidence-provenance-chain.ts computeChainHash",
+  "expect": {
+    "clean": true,
+    "hash_scheme": "play/research-provenance-1"
+  },
+  "events": [
+    {
+      "designLayer": {
+        "blueprintId": "bp-fractions-3",
+        "auditResult": {
+          "scores": {
+            "alignment": 0.92,
+            "coverage": 1,
+            "rigor": 0.875
+          }
+        }
+      },
+      "runtimeLayer": {
+        "worldId": "fraction-forge",
+        "eventCount": 143,
+        "evidenceChainIntegrity": true
+      },
+      "proofLayer": {
+        "protocolCommitmentHash": "a1b2",
+        "bridgeCertificateHash": "c3d4"
+      },
+      "lineageLayer": {
+        "closureRate": 0.75,
+        "allLineagesClosed": false
+      },
+      "chainHash": "a32fe080e6e1219fbd2d3c425e0dc3ac98671cb6f3c43e518eff59ddd77a1cb3"
+    },
+    {
+      "designLayer": {
+        "blueprintId": "bp-quantum-1",
+        "auditResult": {
+          "scores": {
+            "alignment": 1
+          }
+        }
+      },
+      "runtimeLayer": {
+        "worldId": "quantum-lab",
+        "eventCount": 0,
+        "evidenceChainIntegrity": false
+      },
+      "chainHash": "fcbebd4f68fd9e438e3065acfa3721c4a7571e76611ace5de510fd6e65edd105"
+    }
+  ]
+}

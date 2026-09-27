@@ -1,0 +1,51 @@
+{
+  "scheme": "yardstick/spine-1",
+  "family": "yardstick/spine",
+  "source": "yardstick/project_spine/models.py ResponseRecord.compute_chain_hash (f-string, UTF-8, Python bool text)",
+  "expect": {
+    "clean": true,
+    "hash_scheme": "yardstick/spine-1"
+  },
+  "events": [
+    {
+      "enrollment_id": "11111111-2222-4333-8444-555555555555",
+      "item_id": "aaaaaaaa-0000-4000-8000-000000000000",
+      "response": "B",
+      "correct": true,
+      "previous_hash": "",
+      "chain_hash": "33fc095bba5085f5a49e9f71a1d7210f1ea8a69d1ab1e116eb4f52354d078913",
+      "latency_ms": 900,
+      "evidence_weight": 1.0
+    },
+    {
+      "enrollment_id": "11111111-2222-4333-8444-555555555555",
+      "item_id": "aaaaaaaa-0000-4000-8000-000000000001",
+      "response": "D",
+      "correct": false,
+      "previous_hash": "33fc095bba5085f5a49e9f71a1d7210f1ea8a69d1ab1e116eb4f52354d078913",
+      "chain_hash": "59b176dca3ef24bfb391f1a39cc9164cb417138388a950a26d3f3d299e5f457d",
+      "latency_ms": 900,
+      "evidence_weight": 1.0
+    },
+    {
+      "enrollment_id": "11111111-2222-4333-8444-555555555555",
+      "item_id": "aaaaaaaa-0000-4000-8000-000000000002",
+      "response": "A",
+      "correct": true,
+      "previous_hash": "59b176dca3ef24bfb391f1a39cc9164cb417138388a950a26d3f3d299e5f457d",
+      "chain_hash": "a7f5f24bb017777ad3a9abf13b69ada748579e0c2c6356f672d596df40863ac3",
+      "latency_ms": 900,
+      "evidence_weight": 1.0
+    },
+    {
+      "enrollment_id": "11111111-2222-4333-8444-555555555555",
+      "item_id": "aaaaaaaa-0000-4000-8000-000000000003",
+      "response": "caf\u00e9",
+      "correct": false,
+      "previous_hash": "a7f5f24bb017777ad3a9abf13b69ada748579e0c2c6356f672d596df40863ac3",
+      "chain_hash": "6d69f0a72565855047d9f4fcd0254751476c2c58a8c12f20f0cb1ccee7546cdb",
+      "latency_ms": 900,
+      "evidence_weight": 1.0
+    }
+  ]
+}

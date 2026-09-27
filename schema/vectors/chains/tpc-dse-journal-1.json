@@ -1,0 +1,63 @@
+{
+  "scheme": "tpc/dse-journal-1",
+  "family": "tpc/dse-journal",
+  "source": "teachproof src/lib/tutor-lab/dse/journal.ts computeEntryHash (prevHash + content; link implicit; timestamp not hashed)",
+  "expect": {
+    "clean": true,
+    "hash_scheme": "tpc/dse-journal-1"
+  },
+  "events": [
+    {
+      "seq": 0,
+      "timestamp": 1758880000000,
+      "eventType": "phase_transition",
+      "data": {
+        "phase": "assess",
+        "detail": null
+      },
+      "hash": "7ee8812fdad14aa7f0022eff3480958c08cb225b6434240666da9a940c46b6a5"
+    },
+    {
+      "seq": 1,
+      "timestamp": 1758880001234,
+      "eventType": "llm_response",
+      "data": {
+        "phase": "assess",
+        "detail": {
+          "text": "Patient says: \"it hurts\" — ok"
+        }
+      },
+      "hash": "1274bfa7685911fa6c6792b0213a8763f8653a9e4072d7e9dc5c28ba06993317"
+    },
+    {
+      "seq": 2,
+      "timestamp": 1758880002468,
+      "eventType": "tick",
+      "data": {
+        "phase": "assess",
+        "detail": null
+      },
+      "hash": "d07bc6dbae5e5e77841b3b4e85d17db0187d9898bbb1ac18b88defcfe512cda9"
+    },
+    {
+      "seq": 3,
+      "timestamp": 1758880003702,
+      "eventType": "signal_emitted",
+      "data": {
+        "phase": "assess",
+        "detail": null
+      },
+      "hash": "7bc485a1f5189a2bace5a2a31473ee9355a3c8d7293c5695b5b04aecc70943c1"
+    },
+    {
+      "seq": 4,
+      "timestamp": 1758880004936,
+      "eventType": "interruption",
+      "data": {
+        "phase": "assess",
+        "detail": null
+      },
+      "hash": "262faf2bc3ac87a66bc8aff88cefa306d0a539066b86bf654d150ec3f530800e"
+    }
+  ]
+}

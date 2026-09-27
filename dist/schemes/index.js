@@ -15,6 +15,40 @@
  * Python twin: `python/qlm_measure/schemes.py`. Both are checked against
  * `schema/vectors/chains/*.json`.
  */
+import { PRODUCT_SCHEMES } from "./products.js";
+export function linkOf(s) {
+    return s.link ?? (s.prevField ? "explicit" : "none");
+}
+// ── Built-in non-cryptographic digests (products that sealed with them) ───
+/** UTF-16 code units, as JavaScript's charCodeAt yields them. */
+function utf16Units(str) {
+    const out = [];
+    for (let i = 0; i < str.length; i++)
+        out.push(str.charCodeAt(i));
+    return out;
+}
+/** FNV-1a 64-bit over UTF-16 code units, 16 hex chars (qlm-games snapshot-commit hashSnapshotSync). */
+export function fnv1a64Hex(str) {
+    let h = BigInt("0xcbf29ce484222325");
+    const prime = BigInt("0x100000001b3");
+    for (const c of utf16Units(str)) {
+        h ^= BigInt(c);
+        h = BigInt.asUintN(64, h * prime);
+    }
+    return h.toString(16).padStart(16, "0");
+}
+/** djb2, 32-bit wrap, unsigned hex padded to 8 (q-core evidence-chain hashString). */
+export function djb2Hex(str) {
+    let hash = 5381;
+    for (const c of utf16Units(str))
+        hash = ((hash << 5) + hash + c) | 0;
+    return (hash >>> 0).toString(16).padStart(8, "0");
+}
+/** The digest a scheme seals with: built in for fnv/djb2, the injected function for sha256. */
+export function digestFor(scheme, sha256) {
+    const base = scheme.digest === "fnv1a64" ? fnv1a64Hex : scheme.digest === "djb2-32" ? djb2Hex : sha256;
+    return scheme.truncate ? (c) => base(c).slice(0, scheme.truncate) : base;
+}
 // ── Canonical forms ───────────────────────────────────────────────────────
 /** Recursively sorts object keys; arrays keep their order. Mirrors Play's residency canonicalize(). */
 export function sortKeysDeep(value) {
@@ -143,7 +177,7 @@ export const PLAY_CLINICAL_1_0 = {
     },
 };
 // ── Registry ──────────────────────────────────────────────────────────────
-const ALL = [TPC_CLINICAL_V4, TPC_CLINICAL_V3, TPC_CLINICAL_V2, TPC_CLINICAL_V1, PLAY_CLINICAL_1_0];
+const ALL = [TPC_CLINICAL_V4, TPC_CLINICAL_V3, TPC_CLINICAL_V2, TPC_CLINICAL_V1, PLAY_CLINICAL_1_0, ...PRODUCT_SCHEMES];
 export const SCHEMES = Object.freeze(Object.fromEntries(ALL.map((s) => [s.id, s])));
 export function getScheme(id) {
     const s = SCHEMES[id];
@@ -159,48 +193,63 @@ export function familySchemes(family) {
     return out;
 }
 export function listSchemes() {
-    return ALL.map(({ id, family, since, hashField, prevField }) => ({ id, family, since, hashField, prevField }));
+    return ALL.map((s) => ({ id: s.id, family: s.family, since: s.since, hashField: s.hashField, prevField: s.prevField, link: linkOf(s), digest: s.digest ?? "sha256" }));
 }
 // ── Sealing and detection ─────────────────────────────────────────────────
-export function computeEventHashWith(hash, event, schemeId) {
-    return hash(getScheme(schemeId).canonical(event));
-}
-export async function computeEventHashAsyncWith(hash, event, schemeId) {
-    return hash(getScheme(schemeId).canonical(event));
-}
-/** Returns a copy of `event` with the scheme's hash field set. Never mutates the input. */
-export function sealEventWith(hash, event, schemeId) {
+export function computeEventHashWith(hash, event, schemeId, prev) {
     const scheme = getScheme(schemeId);
+    return digestFor(scheme, hash)(scheme.canonical(event, prev));
+}
+export async function computeEventHashAsyncWith(hash, event, schemeId, prev) {
+    const scheme = getScheme(schemeId);
+    if (scheme.digest && scheme.digest !== "sha256")
+        return digestFor(scheme, () => "")(scheme.canonical(event, prev));
+    const full = await hash(scheme.canonical(event, prev));
+    return scheme.truncate ? full.slice(0, scheme.truncate) : full;
+}
+/**
+ * Returns a copy of `event` with the scheme's hash field set. Never mutates the
+ * input. `prev` is required for implicit-link schemes (the previous record's
+ * hash, or the genesis value for the first record).
+ */
+export function sealEventWith(hash, event, schemeId, prev) {
+    const scheme = getScheme(schemeId);
+    if (linkOf(scheme) === "implicit" && prev === undefined)
+        throw new Error(`${schemeId}: prev is required (implicit link)`);
     const { [scheme.hashField]: _drop, ...rest } = event;
     void _drop;
-    return { ...rest, [scheme.hashField]: hash(scheme.canonical(rest)) };
+    return { ...rest, [scheme.hashField]: digestFor(scheme, hash)(scheme.canonical(rest, prev)) };
 }
 /** Which scheme of `family` the event's stored hash was sealed under, or null. Tries newest first. */
-export function detectSchemeWith(hash, event, family) {
+export function detectSchemeWith(hash, event, family, prev) {
     for (const s of familySchemes(family)) {
         if (!s.applies(event))
             continue;
-        if (event[s.hashField] === hash(s.canonical(event)))
+        if (event[s.hashField] === digestFor(s, hash)(s.canonical(event, prev)))
             return s.id;
     }
     return null;
 }
+const isAbsent = (v) => v === undefined || v === null;
 export function verifyChainWith(hash, events, opts) {
     if (!opts.scheme && !opts.family)
         throw new Error("verifyChain: pass { family } or { scheme }");
     const candidates = opts.scheme ? [getScheme(opts.scheme)] : familySchemes(opts.family);
     const { hashField, prevField, genesis } = candidates[0];
+    const link = linkOf(candidates[0]);
     const rejectMixed = opts.rejectMixed ?? true;
     const errors = [];
     const seen = new Set();
     const perScheme = {};
     let gaps = 0, duplicates = 0, tampered = 0, schemaErrors = 0;
     events.forEach((e, i) => {
+        // The previous record's stored hash, threaded for implicit-link schemes.
+        const prev = i === 0 ? (genesis ?? "") : String(events[i - 1][hashField] ?? "");
         let matched = null;
         for (const s of candidates) {
             if (!s.applies(e))
                 continue;
-            if (e[hashField] === hash(s.canonical(e))) {
+            if (e[hashField] === digestFor(s, hash)(s.canonical(e, prev))) {
                 matched = s;
                 break;
             }
@@ -218,15 +267,18 @@ export function verifyChainWith(hash, events, opts) {
             tampered++;
         }
         const h = e[hashField];
-        if (i === 0) {
-            if (e[prevField] !== genesis) {
-                errors.push(`[${i}] first event ${prevField} must be ${JSON.stringify(genesis)}`);
+        if (link === "explicit" && prevField) {
+            if (i === 0) {
+                const ok = genesis === null ? isAbsent(e[prevField]) : e[prevField] === genesis;
+                if (!ok) {
+                    errors.push(`[${i}] first event ${prevField} must be ${genesis === null ? "absent" : JSON.stringify(genesis)}`);
+                    gaps++;
+                }
+            }
+            else if (e[prevField] !== events[i - 1][hashField]) {
+                errors.push(`[${i}] chain gap`);
                 gaps++;
             }
-        }
-        else if (e[prevField] !== events[i - 1][hashField]) {
-            errors.push(`[${i}] chain gap`);
-            gaps++;
         }
         if (typeof h === "string") {
             if (seen.has(h)) {

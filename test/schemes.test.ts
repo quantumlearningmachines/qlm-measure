@@ -3,7 +3,7 @@ import { readFileSync, readdirSync } from "fs";
 import { join } from "path";
 import { createHash } from "crypto";
 import { sealEvent, computeEventHash, detectScheme, verifyChain, sha256Hex } from "../src/schemes/node.js";
-import { listSchemes, getScheme, sealEventWith, verifyChainWith, computeEventHashAsyncWith } from "../src/schemes/index.js";
+import { listSchemes, getScheme, sealEventWith, verifyChainWith, computeEventHashAsyncWith, fnv1a64Hex, djb2Hex } from "../src/schemes/index.js";
 
 const VEC = join(__dirname, "..", "schema", "vectors", "chains");
 const vectors = readdirSync(VEC).filter((f) => f.endsWith(".json")).map((f) => ({ name: f, ...JSON.parse(readFileSync(join(VEC, f), "utf-8")) }));
@@ -22,23 +22,67 @@ describe("chain schemes: vectors sealed by the original product code", () => {
     });
     if (v.expect.clean) {
       it(`${v.name}: re-sealing every event with its scheme reproduces the stored hash byte for byte`, () => {
-        for (const e of v.events) {
-          const id = detectScheme(e, v.family)!;
+        const family = getScheme(v.scheme);
+        v.events.forEach((e: Record<string, unknown>, i: number) => {
+          const prev = i === 0 ? (family.genesis ?? "") : String(v.events[i - 1][family.hashField]);
+          const id = detectScheme(e, v.family, prev)!;
           expect(id).not.toBeNull();
           const scheme = getScheme(id);
           const { [scheme.hashField]: stored, ...rest } = e;
-          expect(computeEventHash(rest, id)).toBe(stored);
-          expect(sealEvent(rest, id)[scheme.hashField]).toBe(stored);
-        }
+          expect(computeEventHash(rest, id, prev)).toBe(stored);
+          expect(sealEvent(rest, id, prev)[scheme.hashField]).toBe(stored);
+        });
       });
     }
   }
 });
 
 describe("chain schemes: behaviour", () => {
-  it("lists five schemes across two families, newest first", () => {
+  it("lists fourteen schemes across eleven families, clinical newest first", () => {
     const ids = listSchemes().map((s) => s.id);
-    expect(ids).toEqual(["tpc/clinical-v4", "tpc/clinical-v3", "tpc/clinical-v2", "tpc/clinical-v1", "play/clinical-clin-1.0"]);
+    expect(ids.slice(0, 5)).toEqual(["tpc/clinical-v4", "tpc/clinical-v3", "tpc/clinical-v2", "tpc/clinical-v1", "play/clinical-clin-1.0"]);
+    expect(ids.slice(5)).toEqual(["play/emit-1", "play/measure-session-1", "play/encounter-fnv64-1", "play/research-provenance-1", "qcore/qinverse-djb2-1", "studio/loop-1", "dp/ledger-v3", "tpc/dse-journal-1", "yardstick/spine-1"]);
+    expect(new Set(listSchemes().map((s) => s.family)).size).toBe(11);
+  });
+  it("built-in digests: FNV-1a 64 and djb2 over UTF-16 code units, matching the products' functions", () => {
+    expect(fnv1a64Hex("")).toBe("cbf29ce484222325");
+    expect(fnv1a64Hex("a")).toBe("af63dc4c8601ec8c");
+    expect(djb2Hex("")).toBe("00001505");
+    expect(djb2Hex("abc")).toBe("0b885c8b");
+    // a non-BMP character is two UTF-16 units, as charCodeAt sees it
+    expect(fnv1a64Hex("\u{1F600}")).not.toBe(fnv1a64Hex("\uD83D"));
+    expect(listSchemes().find((s) => s.id === "play/encounter-fnv64-1")!.digest).toBe("fnv1a64");
+    expect(listSchemes().find((s) => s.id === "qcore/qinverse-djb2-1")!.digest).toBe("djb2-32");
+  });
+  it("play/measure-session-1: truncated to 32 hex, unlinked, duplicates still caught", () => {
+    const v = vectors.find((v) => v.name === "play-measure-session-1.json")!;
+    for (const e of v.events) expect(String(e.event_hash)).toHaveLength(32);
+    expect(listSchemes().find((s) => s.id === "play/measure-session-1")!.link).toBe("none");
+    const r = verifyChain([v.events[0], v.events[0]], { scheme: "play/measure-session-1" });
+    expect(r.stats.duplicates).toBe(1); expect(r.stats.gaps).toBe(0);
+  });
+  it("tpc/dse-journal-1: implicit link — sealing needs prev, verification threads it, an edit breaks every later entry", () => {
+    const v = vectors.find((v) => v.name === "tpc-dse-journal-1.json")!;
+    expect(() => sealEvent({ seq: 0, eventType: "tick", data: {} }, "tpc/dse-journal-1")).toThrow(/prev is required/);
+    const edited = v.events.map((e: Record<string, unknown>) => ({ ...e }));
+    edited[1] = { ...edited[1], data: { changed: true } };
+    const r = verifyChain(edited, { scheme: "tpc/dse-journal-1" });
+    expect(r.errors).toContain("[1] hash mismatch (tampered)");
+    expect(r.stats.tampered).toBe(1); // later entries still verify against their stored predecessors' hashes
+    const cut = [v.events[0], v.events[2]];
+    expect(verifyChain(cut, { scheme: "tpc/dse-journal-1" }).stats.tampered).toBe(1); // a missing entry surfaces as a mismatch
+  });
+  it("dp/ledger-v3: first event has no previousEventHash; a stored row that dropped the key still verifies", () => {
+    const v = vectors.find((v) => v.name === "dp-ledger-v3.json")!;
+    expect("previousEventHash" in v.events[0]).toBe(false);
+    expect(verifyChain(v.events, { scheme: "dp/ledger-v3" }).clean).toBe(true);
+    const wrongGenesis = [{ ...v.events[0], previousEventHash: "genesis" }];
+    expect(verifyChain(wrongGenesis, { scheme: "dp/ledger-v3" }).errors.some((e) => e.includes("must be absent"))).toBe(true);
+  });
+  it("yardstick/spine-1: Python text forms (True/False) are what the hash covers", () => {
+    const e = { enrollment_id: "e1", item_id: "i1", response: "B", correct: true, previous_hash: "" };
+    expect(getScheme("yardstick/spine-1").canonical(e)).toBe(":e1:i1:B:True");
+    expect(getScheme("yardstick/spine-1").canonical({ ...e, correct: false, previous_hash: "ab" })).toBe("ab:e1:i1:B:False");
   });
   it("v4: only events with event_kind; payload keys sorted at every depth; v1-v3 never claim such events", () => {
     const base = { type: "clinical_evidence", learner: "l", encounter: "e", turn: 0, construct: "c", signal: "partial", scaffold: 1, extractor: "x", confidence: 0.5, prev_hash: "genesis" };

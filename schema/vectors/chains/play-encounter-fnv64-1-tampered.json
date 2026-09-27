@@ -1,0 +1,94 @@
+{
+  "scheme": "play/encounter-fnv64-1",
+  "family": "play/encounter",
+  "source": "FNV vector with payload.finding.value edited on event 1",
+  "expect": {
+    "clean": false,
+    "hash_scheme": "play/encounter-fnv64-1",
+    "tampered": 1,
+    "tampered_index": 1
+  },
+  "events": [
+    {
+      "eventId": "evt-0",
+      "ts": "2026-09-24T18:00:00.000Z",
+      "encounterId": "enc-optometry-9",
+      "actor": "student",
+      "source": {
+        "system": "play",
+        "adapter": "native"
+      },
+      "type": "encounter_start",
+      "payload": {
+        "caseId": "OD-CAP-02"
+      },
+      "consentRef": "consent-42",
+      "schemaVersion": "clin-1.0",
+      "prevHash": "",
+      "eventHash": "bd48ec94aff4bbe0"
+    },
+    {
+      "eventId": "evt-1",
+      "ts": "2026-09-24T18:00:01.000Z",
+      "encounterId": "enc-optometry-9",
+      "actor": "student",
+      "source": {
+        "system": "play",
+        "adapter": "native"
+      },
+      "type": "finding_recorded",
+      "payload": {
+        "finding": {
+          "site": "right eye",
+          "value": 22,
+          "unit": "mmHg"
+        }
+      },
+      "consentRef": "consent-42",
+      "schemaVersion": "clin-1.0",
+      "prevHash": "bd48ec94aff4bbe0",
+      "eventHash": "057723980a56fa04"
+    },
+    {
+      "eventId": "evt-2",
+      "ts": "2026-09-24T18:00:02.000Z",
+      "encounterId": "enc-optometry-9",
+      "actor": "student",
+      "source": {
+        "system": "play",
+        "adapter": "native"
+      },
+      "type": "hypothesis_stated",
+      "payload": {
+        "hypothesis": "ocular hypertension",
+        "confidence": 0.6
+      },
+      "consentRef": "consent-42",
+      "schemaVersion": "clin-1.0",
+      "prevHash": "057723980a56fa04",
+      "eventHash": "05a8dd9debb10714"
+    },
+    {
+      "eventId": "evt-3",
+      "ts": "2026-09-24T18:00:03.000Z",
+      "encounterId": "enc-optometry-9",
+      "actor": "system",
+      "source": {
+        "system": "play",
+        "adapter": "native"
+      },
+      "type": "plan_proposed",
+      "payload": {
+        "plan": [
+          "repeat IOP",
+          "pachymetry"
+        ],
+        "note": "borderline — confirm é"
+      },
+      "consentRef": "consent-42",
+      "schemaVersion": "clin-1.0",
+      "prevHash": "05a8dd9debb10714",
+      "eventHash": "9c99332e9aaf2b12"
+    }
+  ]
+}
