@@ -37,6 +37,7 @@ export { verifyRecordV03 } from "./verifier-v03.js";
 export { OntologyClient } from "./clients/ontology-client.js";
 export { EngineClient } from "./clients/engine-client.js";
 // ── Chain schemes (per-event hash chains sealed by QLM products; 0.4.0) ──────
-export { SCHEMES, getScheme, familySchemes, listSchemes, sortKeysDeep, TPC_CLINICAL_V1, TPC_CLINICAL_V2, TPC_CLINICAL_V3, TPC_CLINICAL_V4, PLAY_CLINICAL_1_0, TPC_SIGNALS, computeEventHashWith, computeEventHashAsyncWith, sealEventWith, detectSchemeWith, verifyChainWith, } from "./schemes/index.js";
+export { SCHEMES, getScheme, familySchemes, listSchemes, sortKeysDeep, TPC_CLINICAL_V1, TPC_CLINICAL_V2, TPC_CLINICAL_V3, TPC_CLINICAL_V4, PLAY_CLINICAL_1_0, TPC_SIGNALS, computeEventHashWith, computeEventHashAsyncWith, sealEventWith, detectSchemeWith, verifyChainWith, fnv1a64Hex, djb2Hex, digestFor, linkOf, } from "./schemes/index.js";
+export { PRODUCT_SCHEMES, PLAY_EMIT_1, PLAY_MEASURE_SESSION_1, PLAY_ENCOUNTER_FNV64_1, PLAY_RESEARCH_PROVENANCE_1, QCORE_QINVERSE_DJB2_1, STUDIO_LOOP_1, DP_LEDGER_V3, TPC_DSE_JOURNAL_1, YARDSTICK_SPINE_1, canonicalizeRfc8785, } from "./schemes/products.js";
 export { computeEventHash, sealEvent, detectScheme, verifyChain, sha256Hex } from "./schemes/node.js";
 //# sourceMappingURL=index.js.map

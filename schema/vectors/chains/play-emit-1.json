@@ -1,0 +1,51 @@
+{
+  "scheme": "play/emit-1",
+  "family": "play/emit",
+  "source": "qlm-games src/app/api/evidence/emit/route.ts computeChainHash @ c1e6091",
+  "expect": {
+    "clean": true,
+    "hash_scheme": "play/emit-1"
+  },
+  "events": [
+    {
+      "student_id": "S-1",
+      "product": "labpath",
+      "construct": "fractions.equivalence",
+      "signal": "demonstrated",
+      "weight": 1,
+      "scaffold": "unaided",
+      "chain_hash": "eb7b687a810f395999fa6d9130e6e89e20a188b01f07975801f69d5754f1b9f2",
+      "prev_hash": "genesis"
+    },
+    {
+      "student_id": "S-1",
+      "product": "labpath",
+      "construct": "fractions.equivalence",
+      "signal": "partial",
+      "weight": 0.5,
+      "scaffold": "unaided",
+      "chain_hash": "55f83da72e9f0fd3db98c6211ca1670b4f2d1912af22288a4a0abe36aa54e5aa",
+      "prev_hash": "eb7b687a810f395999fa6d9130e6e89e20a188b01f07975801f69d5754f1b9f2"
+    },
+    {
+      "student_id": "S-1",
+      "product": "teachproof",
+      "construct": "escalation",
+      "signal": "missed_opportunity",
+      "weight": 0.25,
+      "scaffold": "unaided",
+      "chain_hash": "e4eed9c69d1dff767d28c7d25adc09f54098d9e8aa5913cbb3e3a0443a592236",
+      "prev_hash": "55f83da72e9f0fd3db98c6211ca1670b4f2d1912af22288a4a0abe36aa54e5aa"
+    },
+    {
+      "student_id": "S-2",
+      "product": "studio",
+      "construct": "unit.rates",
+      "signal": "demonstrated",
+      "weight": 1e-7,
+      "scaffold": "unaided",
+      "chain_hash": "8f2a7393150740208a70adf0dded10677e5193faa4f13924048bab2357654c15",
+      "prev_hash": "e4eed9c69d1dff767d28c7d25adc09f54098d9e8aa5913cbb3e3a0443a592236"
+    }
+  ]
+}

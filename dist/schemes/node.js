@@ -7,9 +7,9 @@
 import { createHash } from "crypto";
 import { computeEventHashWith, sealEventWith, detectSchemeWith, verifyChainWith, } from "./index.js";
 export const sha256Hex = (s) => createHash("sha256").update(s).digest("hex");
-export const computeEventHash = (event, schemeId) => computeEventHashWith(sha256Hex, event, schemeId);
-export const sealEvent = (event, schemeId) => sealEventWith(sha256Hex, event, schemeId);
-export const detectScheme = (event, family) => detectSchemeWith(sha256Hex, event, family);
+export const computeEventHash = (event, schemeId, prev) => computeEventHashWith(sha256Hex, event, schemeId, prev);
+export const sealEvent = (event, schemeId, prev) => sealEventWith(sha256Hex, event, schemeId, prev);
+export const detectScheme = (event, family, prev) => detectSchemeWith(sha256Hex, event, family, prev);
 export const verifyChain = (events, opts) => verifyChainWith(sha256Hex, events, opts);
 export * from "./index.js";
 //# sourceMappingURL=node.js.map

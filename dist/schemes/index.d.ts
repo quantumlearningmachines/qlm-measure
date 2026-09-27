@@ -18,6 +18,7 @@
 export type HashFn = (canonical: string) => string;
 export type AsyncHashFn = (canonical: string) => Promise<string>;
 export type ChainEvent = Record<string, unknown>;
+export type Digest = "sha256" | "fnv1a64" | "djb2-32";
 export interface ChainScheme {
     /** Stable identifier, e.g. "tpc/clinical-v2". */
     id: string;
@@ -27,19 +28,41 @@ export interface ChainScheme {
     since: string;
     /** Field carrying this event's hash. */
     hashField: string;
-    /** Field carrying the previous event's hash. */
-    prevField: string;
-    /** Value of `prevField` on the first event of a chain. */
-    genesis: string;
+    /**
+     * Field carrying the previous event's hash, or null when the record stores no
+     * link field. With `link: "implicit"` the previous hash still enters the
+     * canonical form (threaded from the previous record); with `link: "none"`
+     * the scheme is a content hash and records are independent.
+     */
+    prevField: string | null;
+    /** Value of `prevField` on the first event; null means absent/null is the genesis. */
+    genesis: string | null;
+    /** How records bind to their predecessor. Default: "explicit" when prevField is set, else "none". */
+    link?: "explicit" | "implicit" | "none";
+    /** Digest over the canonical string. Default sha256 (injected); the others are built in. */
+    digest?: Digest;
+    /** Keep only the first N hex characters of the digest (play/measure-session stores 32). */
+    truncate?: number;
     /** Structural precondition for trying this scheme on an event. */
     applies(event: ChainEvent): boolean;
-    /** The exact string that is hashed. Never includes `hashField`. */
-    canonical(event: ChainEvent): string;
+    /**
+     * The exact string that is hashed. Never includes `hashField`. `prev` is the
+     * previous record's stored hash (the genesis value for the first record);
+     * schemes with an explicit link normally read the event's own field instead.
+     */
+    canonical(event: ChainEvent, prev?: string): string;
     /** Schema errors for one event (not integrity errors). Empty when valid. */
     validate(event: ChainEvent): string[];
     /** Scheme ids that may appear in the same chain as this one without the chain counting as mixed. */
     coexists?: string[];
 }
+export declare function linkOf(s: ChainScheme): "explicit" | "implicit" | "none";
+/** FNV-1a 64-bit over UTF-16 code units, 16 hex chars (qlm-games snapshot-commit hashSnapshotSync). */
+export declare function fnv1a64Hex(str: string): string;
+/** djb2, 32-bit wrap, unsigned hex padded to 8 (q-core evidence-chain hashString). */
+export declare function djb2Hex(str: string): string;
+/** The digest a scheme seals with: built in for fnv/djb2, the injected function for sha256. */
+export declare function digestFor(scheme: ChainScheme, sha256: HashFn): HashFn;
 /** Recursively sorts object keys; arrays keep their order. Mirrors Play's residency canonicalize(). */
 export declare function sortKeysDeep(value: unknown): unknown;
 export declare const TPC_SIGNALS: readonly ["demonstrated", "partial", "missed_opportunity", "not_observable"];
@@ -61,13 +84,20 @@ export declare const SCHEMES: Readonly<Record<string, ChainScheme>>;
 export declare function getScheme(id: string): ChainScheme;
 /** Schemes of a family, newest first — the order detection tries them in. */
 export declare function familySchemes(family: string): ChainScheme[];
-export declare function listSchemes(): Array<Pick<ChainScheme, "id" | "family" | "since" | "hashField" | "prevField">>;
-export declare function computeEventHashWith(hash: HashFn, event: ChainEvent, schemeId: string): string;
-export declare function computeEventHashAsyncWith(hash: AsyncHashFn, event: ChainEvent, schemeId: string): Promise<string>;
-/** Returns a copy of `event` with the scheme's hash field set. Never mutates the input. */
-export declare function sealEventWith<E extends ChainEvent>(hash: HashFn, event: E, schemeId: string): E;
+export declare function listSchemes(): Array<Pick<ChainScheme, "id" | "family" | "since" | "hashField" | "prevField"> & {
+    link: string;
+    digest: Digest;
+}>;
+export declare function computeEventHashWith(hash: HashFn, event: ChainEvent, schemeId: string, prev?: string): string;
+export declare function computeEventHashAsyncWith(hash: AsyncHashFn, event: ChainEvent, schemeId: string, prev?: string): Promise<string>;
+/**
+ * Returns a copy of `event` with the scheme's hash field set. Never mutates the
+ * input. `prev` is required for implicit-link schemes (the previous record's
+ * hash, or the genesis value for the first record).
+ */
+export declare function sealEventWith<E extends ChainEvent>(hash: HashFn, event: E, schemeId: string, prev?: string): E;
 /** Which scheme of `family` the event's stored hash was sealed under, or null. Tries newest first. */
-export declare function detectSchemeWith(hash: HashFn, event: ChainEvent, family: string): string | null;
+export declare function detectSchemeWith(hash: HashFn, event: ChainEvent, family: string, prev?: string): string | null;
 export interface ChainVerification {
     clean: boolean;
     errors: string[];

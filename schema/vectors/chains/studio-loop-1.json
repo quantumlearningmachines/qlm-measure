@@ -1,0 +1,91 @@
+{
+  "scheme": "studio/loop-1",
+  "family": "studio/loop",
+  "source": "qlm-studio src/lib/loop/evidence.ts hashEvent (sorted-pairs canonical); stored id is not hashed",
+  "expect": {
+    "clean": true,
+    "hash_scheme": "studio/loop-1"
+  },
+  "events": [
+    {
+      "sessionId": "loop-3",
+      "participantId": "p-11",
+      "stage": "predict",
+      "event": "stage_enter",
+      "at": "2026-09-26T09:00:00.000Z",
+      "payload": {
+        "z": 0,
+        "a": {
+          "nested": [
+            1,
+            "two",
+            null
+          ]
+        }
+      },
+      "id": "ev-0",
+      "prevHash": "genesis",
+      "hash": "f69ad360f81cf34ac1a290b90709a5cc724df3895214c2a14635a932d2ed6b54"
+    },
+    {
+      "sessionId": "loop-3",
+      "participantId": "p-11",
+      "stage": "predict",
+      "event": "response",
+      "at": "2026-09-26T09:01:00.000Z",
+      "payload": {
+        "z": 1,
+        "a": {
+          "nested": [
+            1,
+            "two",
+            null
+          ]
+        }
+      },
+      "id": "ev-1",
+      "prevHash": "f69ad360f81cf34ac1a290b90709a5cc724df3895214c2a14635a932d2ed6b54",
+      "hash": "3049136a29f6bf56132c57f8816b60154c67b704890b964f84f9ceb083dd8405"
+    },
+    {
+      "sessionId": "loop-3",
+      "participantId": "p-11",
+      "stage": "predict",
+      "event": "reflection",
+      "at": "2026-09-26T09:02:00.000Z",
+      "payload": {
+        "z": 2,
+        "a": {
+          "nested": [
+            1,
+            "two",
+            null
+          ]
+        }
+      },
+      "id": "ev-2",
+      "prevHash": "3049136a29f6bf56132c57f8816b60154c67b704890b964f84f9ceb083dd8405",
+      "hash": "a93897c32ffc322c755173cdcfea6c1ef7048b59798c16e64896bcf506d47d1f"
+    },
+    {
+      "sessionId": "loop-3",
+      "participantId": "p-11",
+      "stage": "predict",
+      "event": "stage_exit",
+      "at": "2026-09-26T09:03:00.000Z",
+      "payload": {
+        "z": 3,
+        "a": {
+          "nested": [
+            1,
+            "two",
+            null
+          ]
+        }
+      },
+      "id": "ev-3",
+      "prevHash": "a93897c32ffc322c755173cdcfea6c1ef7048b59798c16e64896bcf506d47d1f",
+      "hash": "23dee58d85dba30be5eca53f78f409a3f5c4f67153a02bbab3dacab8b0f983dc"
+    }
+  ]
+}

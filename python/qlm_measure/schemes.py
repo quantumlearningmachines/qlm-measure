@@ -121,12 +121,63 @@ class ChainScheme:
     family: str
     since: str
     hash_field: str
-    prev_field: str
-    genesis: str
+    prev_field: str | None
+    genesis: str | None
     applies: Callable[[dict], bool]
-    canonical: Callable[[dict], str]
+    canonical: Callable[[dict, str | None], str]
     validate: Callable[[dict], list[str]]
     coexists: tuple[str, ...] = ()
+    link: str | None = None          # "explicit" | "implicit" | "none"; default by prev_field
+    digest: str = "sha256"           # "sha256" | "fnv1a64" | "djb2-32"
+    truncate: int | None = None
+
+    def link_of(self) -> str:
+        return self.link or ("explicit" if self.prev_field else "none")
+
+
+# ── Built-in non-cryptographic digests ─────────────────────────────────────
+
+def _utf16_units(s: str):
+    b = s.encode("utf-16-le", "surrogatepass")  # JS strings may hold lone surrogates
+    for i in range(0, len(b), 2):
+        yield b[i] | (b[i + 1] << 8)
+
+
+def fnv1a64_hex(s: str) -> str:
+    """FNV-1a 64-bit over UTF-16 code units (qlm-games hashSnapshotSync)."""
+    h = 0xCBF29CE484222325
+    for c in _utf16_units(s):
+        h ^= c
+        h = (h * 0x100000001B3) & 0xFFFFFFFFFFFFFFFF
+    return format(h, "016x")
+
+
+def djb2_hex(s: str) -> str:
+    """djb2 with 32-bit wrap, unsigned hex padded to 8 (q-core hashString)."""
+    h = 5381
+    for c in _utf16_units(s):
+        h = ((h << 5) + h + c) & 0xFFFFFFFF
+    return format(h, "08x")
+
+
+def digest_for(scheme: "ChainScheme", sha256: HashFn):
+    base = fnv1a64_hex if scheme.digest == "fnv1a64" else djb2_hex if scheme.digest == "djb2-32" else sha256
+    if scheme.truncate:
+        return lambda c: base(c)[: scheme.truncate]
+    return base
+
+
+def js_string_of(v: Any) -> str:
+    """JavaScript String(v) for JSON-shaped values."""
+    if v is None:
+        return "null"
+    if v is True:
+        return "true"
+    if v is False:
+        return "false"
+    if isinstance(v, (int, float)):
+        return js_number(v)
+    return str(v)
 
 
 TPC_SIGNALS = ("demonstrated", "partial", "missed_opportunity", "not_observable")
@@ -183,7 +234,7 @@ def _tpc(id_: str, since: str, variant: int, applies: Callable[[dict], bool],
          validate: Callable[[dict], list[str]] = _tpc_validate, coexists: tuple[str, ...] = ()) -> ChainScheme:
     return ChainScheme(id=id_, family="tpc/clinical", since=since, hash_field="hash", prev_field="prev_hash",
                        genesis="genesis", applies=applies,
-                       canonical=lambda e, v=variant: js_json_dumps(_tpc_array(e, v)), validate=validate, coexists=coexists)
+                       canonical=lambda e, prev=None, v=variant: js_json_dumps(_tpc_array(e, v)), validate=validate, coexists=coexists)
 
 
 TPC_CLINICAL_V1 = _tpc("tpc/clinical-v1", "2026-08-31", 1, lambda e: not _has_event_kind(e))
@@ -213,7 +264,7 @@ TPC_CLINICAL_V4 = _tpc("tpc/clinical-v4", "2026-09-25", 4, _has_event_kind, vali
 _PLAY_FIELDS = ("eventId", "ts", "encounterId", "actor", "source", "type", "payload", "consentRef", "schemaVersion", "prevHash")
 
 
-def _play_canonical(e: dict) -> str:
+def _play_canonical(e: dict, prev: str | None = None) -> str:
     # JSON.stringify drops keys whose value is undefined; a key absent from the
     # event is undefined in the TS module, so it is dropped here too.
     picked = {f: e[f] for f in _PLAY_FIELDS if f in e}
@@ -235,7 +286,141 @@ PLAY_CLINICAL_1_0 = ChainScheme(id="play/clinical-clin-1.0", family="play/clinic
                                 applies=lambda e: e.get("schemaVersion") == "clin-1.0",
                                 canonical=_play_canonical, validate=_play_validate)
 
-_ALL: tuple[ChainScheme, ...] = (TPC_CLINICAL_V4, TPC_CLINICAL_V3, TPC_CLINICAL_V2, TPC_CLINICAL_V1, PLAY_CLINICAL_1_0)
+
+
+# ══════════════════════════════════════════════════════════════════════════
+# Product envelopes (0.5.0) — twins of src/schemes/products.ts
+# ══════════════════════════════════════════════════════════════════════════
+
+def _missing_str(e: dict, fields) -> list[str]:
+    return [f"missing {f}" for f in fields if not isinstance(e.get(f), str) or not e.get(f)]
+
+
+PLAY_EMIT_1 = ChainScheme(
+    id="play/emit-1", family="play/emit", since="2026-09-01", hash_field="chain_hash", prev_field="prev_hash", genesis="genesis",
+    applies=lambda e: True,
+    canonical=lambda e, prev=None: js_json_dumps({"student_id": e.get("student_id"), "product": e.get("product"), "construct": e.get("construct"),
+                                                   "signal": e.get("signal"), "weight": e.get("weight"), "prev_hash": e.get("prev_hash") or "genesis"}),
+    validate=lambda e: _missing_str(e, ("student_id", "product", "construct", "signal")))
+
+
+def _first(e: dict, *names, default=None):
+    for n in names:
+        if e.get(n) is not None:
+            return e[n]
+    return default
+
+
+PLAY_MEASURE_SESSION_1 = ChainScheme(
+    id="play/measure-session-1", family="play/measure-session", since="2026-08-20", hash_field="event_hash", prev_field=None, genesis=None,
+    link="none", truncate=32, applies=lambda e: True,
+    canonical=lambda e, prev=None: js_json_dumps({
+        "studyId": _first(e, "studyId", "study_id"), "sessionId": _first(e, "sessionId", "session_id"),
+        "studentId": _first(e, "studentId", "student_id", default="unknown"), "timestamp": e.get("timestamp") if e.get("timestamp") is not None else "",
+        "correct": e.get("correct"), "domain": e.get("domain") if e.get("domain") is not None else "",
+        "responseTimeMs": _first(e, "responseTimeMs", "response_time_ms"), "sequenceNumber": _first(e, "sequenceNumber", "sequence_number")}),
+    validate=lambda e: ([] if _first(e, "studyId", "study_id") else ["missing studyId"]) + ([] if _first(e, "sessionId", "session_id") else ["missing sessionId"]))
+
+PLAY_ENCOUNTER_FNV64_1 = ChainScheme(
+    id="play/encounter-fnv64-1", family="play/encounter", since="2026-08-16", hash_field="eventHash", prev_field="prevHash", genesis="",
+    digest="fnv1a64", applies=lambda e: "eventHash" in e or e.get("schemaVersion") == "clin-1.0",
+    canonical=lambda e, prev=None: js_json_dumps({k: e.get(k) for k in ("eventId", "ts", "encounterId", "actor", "source", "type", "payload", "consentRef", "prevHash") if k in e}),
+    validate=lambda e: _missing_str(e, ("eventId", "ts", "encounterId", "type")))
+
+
+def _provenance_canonical(e: dict, prev: str | None = None) -> str:
+    d, r = e["designLayer"], e["runtimeLayer"]
+    p, l = e.get("proofLayer"), e.get("lineageLayer")
+    parts = [str(d.get("blueprintId", "")), js_json_dumps(d["auditResult"]["scores"]),
+             js_string_of(r.get("worldId")) + js_string_of(r.get("eventCount")) + js_string_of(r.get("evidenceChainIntegrity"))]
+    if p:
+        parts.append(js_string_of(p.get("protocolCommitmentHash")) + js_string_of(p.get("bridgeCertificateHash")))
+    if l:
+        parts.append(js_string_of(l.get("closureRate")) + js_string_of(l.get("allLineagesClosed")))
+    return "".join(parts)
+
+
+PLAY_RESEARCH_PROVENANCE_1 = ChainScheme(
+    id="play/research-provenance-1", family="play/research-provenance", since="2026-08-25", hash_field="chainHash", prev_field=None, genesis=None,
+    link="none", applies=lambda e: isinstance(e.get("designLayer"), dict), canonical=_provenance_canonical,
+    validate=lambda e: [m for m, ok in (("missing designLayer", e.get("designLayer")), ("missing runtimeLayer", e.get("runtimeLayer"))) if not ok])
+
+QCORE_QINVERSE_DJB2_1 = ChainScheme(
+    id="qcore/qinverse-djb2-1", family="qcore/qinverse", since="2026-08-10", hash_field="hash", prev_field="prevHash", genesis="genesis",
+    digest="djb2-32", applies=lambda e: True,
+    canonical=lambda e, prev=None: js_json_dumps({"eventId": e.get("eventId"), "type": e.get("type"), "data": e.get("data"), "prevHash": e.get("prevHash"),
+                                                   "sequence": e.get("sequence"), "seed": e.get("seed")}),
+    validate=lambda e: _missing_str(e, ("eventId",)) + ([] if _is_num(e.get("sequence")) else ["missing sequence"]))
+
+_STUDIO_FIELDS = ("sessionId", "participantId", "stage", "event", "at", "payload")
+
+
+def _studio_canonical(e: dict, prev: str | None = None) -> str:
+    inp = {"prevHash": e.get("prevHash")}
+    for f in _STUDIO_FIELDS:
+        inp[f] = e.get(f)
+    return js_json_dumps([[k, inp[k]] for k in sorted(inp.keys())])
+
+
+STUDIO_LOOP_1 = ChainScheme(
+    id="studio/loop-1", family="studio/loop", since="2026-09-05", hash_field="hash", prev_field="prevHash", genesis="genesis",
+    applies=lambda e: True, canonical=_studio_canonical,
+    validate=lambda e: _missing_str(e, ("sessionId", "participantId", "stage", "event", "at")))
+
+
+def canonicalize_rfc8785(value: Any) -> str:
+    """art-of-kings event-ledger canonicalize: sorted keys, JSON scalars, undefined/None → null."""
+    if value is None or value is True or value is False or isinstance(value, (int, float)):
+        return js_json_dumps(value)
+    if isinstance(value, str):
+        return js_string(value)
+    if isinstance(value, list):
+        return "[" + ",".join(canonicalize_rfc8785(v) for v in value) + "]"
+    if isinstance(value, dict):
+        return "{" + ",".join(js_string(k) + ":" + canonicalize_rfc8785(value[k]) for k in sorted(value.keys())) + "}"
+    raise TypeError(f"Unserializable type: {type(value).__name__}")
+
+
+_DP_EXCLUDED = {"eventHash", "eventSignature", "signatureKeyVersion", "receivedAt"}
+_DP_FIELDS = ("eventId", "tenantId", "sessionId", "learnerId", "actorUserId", "actorRole", "eventSeq", "eventType", "occurredAt",
+              "requestId", "idempotencyKey", "scenarioId", "scenarioVersion", "turnId", "checkpointId", "stateBeforeHash", "stateAfterHash",
+              "knowledgeSnapshotId", "payloadSchema", "payloadVersion", "payload", "previousEventHash")
+
+
+def _dp_canonical(e: dict, prev: str | None = None) -> str:
+    rest = {k: e.get(k) for k in _DP_FIELDS}
+    for k, v in e.items():
+        if k not in _DP_EXCLUDED and k not in rest:
+            rest[k] = v
+    return (e.get("previousEventHash") or "") + canonicalize_rfc8785(rest)
+
+
+DP_LEDGER_V3 = ChainScheme(
+    id="dp/ledger-v3", family="dp/ledger", since="2026-08-28", hash_field="eventHash", prev_field="previousEventHash", genesis=None,
+    applies=lambda e: True, canonical=_dp_canonical,
+    validate=lambda e: _missing_str(e, ("eventId", "tenantId", "sessionId", "eventType")) + ([] if _is_num(e.get("eventSeq")) else ["missing eventSeq"]))
+
+TPC_DSE_JOURNAL_1 = ChainScheme(
+    id="tpc/dse-journal-1", family="tpc/dse-journal", since="2026-09-08", hash_field="hash", prev_field=None, genesis="", link="implicit",
+    applies=lambda e: True,
+    canonical=lambda e, prev=None: (prev or "") + js_json_dumps({"seq": e.get("seq"), "eventType": e.get("eventType"), "data": e.get("data")}),
+    validate=lambda e: ([] if _is_num(e.get("seq")) else ["missing seq"]) + _missing_str(e, ("eventType",)))
+
+
+def _py_text(v: Any) -> str:
+    return "True" if v is True else "False" if v is False else "None" if v is None else str(v)
+
+
+YARDSTICK_SPINE_1 = ChainScheme(
+    id="yardstick/spine-1", family="yardstick/spine", since="2026-08-30", hash_field="chain_hash", prev_field="previous_hash", genesis="",
+    applies=lambda e: True,
+    canonical=lambda e, prev=None: f"{e.get('previous_hash') or ''}:{_py_text(e.get('enrollment_id'))}:{_py_text(e.get('item_id'))}:{_py_text(e.get('response'))}:{_py_text(e.get('correct'))}",
+    validate=lambda e: _missing_str(e, ("enrollment_id", "item_id")))
+
+PRODUCT_SCHEMES: tuple[ChainScheme, ...] = (PLAY_EMIT_1, PLAY_MEASURE_SESSION_1, PLAY_ENCOUNTER_FNV64_1, PLAY_RESEARCH_PROVENANCE_1,
+                                            QCORE_QINVERSE_DJB2_1, STUDIO_LOOP_1, DP_LEDGER_V3, TPC_DSE_JOURNAL_1, YARDSTICK_SPINE_1)
+
+_ALL: tuple[ChainScheme, ...] = (TPC_CLINICAL_V4, TPC_CLINICAL_V3, TPC_CLINICAL_V2, TPC_CLINICAL_V1, PLAY_CLINICAL_1_0, *PRODUCT_SCHEMES)
 SCHEMES: dict[str, ChainScheme] = {s.id: s for s in _ALL}
 
 
@@ -254,27 +439,32 @@ def family_schemes(family: str) -> list[ChainScheme]:
 
 
 def list_schemes() -> list[dict]:
-    return [{"id": s.id, "family": s.family, "since": s.since, "hash_field": s.hash_field, "prev_field": s.prev_field} for s in _ALL]
+    return [{"id": s.id, "family": s.family, "since": s.since, "hash_field": s.hash_field, "prev_field": s.prev_field,
+             "link": s.link_of(), "digest": s.digest} for s in _ALL]
 
 
 # ── Sealing, detection, verification ───────────────────────────────────────
 
-def compute_event_hash(event: dict, scheme_id: str, hash_fn: HashFn = sha256_hex) -> str:
-    return hash_fn(get_scheme(scheme_id).canonical(event))
-
-
-def seal_event(event: dict, scheme_id: str, hash_fn: HashFn = sha256_hex) -> dict:
-    """Return a copy of ``event`` with the scheme's hash field set."""
+def compute_event_hash(event: dict, scheme_id: str, hash_fn: HashFn = sha256_hex, prev: str | None = None) -> str:
     scheme = get_scheme(scheme_id)
+    return digest_for(scheme, hash_fn)(scheme.canonical(event, prev))
+
+
+def seal_event(event: dict, scheme_id: str, hash_fn: HashFn = sha256_hex, prev: str | None = None) -> dict:
+    """Return a copy of ``event`` with the scheme's hash field set. ``prev`` is
+    required for implicit-link schemes (previous record's hash, genesis first)."""
+    scheme = get_scheme(scheme_id)
+    if scheme.link_of() == "implicit" and prev is None:
+        raise ValueError(f"{scheme_id}: prev is required (implicit link)")
     rest = {k: v for k, v in event.items() if k != scheme.hash_field}
-    return {**rest, scheme.hash_field: hash_fn(scheme.canonical(rest))}
+    return {**rest, scheme.hash_field: digest_for(scheme, hash_fn)(scheme.canonical(rest, prev))}
 
 
-def detect_scheme(event: dict, family: str, hash_fn: HashFn = sha256_hex) -> str | None:
+def detect_scheme(event: dict, family: str, hash_fn: HashFn = sha256_hex, prev: str | None = None) -> str | None:
     for s in family_schemes(family):
         if not s.applies(event):
             continue
-        if event.get(s.hash_field) == hash_fn(s.canonical(event)):
+        if event.get(s.hash_field) == digest_for(s, hash_fn)(s.canonical(event, prev)):
             return s.id
     return None
 
@@ -292,15 +482,17 @@ def verify_chain(events: Iterable[dict], *, family: str | None = None, scheme: s
         raise ValueError("verify_chain: pass family= or scheme=")
     candidates = [get_scheme(scheme)] if scheme else family_schemes(family)  # type: ignore[arg-type]
     hash_field, prev_field, genesis = candidates[0].hash_field, candidates[0].prev_field, candidates[0].genesis
+    link = candidates[0].link_of()
     events = list(events)
     errors: list[str] = []
     seen: set[str] = set()
     per_scheme: dict[str, int] = {}
     gaps = duplicates = tampered = schema_errors = 0
     for i, e in enumerate(events):
+        prev = (genesis if genesis is not None else "") if i == 0 else str(events[i - 1].get(hash_field) or "")
         matched = None
         for s in candidates:
-            if s.applies(e) and e.get(hash_field) == hash_fn(s.canonical(e)):
+            if s.applies(e) and e.get(hash_field) == digest_for(s, hash_fn)(s.canonical(e, prev)):
                 matched = s
                 break
         scheme_for_schema = matched or next((s for s in candidates if s.applies(e)), candidates[-1])
@@ -313,13 +505,15 @@ def verify_chain(events: Iterable[dict], *, family: str | None = None, scheme: s
             errors.append(f"[{i}] hash mismatch (tampered)")
             tampered += 1
         h = e.get(hash_field)
-        if i == 0:
-            if e.get(prev_field) != genesis:
-                errors.append(f"[{i}] first event {prev_field} must be {js_string(genesis)}")
+        if link == "explicit" and prev_field:
+            if i == 0:
+                ok = (e.get(prev_field) is None) if genesis is None else (e.get(prev_field) == genesis)
+                if not ok:
+                    errors.append(f"[{i}] first event {prev_field} must be " + ("absent" if genesis is None else js_string(genesis)))
+                    gaps += 1
+            elif e.get(prev_field) != events[i - 1].get(hash_field):
+                errors.append(f"[{i}] chain gap")
                 gaps += 1
-        elif e.get(prev_field) != events[i - 1].get(hash_field):
-            errors.append(f"[{i}] chain gap")
-            gaps += 1
         if isinstance(h, str):
             if h in seen:
                 errors.append(f"[{i}] duplicate hash")

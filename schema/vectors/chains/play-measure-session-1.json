@@ -1,0 +1,40 @@
+{
+  "scheme": "play/measure-session-1",
+  "family": "play/measure-session",
+  "source": "qlm-games src/app/api/measure/session/route.ts computeEventHash @ c1e6091 (sha256 truncated to 32)",
+  "expect": {
+    "clean": true,
+    "hash_scheme": "play/measure-session-1"
+  },
+  "events": [
+    {
+      "studyId": "SDA-002",
+      "sessionId": "sess-7a",
+      "studentId": "st-1",
+      "timestamp": "2026-09-26T10:00:00.000Z",
+      "correct": true,
+      "domain": "algebra",
+      "responseTimeMs": 4210,
+      "sequenceNumber": 0,
+      "event_hash": "287f01710bdaa658ef7e1bb9b92be0e2"
+    },
+    {
+      "studyId": "SDA-002",
+      "sessionId": "sess-7a",
+      "studentId": "st-1",
+      "timestamp": "2026-09-26T10:00:07.500Z",
+      "correct": false,
+      "domain": "algebra",
+      "responseTimeMs": null,
+      "sequenceNumber": 1,
+      "event_hash": "83241c3bd514172a95f7030b3d975ac5"
+    },
+    {
+      "studyId": "SDA-002",
+      "sessionId": "sess-7a",
+      "correct": null,
+      "sequenceNumber": 2,
+      "event_hash": "8cfe9eb2de6c3f9cc138ad0a0a4f205a"
+    }
+  ]
+}

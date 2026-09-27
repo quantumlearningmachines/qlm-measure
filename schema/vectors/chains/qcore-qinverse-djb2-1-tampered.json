@@ -1,0 +1,78 @@
+{
+  "scheme": "qcore/qinverse-djb2-1",
+  "family": "qcore/qinverse",
+  "source": "djb2 vector with data.text edited on event 2",
+  "expect": {
+    "clean": false,
+    "hash_scheme": "qcore/qinverse-djb2-1",
+    "tampered": 1,
+    "tampered_index": 2
+  },
+  "events": [
+    {
+      "eventId": "qe-0",
+      "type": "session_start",
+      "data": {
+        "text": "d0",
+        "moveClass": null
+      },
+      "sequence": 0,
+      "seed": 424242,
+      "classifierVersion": "mc-1.2",
+      "prevHash": "genesis",
+      "hash": "2227cb58"
+    },
+    {
+      "eventId": "qe-1",
+      "type": "teacher_turn",
+      "data": {
+        "text": "What do you notice? ¿",
+        "moveClass": "probe"
+      },
+      "sequence": 1,
+      "seed": 424242,
+      "classifierVersion": "mc-1.2",
+      "prevHash": "2227cb58",
+      "hash": "0c5dc30f"
+    },
+    {
+      "eventId": "qe-2",
+      "type": "student_turn",
+      "data": {
+        "text": "edited",
+        "moveClass": null
+      },
+      "sequence": 2,
+      "seed": 424242,
+      "classifierVersion": "mc-1.2",
+      "prevHash": "0c5dc30f",
+      "hash": "cfb2c306"
+    },
+    {
+      "eventId": "qe-3",
+      "type": "teacher_turn",
+      "data": {
+        "text": "d3",
+        "moveClass": "probe"
+      },
+      "sequence": 3,
+      "seed": 424242,
+      "classifierVersion": "mc-1.2",
+      "prevHash": "cfb2c306",
+      "hash": "4c742820"
+    },
+    {
+      "eventId": "qe-4",
+      "type": "session_close",
+      "data": {
+        "text": "d4",
+        "moveClass": null
+      },
+      "sequence": 4,
+      "seed": 424242,
+      "classifierVersion": "mc-1.2",
+      "prevHash": "4c742820",
+      "hash": "d4cd1d2c"
+    }
+  ]
+}
