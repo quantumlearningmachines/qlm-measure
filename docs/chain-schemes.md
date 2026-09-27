@@ -1,4 +1,4 @@
-# Chain schemes (0.5.1)
+# Chain schemes (0.5.2)
 
 QLM products store one row per evidence event, each carrying its own hash and
 a link to the previous event's hash. Before 0.4.0 every product computed that
@@ -67,6 +67,9 @@ previous hash enters the canonical form but is not stored — the journal), or
 | `dp/ledger-v3` | art-of-kings `engine/v3/event-ledger` `computeEventHash` (RFC 8785-style canonical; prev ‖ canonical; all 22 envelope keys, absent → null) | sha256 | `eventHash` / `previousEventHash`, absent on the first event |
 | `tpc/dse-journal-1` | teachproof `tutor-lab/dse/journal` `computeEntryHash` (prev + content; `timestamp` not hashed) | sha256 | implicit, genesis `""` |
 | `yardstick/spine-1` | yardstick `project_spine/models` `ResponseRecord.compute_chain_hash` (Python f-string, `True`/`False`) | sha256 | `chain_hash` / `previous_hash`, genesis `""` |
+| `tpc/transcript-1` | teachproof `api/clinical/evidence/process` Stage 3 (sha256 of the `transcript` column: `{text, turns, sourceType, duration}`) | sha256 | `hash` / `prev_hash` stored but not hashed; `null` on the learner's first item |
+| `tpc/differential-commit-1` | teachproof `longitudinal/events/differential-commit` `hashCommit` (positional array; `turn` not hashed) — lives inside the clinical chain and coexists with `tpc/clinical-v*` | sha256 | `hash` / `prev_hash` |
+| `tpc/rct-input-1` | teachproof `rct/result-ledger` `ledgerFromAnalysis` input fingerprint (every entry's `inputHash`) | sha256 | none |
 | `labpath/learning-evidence-v1` | qlm-games `ecogenesis/labpath/learning-evidence-event` `hashLearningEvidenceEvent` (whole draft, keys sorted with `localeCompare` at every depth) | sha256 | `hash` / `prev_hash`, `null` on the first event |
 
 FNV-1a and djb2 are not collision resistant: those two chains are

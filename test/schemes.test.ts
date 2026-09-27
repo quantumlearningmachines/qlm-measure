@@ -38,11 +38,11 @@ describe("chain schemes: vectors sealed by the original product code", () => {
 });
 
 describe("chain schemes: behaviour", () => {
-  it("lists fifteen schemes across twelve families, clinical newest first", () => {
+  it("lists eighteen schemes across fourteen families, clinical newest first", () => {
     const ids = listSchemes().map((s) => s.id);
     expect(ids.slice(0, 5)).toEqual(["tpc/clinical-v4", "tpc/clinical-v3", "tpc/clinical-v2", "tpc/clinical-v1", "play/clinical-clin-1.0"]);
-    expect(ids.slice(5)).toEqual(["play/emit-1", "play/measure-session-1", "play/encounter-fnv64-1", "play/research-provenance-1", "qcore/qinverse-djb2-1", "studio/loop-1", "dp/ledger-v3", "tpc/dse-journal-1", "yardstick/spine-1", "labpath/learning-evidence-v1"]);
-    expect(new Set(listSchemes().map((s) => s.family)).size).toBe(12);
+    expect(ids.slice(5)).toEqual(["play/emit-1", "play/measure-session-1", "play/encounter-fnv64-1", "play/research-provenance-1", "qcore/qinverse-djb2-1", "studio/loop-1", "dp/ledger-v3", "tpc/dse-journal-1", "yardstick/spine-1", "labpath/learning-evidence-v1", "tpc/transcript-1", "tpc/differential-commit-1", "tpc/rct-input-1"]);
+    expect(new Set(listSchemes().map((s) => s.family)).size).toBe(14);
   });
   it("built-in digests: FNV-1a 64 and djb2 over UTF-16 code units, matching the products' functions", () => {
     expect(fnv1a64Hex("")).toBe("cbf29ce484222325");

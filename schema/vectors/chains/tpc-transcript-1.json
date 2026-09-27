@@ -1,0 +1,51 @@
+{
+  "scheme": "tpc/transcript-1",
+  "family": "tpc/transcript",
+  "source": "teachproof api/clinical/evidence/process/route.ts Stage 3 (sha256 of the transcript column; prev_hash stored, not hashed)",
+  "expect": {
+    "clean": true,
+    "hash_scheme": "tpc/transcript-1"
+  },
+  "events": [
+    {
+      "id": "item-0",
+      "learner_id": "L-9",
+      "transcript": {
+        "text": "Hello — how are you feeling? Dizzy.",
+        "turns": [
+          {
+            "speaker": "learner",
+            "text": "Hello — how are you feeling?"
+          },
+          {
+            "speaker": "patient",
+            "text": "Dizzy."
+          }
+        ],
+        "sourceType": "live",
+        "duration": 612.5
+      },
+      "hash": "796b2176168c11daff60d6d7a494154e303517ca1ed8951c07f484e1e80bc046",
+      "prev_hash": null,
+      "duration_s": 612.5
+    },
+    {
+      "id": "item-1",
+      "learner_id": "L-9",
+      "transcript": {
+        "text": "Any chest pain?",
+        "turns": [
+          {
+            "speaker": "learner",
+            "text": "Any chest pain?"
+          }
+        ],
+        "sourceType": "upload",
+        "duration": 88
+      },
+      "hash": "87e0c49c1bcd3b0df7b043df42bbba5bdc4661e9b4a7040b791cb112cae5a7a3",
+      "prev_hash": "796b2176168c11daff60d6d7a494154e303517ca1ed8951c07f484e1e80bc046",
+      "duration_s": 88
+    }
+  ]
+}

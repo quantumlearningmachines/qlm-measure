@@ -1,0 +1,94 @@
+{
+  "scheme": "tpc/differential-commit-1",
+  "family": "tpc/clinical",
+  "source": "teachproof differential-commit.ts createCommitEvent/createSkipEvent (hashCommit) interleaved with tpc/clinical-v3 evidence events",
+  "expect": {
+    "clean": true,
+    "hash_scheme": "tpc/clinical-v3",
+    "schemes": {
+      "tpc/clinical-v3": 2,
+      "tpc/differential-commit-1": 4
+    }
+  },
+  "events": [
+    {
+      "type": "clinical_evidence",
+      "learner": "L-7f3a",
+      "encounter": "RN-R4-01",
+      "turn": 0,
+      "construct": "escalation",
+      "signal": "demonstrated",
+      "scaffold": 0,
+      "extractor": "llm_extractor_v2",
+      "confidence": 0.8,
+      "prev_hash": "genesis",
+      "triage_class": null,
+      "engine_version": "tpc-engine-1.6.0",
+      "mapping_version": "cco-2026-09-14",
+      "hash": "10b0e33907cadc4c66308ccadca9ea85c20c5b670008609a4b17e0008a1e8a0e"
+    },
+    {
+      "type": "differential_commit",
+      "learner": "L-7f3a",
+      "encounter": "RN-R4-01",
+      "turn": 1,
+      "checkpoint": "after_history",
+      "rankedDifferential": [
+        "sepsis",
+        "hypovolemia",
+        "PE é"
+      ],
+      "nextAction": "order lactate",
+      "whyText": "Fever, tachycardia, \"hypotension\"",
+      "discipline": "nursing",
+      "prev_hash": "10b0e33907cadc4c66308ccadca9ea85c20c5b670008609a4b17e0008a1e8a0e",
+      "hash": "8e5b28a9fd271bfa4fa0dd3aafd80470109c633672b1faeb17e9d1d37b65c810"
+    },
+    {
+      "type": "clinical_evidence",
+      "learner": "L-7f3a",
+      "encounter": "RN-R4-01",
+      "turn": 2,
+      "construct": "escalation",
+      "signal": "demonstrated",
+      "scaffold": 0,
+      "extractor": "llm_extractor_v2",
+      "confidence": 0.8,
+      "prev_hash": "8e5b28a9fd271bfa4fa0dd3aafd80470109c633672b1faeb17e9d1d37b65c810",
+      "triage_class": null,
+      "engine_version": "tpc-engine-1.6.0",
+      "mapping_version": "cco-2026-09-14",
+      "hash": "becc7ae291478be1e6b862707dd9e080cb9d1bfd86476baa358f99ce1f0d7f71"
+    },
+    {
+      "type": "commit_skipped",
+      "learner": "L-7f3a",
+      "encounter": "RN-R4-01",
+      "turn": 3,
+      "checkpoint": "after_assessment",
+      "reason": "skip",
+      "prev_hash": "becc7ae291478be1e6b862707dd9e080cb9d1bfd86476baa358f99ce1f0d7f71",
+      "hash": "5040e165c1363246b3868daa11a7d6a3b6203809ed522cbe3c63ea4da5755688"
+    },
+    {
+      "type": "commit_skipped",
+      "learner": "L-7f3a",
+      "encounter": "RN-R4-01",
+      "turn": 4,
+      "checkpoint": "after_assessment",
+      "reason": "timeout",
+      "prev_hash": "5040e165c1363246b3868daa11a7d6a3b6203809ed522cbe3c63ea4da5755688",
+      "hash": "1fe9da64e4c43f2f33b20b8038cdda0f5d84b6a36bd07b28ba908e7791ddd6c6"
+    },
+    {
+      "type": "commit_skipped",
+      "learner": "L-7f3a",
+      "encounter": "RN-R4-01",
+      "turn": 5,
+      "checkpoint": "after_assessment",
+      "reason": "not_reached",
+      "prev_hash": "1fe9da64e4c43f2f33b20b8038cdda0f5d84b6a36bd07b28ba908e7791ddd6c6",
+      "hash": "35814e31036540501b5379d1b779d7b161da33757671099ed5030f69641fad10"
+    }
+  ]
+}

@@ -1,0 +1,39 @@
+{
+  "scheme": "tpc/rct-input-1",
+  "family": "tpc/rct-input",
+  "source": "teachproof rct/result-ledger.ts ledgerFromAnalysis inputData → computeInputHash",
+  "expect": {
+    "clean": true,
+    "hash_scheme": "tpc/rct-input-1"
+  },
+  "events": [
+    {
+      "studyId": "BINV-002",
+      "nTreatment": 48,
+      "nControl": 47,
+      "totalOutcomeEvents": 1093,
+      "sourcePipes": [
+        "pipe3",
+        "pipe5"
+      ],
+      "dimensions": [
+        {
+          "dimension": "escalation",
+          "treatmentN": 48,
+          "controlN": 47,
+          "treatmentMean": 0.71,
+          "controlMean": 0.58,
+          "extra": "not hashed"
+        },
+        {
+          "dimension": "review_of_systems",
+          "treatmentN": 48,
+          "controlN": 47,
+          "treatmentMean": 0.5,
+          "controlMean": 0.5
+        }
+      ],
+      "inputHash": "cadcbe5a973129e5ac34b3f52a6a0d8abe68b4d59333b6c4ea42eb31f5136bda"
+    }
+  ]
+}

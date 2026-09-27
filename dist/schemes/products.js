@@ -279,8 +279,63 @@ export const LABPATH_LEARNING_EVIDENCE_V1 = {
         return errors;
     },
 };
+// ── tpc/transcript-1 — teachproof src/app/api/clinical/evidence/process/route.ts
+// Stage 3 seals an evidence item: sha256 of JSON.stringify({text, turns,
+// sourceType, duration}) — the item's transcript column — and stores the
+// previous item's hash as prev_hash (null on the learner's first item). The
+// link is stored, not hashed; the verifier checks it separately.
+export const TPC_TRANSCRIPT_1 = {
+    id: "tpc/transcript-1", family: "tpc/transcript", since: "2026-08-20",
+    hashField: "hash", prevField: "prev_hash", genesis: null,
+    applies: (e) => typeof e.transcript === "object" && e.transcript !== null,
+    canonical: (e) => {
+        const t = e.transcript;
+        return JSON.stringify({ text: t.text, turns: t.turns, sourceType: t.sourceType, duration: t.duration });
+    },
+    validate: (e) => (typeof e.transcript === "object" && e.transcript !== null ? [] : ["missing transcript"]),
+};
+// ── tpc/differential-commit-1 — teachproof src/lib/clinical/longitudinal/events/differential-commit.ts
+// Commit and skip events are appended to the clinical evidence chain (same
+// hash/prev_hash fields, so they coexist with tpc/clinical-v*). hashCommit:
+// sha256 of JSON.stringify(canonical) where canonical is
+//   ["differential_commit", learner, encounter, checkpoint, rankedDifferential, whyText, nextAction, discipline, prev_hash]
+// or ["commit_skipped", learner, encounter, checkpoint, reason, prev_hash]. `turn` is not hashed.
+export const TPC_DIFFERENTIAL_COMMIT_1 = {
+    id: "tpc/differential-commit-1", family: "tpc/clinical", since: "2026-09-14",
+    hashField: "hash", prevField: "prev_hash", genesis: "genesis",
+    applies: (e) => e.type === "differential_commit" || e.type === "commit_skipped",
+    canonical: (e) => JSON.stringify(e.type === "differential_commit"
+        ? ["differential_commit", e.learner, e.encounter, e.checkpoint, e.rankedDifferential, e.whyText, e.nextAction, e.discipline, e.prev_hash]
+        : ["commit_skipped", e.learner, e.encounter, e.checkpoint, e.reason, e.prev_hash]),
+    validate: (e) => {
+        const errors = [];
+        for (const f of ["learner", "encounter", "checkpoint"])
+            if (typeof e[f] !== "string" || !e[f])
+                errors.push(`missing ${f}`);
+        if (e.type === "commit_skipped" && !["skip", "timeout", "not_reached"].includes(e.reason))
+            errors.push(`invalid reason: ${String(e.reason)}`);
+        return errors;
+    },
+    coexists: ["tpc/clinical-v1", "tpc/clinical-v2", "tpc/clinical-v3", "tpc/clinical-v4"],
+};
+// ── tpc/rct-input-1 — teachproof src/lib/rct/result-ledger.ts ────────────
+// ledgerFromAnalysis fingerprints the analysis inputs: sha256 of
+// JSON.stringify({studyId, nTreatment, nControl, totalOutcomeEvents,
+// sourcePipes, dimensions: [{dimension, treatmentN, controlN, treatmentMean,
+// controlMean}]}); every ledger entry carries it as inputHash. Unlinked.
+export const TPC_RCT_INPUT_1 = {
+    id: "tpc/rct-input-1", family: "tpc/rct-input", since: "2026-09-22",
+    hashField: "inputHash", prevField: null, genesis: null, link: "none",
+    applies: (e) => Array.isArray(e.dimensions),
+    canonical: (e) => JSON.stringify({
+        studyId: e.studyId, nTreatment: e.nTreatment, nControl: e.nControl, totalOutcomeEvents: e.totalOutcomeEvents, sourcePipes: e.sourcePipes,
+        dimensions: e.dimensions.map((d) => ({ dimension: d.dimension, treatmentN: d.treatmentN, controlN: d.controlN, treatmentMean: d.treatmentMean, controlMean: d.controlMean })),
+    }),
+    validate: (e) => (typeof e.studyId === "string" && e.studyId ? [] : ["missing studyId"]),
+};
 export const PRODUCT_SCHEMES = [
     PLAY_EMIT_1, PLAY_MEASURE_SESSION_1, PLAY_ENCOUNTER_FNV64_1, PLAY_RESEARCH_PROVENANCE_1,
     QCORE_QINVERSE_DJB2_1, STUDIO_LOOP_1, DP_LEDGER_V3, TPC_DSE_JOURNAL_1, YARDSTICK_SPINE_1, LABPATH_LEARNING_EVIDENCE_V1,
+    TPC_TRANSCRIPT_1, TPC_DIFFERENTIAL_COMMIT_1, TPC_RCT_INPUT_1,
 ];
 //# sourceMappingURL=products.js.map
