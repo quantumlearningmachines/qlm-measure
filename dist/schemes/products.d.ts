@@ -23,5 +23,13 @@ export declare const LABPATH_LEARNING_EVIDENCE_V1: ChainScheme;
 export declare const TPC_TRANSCRIPT_1: ChainScheme;
 export declare const TPC_DIFFERENTIAL_COMMIT_1: ChainScheme;
 export declare const TPC_RCT_INPUT_1: ChainScheme;
+export declare const PLAY_WORLD_TRACE_IDENTITY_1: ChainScheme;
+export declare const PLAY_WORLD_TRACE_TSIM_1: ChainScheme;
+export declare const PLAY_WORLD_TRACE_1: ChainScheme;
+export declare const TPC_YARDSTICK_RECORD_2: ChainScheme;
+export declare const TPC_YARDSTICK_RECORD_1: ChainScheme;
+export declare const TPC_INTERVENTION_1: ChainScheme;
+export declare const TPC_REHEARSAL_STAGE_1: ChainScheme;
+export declare const YARDSTICK_ACTIVITY_1: ChainScheme;
 export declare const PRODUCT_SCHEMES: ChainScheme[];
 //# sourceMappingURL=products.d.ts.map

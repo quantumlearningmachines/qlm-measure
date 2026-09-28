@@ -1,0 +1,74 @@
+{
+  "scheme": "play/world-trace-tsim-1",
+  "family": "play/world-trace",
+  "source": "qlm-games worlds/components/SimpleForcesWorld.tsx emitTrace (array carries tSim)",
+  "expect": {
+    "clean": true,
+    "hash_scheme": "play/world-trace-tsim-1"
+  },
+  "events": [
+    {
+      "seq": 0,
+      "type": "missionStart",
+      "worldId": "simpleforces",
+      "missionId": "68-net",
+      "band": "6-8",
+      "seed": 42,
+      "tSim": 0,
+      "schemaVersion": "world-trace/1",
+      "payload": {
+        "missionId": "68-net",
+        "band": "6-8"
+      },
+      "prevHash": "00000000",
+      "hash": "a918371e"
+    },
+    {
+      "seq": 1,
+      "type": "commit",
+      "worldId": "simpleforces",
+      "missionId": "68-net",
+      "band": "6-8",
+      "seed": 42,
+      "tSim": 1.5,
+      "schemaVersion": "world-trace/1",
+      "payload": {
+        "option": "left",
+        "confidence": "sure"
+      },
+      "prevHash": "a918371e",
+      "hash": "6a3b3c2f"
+    },
+    {
+      "seq": 2,
+      "type": "runComplete",
+      "worldId": "simpleforces",
+      "missionId": "68-net",
+      "band": "6-8",
+      "seed": 42,
+      "tSim": 4.75,
+      "schemaVersion": "world-trace/1",
+      "payload": {
+        "netForce": -2.25,
+        "direction": "left"
+      },
+      "prevHash": "6a3b3c2f",
+      "hash": "873d7e07"
+    },
+    {
+      "seq": 3,
+      "type": "reveal",
+      "worldId": "simpleforces",
+      "missionId": "68-net",
+      "band": "6-8",
+      "seed": 42,
+      "tSim": 4.75,
+      "schemaVersion": "world-trace/1",
+      "payload": {
+        "match": true
+      },
+      "prevHash": "873d7e07",
+      "hash": "2b5878d1"
+    }
+  ]
+}

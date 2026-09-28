@@ -1,0 +1,56 @@
+{
+  "scheme": "tpc/intervention-1",
+  "family": "tpc/intervention",
+  "source": "teachproof programos/intervention-loop.ts recordAction",
+  "expect": {
+    "clean": true,
+    "hash_scheme": "tpc/intervention-1"
+  },
+  "events": [
+    {
+      "id": "int-1758400000000-abc0",
+      "type": "intervention",
+      "provenance": "actuator",
+      "flagId": "flag-L7-escalation",
+      "actor": "faculty:ada",
+      "actionType": "remediate",
+      "constructId": "escalation",
+      "rationale": "Two missed escalation opportunities in R4",
+      "windowOpportunities": 3,
+      "windowDays": 14,
+      "timestamp": "2026-09-21T10:00:00.000Z",
+      "hash": "3991a88a368cf46f4ff340111dde68b2372d9b058d42e67cdfadf6a7506e2ff4",
+      "prevHash": "genesis"
+    },
+    {
+      "id": "int-1758400000001-abc1",
+      "type": "intervention",
+      "provenance": "actuator",
+      "flagId": "flag-L7-escalation",
+      "actor": "faculty:ada",
+      "actionType": "remeasure",
+      "constructId": "escalation",
+      "rationale": "Window reopened after coaching",
+      "windowOpportunities": 3,
+      "windowDays": 14,
+      "timestamp": "2026-09-21T11:00:00.000Z",
+      "hash": "afef02377adfef88f817eb6119c3c39fd2887144696000d3ae4e30e39d475a64",
+      "prevHash": "3991a88a368cf46f4ff340111dde68b2372d9b058d42e67cdfadf6a7506e2ff4"
+    },
+    {
+      "id": "int-1758400000002-abc2",
+      "type": "intervention",
+      "provenance": "actuator",
+      "flagId": "flag-L7-escalation",
+      "actor": "faculty:ada",
+      "actionType": "dismiss",
+      "constructId": "escalation",
+      "rationale": "Flag raised on a session the learner did not attend",
+      "windowOpportunities": 3,
+      "windowDays": 14,
+      "timestamp": "2026-09-21T12:00:00.000Z",
+      "hash": "7175f760151bbb407e13fbd3b94a04d523f5978b3c9608ba49b28881c348accb",
+      "prevHash": "afef02377adfef88f817eb6119c3c39fd2887144696000d3ae4e30e39d475a64"
+    }
+  ]
+}

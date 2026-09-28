@@ -1,4 +1,4 @@
-# Chain schemes (0.5.2)
+# Chain schemes (0.6.0)
 
 QLM products store one row per evidence event, each carrying its own hash and
 a link to the previous event's hash. Before 0.4.0 every product computed that
@@ -72,7 +72,24 @@ previous hash enters the canonical form but is not stored — the journal), or
 | `tpc/rct-input-1` | teachproof `rct/result-ledger` `ledgerFromAnalysis` input fingerprint (every entry's `inputHash`) | sha256 | none |
 | `labpath/learning-evidence-v1` | qlm-games `ecogenesis/labpath/learning-evidence-event` `hashLearningEvidenceEvent` (whole draft, keys sorted with `localeCompare` at every depth) | sha256 | `hash` / `prev_hash`, `null` on the first event |
 
-FNV-1a and djb2 are not collision resistant: those two chains are
+## Chains found by the 2026-09-27 audit (0.6.0)
+
+The first inventory grepped for function names and the CI gate filtered by
+file name; both missed chains whose files were named otherwise. These are
+their verbatim definitions.
+
+| Scheme | Product source | Digest | Link |
+|---|---|---|---|
+| `play/world-trace-1` | qlm-games `ecogenesis/worlds/components/*World.tsx` (46 worlds) `emitTrace`: `prevHash + JSON.stringify([seq, type, payload])`; kept in localStorage, exported as `<world>-evidence.json` | **djb2-32** | `hash` / `prevHash`, genesis `"00000000"` |
+| `play/world-trace-tsim-1` | same, simpleforces / soundlab / statesofmatter: the array also carries `tSim` | djb2-32 | same |
+| `play/world-trace-identity-1` | same, cybersim (`schemaVersion "world-trace/2"`): the array also carries the `{missionId, band, seed}` identity object | djb2-32 | same |
+| `tpc/yardstick-record-1` | teachproof `yardstick/record-types` `computeDigest`: `JSON.stringify(content, sortedKeys)` — the array replacer is a whitelist at every depth, so **the payload is not covered** (`{}` unless a nested key is named like a top-level one). Kept verbatim so sealed sequences verify | sha256 | `digest` / `prevDigest`, genesis `"0" × 64` |
+| `tpc/yardstick-record-2` | successor: the same six fields with keys sorted at every depth, payload covered; coexists with v1 in one sequence (records before the switch verify as v1) | sha256 | same |
+| `tpc/intervention-1` | teachproof `programos/intervention-loop` `recordAction` (`[type, provenance, flagId, actor, actionType, constructId, rationale, timestamp, prevHash]`; `id` and window fields not hashed) | sha256 | `hash` / `prevHash`, genesis `"genesis"` |
+| `tpc/rehearsal-stage-1` | teachproof `study/rehearsal-runner` `recordStage` (`[stage, passed, timestamp, prevHash]`) | sha256 | implicit, genesis `"genesis"` |
+| `yardstick/activity-1` | yardstick `studies/activity.py` `_entry_hash`: `prev + "\n" + json.dumps(entry minus hash, sort_keys, compact, ensure_ascii=False)`. Python is the reference; the TypeScript form equals it for strings, integers, booleans, null, lists and objects (entries carry no floats) | sha256 | `hash` / `prev`, genesis `"0" × 64` |
+
+FNV-1a and djb2 are not collision resistant: those chains are
 order-evident, not tamper-evident. Verifying what was sealed needs these
 definitions; a SHA-256 successor scheme for new events is each product's call
 and would be a new scheme id, not an edit.
@@ -85,8 +102,9 @@ sealEvent(entry, "tpc/dse-journal-1", previousEntry?.hash ?? "");
 
 ## Adding a scheme
 
-Add the definition next to its family in `src/schemes/index.ts` and
+Add the definition next to its family in `src/schemes/products.ts` and
 `python/qlm_measure/schemes.py`, generate a vector for it in
-`tools/gen-chain-vectors.mjs` from the product's original function, and never
+`tools/gen-chain-vectors.mjs` (or `tools/gen-chain-vectors-py.py` when the
+original sealer is Python) from the product's original function, and never
 change an existing vector: a vector is a promise that chains sealed in
 production keep verifying.
