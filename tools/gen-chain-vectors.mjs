@@ -316,4 +316,140 @@ function rctInputHash(analysis) {
   write("tpc-rct-input-1", { scheme: "tpc/rct-input-1", family: "tpc/rct-input", source: "teachproof rct/result-ledger.ts ledgerFromAnalysis inputData → computeInputHash", expect: { clean: true, hash_scheme: "tpc/rct-input-1" }, events: [{ ...rec, inputHash: rctInputHash(analysis) }] });
 }
 
-console.log("wrote 22 chain vectors");
+
+// ═══════════════════════════════════════════════════════════════════════════
+// 0.6.0 — chains found by the 2026-09-27 audit. ORIGINAL functions, verbatim.
+// ═══════════════════════════════════════════════════════════════════════════
+
+// qlm-games src/app/ecogenesis/worlds/components/RatioRateWorld.tsx @ 4c38dac — djb2 + emitTrace sealing line
+function worldDjb2(str) {
+  let h = 5381;
+  for (let i = 0; i < str.length; i++) {
+    h = ((h << 5) + h + str.charCodeAt(i)) >>> 0;
+  }
+  return h.toString(16).padStart(8, "0");
+}
+const worldSeal = (prevHash, ev) => worldDjb2(prevHash + JSON.stringify([ev.seq, ev.type, ev.payload]));
+// SimpleForcesWorld.tsx @ 4c38dac (also soundlab, statesofmatter)
+const worldSealTsim = (prevHash, ev) => worldDjb2(prevHash + JSON.stringify([ev.seq, ev.type, ev.payload, ev.tSim]));
+// CyberSimWorldV2.tsx @ 4c38dac — identity literal {missionId, band, seed}
+const worldSealIdentity = (previous, event, identity) => worldDjb2(previous + JSON.stringify([event.seq, event.type, event.payload, identity]));
+
+// teachproof src/lib/yardstick/record-types.ts @ 5b628d5 — computeDigest (array replacer, verbatim)
+function yrComputeDigest(content) {
+  const canonical = JSON.stringify(content, Object.keys(content).sort());
+  return sha(canonical);
+}
+// teachproof src/lib/clinical/longitudinal/programos/intervention-loop.ts @ 5b628d5 — recordAction hash
+function interventionHash(record) {
+  const canonical = JSON.stringify([
+    record.type, record.provenance, record.flagId, record.actor,
+    record.actionType, record.constructId, record.rationale,
+    record.timestamp, record.prevHash,
+  ]);
+  return sha(canonical);
+}
+// teachproof src/lib/clinical/longitudinal/study/rehearsal-runner.ts @ 5b628d5 — recordStage hash
+function rehearsalHash(stage, passed, timestamp, prevHash) {
+  return sha(JSON.stringify([stage, passed, timestamp, prevHash]));
+}
+
+{ // play/world-trace-1 — a ratiorate trace with nested payloads, unicode and an emoji (UTF-16 units)
+  const events = []; let prev = "00000000";
+  const payloads = [
+    { missionId: "35-ratio", band: "3-5", seed: 8675309 },
+    { option: "3:4", confidence: "fairly sure" },
+    { committed: "3:4", actual: "3:4", match: true, facts: ["12 red — 16 blue", "ratio ¾", "🧪"] },
+    { text: "Twelve to sixteen simplifies: divide both by four.", chars: 51 },
+    { chainVerifies: true },
+  ];
+  const types = ["missionStart", "commit", "reveal", "explanationFiled", "allMissionsRevealed"];
+  for (let i = 0; i < 5; i++) {
+    const ev = { seq: i, type: types[i], worldId: "ratiorate", missionId: "35-ratio", band: "3-5", seed: 8675309, schemaVersion: "world-trace/1", payload: payloads[i], prevHash: prev, hash: "" };
+    ev.hash = worldSeal(prev, ev); events.push(ev); prev = ev.hash;
+  }
+  write("play-world-trace-1", { scheme: "play/world-trace-1", family: "play/world-trace", source: "qlm-games worlds/components/RatioRateWorld.tsx emitTrace (djb2 over prevHash + JSON.stringify([seq, type, payload]))", expect: { clean: true, hash_scheme: "play/world-trace-1" }, events });
+  const t = JSON.parse(JSON.stringify(events)); t[2].payload.match = false;
+  write("play-world-trace-1-tampered", { scheme: "play/world-trace-1", family: "play/world-trace", source: "play-world-trace-1 with events[2].payload.match flipped", expect: { clean: false, hash_scheme: "play/world-trace-1", tampered: 1, tampered_index: 2 }, events: t });
+}
+{ // play/world-trace-tsim-1 — simpleforces, tSim in the array
+  const events = []; let prev = "00000000";
+  const rows = [["missionStart", { missionId: "68-net", band: "6-8" }, 0], ["commit", { option: "left", confidence: "sure" }, 1.5], ["runComplete", { netForce: -2.25, direction: "left" }, 4.75], ["reveal", { match: true }, 4.75]];
+  rows.forEach(([type, payload, tSim], i) => {
+    const ev = { seq: i, type, worldId: "simpleforces", missionId: "68-net", band: "6-8", seed: 42, tSim, schemaVersion: "world-trace/1", payload, prevHash: prev, hash: "" };
+    ev.hash = worldSealTsim(prev, ev); events.push(ev); prev = ev.hash;
+  });
+  write("play-world-trace-tsim-1", { scheme: "play/world-trace-tsim-1", family: "play/world-trace", source: "qlm-games worlds/components/SimpleForcesWorld.tsx emitTrace (array carries tSim)", expect: { clean: true, hash_scheme: "play/world-trace-tsim-1" }, events });
+}
+{ // play/world-trace-identity-1 — cybersim world-trace/2, identity object hashed; second event uses an identity override
+  const events = []; let previous = "00000000";
+  const identities = [{ missionId: null, band: "6-8", seed: 1234 }, { missionId: "68-reach", band: "6-8", seed: 5678 }, { missionId: "68-reach", band: "6-8", seed: 5678 }];
+  const rows = [["verbLit", { verb: "Predict" }], ["missionStart", { missionId: "68-reach", band: "6-8", attempt: 1 }], ["commit", { option: "isolate the host", confidence: "leaning" }]];
+  rows.forEach(([type, payload], i) => {
+    const identity = identities[i];
+    const event = { seq: i, type, worldId: "cybersim", ...identity, schemaVersion: "world-trace/2", timestamp: `2026-09-24T10:0${i}:00.000Z`, payload, prevHash: previous, hash: "" };
+    event.hash = worldSealIdentity(previous, event, identity); events.push(event); previous = event.hash;
+  });
+  write("play-world-trace-identity-1", { scheme: "play/world-trace-identity-1", family: "play/world-trace", source: "qlm-games worlds/components/CyberSimWorldV2.tsx emitTrace (array carries the {missionId, band, seed} identity)", expect: { clean: true, hash_scheme: "play/world-trace-identity-1" }, events });
+}
+{ // tpc/yardstick-record-1 — a study sequence; payloads nested, one carrying a key named like a top-level field
+  const records = []; let prev = "0".repeat(64); const studyId = "study-7c2e";
+  const rows = [
+    ["protocol_commit", { title: "Escalation coaching RCT", pi: "Dr. Ada", arms: ["treatment", "control"], designatedPrimary: "escalation", analysisPlan: { estimator: "welch_t_test", alpha: 0.05 }, assignmentSeed: "seed-2026" }],
+    ["enrollment", { participantCode: "P-001", timestamp: "2026-09-21T09:00:00.000Z" }],
+    ["assignment", { participantCode: "P-001", arm: "treatment", type: "balanced_fisher_yates" }],
+    ["outcome", { participantCode: "P-001", dimension: "escalation", value: 0.71, sequence: 3 }],
+  ];
+  rows.forEach(([type, payload], i) => {
+    const content = { sequence: i, type, studyId, timestamp: `2026-09-21T09:0${i}:00.000Z`, payload, prevDigest: prev };
+    const digest = yrComputeDigest(content); records.push({ ...content, digest }); prev = digest;
+  });
+  write("tpc-yardstick-record-1", { scheme: "tpc/yardstick-record-1", family: "tpc/yardstick-record", source: "teachproof src/lib/yardstick/record-types.ts computeDigest (JSON.stringify with an array replacer)", expect: { clean: true, hash_scheme: "tpc/yardstick-record-1" }, events: records });
+  // Documented property of version 1: the replacer whitelist drops payload keys at every depth, so a
+  // payload edit that touches no key named sequence/type/studyId/timestamp/payload/prevDigest still verifies.
+  const blind = JSON.parse(JSON.stringify(records)); blind[0].payload.title = "EDITED"; blind[0].payload.arms = ["x"];
+  write("tpc-yardstick-record-1-payload-blind", { scheme: "tpc/yardstick-record-1", family: "tpc/yardstick-record", source: "tpc-yardstick-record-1 with records[0].payload edited — version 1 does not cover the payload; version 2 does", expect: { clean: true, hash_scheme: "tpc/yardstick-record-1" }, events: blind });
+  const seen = JSON.parse(JSON.stringify(records)); seen[3].payload.sequence = 99;
+  write("tpc-yardstick-record-1-tampered", { scheme: "tpc/yardstick-record-1", family: "tpc/yardstick-record", source: "tpc-yardstick-record-1 with records[3].payload.sequence changed (a whitelisted key name, so covered)", expect: { clean: false, hash_scheme: "tpc/yardstick-record-1", tampered: 1, tampered_index: 3 }, events: seen });
+}
+{ // tpc/intervention-1
+  const records = []; let prevHash = "genesis";
+  const rows = [["remediate", "Two missed escalation opportunities in R4"], ["remeasure", "Window reopened after coaching"], ["dismiss", "Flag raised on a session the learner did not attend"]];
+  rows.forEach(([actionType, rationale], i) => {
+    const record = { id: `int-${1758400000000 + i}-abc${i}`, type: "intervention", provenance: "actuator", flagId: "flag-L7-escalation", actor: "faculty:ada", actionType, constructId: "escalation", rationale, windowOpportunities: 3, windowDays: 14, timestamp: `2026-09-21T1${i}:00:00.000Z`, hash: "", prevHash };
+    record.hash = interventionHash(record); records.push(record); prevHash = record.hash;
+  });
+  write("tpc-intervention-1", { scheme: "tpc/intervention-1", family: "tpc/intervention", source: "teachproof programos/intervention-loop.ts recordAction", expect: { clean: true, hash_scheme: "tpc/intervention-1" }, events: records });
+}
+{ // tpc/rehearsal-stage-1 (implicit link)
+  const stages = []; let prevHash = "genesis";
+  [["M1_commit", true], ["M2_enroll", true], ["M3_assign", false], ["M4_collect", true]].forEach(([stage, passed], i) => {
+    const timestamp = `2026-09-21T12:0${i}:00.000Z`; const hash = rehearsalHash(stage, passed, timestamp, prevHash);
+    stages.push({ stage, passed, timestamp, hash, details: passed ? "ok" : "assignment drift 1/48" }); prevHash = hash;
+  });
+  write("tpc-rehearsal-stage-1", { scheme: "tpc/rehearsal-stage-1", family: "tpc/rehearsal-stage", source: "teachproof study/rehearsal-runner.ts recordStage (prev threaded, not stored)", expect: { clean: true, hash_scheme: "tpc/rehearsal-stage-1" }, events: stages });
+}
+{ // tpc/yardstick-record-2 — the successor (its definition, there is no product original) and a v1→v2 sequence
+  const yrV2 = (content) => sha(JSON.stringify(sortKeysDeep(content)));
+  const records = []; let prev = "0".repeat(64); const studyId = "study-7c2e";
+  const rows = [
+    ["protocol_commit", { title: "Escalation coaching RCT", arms: ["treatment", "control"], analysisPlan: { estimator: "welch_t_test", alpha: 0.05 } }],
+    ["enrollment", { participantCode: "P-002", note: "ünïcödé ok" }],
+    ["analysis", { dimension: "escalation", result: { estimate: 0.13, pValue: 0.04, ci95: [0.01, 0.25], significant: true } }],
+  ];
+  rows.forEach(([type, payload], i) => {
+    const content = { sequence: i, type, studyId, timestamp: `2026-09-28T09:0${i}:00.000Z`, payload, prevDigest: prev };
+    const digest = yrV2(content); records.push({ ...content, digest }); prev = digest;
+  });
+  write("tpc-yardstick-record-2", { scheme: "tpc/yardstick-record-2", family: "tpc/yardstick-record", source: "tpc/yardstick-record-2 definition (sha256 of the six fields with keys sorted at every depth) — no product original", expect: { clean: true, hash_scheme: "tpc/yardstick-record-2" }, events: records });
+  const t = JSON.parse(JSON.stringify(records)); t[0].payload.title = "EDITED";
+  write("tpc-yardstick-record-2-tampered", { scheme: "tpc/yardstick-record-2", family: "tpc/yardstick-record", source: "tpc-yardstick-record-2 with records[0].payload.title edited — covered by version 2", expect: { clean: false, hash_scheme: "tpc/yardstick-record-2", tampered: 1, tampered_index: 0 }, events: t });
+  // A study sealed under v1 that continues under v2 after the switch.
+  const mixed = []; prev = "0".repeat(64);
+  const c0 = { sequence: 0, type: "protocol_commit", studyId, timestamp: "2026-09-21T09:00:00.000Z", payload: { title: "Before the switch" }, prevDigest: prev };
+  c0.digest = yrComputeDigest({ sequence: c0.sequence, type: c0.type, studyId: c0.studyId, timestamp: c0.timestamp, payload: c0.payload, prevDigest: c0.prevDigest }); mixed.push(c0); prev = c0.digest;
+  const c1 = { sequence: 1, type: "enrollment", studyId, timestamp: "2026-09-28T09:01:00.000Z", payload: { participantCode: "P-003" }, prevDigest: prev };
+  c1.digest = yrV2({ sequence: c1.sequence, type: c1.type, studyId: c1.studyId, timestamp: c1.timestamp, payload: c1.payload, prevDigest: c1.prevDigest }); mixed.push(c1);
+  write("tpc-yardstick-record-1-to-2", { scheme: "tpc/yardstick-record-2", family: "tpc/yardstick-record", source: "one sequence: record 0 sealed by record-types.ts computeDigest (v1), record 1 by version 2", expect: { clean: true, hash_scheme: "tpc/yardstick-record-2", schemes: { "tpc/yardstick-record-1": 1, "tpc/yardstick-record-2": 1 } }, events: mixed });
+}
+console.log("wrote 34 chain vectors");

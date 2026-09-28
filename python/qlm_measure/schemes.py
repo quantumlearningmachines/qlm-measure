@@ -13,6 +13,7 @@ carry no whitespace).
 from __future__ import annotations
 
 import hashlib
+import json
 import math
 import re
 from dataclasses import dataclass, field
@@ -102,6 +103,16 @@ def js_json_dumps(value: Any) -> str:
     if isinstance(value, dict):
         return "{" + ",".join(js_string(str(k)) + ":" + js_json_dumps(v) for k, v in value.items()) + "}"
     raise TypeError(f"not JSON-shaped: {type(value).__name__}")
+
+
+def js_json_dumps_property_list(value: Any, keys: list[str]) -> str:
+    """JSON.stringify(value, keys) with an ARRAY replacer: at every depth an
+    object keeps only the listed keys, in list order (ES2023 §25.5.2.5)."""
+    if isinstance(value, dict):
+        return "{" + ",".join(js_string(k) + ":" + js_json_dumps_property_list(value[k], keys) for k in keys if k in value) + "}"
+    if isinstance(value, (list, tuple)):
+        return "[" + ",".join(js_json_dumps_property_list(v, keys) for v in value) + "]"
+    return js_json_dumps(value)
 
 
 def sort_keys_deep(value: Any) -> Any:
@@ -498,9 +509,112 @@ TPC_RCT_INPUT_1 = ChainScheme(
     applies=lambda e: isinstance(e.get("dimensions"), list), canonical=_rct_canonical,
     validate=lambda e: _missing_str(e, ("studyId",)))
 
+# ═══════════════════════════════════════════════════════════════════════════
+# 0.6.0 — chains found by the 2026-09-27 audit (see products.ts for the sources)
+# ═══════════════════════════════════════════════════════════════════════════
+
+def _js_concat(e: dict, key: str) -> str:
+    """What `e[key] + "..."` produced in the sealer: String(undefined) for a missing key."""
+    return "undefined" if key not in e else js_string_of(e[key])
+
+
+def _is_object(v: Any) -> bool:
+    return isinstance(v, dict)
+
+
+def _world_trace_validate(e: dict) -> list[str]:
+    errors = [] if _is_num(e.get("seq")) else ["missing seq"]
+    errors += _missing_str(e, ("type",))
+    if not isinstance(e.get("prevHash"), str):
+        errors.append("missing prevHash")
+    if not _is_object(e.get("payload")):
+        errors.append("payload must be an object")
+    return errors
+
+
+_WORLD_TRACE_TSIM_WORLDS = frozenset({"simpleforces", "soundlab", "statesofmatter"})
+_WORLD_TRACE = dict(family="play/world-trace", hash_field="hash", prev_field="prevHash", genesis="00000000", digest="djb2-32",
+                    validate=_world_trace_validate)
+
+
+def _is_world_trace_2(e: dict) -> bool:
+    return e.get("schemaVersion") == "world-trace/2"
+
+
+def _is_tsim_world(e: dict) -> bool:
+    return js_string_of(e.get("worldId")) in _WORLD_TRACE_TSIM_WORLDS
+
+
+PLAY_WORLD_TRACE_IDENTITY_1 = ChainScheme(
+    id="play/world-trace-identity-1", since="2026-09-24", applies=_is_world_trace_2,
+    canonical=lambda e, prev=None: _js_concat(e, "prevHash") + js_json_dumps(
+        [e.get("seq"), e.get("type"), e.get("payload"), {"missionId": e.get("missionId"), "band": e.get("band"), "seed": e.get("seed")}]),
+    **_WORLD_TRACE)
+PLAY_WORLD_TRACE_TSIM_1 = ChainScheme(
+    id="play/world-trace-tsim-1", since="2026-09-24", applies=lambda e: not _is_world_trace_2(e) and _is_tsim_world(e),
+    canonical=lambda e, prev=None: _js_concat(e, "prevHash") + js_json_dumps([e.get("seq"), e.get("type"), e.get("payload"), e.get("tSim")]),
+    **_WORLD_TRACE)
+PLAY_WORLD_TRACE_1 = ChainScheme(
+    id="play/world-trace-1", since="2026-09-24", applies=lambda e: not _is_world_trace_2(e) and not _is_tsim_world(e),
+    canonical=lambda e, prev=None: _js_concat(e, "prevHash") + js_json_dumps([e.get("seq"), e.get("type"), e.get("payload")]),
+    **_WORLD_TRACE)
+
+_YR_FIELDS = ("sequence", "type", "studyId", "timestamp", "payload", "prevDigest")
+_YR_REPLACER = sorted(_YR_FIELDS)
+
+
+def _yr_content(e: dict) -> dict:
+    # JSON.stringify skips undefined-valued keys, which a missing key also is.
+    return {f: e[f] for f in _YR_FIELDS if f in e}
+
+
+def _yr_validate(e: dict) -> list[str]:
+    errors = [] if _is_num(e.get("sequence")) else ["missing sequence"]
+    errors += _missing_str(e, ("type", "studyId", "timestamp"))
+    if not _is_object(e.get("payload")):
+        errors.append("payload must be an object")
+    return errors
+
+
+_YR = dict(family="tpc/yardstick-record", hash_field="digest", prev_field="prevDigest", genesis="0" * 64, applies=lambda e: True, validate=_yr_validate)
+TPC_YARDSTICK_RECORD_2 = ChainScheme(
+    id="tpc/yardstick-record-2", since="2026-09-28",
+    canonical=lambda e, prev=None: js_json_dumps(sort_keys_deep(_yr_content(e))), coexists=("tpc/yardstick-record-1",), **_YR)
+TPC_YARDSTICK_RECORD_1 = ChainScheme(
+    id="tpc/yardstick-record-1", since="2026-09-21",
+    canonical=lambda e, prev=None: js_json_dumps_property_list(_yr_content(e), _YR_REPLACER), coexists=("tpc/yardstick-record-2",), **_YR)
+
+TPC_INTERVENTION_1 = ChainScheme(
+    id="tpc/intervention-1", family="tpc/intervention", since="2026-09-21", hash_field="hash", prev_field="prevHash", genesis="genesis",
+    applies=lambda e: True,
+    canonical=lambda e, prev=None: js_json_dumps([e.get(f) for f in ("type", "provenance", "flagId", "actor", "actionType", "constructId", "rationale", "timestamp", "prevHash")]),
+    validate=lambda e: _missing_str(e, ("flagId", "actor", "actionType", "constructId", "timestamp")))
+
+TPC_REHEARSAL_STAGE_1 = ChainScheme(
+    id="tpc/rehearsal-stage-1", family="tpc/rehearsal-stage", since="2026-09-21", hash_field="hash", prev_field=None, genesis="genesis", link="implicit",
+    applies=lambda e: True,
+    canonical=lambda e, prev=None: js_json_dumps([e.get("stage"), e.get("passed"), e.get("timestamp"), prev if prev is not None else "genesis"]),
+    validate=lambda e: _missing_str(e, ("stage", "timestamp")) + ([] if isinstance(e.get("passed"), bool) else ["missing passed"]))
+
+
+def _activity_canonical(e: dict, prev: str | None = None) -> str:
+    body = {k: v for k, v in e.items() if k != "hash"}  # verbatim: activity._entry_hash
+    return str(e.get("prev")) + "\n" + json.dumps(body, sort_keys=True, separators=(",", ":"), ensure_ascii=False)
+
+
+YARDSTICK_ACTIVITY_1 = ChainScheme(
+    id="yardstick/activity-1", family="yardstick/activity", since="2026-09-26", hash_field="hash", prev_field="prev", genesis="0" * 64,
+    applies=lambda e: True, canonical=_activity_canonical,
+    validate=lambda e: ([] if _is_num(e.get("seq")) else ["missing seq"]) + _missing_str(e, ("at", "who", "action")))
+
+
+
 PRODUCT_SCHEMES: tuple[ChainScheme, ...] = (PLAY_EMIT_1, PLAY_MEASURE_SESSION_1, PLAY_ENCOUNTER_FNV64_1, PLAY_RESEARCH_PROVENANCE_1,
                                             QCORE_QINVERSE_DJB2_1, STUDIO_LOOP_1, DP_LEDGER_V3, TPC_DSE_JOURNAL_1, YARDSTICK_SPINE_1,
-                                            LABPATH_LEARNING_EVIDENCE_V1, TPC_TRANSCRIPT_1, TPC_DIFFERENTIAL_COMMIT_1, TPC_RCT_INPUT_1)
+                                            LABPATH_LEARNING_EVIDENCE_V1, TPC_TRANSCRIPT_1, TPC_DIFFERENTIAL_COMMIT_1, TPC_RCT_INPUT_1,
+                                            PLAY_WORLD_TRACE_IDENTITY_1, PLAY_WORLD_TRACE_TSIM_1, PLAY_WORLD_TRACE_1,
+                                            TPC_YARDSTICK_RECORD_2, TPC_YARDSTICK_RECORD_1, TPC_INTERVENTION_1, TPC_REHEARSAL_STAGE_1,
+                                            YARDSTICK_ACTIVITY_1)
 
 _ALL: tuple[ChainScheme, ...] = (TPC_CLINICAL_V4, TPC_CLINICAL_V3, TPC_CLINICAL_V2, TPC_CLINICAL_V1, PLAY_CLINICAL_1_0, *PRODUCT_SCHEMES)
 SCHEMES: dict[str, ChainScheme] = {s.id: s for s in _ALL}

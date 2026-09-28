@@ -38,11 +38,36 @@ describe("chain schemes: vectors sealed by the original product code", () => {
 });
 
 describe("chain schemes: behaviour", () => {
-  it("lists eighteen schemes across fourteen families, clinical newest first", () => {
+  it("lists twenty-six schemes across nineteen families, clinical newest first", () => {
     const ids = listSchemes().map((s) => s.id);
     expect(ids.slice(0, 5)).toEqual(["tpc/clinical-v4", "tpc/clinical-v3", "tpc/clinical-v2", "tpc/clinical-v1", "play/clinical-clin-1.0"]);
-    expect(ids.slice(5)).toEqual(["play/emit-1", "play/measure-session-1", "play/encounter-fnv64-1", "play/research-provenance-1", "qcore/qinverse-djb2-1", "studio/loop-1", "dp/ledger-v3", "tpc/dse-journal-1", "yardstick/spine-1", "labpath/learning-evidence-v1", "tpc/transcript-1", "tpc/differential-commit-1", "tpc/rct-input-1"]);
-    expect(new Set(listSchemes().map((s) => s.family)).size).toBe(14);
+    expect(ids.slice(5)).toEqual(["play/emit-1", "play/measure-session-1", "play/encounter-fnv64-1", "play/research-provenance-1", "qcore/qinverse-djb2-1", "studio/loop-1", "dp/ledger-v3", "tpc/dse-journal-1", "yardstick/spine-1", "labpath/learning-evidence-v1", "tpc/transcript-1", "tpc/differential-commit-1", "tpc/rct-input-1",
+      "play/world-trace-identity-1", "play/world-trace-tsim-1", "play/world-trace-1", "tpc/yardstick-record-2", "tpc/yardstick-record-1", "tpc/intervention-1", "tpc/rehearsal-stage-1", "yardstick/activity-1"]);
+    expect(new Set(listSchemes().map((s) => s.family)).size).toBe(19);
+  });
+  it("djb2Hex equals the world components' verbatim djb2 (>>> 0 per step) on every string", () => {
+    const worldDjb2 = (str: string): string => { let h = 5381; for (let i = 0; i < str.length; i++) h = ((h << 5) + h + str.charCodeAt(i)) >>> 0; return h.toString(16).padStart(8, "0"); };
+    const samples = ["", "a", "00000000[0,\"missionStart\",{}]", "ünïcödé 🧪 \uD83D", "x".repeat(5000), JSON.stringify({ a: [1, 2, { b: "c" }] })];
+    for (let i = 0; i < 2000; i++) samples.push(Array.from({ length: (i * 7) % 40 }, (_, j) => String.fromCharCode((i * 31 + j * 17) % 0xffff)).join(""));
+    for (const s of samples) expect(djb2Hex(s)).toBe(worldDjb2(s));
+  });
+  it("tpc/yardstick-record-1 does not cover the payload; tpc/yardstick-record-2 does", () => {
+    const base = { sequence: 0, type: "protocol_commit", studyId: "s", timestamp: "t", payload: { title: "A", arms: ["x"] }, prevDigest: "0".repeat(64) };
+    const edited = { ...base, payload: { title: "B", arms: ["y", "z"] } };
+    expect(computeEventHash(base, "tpc/yardstick-record-1")).toBe(computeEventHash(edited, "tpc/yardstick-record-1"));
+    expect(computeEventHash(base, "tpc/yardstick-record-2")).not.toBe(computeEventHash(edited, "tpc/yardstick-record-2"));
+    // a v1 sequence continued under v2 verifies as one chain and reports the newer scheme
+    const r0 = sealEvent(base, "tpc/yardstick-record-1");
+    const r1 = sealEvent({ sequence: 1, type: "enrollment", studyId: "s", timestamp: "t2", payload: { participantCode: "P" }, prevDigest: r0.digest }, "tpc/yardstick-record-2");
+    const r = verifyChain([r0, r1], { family: "tpc/yardstick-record" });
+    expect(r.clean).toBe(true); expect(r.stats.hash_scheme).toBe("tpc/yardstick-record-2"); expect(r.stats.schemes).toEqual({ "tpc/yardstick-record-1": 1, "tpc/yardstick-record-2": 1 });
+  });
+  it("play/world-trace: detection picks the variant from worldId / schemaVersion", () => {
+    const e = { seq: 0, type: "commit", payload: { option: "a" }, prevHash: "00000000", worldId: "soundlab", tSim: 2, schemaVersion: "world-trace/1" };
+    expect(getScheme("play/world-trace-tsim-1").applies(e)).toBe(true); expect(getScheme("play/world-trace-1").applies(e)).toBe(false);
+    const c = { ...e, worldId: "cybersim", schemaVersion: "world-trace/2", missionId: null, band: "6-8", seed: 1 };
+    expect(getScheme("play/world-trace-identity-1").applies(c)).toBe(true); expect(getScheme("play/world-trace-1").applies(c)).toBe(false);
+    expect(getScheme("play/world-trace-1").applies({ ...e, worldId: "ratiorate" })).toBe(true);
   });
   it("built-in digests: FNV-1a 64 and djb2 over UTF-16 code units, matching the products' functions", () => {
     expect(fnv1a64Hex("")).toBe("cbf29ce484222325");

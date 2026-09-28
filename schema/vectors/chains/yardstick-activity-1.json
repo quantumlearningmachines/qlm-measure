@@ -1,0 +1,55 @@
+{
+  "scheme": "yardstick/activity-1",
+  "family": "yardstick/activity",
+  "source": "yardstick packages/engine/studies/activity.py _entry_hash (sha256 of prev + newline + json.dumps sorted/compact/ensure_ascii=False)",
+  "expect": {
+    "clean": true,
+    "hash_scheme": "yardstick/activity-1"
+  },
+  "events": [
+    {
+      "scheme": "yardstick-activity/1",
+      "seq": 1,
+      "at": "2026-09-26T11:00:00Z",
+      "who": "nancy",
+      "action": "register",
+      "why": "protocol frozen before enrollment",
+      "artifacts": {
+        "protocol.json": "abababababababababababababababababababababababababababababababab"
+      },
+      "cli": "yardstick register sda-002",
+      "api": "POST /studies/sda-002/register",
+      "prev": "0000000000000000000000000000000000000000000000000000000000000000",
+      "hash": "eeccfd4a5ed878d5a4cf7404c3a26a8ec2e11e1e37fd2e176fe19076bbeceb4f"
+    },
+    {
+      "scheme": "yardstick-activity/1",
+      "seq": 2,
+      "at": "2026-09-26T12:00:00Z",
+      "who": "nancy",
+      "action": "collect",
+      "why": "",
+      "artifacts": {
+        "data/collect-1.csv": "cdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcd",
+        "data/join.parquet": "efefefefefefefefefefefefefefefefefefefefefefefefefefefefefefefef"
+      },
+      "cli": "yardstick collect sda-002 --from classroom",
+      "api": "",
+      "prev": "eeccfd4a5ed878d5a4cf7404c3a26a8ec2e11e1e37fd2e176fe19076bbeceb4f",
+      "hash": "425676b13805230d5d0c4ac1c4653b536daadc74136fb7148f67e9db87b4515e"
+    },
+    {
+      "scheme": "yardstick-activity/1",
+      "seq": 3,
+      "at": "2026-09-26T13:00:00Z",
+      "who": "kumar",
+      "action": "analyze",
+      "why": "confirmatory run — résumé of \"pre-registered\" plan",
+      "artifacts": {},
+      "cli": "",
+      "api": "POST /studies/sda-002/analyze",
+      "prev": "425676b13805230d5d0c4ac1c4653b536daadc74136fb7148f67e9db87b4515e",
+      "hash": "3ace6a7a33b5da96bfdcc88008639d9c01e828dc02f40be278f90e6ba1f8e154"
+    }
+  ]
+}

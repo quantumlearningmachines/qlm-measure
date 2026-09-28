@@ -1,0 +1,39 @@
+{
+  "scheme": "tpc/rehearsal-stage-1",
+  "family": "tpc/rehearsal-stage",
+  "source": "teachproof study/rehearsal-runner.ts recordStage (prev threaded, not stored)",
+  "expect": {
+    "clean": true,
+    "hash_scheme": "tpc/rehearsal-stage-1"
+  },
+  "events": [
+    {
+      "stage": "M1_commit",
+      "passed": true,
+      "timestamp": "2026-09-21T12:00:00.000Z",
+      "hash": "a9d8f3e0b87094d4690ac50d88b5194bcb72359498361e6878cb00c8a55ce0c1",
+      "details": "ok"
+    },
+    {
+      "stage": "M2_enroll",
+      "passed": true,
+      "timestamp": "2026-09-21T12:01:00.000Z",
+      "hash": "79b5763f873eba426f7ee6516f198a8fc51034062153f393b78c51dceceb8a24",
+      "details": "ok"
+    },
+    {
+      "stage": "M3_assign",
+      "passed": false,
+      "timestamp": "2026-09-21T12:02:00.000Z",
+      "hash": "a77e4522cd62ef6d0f77f76452f7ea548b7dc86afd2e81f9da9c5d5d0935ab4a",
+      "details": "assignment drift 1/48"
+    },
+    {
+      "stage": "M4_collect",
+      "passed": true,
+      "timestamp": "2026-09-21T12:03:00.000Z",
+      "hash": "e8b7d999ccea84302cf739c7ecd85ed42017069d2e7980947e472e54cb2dcf70",
+      "details": "ok"
+    }
+  ]
+}

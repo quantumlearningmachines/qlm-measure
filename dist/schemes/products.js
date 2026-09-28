@@ -1,4 +1,18 @@
 const str = (v) => (v === undefined || v === null ? "" : String(v));
+/** Same as index.ts sortKeysDeep (this module imports only types from there). */
+function sortKeysDeep(value) {
+    if (value === null || value === undefined)
+        return value;
+    if (Array.isArray(value))
+        return value.map(sortKeysDeep);
+    if (typeof value === "object") {
+        const sorted = {};
+        for (const key of Object.keys(value).sort())
+            sorted[key] = sortKeysDeep(value[key]);
+        return sorted;
+    }
+    return value;
+}
 // ── play/emit-1 — qlm-games src/app/api/evidence/emit/route.ts ────────────
 // computeChainHash(event, prevHash): sha256 of JSON.stringify({student_id,
 // product, construct, signal, weight, prev_hash: prevHash || "genesis"}).
@@ -334,9 +348,163 @@ export const TPC_RCT_INPUT_1 = {
     }),
     validate: (e) => (typeof e.studyId === "string" && e.studyId ? [] : ["missing studyId"]),
 };
+// ═══════════════════════════════════════════════════════════════════════════
+// 0.6.0 — chains found by the 2026-09-27 audit (docs/PLATFORM.md §12). They
+// were missed by the first inventory because it grepped for function names
+// and the CI gate filtered by file name; both are now digest-based.
+// ═══════════════════════════════════════════════════════════════════════════
+// ── play/world-trace — qlm-games src/app/ecogenesis/worlds/components/*World.tsx
+// Every LabPath world component sealed its own "world-trace/1" trace in the
+// browser with a local djb2: hash = djb2(prevHash + JSON.stringify(array)),
+// prevHash "00000000" on the first event, kept in localStorage and exported
+// as <world>-evidence.json. Fifty files, three canonical arrays:
+//   play/world-trace-1           [seq, type, payload]                          46 worlds
+//   play/world-trace-tsim-1      [seq, type, payload, tSim]                    simpleforces, soundlab, statesofmatter
+//   play/world-trace-identity-1  [seq, type, payload, {missionId, band, seed}] cybersim, schemaVersion "world-trace/2"
+// djb2 is not collision resistant: a trace is order-evident, not tamper-evident.
+const WORLD_TRACE_TSIM_WORLDS = new Set(["simpleforces", "soundlab", "statesofmatter"]);
+function worldTraceValidate(e) {
+    const errors = [];
+    if (typeof e.seq !== "number")
+        errors.push("missing seq");
+    if (typeof e.type !== "string" || !e.type)
+        errors.push("missing type");
+    if (typeof e.prevHash !== "string")
+        errors.push("missing prevHash");
+    if (!e.payload || typeof e.payload !== "object" || Array.isArray(e.payload))
+        errors.push("payload must be an object");
+    return errors;
+}
+const worldTraceCommon = { family: "play/world-trace", hashField: "hash", prevField: "prevHash", genesis: "00000000", digest: "djb2-32", validate: worldTraceValidate };
+const isWorldTrace2 = (e) => e.schemaVersion === "world-trace/2";
+const isTsimWorld = (e) => WORLD_TRACE_TSIM_WORLDS.has(String(e.worldId));
+export const PLAY_WORLD_TRACE_IDENTITY_1 = {
+    ...worldTraceCommon, id: "play/world-trace-identity-1", since: "2026-09-24",
+    applies: (e) => isWorldTrace2(e),
+    // The sealer hashed its identity object literal {missionId, band, seed} in that key order.
+    canonical: (e) => String(e.prevHash) + JSON.stringify([e.seq, e.type, e.payload, { missionId: e.missionId, band: e.band, seed: e.seed }]),
+};
+export const PLAY_WORLD_TRACE_TSIM_1 = {
+    ...worldTraceCommon, id: "play/world-trace-tsim-1", since: "2026-09-24",
+    applies: (e) => !isWorldTrace2(e) && isTsimWorld(e),
+    canonical: (e) => String(e.prevHash) + JSON.stringify([e.seq, e.type, e.payload, e.tSim]),
+};
+export const PLAY_WORLD_TRACE_1 = {
+    ...worldTraceCommon, id: "play/world-trace-1", since: "2026-09-24",
+    applies: (e) => !isWorldTrace2(e) && !isTsimWorld(e),
+    canonical: (e) => String(e.prevHash) + JSON.stringify([e.seq, e.type, e.payload]),
+};
+// ── tpc/yardstick-record — teachproof src/lib/yardstick/record-types.ts ──
+// computeDigest(content): sha256 of JSON.stringify(content, Object.keys(content).sort())
+// over {sequence, type, studyId, timestamp, payload, prevDigest}; fields
+// digest / prevDigest ("0" × 64 on the first record). The records live in
+// teachproof_studies.record_sequence.
+//
+// An array replacer is a property whitelist that JSON.stringify applies at
+// EVERY depth, so `payload` serializes as `{}` unless a nested key happens
+// to be named like a top-level one: version 1 does not cover the payload.
+// It is kept verbatim so sealed sequences still verify; version 2 hashes
+// the same six fields with keys sorted at every depth and covers the
+// payload. The two coexist in one sequence (old records v1, new v2).
+const YR_FIELDS = ["sequence", "type", "studyId", "timestamp", "payload", "prevDigest"];
+const YR_REPLACER = [...YR_FIELDS].sort();
+function yrContent(e) {
+    const c = {};
+    for (const f of YR_FIELDS)
+        c[f] = e[f];
+    return c;
+}
+function yrValidate(e) {
+    const errors = [];
+    if (typeof e.sequence !== "number")
+        errors.push("missing sequence");
+    for (const f of ["type", "studyId", "timestamp"])
+        if (typeof e[f] !== "string" || !e[f])
+            errors.push(`missing ${f}`);
+    if (!e.payload || typeof e.payload !== "object" || Array.isArray(e.payload))
+        errors.push("payload must be an object");
+    return errors;
+}
+const yrCommon = { family: "tpc/yardstick-record", hashField: "digest", prevField: "prevDigest", genesis: "0".repeat(64), applies: () => true, validate: yrValidate };
+export const TPC_YARDSTICK_RECORD_2 = {
+    ...yrCommon, id: "tpc/yardstick-record-2", since: "2026-09-28",
+    canonical: (e) => JSON.stringify(sortKeysDeep(yrContent(e))),
+    coexists: ["tpc/yardstick-record-1"],
+};
+export const TPC_YARDSTICK_RECORD_1 = {
+    ...yrCommon, id: "tpc/yardstick-record-1", since: "2026-09-21",
+    canonical: (e) => JSON.stringify(yrContent(e), YR_REPLACER),
+    coexists: ["tpc/yardstick-record-2"],
+};
+// ── tpc/intervention-1 — teachproof src/lib/clinical/longitudinal/programos/intervention-loop.ts
+// recordAction: sha256 of JSON.stringify([type, provenance, flagId, actor,
+// actionType, constructId, rationale, timestamp, prevHash]); fields hash /
+// prevHash ("genesis" first). id, windowOpportunities and windowDays are not hashed.
+export const TPC_INTERVENTION_1 = {
+    id: "tpc/intervention-1", family: "tpc/intervention", since: "2026-09-21",
+    hashField: "hash", prevField: "prevHash", genesis: "genesis",
+    applies: () => true,
+    canonical: (e) => JSON.stringify([e.type, e.provenance, e.flagId, e.actor, e.actionType, e.constructId, e.rationale, e.timestamp, e.prevHash]),
+    validate: (e) => {
+        const errors = [];
+        for (const f of ["flagId", "actor", "actionType", "constructId", "timestamp"])
+            if (typeof e[f] !== "string" || !e[f])
+                errors.push(`missing ${f}`);
+        return errors;
+    },
+};
+// ── tpc/rehearsal-stage-1 — teachproof src/lib/clinical/longitudinal/study/rehearsal-runner.ts
+// recordStage: sha256 of JSON.stringify([stage, passed, timestamp, prevHash])
+// where prevHash is the previous stage's hash ("genesis" first) and is not
+// stored on the result: the link is implicit in order.
+export const TPC_REHEARSAL_STAGE_1 = {
+    id: "tpc/rehearsal-stage-1", family: "tpc/rehearsal-stage", since: "2026-09-21",
+    hashField: "hash", prevField: null, genesis: "genesis", link: "implicit",
+    applies: () => true,
+    canonical: (e, prev) => JSON.stringify([e.stage, e.passed, e.timestamp, prev ?? "genesis"]),
+    validate: (e) => {
+        const errors = [];
+        if (typeof e.stage !== "string" || !e.stage)
+            errors.push("missing stage");
+        if (typeof e.passed !== "boolean")
+            errors.push("missing passed");
+        if (typeof e.timestamp !== "string" || !e.timestamp)
+            errors.push("missing timestamp");
+        return errors;
+    },
+};
+// ── yardstick/activity-1 — yardstick packages/engine/studies/activity.py ──
+// _entry_hash(entry, prev): sha256 of prev + "\n" + json.dumps(body,
+// sort_keys=True, separators=(",", ":"), ensure_ascii=False) where body is
+// the entry minus `hash` (so `prev`, `scheme` and `seq` are hashed); fields
+// hash / prev ("0" × 64 first). One activity.jsonl per study.
+// The Python twin is the reference. This form equals Python's for strings,
+// integers, booleans, null, lists and objects; a float would differ where
+// Python and JavaScript print it differently (5.0 vs 5) and entries carry none.
+export const YARDSTICK_ACTIVITY_1 = {
+    id: "yardstick/activity-1", family: "yardstick/activity", since: "2026-09-26",
+    hashField: "hash", prevField: "prev", genesis: "0".repeat(64),
+    applies: () => true,
+    canonical: (e) => {
+        const { hash: _h, ...body } = e;
+        void _h;
+        return String(e.prev) + "\n" + JSON.stringify(sortKeysDeep(body));
+    },
+    validate: (e) => {
+        const errors = [];
+        if (typeof e.seq !== "number")
+            errors.push("missing seq");
+        for (const f of ["at", "who", "action"])
+            if (typeof e[f] !== "string" || !e[f])
+                errors.push(`missing ${f}`);
+        return errors;
+    },
+};
 export const PRODUCT_SCHEMES = [
     PLAY_EMIT_1, PLAY_MEASURE_SESSION_1, PLAY_ENCOUNTER_FNV64_1, PLAY_RESEARCH_PROVENANCE_1,
     QCORE_QINVERSE_DJB2_1, STUDIO_LOOP_1, DP_LEDGER_V3, TPC_DSE_JOURNAL_1, YARDSTICK_SPINE_1, LABPATH_LEARNING_EVIDENCE_V1,
     TPC_TRANSCRIPT_1, TPC_DIFFERENTIAL_COMMIT_1, TPC_RCT_INPUT_1,
+    PLAY_WORLD_TRACE_IDENTITY_1, PLAY_WORLD_TRACE_TSIM_1, PLAY_WORLD_TRACE_1,
+    TPC_YARDSTICK_RECORD_2, TPC_YARDSTICK_RECORD_1, TPC_INTERVENTION_1, TPC_REHEARSAL_STAGE_1, YARDSTICK_ACTIVITY_1,
 ];
 //# sourceMappingURL=products.js.map

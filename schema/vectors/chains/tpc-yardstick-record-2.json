@@ -1,0 +1,62 @@
+{
+  "scheme": "tpc/yardstick-record-2",
+  "family": "tpc/yardstick-record",
+  "source": "tpc/yardstick-record-2 definition (sha256 of the six fields with keys sorted at every depth) — no product original",
+  "expect": {
+    "clean": true,
+    "hash_scheme": "tpc/yardstick-record-2"
+  },
+  "events": [
+    {
+      "sequence": 0,
+      "type": "protocol_commit",
+      "studyId": "study-7c2e",
+      "timestamp": "2026-09-28T09:00:00.000Z",
+      "payload": {
+        "title": "Escalation coaching RCT",
+        "arms": [
+          "treatment",
+          "control"
+        ],
+        "analysisPlan": {
+          "estimator": "welch_t_test",
+          "alpha": 0.05
+        }
+      },
+      "prevDigest": "0000000000000000000000000000000000000000000000000000000000000000",
+      "digest": "9dfad473104776ca9b3e29a607ad2fce82608520f55286040ce502d9869dd465"
+    },
+    {
+      "sequence": 1,
+      "type": "enrollment",
+      "studyId": "study-7c2e",
+      "timestamp": "2026-09-28T09:01:00.000Z",
+      "payload": {
+        "participantCode": "P-002",
+        "note": "ünïcödé ok"
+      },
+      "prevDigest": "9dfad473104776ca9b3e29a607ad2fce82608520f55286040ce502d9869dd465",
+      "digest": "eee1f8a2b6a6f6c1030cf0b1e18c1411a45c5bc9ff1a64a3ee95910ede138b7e"
+    },
+    {
+      "sequence": 2,
+      "type": "analysis",
+      "studyId": "study-7c2e",
+      "timestamp": "2026-09-28T09:02:00.000Z",
+      "payload": {
+        "dimension": "escalation",
+        "result": {
+          "estimate": 0.13,
+          "pValue": 0.04,
+          "ci95": [
+            0.01,
+            0.25
+          ],
+          "significant": true
+        }
+      },
+      "prevDigest": "eee1f8a2b6a6f6c1030cf0b1e18c1411a45c5bc9ff1a64a3ee95910ede138b7e",
+      "digest": "89d2208e2305027debaa86cbfe0f60c16fad7f1311644a41dfd1fafa90b48726"
+    }
+  ]
+}

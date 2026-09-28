@@ -44,7 +44,25 @@ def test_registry_order_matches_typescript():
     assert ids[:5] == ["tpc/clinical-v4", "tpc/clinical-v3", "tpc/clinical-v2", "tpc/clinical-v1", "play/clinical-clin-1.0"]
     assert ids[5:] == ["play/emit-1", "play/measure-session-1", "play/encounter-fnv64-1", "play/research-provenance-1",
                        "qcore/qinverse-djb2-1", "studio/loop-1", "dp/ledger-v3", "tpc/dse-journal-1", "yardstick/spine-1",
-                       "labpath/learning-evidence-v1", "tpc/transcript-1", "tpc/differential-commit-1", "tpc/rct-input-1"]
+                       "labpath/learning-evidence-v1", "tpc/transcript-1", "tpc/differential-commit-1", "tpc/rct-input-1",
+                       "play/world-trace-identity-1", "play/world-trace-tsim-1", "play/world-trace-1",
+                       "tpc/yardstick-record-2", "tpc/yardstick-record-1", "tpc/intervention-1", "tpc/rehearsal-stage-1", "yardstick/activity-1"]
+    assert len({s["family"] for s in list_schemes()}) == 19
+
+
+def test_array_replacer_semantics_match_javascript():
+    """JSON.stringify(value, ["b", "a"]) keeps listed keys in list order at every depth (tpc/yardstick-record-1)."""
+    from qlm_measure.schemes import js_json_dumps_property_list
+    value = {"a": 1, "b": {"c": 2, "a": [{"b": 3, "z": 4}, 5]}, "z": 6}
+    assert js_json_dumps_property_list(value, ["b", "a"]) == '{"b":{"a":[{"b":3},5]},"a":1}'
+
+
+def test_yardstick_record_1_is_payload_blind_and_2_is_not():
+    from qlm_measure.schemes import compute_event_hash
+    base = {"sequence": 0, "type": "protocol_commit", "studyId": "s", "timestamp": "t", "payload": {"title": "A"}, "prevDigest": "0" * 64}
+    edited = {**base, "payload": {"title": "B"}}
+    assert compute_event_hash(base, "tpc/yardstick-record-1") == compute_event_hash(edited, "tpc/yardstick-record-1")
+    assert compute_event_hash(base, "tpc/yardstick-record-2") != compute_event_hash(edited, "tpc/yardstick-record-2")
 
 
 def test_builtin_digests_match_typescript():

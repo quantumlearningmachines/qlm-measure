@@ -1,0 +1,37 @@
+{
+  "scheme": "tpc/yardstick-record-2",
+  "family": "tpc/yardstick-record",
+  "source": "one sequence: record 0 sealed by record-types.ts computeDigest (v1), record 1 by version 2",
+  "expect": {
+    "clean": true,
+    "hash_scheme": "tpc/yardstick-record-2",
+    "schemes": {
+      "tpc/yardstick-record-1": 1,
+      "tpc/yardstick-record-2": 1
+    }
+  },
+  "events": [
+    {
+      "sequence": 0,
+      "type": "protocol_commit",
+      "studyId": "study-7c2e",
+      "timestamp": "2026-09-21T09:00:00.000Z",
+      "payload": {
+        "title": "Before the switch"
+      },
+      "prevDigest": "0000000000000000000000000000000000000000000000000000000000000000",
+      "digest": "c67cdcc7c8721385d93f0b7f2193f814dc25b8ac1e4482ae523aef8e36694c5a"
+    },
+    {
+      "sequence": 1,
+      "type": "enrollment",
+      "studyId": "study-7c2e",
+      "timestamp": "2026-09-28T09:01:00.000Z",
+      "payload": {
+        "participantCode": "P-003"
+      },
+      "prevDigest": "c67cdcc7c8721385d93f0b7f2193f814dc25b8ac1e4482ae523aef8e36694c5a",
+      "digest": "c8767f7ec0adf1c4c30cad02865195229ddf852371533fb87e36597598a159a3"
+    }
+  ]
+}

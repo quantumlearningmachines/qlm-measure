@@ -1,0 +1,92 @@
+{
+  "scheme": "play/world-trace-1",
+  "family": "play/world-trace",
+  "source": "qlm-games worlds/components/RatioRateWorld.tsx emitTrace (djb2 over prevHash + JSON.stringify([seq, type, payload]))",
+  "expect": {
+    "clean": true,
+    "hash_scheme": "play/world-trace-1"
+  },
+  "events": [
+    {
+      "seq": 0,
+      "type": "missionStart",
+      "worldId": "ratiorate",
+      "missionId": "35-ratio",
+      "band": "3-5",
+      "seed": 8675309,
+      "schemaVersion": "world-trace/1",
+      "payload": {
+        "missionId": "35-ratio",
+        "band": "3-5",
+        "seed": 8675309
+      },
+      "prevHash": "00000000",
+      "hash": "5c551b8f"
+    },
+    {
+      "seq": 1,
+      "type": "commit",
+      "worldId": "ratiorate",
+      "missionId": "35-ratio",
+      "band": "3-5",
+      "seed": 8675309,
+      "schemaVersion": "world-trace/1",
+      "payload": {
+        "option": "3:4",
+        "confidence": "fairly sure"
+      },
+      "prevHash": "5c551b8f",
+      "hash": "78f8ff1c"
+    },
+    {
+      "seq": 2,
+      "type": "reveal",
+      "worldId": "ratiorate",
+      "missionId": "35-ratio",
+      "band": "3-5",
+      "seed": 8675309,
+      "schemaVersion": "world-trace/1",
+      "payload": {
+        "committed": "3:4",
+        "actual": "3:4",
+        "match": true,
+        "facts": [
+          "12 red — 16 blue",
+          "ratio ¾",
+          "🧪"
+        ]
+      },
+      "prevHash": "78f8ff1c",
+      "hash": "8e0bef55"
+    },
+    {
+      "seq": 3,
+      "type": "explanationFiled",
+      "worldId": "ratiorate",
+      "missionId": "35-ratio",
+      "band": "3-5",
+      "seed": 8675309,
+      "schemaVersion": "world-trace/1",
+      "payload": {
+        "text": "Twelve to sixteen simplifies: divide both by four.",
+        "chars": 51
+      },
+      "prevHash": "8e0bef55",
+      "hash": "044cb707"
+    },
+    {
+      "seq": 4,
+      "type": "allMissionsRevealed",
+      "worldId": "ratiorate",
+      "missionId": "35-ratio",
+      "band": "3-5",
+      "seed": 8675309,
+      "schemaVersion": "world-trace/1",
+      "payload": {
+        "chainVerifies": true
+      },
+      "prevHash": "044cb707",
+      "hash": "4864d334"
+    }
+  ]
+}

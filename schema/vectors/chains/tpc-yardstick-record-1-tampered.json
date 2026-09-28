@@ -1,0 +1,74 @@
+{
+  "scheme": "tpc/yardstick-record-1",
+  "family": "tpc/yardstick-record",
+  "source": "tpc-yardstick-record-1 with records[3].payload.sequence changed (a whitelisted key name, so covered)",
+  "expect": {
+    "clean": false,
+    "hash_scheme": "tpc/yardstick-record-1",
+    "tampered": 1,
+    "tampered_index": 3
+  },
+  "events": [
+    {
+      "sequence": 0,
+      "type": "protocol_commit",
+      "studyId": "study-7c2e",
+      "timestamp": "2026-09-21T09:00:00.000Z",
+      "payload": {
+        "title": "Escalation coaching RCT",
+        "pi": "Dr. Ada",
+        "arms": [
+          "treatment",
+          "control"
+        ],
+        "designatedPrimary": "escalation",
+        "analysisPlan": {
+          "estimator": "welch_t_test",
+          "alpha": 0.05
+        },
+        "assignmentSeed": "seed-2026"
+      },
+      "prevDigest": "0000000000000000000000000000000000000000000000000000000000000000",
+      "digest": "c67cdcc7c8721385d93f0b7f2193f814dc25b8ac1e4482ae523aef8e36694c5a"
+    },
+    {
+      "sequence": 1,
+      "type": "enrollment",
+      "studyId": "study-7c2e",
+      "timestamp": "2026-09-21T09:01:00.000Z",
+      "payload": {
+        "participantCode": "P-001",
+        "timestamp": "2026-09-21T09:00:00.000Z"
+      },
+      "prevDigest": "c67cdcc7c8721385d93f0b7f2193f814dc25b8ac1e4482ae523aef8e36694c5a",
+      "digest": "57db8f0d8ff46f2eb4dbd34165d78ee8038a47b98629be6ac6baa499b31472d1"
+    },
+    {
+      "sequence": 2,
+      "type": "assignment",
+      "studyId": "study-7c2e",
+      "timestamp": "2026-09-21T09:02:00.000Z",
+      "payload": {
+        "participantCode": "P-001",
+        "arm": "treatment",
+        "type": "balanced_fisher_yates"
+      },
+      "prevDigest": "57db8f0d8ff46f2eb4dbd34165d78ee8038a47b98629be6ac6baa499b31472d1",
+      "digest": "6425ad003a092aefe3be8e47f29edf4cfe0b2e12e9823a435893c6f54c5ed170"
+    },
+    {
+      "sequence": 3,
+      "type": "outcome",
+      "studyId": "study-7c2e",
+      "timestamp": "2026-09-21T09:03:00.000Z",
+      "payload": {
+        "participantCode": "P-001",
+        "dimension": "escalation",
+        "value": 0.71,
+        "sequence": 99
+      },
+      "prevDigest": "6425ad003a092aefe3be8e47f29edf4cfe0b2e12e9823a435893c6f54c5ed170",
+      "digest": "29295d514cdff26f8a73976cb2fd156b9a47d4521738b3b466b7ede5003c642d"
+    }
+  ]
+}

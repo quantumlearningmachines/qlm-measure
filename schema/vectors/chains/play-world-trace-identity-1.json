@@ -1,0 +1,59 @@
+{
+  "scheme": "play/world-trace-identity-1",
+  "family": "play/world-trace",
+  "source": "qlm-games worlds/components/CyberSimWorldV2.tsx emitTrace (array carries the {missionId, band, seed} identity)",
+  "expect": {
+    "clean": true,
+    "hash_scheme": "play/world-trace-identity-1"
+  },
+  "events": [
+    {
+      "seq": 0,
+      "type": "verbLit",
+      "worldId": "cybersim",
+      "missionId": null,
+      "band": "6-8",
+      "seed": 1234,
+      "schemaVersion": "world-trace/2",
+      "timestamp": "2026-09-24T10:00:00.000Z",
+      "payload": {
+        "verb": "Predict"
+      },
+      "prevHash": "00000000",
+      "hash": "d52766d4"
+    },
+    {
+      "seq": 1,
+      "type": "missionStart",
+      "worldId": "cybersim",
+      "missionId": "68-reach",
+      "band": "6-8",
+      "seed": 5678,
+      "schemaVersion": "world-trace/2",
+      "timestamp": "2026-09-24T10:01:00.000Z",
+      "payload": {
+        "missionId": "68-reach",
+        "band": "6-8",
+        "attempt": 1
+      },
+      "prevHash": "d52766d4",
+      "hash": "a9f27b55"
+    },
+    {
+      "seq": 2,
+      "type": "commit",
+      "worldId": "cybersim",
+      "missionId": "68-reach",
+      "band": "6-8",
+      "seed": 5678,
+      "schemaVersion": "world-trace/2",
+      "timestamp": "2026-09-24T10:02:00.000Z",
+      "payload": {
+        "option": "isolate the host",
+        "confidence": "leaning"
+      },
+      "prevHash": "a9f27b55",
+      "hash": "2ddb9bbc"
+    }
+  ]
+}
