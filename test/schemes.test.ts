@@ -3,7 +3,7 @@ import { readFileSync, readdirSync } from "fs";
 import { join } from "path";
 import { createHash } from "crypto";
 import { sealEvent, computeEventHash, detectScheme, verifyChain, sha256Hex } from "../src/schemes/node.js";
-import { listSchemes, getScheme, sealEventWith, verifyChainWith, computeEventHashAsyncWith, fnv1a64Hex, djb2Hex } from "../src/schemes/index.js";
+import { listSchemes, getScheme, sealEventWith, verifyChainWith, computeEventHashAsyncWith, fnv1a64Hex, djb2Hex, sortKeysDeep } from "../src/schemes/index.js";
 
 const VEC = join(__dirname, "..", "schema", "vectors", "chains");
 const vectors = readdirSync(VEC).filter((f) => f.endsWith(".json")).map((f) => ({ name: f, ...JSON.parse(readFileSync(join(VEC, f), "utf-8")) }));
@@ -38,10 +38,10 @@ describe("chain schemes: vectors sealed by the original product code", () => {
 });
 
 describe("chain schemes: behaviour", () => {
-  it("lists twenty-six schemes across nineteen families, clinical newest first", () => {
+  it("lists twenty-seven schemes across nineteen families, clinical newest first", () => {
     const ids = listSchemes().map((s) => s.id);
     expect(ids.slice(0, 5)).toEqual(["tpc/clinical-v4", "tpc/clinical-v3", "tpc/clinical-v2", "tpc/clinical-v1", "play/clinical-clin-1.0"]);
-    expect(ids.slice(5)).toEqual(["play/emit-1", "play/measure-session-1", "play/encounter-fnv64-1", "play/research-provenance-1", "qcore/qinverse-djb2-1", "studio/loop-1", "dp/ledger-v3", "tpc/dse-journal-1", "yardstick/spine-1", "labpath/learning-evidence-v1", "tpc/transcript-1", "tpc/differential-commit-1", "tpc/rct-input-1",
+    expect(ids.slice(5)).toEqual(["play/emit-1", "play/measure-session-1", "play/encounter-fnv64-1", "play/research-provenance-1", "qcore/qinverse-djb2-1", "studio/loop-1", "dp/ledger-v3", "tpc/dse-journal-1", "yardstick/spine-1", "labpath/learning-evidence-v1", "tpc/transcript-1", "tpc/differential-commit-2", "tpc/differential-commit-1", "tpc/rct-input-1",
       "play/world-trace-identity-1", "play/world-trace-tsim-1", "play/world-trace-1", "tpc/yardstick-record-2", "tpc/yardstick-record-1", "tpc/intervention-1", "tpc/rehearsal-stage-1", "yardstick/activity-1"]);
     expect(new Set(listSchemes().map((s) => s.family)).size).toBe(19);
   });
@@ -114,6 +114,10 @@ describe("chain schemes: behaviour", () => {
     expect(getScheme("yardstick/spine-1").canonical({ ...e, correct: false, previous_hash: "ab" })).toBe("ab:e1:i1:B:False");
     expect(getScheme("yardstick/spine-1").canonical({ ...e, previous_hash: null })).toBe("None:e1:i1:B:True"); // f"{None}"
   });
+  it("sortKeysDeep as JavaScript runs it: array-index keys first, UTF-16 order, __proto__ dropped (the Python twin copies this)", () => {
+    const text = '{"b":1,"10":2,"9":3,"!":4,"1":5,"｡":6,"😀":7,"4294967295":8,"01":9,"a":{"2":10,"__proto__":{"x":1},"z":[{"y":1,"0":2}]}}';
+    expect(JSON.stringify(sortKeysDeep(JSON.parse(text)))).toBe('{"1":5,"9":3,"10":2,"!":4,"01":9,"4294967295":8,"a":{"2":10,"z":[{"0":2,"y":1}]},"b":1,"😀":7,"｡":6}');
+  });
   it("v4: only events with event_kind; payload keys sorted at every depth; v1-v3 never claim such events", () => {
     const base = { type: "clinical_evidence", learner: "l", encounter: "e", turn: 0, construct: "c", signal: "partial", scaffold: 1, extractor: "x", confidence: 0.5, prev_hash: "genesis" };
     const proc = { ...base, event_kind: "chart.item", payload: { z: 1, a: { y: [3, { q: 1, p: 2 }], x: null } } };
@@ -122,6 +126,110 @@ describe("chain schemes: behaviour", () => {
     expect(getScheme("tpc/clinical-v4").applies(base)).toBe(false);
     const r = verifyChain([sealEvent({ ...proc, event_kind: "Chart", payload: [] }, "tpc/clinical-v4")], { scheme: "tpc/clinical-v4" });
     expect(r.errors).toEqual(["[0] invalid event_kind: Chart", "[0] payload must be an object"]);
+  });
+  describe("tpc/differential-commit-2 (TPC-SPEC-002 E4)", () => {
+    const good = {
+      type: "differential_commit", learner: "l", encounter: "e", turn: 0, checkpoint: "on_evidence", rankedDifferential: ["a", "b"], whyText: "w", nextAction: null,
+      discipline: "GM", prev_hash: "genesis", commit_schema: 2, concepts: ["c.a", null], statuses: ["leading", "ruled_out"], confidence: [70, null],
+      evidenceLinks: [{ ref: "x", direction: "against", rank: 2 }], discriminator: { text: "t", ref: null, kind: "time" }, planLinks: [{ ref: "p", rank: 1 }],
+      trigger: "learner", captureSnapshot: ["x"], supersedes: null,
+    };
+    it("hashes version 1's list, then commit_schema and the E4 fields in order, keys sorted", () => {
+      expect(getScheme("tpc/differential-commit-2").canonical(good)).toBe(
+        '["differential_commit","l","e","on_evidence",["a","b"],"w",null,"GM","genesis",2,["c.a",null],["leading","ruled_out"],[70,null],'
+        + '[{"direction":"against","rank":2,"ref":"x"}],{"kind":"time","ref":null,"text":"t"},[{"rank":1,"ref":"p"}],"learner",["x"],null]');
+    });
+    it("commit_schema picks the version: 2 is version 2's, absent is version 1's, anything else is neither's", () => {
+      const v1 = getScheme("tpc/differential-commit-1"), v2 = getScheme("tpc/differential-commit-2");
+      const skip = { type: "commit_skipped", learner: "l", encounter: "e", checkpoint: "pre_close", reason: "timeout", prev_hash: "genesis" };
+      const { commit_schema: _cs, ...old } = good; void _cs;
+      expect([v1.applies(good), v2.applies(good)]).toEqual([false, true]);
+      expect([v1.applies(old), v2.applies(old)]).toEqual([true, false]);
+      expect([v1.applies(skip), v2.applies(skip)]).toEqual([true, false]);
+      for (const e of [{ ...good, commit_schema: 1 }, { ...good, commit_schema: null }, { ...skip, commit_schema: 2 }, { ...good, commit_schema: true }]) expect([v1.applies(e), v2.applies(e)]).toEqual([false, false]);
+      for (const id of ["tpc/clinical-v1", "tpc/clinical-v2", "tpc/clinical-v3", "tpc/clinical-v4"]) expect(getScheme(id).applies(good)).toBe(false);
+    });
+    it("covers every E4 field: an edit to any of them, or dropping commit_schema, reads as tampered", () => {
+      const sealed = sealEvent(good, "tpc/differential-commit-2");
+      expect(verifyChain([sealed], { family: "tpc/clinical" }).clean).toBe(true);
+      const edits: Record<string, unknown> = {
+        concepts: ["c.a", "c.b"], statuses: ["active", "ruled_out"], confidence: [71, null], evidenceLinks: [{ ref: "x", direction: "for", rank: 2 }],
+        discriminator: { text: "t", ref: "x", kind: "time" }, planLinks: [], trigger: "LAB-02", captureSnapshot: ["x", "y"], supersedes: "f".repeat(64),
+      };
+      for (const [f, v] of Object.entries(edits)) expect(verifyChain([{ ...sealed, [f]: v }], { family: "tpc/clinical" }).stats.tampered, f).toBe(1);
+      const { commit_schema: _cs, ...stripped } = sealed; void _cs;
+      expect(verifyChain([stripped], { family: "tpc/clinical" }).stats.tampered).toBe(1);
+    });
+    it("validates the E4 shape: lengths, statuses, 0-100, 1-based ranks, links into the snapshot, the discriminator, a trigger on on_evidence", () => {
+      const { supersedes: _s, ...bad } = {
+        ...good, discipline: "nursing", statuses: ["leading", "maybe"], confidence: [101, null],
+        evidenceLinks: [{ rank: 0, ref: "x", direction: "for" }, { rank: 1, ref: "not-seen", direction: "for" }],
+        discriminator: { kind: "hunch", ref: null, text: "t" }, planLinks: [{ rank: 3, ref: "p" }], trigger: null,
+      };
+      void _s;
+      const r = verifyChain([sealEvent(bad, "tpc/differential-commit-2")], { scheme: "tpc/differential-commit-2" });
+      expect(r.stats.tampered).toBe(0);
+      expect(r.errors).toEqual([
+        "[0] invalid discipline: nursing",
+        "[0] statuses must hold one of leading, active, ruled_out per ranked entry",
+        "[0] confidence must hold one number 0 to 100 or null per ranked entry",
+        "[0] invalid evidenceLinks[0]",
+        "[0] evidenceLinks[1] ref not in captureSnapshot: not-seen",
+        "[0] invalid discriminator",
+        "[0] invalid planLinks[0]",
+        "[0] on_evidence needs a trigger",
+        "[0] supersedes must be a hash or null",
+      ]);
+      const empty = sealEvent({ ...good, checkpoint: "after_history", rankedDifferential: [], concepts: [], statuses: [], confidence: [] }, "tpc/differential-commit-2");
+      expect(verifyChain([empty], { scheme: "tpc/differential-commit-2" }).errors).toEqual([
+        "[0] invalid checkpoint: after_history", "[0] rankedDifferential must be 1 to 5 non-empty strings", "[0] invalid evidenceLinks[0]", "[0] invalid planLinks[0]",
+      ]);
+    });
+    const errs = (e: Record<string, unknown>): string[] => verifyChain([sealEvent(e, "tpc/differential-commit-2")], { scheme: "tpc/differential-commit-2" }).errors;
+    const without = (f: string): Record<string, unknown> => { const { [f]: _x, ...rest } = good as Record<string, unknown>; void _x; return rest; };
+    it("wants every field written, null where empty: a missing field hashes as null but is not valid", () => {
+      expect(errs(without("trigger"))).toEqual(["[0] trigger must be a non-empty string or null"]);
+      expect(errs(without("discriminator"))).toEqual(["[0] invalid discriminator"]);
+      expect(errs(without("nextAction"))).toEqual(["[0] nextAction must be a string or null"]);
+      expect(errs({ ...good, discriminator: { kind: "time", text: "t" } })).toEqual(["[0] invalid discriminator"]);
+      const six = { rankedDifferential: ["a", "b", "c", "d", "e", "f"], concepts: Array(6).fill(null), statuses: Array(6).fill("active"), confidence: Array(6).fill(null) };
+      expect(errs({ ...good, ...six })).toEqual(["[0] rankedDifferential must be 1 to 5 non-empty strings"]);
+      expect(errs({ ...good, planLinks: [{ ref: "p", rank: 1.5 }] })).toEqual(["[0] invalid planLinks[0]"]);
+    });
+    it("takes only the named keys in links and the discriminator, so every valid record hashes alike in both languages", () => {
+      expect(errs({ ...good, evidenceLinks: [{ ref: "x", direction: "for", rank: 1, note: "n" }] })).toEqual(["[0] invalid evidenceLinks[0]"]);
+      expect(errs({ ...good, planLinks: [{ ref: "p", rank: 1, 10: 1 }] })).toEqual(["[0] invalid planLinks[0]"]);
+      expect(errs({ ...good, discriminator: { kind: "time", ref: null, text: "t", why: "w" } })).toEqual(["[0] invalid discriminator"]);
+      const proto = JSON.parse('{"ref":"x","direction":"for","rank":1,"__proto__":{"a":1}}');
+      expect(errs({ ...good, evidenceLinks: [proto] })).toEqual(["[0] invalid evidenceLinks[0]"]);
+    });
+    it("version 1 says why a commit fits neither version, instead of only \"tampered\"", () => {
+      const r = verifyChain([sealEvent(without("commit_schema"), "tpc/differential-commit-1")], { family: "tpc/clinical" });
+      expect(r.stats.tampered).toBe(0);
+      expect(r.errors).toEqual(["[0] fields without commit_schema 2: concepts, statuses, confidence, evidenceLinks, discriminator, planLinks, trigger, captureSnapshot, supersedes"]);
+      const skip = { type: "commit_skipped", learner: "l", encounter: "e", checkpoint: "pre_close", reason: "timeout", prev_hash: "genesis" };
+      const why = (e: Record<string, unknown>): string[] => verifyChain([{ ...e, hash: "0".repeat(64) }], { family: "tpc/clinical" }).errors;
+      expect(why({ ...skip, commit_schema: 2 })).toEqual(["[0] commit_skipped carries no commit_schema", "[0] hash mismatch (tampered)"]);
+      expect(why({ ...good, commit_schema: 1 })).toEqual(["[0] invalid commit_schema: 1", "[0] hash mismatch (tampered)"]);
+      expect(why({ ...good, commit_schema: "2" })).toEqual(["[0] invalid commit_schema: 2", "[0] hash mismatch (tampered)"]);
+      expect(why({ ...skip, reason: ["skip"] })).toEqual(["[0] invalid reason: skip", "[0] hash mismatch (tampered)"]);
+      const { reason: _r, ...noReason } = skip; void _r;
+      expect(why(noReason)).toEqual(["[0] invalid reason: undefined", "[0] hash mismatch (tampered)"]);
+      expect(verifyChain([sealEvent(good, "tpc/differential-commit-2")], { scheme: "tpc/differential-commit-1" }).errors[0])
+        .toBe("[0] a commit with commit_schema 2 is tpc/differential-commit-2's");
+    });
+    it("acted_without_commit is a skip reason (TPC-SPEC-002 E6); an unknown reason still is not", () => {
+      const skip = (reason: string) => sealEvent({ type: "commit_skipped", learner: "l", encounter: "e", checkpoint: "post_history", reason, prev_hash: "genesis" }, "tpc/differential-commit-1");
+      expect(verifyChain([skip("acted_without_commit")], { family: "tpc/clinical" }).clean).toBe(true);
+      expect(verifyChain([skip("nope")], { family: "tpc/clinical" }).errors).toEqual(["[0] invalid reason: nope"]);
+    });
+    it("a chain across the switch is not mixed, and version 1's own vector still verifies", () => {
+      const across = vectors.find((v) => v.name === "tpc-differential-commit-1-to-2.json")!;
+      const r = verifyChain(across.events, { family: "tpc/clinical" });
+      expect(r.clean).toBe(true); expect(r.errors.some((e) => e.startsWith("mixed"))).toBe(false);
+      const old = vectors.find((v) => v.name === "tpc-differential-commit-1.json")!;
+      expect(verifyChain(old.events, { family: "tpc/clinical" }).clean).toBe(true);
+    });
   });
   it("v3 and v4 coexist in one chain (newest reported); v1 and v2 still count as mixed", () => {
     const v = vectors.find((v) => v.name === "tpc-clinical-v3-v4-coexist.json")!;

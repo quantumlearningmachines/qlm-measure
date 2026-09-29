@@ -44,10 +44,153 @@ def test_registry_order_matches_typescript():
     assert ids[:5] == ["tpc/clinical-v4", "tpc/clinical-v3", "tpc/clinical-v2", "tpc/clinical-v1", "play/clinical-clin-1.0"]
     assert ids[5:] == ["play/emit-1", "play/measure-session-1", "play/encounter-fnv64-1", "play/research-provenance-1",
                        "qcore/qinverse-djb2-1", "studio/loop-1", "dp/ledger-v3", "tpc/dse-journal-1", "yardstick/spine-1",
-                       "labpath/learning-evidence-v1", "tpc/transcript-1", "tpc/differential-commit-1", "tpc/rct-input-1",
-                       "play/world-trace-identity-1", "play/world-trace-tsim-1", "play/world-trace-1",
+                       "labpath/learning-evidence-v1", "tpc/transcript-1", "tpc/differential-commit-2", "tpc/differential-commit-1",
+                       "tpc/rct-input-1", "play/world-trace-identity-1", "play/world-trace-tsim-1", "play/world-trace-1",
                        "tpc/yardstick-record-2", "tpc/yardstick-record-1", "tpc/intervention-1", "tpc/rehearsal-stage-1", "yardstick/activity-1"]
-    assert len({s["family"] for s in list_schemes()}) == 19
+    assert len(ids) == 27 and len({s["family"] for s in list_schemes()}) == 19
+
+
+# tpc/differential-commit-2 (TPC-SPEC-002 E4): the same record, canonical string and errors as the TypeScript tests.
+_COMMIT_GOOD = {
+    "type": "differential_commit", "learner": "l", "encounter": "e", "turn": 0, "checkpoint": "on_evidence", "rankedDifferential": ["a", "b"],
+    "whyText": "w", "nextAction": None, "discipline": "GM", "prev_hash": "genesis", "commit_schema": 2, "concepts": ["c.a", None],
+    "statuses": ["leading", "ruled_out"], "confidence": [70, None], "evidenceLinks": [{"ref": "x", "direction": "against", "rank": 2}],
+    "discriminator": {"text": "t", "ref": None, "kind": "time"}, "planLinks": [{"ref": "p", "rank": 1}], "trigger": "learner",
+    "captureSnapshot": ["x"], "supersedes": None,
+}
+
+
+def test_commit_2_canonical_matches_typescript():
+    assert get_scheme("tpc/differential-commit-2").canonical(_COMMIT_GOOD, None) == (
+        '["differential_commit","l","e","on_evidence",["a","b"],"w",null,"GM","genesis",2,["c.a",null],["leading","ruled_out"],[70,null],'
+        '[{"direction":"against","rank":2,"ref":"x"}],{"kind":"time","ref":null,"text":"t"},[{"rank":1,"ref":"p"}],"learner",["x"],null]')
+
+
+def test_commit_schema_picks_the_version():
+    v1, v2 = get_scheme("tpc/differential-commit-1"), get_scheme("tpc/differential-commit-2")
+    skip = {"type": "commit_skipped", "learner": "l", "encounter": "e", "checkpoint": "pre_close", "reason": "timeout", "prev_hash": "genesis"}
+    old = {k: v for k, v in _COMMIT_GOOD.items() if k != "commit_schema"}
+    assert (v1.applies(_COMMIT_GOOD), v2.applies(_COMMIT_GOOD)) == (False, True)
+    assert (v1.applies(old), v2.applies(old)) == (True, False)
+    assert (v1.applies(skip), v2.applies(skip)) == (True, False)
+    for e in ({**_COMMIT_GOOD, "commit_schema": 1}, {**_COMMIT_GOOD, "commit_schema": None}, {**skip, "commit_schema": 2}, {**_COMMIT_GOOD, "commit_schema": True}):
+        assert (v1.applies(e), v2.applies(e)) == (False, False)
+    assert v2.applies({**_COMMIT_GOOD, "commit_schema": 2.0})  # JSON 2.0 is the number 2, as in JavaScript
+    for sid in ("tpc/clinical-v1", "tpc/clinical-v2", "tpc/clinical-v3", "tpc/clinical-v4"):
+        assert not get_scheme(sid).applies(_COMMIT_GOOD)
+
+
+def test_commit_2_covers_every_field():
+    sealed = seal_event(_COMMIT_GOOD, "tpc/differential-commit-2")
+    assert verify_chain([sealed], family="tpc/clinical").clean
+    edits = {"concepts": ["c.a", "c.b"], "statuses": ["active", "ruled_out"], "confidence": [71, None],
+             "evidenceLinks": [{"ref": "x", "direction": "for", "rank": 2}], "discriminator": {"text": "t", "ref": "x", "kind": "time"},
+             "planLinks": [], "trigger": "LAB-02", "captureSnapshot": ["x", "y"], "supersedes": "f" * 64}
+    for f, v in edits.items():
+        assert verify_chain([{**sealed, f: v}], family="tpc/clinical").stats["tampered"] == 1, f
+    stripped = {k: v for k, v in sealed.items() if k != "commit_schema"}
+    assert verify_chain([stripped], family="tpc/clinical").stats["tampered"] == 1
+
+
+def test_commit_2_validation_matches_typescript():
+    bad = {**_COMMIT_GOOD, "discipline": "nursing", "statuses": ["leading", "maybe"], "confidence": [101, None],
+           "evidenceLinks": [{"rank": 0, "ref": "x", "direction": "for"}, {"rank": 1, "ref": "not-seen", "direction": "for"}],
+           "discriminator": {"kind": "hunch", "ref": None, "text": "t"}, "planLinks": [{"rank": 3, "ref": "p"}], "trigger": None}
+    del bad["supersedes"]
+    r = verify_chain([seal_event(bad, "tpc/differential-commit-2")], scheme="tpc/differential-commit-2")
+    assert r.stats["tampered"] == 0
+    assert r.errors == [
+        "[0] invalid discipline: nursing",
+        "[0] statuses must hold one of leading, active, ruled_out per ranked entry",
+        "[0] confidence must hold one number 0 to 100 or null per ranked entry",
+        "[0] invalid evidenceLinks[0]",
+        "[0] evidenceLinks[1] ref not in captureSnapshot: not-seen",
+        "[0] invalid discriminator",
+        "[0] invalid planLinks[0]",
+        "[0] on_evidence needs a trigger",
+        "[0] supersedes must be a hash or null",
+    ]
+    empty = seal_event({**_COMMIT_GOOD, "checkpoint": "after_history", "rankedDifferential": [], "concepts": [], "statuses": [], "confidence": []},
+                       "tpc/differential-commit-2")
+    assert verify_chain([empty], scheme="tpc/differential-commit-2").errors == [
+        "[0] invalid checkpoint: after_history", "[0] rankedDifferential must be 1 to 5 non-empty strings", "[0] invalid evidenceLinks[0]",
+        "[0] invalid planLinks[0]"]
+    # a rank written 2.0 is the integer 2, as Number.isInteger sees it; True is not a rank
+    assert verify_chain([seal_event({**_COMMIT_GOOD, "evidenceLinks": [{"ref": "x", "direction": "for", "rank": 2.0}]}, "tpc/differential-commit-2")],
+                        scheme="tpc/differential-commit-2").clean
+    assert verify_chain([seal_event({**_COMMIT_GOOD, "planLinks": [{"ref": "p", "rank": True}]}, "tpc/differential-commit-2")],
+                        scheme="tpc/differential-commit-2").errors == ["[0] invalid planLinks[0]"]
+
+
+def _commit_errs(e: dict) -> list[str]:
+    return verify_chain([seal_event(e, "tpc/differential-commit-2")], scheme="tpc/differential-commit-2").errors
+
+
+def _without(f: str) -> dict:
+    return {k: v for k, v in _COMMIT_GOOD.items() if k != f}
+
+
+def test_commit_2_wants_every_field_written():
+    assert _commit_errs(_without("trigger")) == ["[0] trigger must be a non-empty string or null"]
+    assert _commit_errs(_without("discriminator")) == ["[0] invalid discriminator"]
+    assert _commit_errs(_without("nextAction")) == ["[0] nextAction must be a string or null"]
+    assert _commit_errs({**_COMMIT_GOOD, "discriminator": {"kind": "time", "text": "t"}}) == ["[0] invalid discriminator"]
+    six = {"rankedDifferential": list("abcdef"), "concepts": [None] * 6, "statuses": ["active"] * 6, "confidence": [None] * 6}
+    assert _commit_errs({**_COMMIT_GOOD, **six}) == ["[0] rankedDifferential must be 1 to 5 non-empty strings"]
+    assert _commit_errs({**_COMMIT_GOOD, "planLinks": [{"ref": "p", "rank": 1.5}]}) == ["[0] invalid planLinks[0]"]
+    # a huge integer rank is just invalid (compared as an integer, never turned into a float)
+    assert _commit_errs({**_COMMIT_GOOD, "planLinks": [{"ref": "p", "rank": 10 ** 400}]}) == ["[0] invalid planLinks[0]"]
+
+
+def test_commit_2_takes_only_named_keys():
+    assert _commit_errs({**_COMMIT_GOOD, "evidenceLinks": [{"ref": "x", "direction": "for", "rank": 1, "note": "n"}]}) == ["[0] invalid evidenceLinks[0]"]
+    assert _commit_errs({**_COMMIT_GOOD, "planLinks": [{"ref": "p", "rank": 1, "10": 1}]}) == ["[0] invalid planLinks[0]"]
+    assert _commit_errs({**_COMMIT_GOOD, "discriminator": {"kind": "time", "ref": None, "text": "t", "why": "w"}}) == ["[0] invalid discriminator"]
+    proto = json.loads('{"ref":"x","direction":"for","rank":1,"__proto__":{"a":1}}')
+    assert _commit_errs({**_COMMIT_GOOD, "evidenceLinks": [proto]}) == ["[0] invalid evidenceLinks[0]"]
+
+
+def test_commit_1_says_why_a_commit_fits_neither_version():
+    r = verify_chain([seal_event(_without("commit_schema"), "tpc/differential-commit-1")], family="tpc/clinical")
+    assert r.stats["tampered"] == 0
+    assert r.errors == ["[0] fields without commit_schema 2: concepts, statuses, confidence, evidenceLinks, discriminator, planLinks, trigger, "
+                        "captureSnapshot, supersedes"]
+    skip = {"type": "commit_skipped", "learner": "l", "encounter": "e", "checkpoint": "pre_close", "reason": "timeout", "prev_hash": "genesis"}
+
+    def why(e):
+        return verify_chain([{**e, "hash": "0" * 64}], family="tpc/clinical").errors
+
+    assert why({**skip, "commit_schema": 2}) == ["[0] commit_skipped carries no commit_schema", "[0] hash mismatch (tampered)"]
+    assert why({**_COMMIT_GOOD, "commit_schema": 1}) == ["[0] invalid commit_schema: 1", "[0] hash mismatch (tampered)"]
+    assert why({**_COMMIT_GOOD, "commit_schema": "2"}) == ["[0] invalid commit_schema: 2", "[0] hash mismatch (tampered)"]
+    assert why({**skip, "reason": ["skip"]}) == ["[0] invalid reason: skip", "[0] hash mismatch (tampered)"]
+    assert why({k: v for k, v in skip.items() if k != "reason"}) == ["[0] invalid reason: undefined", "[0] hash mismatch (tampered)"]
+    assert verify_chain([seal_event(_COMMIT_GOOD, "tpc/differential-commit-2")], scheme="tpc/differential-commit-1").errors[0] == (
+        "[0] a commit with commit_schema 2 is tpc/differential-commit-2's")
+
+
+def test_sort_keys_deep_orders_keys_as_javascript_does():
+    """Array-index keys first in numeric order, UTF-16 order, __proto__ dropped: the TypeScript test pins the same string."""
+    from qlm_measure.schemes import sort_keys_deep
+    text = '{"b":1,"10":2,"9":3,"!":4,"1":5,"\\uff61":6,"\\ud83d\\ude00":7,"4294967295":8,"01":9,"a":{"2":10,"__proto__":{"x":1},"z":[{"y":1,"0":2}]}}'
+    assert js_json_dumps(sort_keys_deep(json.loads(text))) == (
+        '{"1":5,"9":3,"10":2,"!":4,"01":9,"4294967295":8,"a":{"2":10,"z":[{"0":2,"y":1}]},"b":1,"\U0001F600":7,"｡":6}')
+
+
+def test_acted_without_commit_is_a_skip_reason():
+    def skip(reason):
+        return seal_event({"type": "commit_skipped", "learner": "l", "encounter": "e", "checkpoint": "post_history", "reason": reason,
+                           "prev_hash": "genesis"}, "tpc/differential-commit-1")
+    assert verify_chain([skip("acted_without_commit")], family="tpc/clinical").clean
+    assert verify_chain([skip("nope")], family="tpc/clinical").errors == ["[0] invalid reason: nope"]
+
+
+def test_commit_chain_across_the_switch_is_not_mixed():
+    across = json.loads((VEC / "tpc-differential-commit-1-to-2.json").read_text())
+    r = verify_chain(across["events"], family="tpc/clinical")
+    assert r.clean and not any(e.startswith("mixed") for e in r.errors)
+    old = json.loads((VEC / "tpc-differential-commit-1.json").read_text())
+    assert verify_chain(old["events"], family="tpc/clinical").clean
 
 
 def test_array_replacer_semantics_match_javascript():

@@ -452,4 +452,91 @@ function rehearsalHash(stage, passed, timestamp, prevHash) {
   c1.digest = yrV2({ sequence: c1.sequence, type: c1.type, studyId: c1.studyId, timestamp: c1.timestamp, payload: c1.payload, prevDigest: c1.prevDigest }); mixed.push(c1);
   write("tpc-yardstick-record-1-to-2", { scheme: "tpc/yardstick-record-2", family: "tpc/yardstick-record", source: "one sequence: record 0 sealed by record-types.ts computeDigest (v1), record 1 by version 2", expect: { clean: true, hash_scheme: "tpc/yardstick-record-2", schemes: { "tpc/yardstick-record-1": 1, "tpc/yardstick-record-2": 1 } }, events: mixed });
 }
-console.log("wrote 34 chain vectors");
+
+// ═══════════════════════════════════════════════════════════════════════════
+// 0.7.0 — tpc/differential-commit-2 (TPC-SPEC-002 E4). Its definition; there
+// is no older sealer. Version 1's list (hashCommit above), then commit_schema
+// and the E4 fields in a fixed order, each with keys sorted at every depth.
+// ═══════════════════════════════════════════════════════════════════════════
+{
+  const V2_FIELDS = ["concepts", "statuses", "confidence", "evidenceLinks", "discriminator", "planLinks", "trigger", "captureSnapshot", "supersedes"];
+  const commitV2Hash = (r) => hashCommit([
+    "differential_commit", r.learner, r.encounter, r.checkpoint, r.rankedDifferential, r.whyText, r.nextAction, r.discipline, r.prev_hash,
+    r.commit_schema, ...V2_FIELDS.map((f) => sortKeysDeep(r[f] ?? null)),
+  ]);
+  const skipHash = (r) => hashCommit(["commit_skipped", r.learner, r.encounter, r.checkpoint, r.reason, r.prev_hash]);
+  const who = { learner: "L-7f3a", encounter: "DEMO-RN-01" };
+
+  // One encounter's records as TeachProof keeps them: their own chain, genesis "genesis".
+  // Object keys are deliberately unsorted; stored rows may reorder them.
+  const records = []; let prev = "genesis";
+  const commit = (turn, fields) => { const r = { type: "differential_commit", ...who, turn, commit_schema: 2, ...fields, prev_hash: prev }; r.hash = commitV2Hash(r); records.push(r); prev = r.hash; return r.hash; };
+  const skip = (turn, checkpoint, reason) => { const r = { type: "commit_skipped", ...who, turn, checkpoint, reason, prev_hash: prev }; r.hash = skipHash(r); records.push(r); prev = r.hash; };
+  const snap0 = ["chart.mar", "chart.vitals"];
+  const h0 = commit(0, {
+    checkpoint: "pre_brief", rankedDifferential: ["post-op pain, poorly controlled", "atelectasis"], concepts: ["rn.acute_pain", null],
+    statuses: ["leading", "active"], confidence: [62.5, null], evidenceLinks: [{ ref: "chart.mar", direction: "for", rank: 1 }],
+    discriminator: { text: "Is she splinting when she breathes?", ref: null, kind: "question" }, nextAction: "reassess pain", planLinks: [],
+    whyText: "Day 1 after surgery and the MAR shows two refused doses — pain first.", discipline: "RN", trigger: "briefing", captureSnapshot: snap0, supersedes: null,
+  });
+  skip(4, "post_history", "timeout");
+  skip(4, "post_history", "acted_without_commit");
+  const snap1 = [...snap0, "turn.5", "turn.6", "vitals.spo2"];
+  const h3 = commit(7, {
+    checkpoint: "on_evidence", rankedDifferential: ["inadequate pain control", "atelectasis", "opioid fear"], concepts: ["rn.acute_pain", "rn.atelectasis", "rn.opioid_fear"],
+    statuses: ["leading", "active", "active"], confidence: [80, 45, 60],
+    evidenceLinks: [{ rank: 1, ref: "turn.5", direction: "for" }, { direction: "for", rank: 2, ref: "vitals.spo2" }, { ref: "turn.6", rank: 3, direction: "for" }],
+    discriminator: { kind: "finding", ref: "exam.breath_sounds", text: "diminished bases would move atelectasis up" }, nextAction: "encourage incentive spirometry",
+    planLinks: [{ ref: "order.incentive_spirometry", rank: 2 }],
+    whyText: "She says \"I don't want to get hooked\" — the pain is real and she is guarding. SpO₂ 93% 🫁", discipline: "RN", trigger: "learner", captureSnapshot: snap1, supersedes: h0,
+  });
+  const snap2 = [...snap1, "exam.breath_sounds", "lab.LAB-02"];
+  const h4 = commit(11, {
+    checkpoint: "on_evidence", rankedDifferential: ["atelectasis", "inadequate pain control", "pneumonia"], concepts: ["rn.atelectasis", "rn.acute_pain", "rn.pneumonia"],
+    statuses: ["leading", "active", "ruled_out"], confidence: [70, 65, 5],
+    evidenceLinks: [{ rank: 1, ref: "exam.breath_sounds", direction: "for" }, { rank: 3, ref: "lab.LAB-02", direction: "against" }],
+    discriminator: { kind: "test", ref: "order.chest_xray", text: "a film would settle atelectasis against pneumonia" }, nextAction: "notify provider",
+    planLinks: [{ rank: 1, ref: "order.chest_xray" }, { rank: 2, ref: "order.pca_review" }],
+    whyText: "White count normal, no fever: not pneumonia. Bases diminished.", discipline: "RN", trigger: "LAB-02", captureSnapshot: snap2, supersedes: h3,
+  });
+  commit(15, {
+    checkpoint: "pre_close", rankedDifferential: ["atelectasis", "pain"], concepts: [null, null], statuses: ["leading", "active"], confidence: [null, null],
+    evidenceLinks: [], discriminator: { kind: "time", ref: null, text: "SpO₂ not back above 95% within the hour" }, nextAction: null, planLinks: [],
+    whyText: "", discipline: "RN", trigger: "close", captureSnapshot: snap2, supersedes: h4,
+  });
+  write("tpc-differential-commit-2", { scheme: "tpc/differential-commit-2", family: "tpc/clinical", source: "tpc/differential-commit-2 definition (TPC-SPEC-002 E4) — one encounter's commit records: version 2 commits with version 1 skip records, including acted_without_commit", expect: { clean: true, hash_scheme: "tpc/differential-commit-2", schemes: { "tpc/differential-commit-2": 4, "tpc/differential-commit-1": 2 } }, events: records });
+  const t = JSON.parse(JSON.stringify(records)); t[3].evidenceLinks[1].direction = "against";
+  write("tpc-differential-commit-2-tampered", { scheme: "tpc/differential-commit-2", family: "tpc/clinical", source: "tpc-differential-commit-2 with records[3].evidenceLinks[1].direction flipped — covered by version 2", expect: { clean: false, hash_scheme: "tpc/differential-commit-2", tampered: 1, tampered_index: 3 }, events: t });
+
+  // An evidence chain across the switch: a commit sealed the old way stays version 1 and still
+  // verifies; the next is version 2; commit.open events (clinical-v4) sit between them.
+  const chain = []; prev = "genesis";
+  const open = (turn, checkpoint, trigger, at_s) => {
+    const e = { type: "clinical_evidence", ...who, turn, construct: "process", signal: "not_observable", scaffold: 0, extractor: "checkpoints", confidence: 1, prev_hash: prev,
+      triage_class: null, engine_version: "tpc-engine-1.6.0", mapping_version: "0.2.0", event_kind: "commit.open",
+      payload: { trigger, opened_by: "engine", checkpoint, mandatory: true, at_s, timeout_s: 120 } };
+    e.hash = tpcHashV4(e); chain.push(e); prev = e.hash;
+  };
+  open(4, "post_history", "action_commit", 312);
+  const old = { type: "differential_commit", ...who, turn: 4, checkpoint: "post_history", rankedDifferential: ["inadequate pain control", "atelectasis"], nextAction: "reassess pain", whyText: "Guarding, refused doses.", discipline: "RN", prev_hash: prev };
+  old.hash = hashCommit(["differential_commit", old.learner, old.encounter, old.checkpoint, old.rankedDifferential, old.whyText, old.nextAction, old.discipline, prev]); chain.push(old); prev = old.hash;
+  open(15, "pre_close", "close", 1104);
+  const next = { type: "differential_commit", ...who, turn: 15, commit_schema: 2, checkpoint: "pre_close", rankedDifferential: ["atelectasis", "inadequate pain control"], concepts: ["rn.atelectasis", "rn.acute_pain"],
+    statuses: ["leading", "active"], confidence: [75, 50], evidenceLinks: [{ rank: 1, ref: "exam.breath_sounds", direction: "for" }], discriminator: null, nextAction: "notify provider", planLinks: [{ rank: 1, ref: "order.chest_xray" }],
+    whyText: "Diminished bases after two days of shallow breathing.", discipline: "RN", trigger: "close", captureSnapshot: ["chart.mar", "exam.breath_sounds"], supersedes: old.hash, prev_hash: prev };
+  next.hash = commitV2Hash(next); chain.push(next);
+  write("tpc-differential-commit-1-to-2", { scheme: "tpc/differential-commit-2", family: "tpc/clinical", source: "one evidence chain across the switch: a commit sealed by differential-commit.ts hashCommit (version 1), then a version 2 commit, with clinical-v4 commit.open events between", expect: { clean: true, hash_scheme: "tpc/clinical-v4", schemes: { "tpc/clinical-v4": 2, "tpc/differential-commit-1": 1, "tpc/differential-commit-2": 1 } }, events: chain });
+}
+{ // tpc/clinical-v4 payloads whose keys JavaScript orders its own way: array-index keys ("10", "9")
+  // enumerate first in numeric order, and strings sort by UTF-16 code units ("😀" before "｡").
+  // Sealed by the production v4 sealer above; the Python twin before 0.7.0 read these as tampered.
+  const payloads = [{ "10": "tenth line", "9": "ninth line", "!": "bang", "01": "not an index" }, { "｡": "halfwidth stop", "😀": "emoji", a: { "2": [{ "1": 1, z: 0 }], b: null } }];
+  const events = []; let prev = "genesis";
+  payloads.forEach((payload, i) => {
+    const e = { type: "clinical_evidence", learner: "L-7f3a", encounter: "DEMO-RN-01", turn: i, construct: "process", signal: "not_observable", scaffold: 0, extractor: "chart", confidence: 1, prev_hash: prev,
+      triage_class: null, engine_version: "tpc-engine-1.6.0", mapping_version: "0.2.0", event_kind: "chart.note", payload };
+    e.hash = tpcHashV4(e); events.push(e); prev = e.hash;
+  });
+  write("tpc-clinical-v4-key-order", { scheme: "tpc/clinical-v4", family: "tpc/clinical", source: "tpc/clinical-v4 production sealer (tpcHashV4, sortKeysDeep as JavaScript runs it) over payloads with array-index and non-BMP keys", expect: { clean: true, hash_scheme: "tpc/clinical-v4" }, events });
+}
+console.log("wrote 38 chain vectors");

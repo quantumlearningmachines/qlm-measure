@@ -1,0 +1,64 @@
+{
+  "scheme": "tpc/clinical-v4",
+  "family": "tpc/clinical",
+  "source": "tpc/clinical-v4 production sealer (tpcHashV4, sortKeysDeep as JavaScript runs it) over payloads with array-index and non-BMP keys",
+  "expect": {
+    "clean": true,
+    "hash_scheme": "tpc/clinical-v4"
+  },
+  "events": [
+    {
+      "type": "clinical_evidence",
+      "learner": "L-7f3a",
+      "encounter": "DEMO-RN-01",
+      "turn": 0,
+      "construct": "process",
+      "signal": "not_observable",
+      "scaffold": 0,
+      "extractor": "chart",
+      "confidence": 1,
+      "prev_hash": "genesis",
+      "triage_class": null,
+      "engine_version": "tpc-engine-1.6.0",
+      "mapping_version": "0.2.0",
+      "event_kind": "chart.note",
+      "payload": {
+        "9": "ninth line",
+        "10": "tenth line",
+        "!": "bang",
+        "01": "not an index"
+      },
+      "hash": "09893539caedbc79f865296dd7c5efd8e67b6e031f87cac50b5273dbe536db23"
+    },
+    {
+      "type": "clinical_evidence",
+      "learner": "L-7f3a",
+      "encounter": "DEMO-RN-01",
+      "turn": 1,
+      "construct": "process",
+      "signal": "not_observable",
+      "scaffold": 0,
+      "extractor": "chart",
+      "confidence": 1,
+      "prev_hash": "09893539caedbc79f865296dd7c5efd8e67b6e031f87cac50b5273dbe536db23",
+      "triage_class": null,
+      "engine_version": "tpc-engine-1.6.0",
+      "mapping_version": "0.2.0",
+      "event_kind": "chart.note",
+      "payload": {
+        "｡": "halfwidth stop",
+        "😀": "emoji",
+        "a": {
+          "2": [
+            {
+              "1": 1,
+              "z": 0
+            }
+          ],
+          "b": null
+        }
+      },
+      "hash": "6ac258a9badd27b99d2ba1141f7aa43ddda69b1378283747c0d5d2d0988bd5bd"
+    }
+  ]
+}

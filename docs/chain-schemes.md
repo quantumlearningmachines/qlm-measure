@@ -1,4 +1,4 @@
-# Chain schemes (0.6.0)
+# Chain schemes (0.7.0)
 
 QLM products store one row per evidence event, each carrying its own hash and
 a link to the previous event's hash. Before 0.4.0 every product computed that
@@ -68,7 +68,7 @@ previous hash enters the canonical form but is not stored — the journal), or
 | `tpc/dse-journal-1` | teachproof `tutor-lab/dse/journal` `computeEntryHash` (prev + content; `timestamp` not hashed) | sha256 | implicit, genesis `""` |
 | `yardstick/spine-1` | yardstick `project_spine/models` `ResponseRecord.compute_chain_hash` (Python f-string, `True`/`False`) | sha256 | `chain_hash` / `previous_hash`, genesis `""` |
 | `tpc/transcript-1` | teachproof `api/clinical/evidence/process` Stage 3 (sha256 of the `transcript` column: `{text, turns, sourceType, duration}`) | sha256 | `hash` / `prev_hash` stored but not hashed; `null` on the learner's first item |
-| `tpc/differential-commit-1` | teachproof `longitudinal/events/differential-commit` `hashCommit` (positional array; `turn` not hashed) — lives inside the clinical chain and coexists with `tpc/clinical-v*` | sha256 | `hash` / `prev_hash` |
+| `tpc/differential-commit-1` | teachproof `longitudinal/events/differential-commit` `hashCommit` (positional array; `turn` not hashed) — lives inside the clinical chain and coexists with `tpc/clinical-v*`. Since 0.7.0 it applies only to records without `commit_schema` (those carrying it are version 2's), and a skip's reason may also be `acted_without_commit` | sha256 | `hash` / `prev_hash` |
 | `tpc/rct-input-1` | teachproof `rct/result-ledger` `ledgerFromAnalysis` input fingerprint (every entry's `inputHash`) | sha256 | none |
 | `labpath/learning-evidence-v1` | qlm-games `ecogenesis/labpath/learning-evidence-event` `hashLearningEvidenceEvent` (whole draft, keys sorted with `localeCompare` at every depth) | sha256 | `hash` / `prev_hash`, `null` on the first event |
 
@@ -99,6 +99,29 @@ Implicit-link schemes take `prev` when sealing:
 ```ts
 sealEvent(entry, "tpc/dse-journal-1", previousEntry?.hash ?? "");
 ```
+
+## The reasoning commit, version 2 (0.7.0)
+
+TeachProof's commit model (TPC-SPEC-002 E4) adds fields to the differential
+commit. A commit carrying `commit_schema: 2` hashes version 1's list
+unchanged, then appends the new fields in a fixed order, so records sealed
+under version 1 keep verifying under it. Skip records stay version 1.
+
+| Scheme | Canonical form | Validation | Link |
+|---|---|---|---|
+| `tpc/differential-commit-2` | version 1's list, then `[commit_schema, concepts, statuses, confidence, evidenceLinks, discriminator, planLinks, trigger, captureSnapshot, supersedes]`, each with keys sorted at every depth; a missing field hashes as `null` | every field present (`null` where empty); 1 to 5 ranked entries, with one concept id or `null`, one status (`leading`, `active`, `ruled_out`) and one confidence (0 to 100, or `null`) per entry; link ranks are 1-based positions in the ranked list; evidence links point only into `captureSnapshot`; the discriminator is `null` or `{kind: question, test, finding or time, ref, text}`; `on_evidence` needs a trigger; discipline `OD`, `RN` or `GM` | `hash` / `prev_hash`, genesis `"genesis"`; coexists with version 1 and with `tpc/clinical-v*` |
+
+```ts
+sealEvent({ type: "differential_commit", commit_schema: 2, ...commit, learner, encounter, turn, prev_hash }, "tpc/differential-commit-2");
+```
+
+A commit that carries the new fields without `commit_schema` fails version
+1's validation instead of verifying with them unhashed. 0.7.0 also fixes the
+Python twin of `sortKeysDeep`: it now orders keys as JavaScript enumerates
+them (array-index keys such as `"9"` and `"10"` first, in numeric order; the
+rest by UTF-16 code units; a `"__proto__"` key dropped). Before, a
+`tpc/clinical-v4` payload with such keys verified in TypeScript and read as
+tampered in Python (vector `tpc-clinical-v4-key-order`).
 
 ## Adding a scheme
 

@@ -115,10 +115,29 @@ def js_json_dumps_property_list(value: Any, keys: list[str]) -> str:
     return js_json_dumps(value)
 
 
+_ARRAY_INDEX = re.compile(r"(?:0|[1-9][0-9]*)")
+
+
+def _is_array_index(key: str) -> bool:
+    """An ECMAScript array index: the canonical decimal form of an integer below 2**32 - 1."""
+    return _ARRAY_INDEX.fullmatch(key) is not None and int(key) < 2 ** 32 - 1
+
+
+def _utf16_order(key: str) -> bytes:
+    """Sort key giving JavaScript's default string order (UTF-16 code units, not code points)."""
+    return key.encode("utf-16-be", "surrogatepass")
+
+
 def sort_keys_deep(value: Any) -> Any:
-    """Recursively sort object keys; arrays keep their order (mirrors Play's canonicalize)."""
+    """Recursively sort object keys; arrays keep their order. Twin of the TypeScript
+    sortKeysDeep (Play's canonicalize) as JavaScript runs it: keys are sorted by UTF-16 code
+    units and then enumerated as a JavaScript object orders them, array-index keys ("0",
+    "10") first in numeric order; a "__proto__" key is dropped, because assigning it sets
+    the object's prototype instead of a property."""
     if isinstance(value, dict):
-        return {k: sort_keys_deep(value[k]) for k in sorted(value.keys())}
+        keys = sorted((k for k in value if k != "__proto__"), key=_utf16_order)
+        ordered = sorted((k for k in keys if _is_array_index(k)), key=int) + [k for k in keys if not _is_array_index(k)]
+        return {k: sort_keys_deep(value[k]) for k in ordered}
     if isinstance(value, list):
         return [sort_keys_deep(v) for v in value]
     return value
@@ -217,7 +236,7 @@ def _has_event_kind(e: dict) -> bool:
 
 
 def _is_commit_event(e: dict) -> bool:
-    """Commit/skip events share the clinical chain but have their own scheme (tpc/differential-commit-1)."""
+    """Commit/skip events share the clinical chain but have their own schemes (tpc/differential-commit-1 and -2)."""
     return e.get("type") in ("differential_commit", "commit_skipped")
 
 
@@ -475,26 +494,187 @@ TPC_TRANSCRIPT_1 = ChainScheme(
     validate=lambda e: [] if isinstance(e.get("transcript"), dict) else ["missing transcript"])
 
 
+def _commit_v1_list(e: dict) -> list:
+    return ["differential_commit", e.get("learner"), e.get("encounter"), e.get("checkpoint"), e.get("rankedDifferential"), e.get("whyText"),
+            e.get("nextAction"), e.get("discipline"), e.get("prev_hash")]
+
+
 def _commit_canonical(e: dict, prev: str | None = None) -> str:
     if e.get("type") == "differential_commit":
-        arr = ["differential_commit", e.get("learner"), e.get("encounter"), e.get("checkpoint"), e.get("rankedDifferential"), e.get("whyText"),
-               e.get("nextAction"), e.get("discipline"), e.get("prev_hash")]
+        arr = _commit_v1_list(e)
     else:
         arr = ["commit_skipped", e.get("learner"), e.get("encounter"), e.get("checkpoint"), e.get("reason"), e.get("prev_hash")]
     return js_json_dumps(arr)
 
 
+_COMMIT_SKIP_REASONS = ("skip", "timeout", "not_reached", "acted_without_commit")
+# The fields version 2 appends to version 1's list, in hash order.
+_COMMIT_V2_FIELDS = ("concepts", "statuses", "confidence", "evidenceLinks", "discriminator", "planLinks", "trigger", "captureSnapshot", "supersedes")
+
+
+def _js_display(v: Any) -> str:
+    """JavaScript String(v) for JSON-shaped values (``_MISSING`` is undefined), so error
+    messages read the same in both languages. Messages only: hashes use js_string_of."""
+    if v is _MISSING:
+        return "undefined"
+    if isinstance(v, list):
+        return ",".join("" if x is None else _js_display(x) for x in v)
+    if isinstance(v, dict):
+        return "[object Object]"
+    return js_string_of(v)
+
+
 def _commit_validate(e: dict) -> list[str]:
     errors = _missing_str(e, ("learner", "encounter", "checkpoint"))
-    if e.get("type") == "commit_skipped" and e.get("reason") not in ("skip", "timeout", "not_reached"):
-        errors.append(f"invalid reason: {e.get('reason')}")
+    if e.get("type") == "commit_skipped" and e.get("reason") not in _COMMIT_SKIP_REASONS:
+        errors.append(f"invalid reason: {_js_display(e.get('reason', _MISSING))}")
     return errors
 
 
+def _commit_v1_validate(e: dict) -> list[str]:
+    """Version 1's checks. As the family's last scheme it also checks a commit record no
+    scheme applies to, so it says why (twin of commitV1Validate)."""
+    errors = _commit_validate(e)
+    if "commit_schema" in e:
+        schema = e["commit_schema"]
+        if e.get("type") != "differential_commit":
+            errors.append(f"{_js_display(e.get('type', _MISSING))} carries no commit_schema")
+        elif _commit_schema_is_2(e):
+            errors.append("a commit with commit_schema 2 is tpc/differential-commit-2's")
+        else:
+            errors.append(f"invalid commit_schema: {_js_display(schema)}")
+    elif e.get("type") == "differential_commit":
+        added = [f for f in _COMMIT_V2_FIELDS if f in e]
+        if added:
+            errors.append(f"fields without commit_schema 2: {', '.join(added)}")
+    return errors
+
+
+# 0.7.0: a record that carries commit_schema is never version 1's, so a
+# version 2 commit's added fields are always covered, and a commit that
+# carries those fields without commit_schema fails validation rather than
+# verifying with them unhashed. Skip records stay here, and
+# acted_without_commit joins the reasons (TPC-SPEC-002 E6). The canonical
+# form is unchanged.
 TPC_DIFFERENTIAL_COMMIT_1 = ChainScheme(
     id="tpc/differential-commit-1", family="tpc/clinical", since="2026-09-14", hash_field="hash", prev_field="prev_hash", genesis="genesis",
-    applies=_is_commit_event, canonical=_commit_canonical, validate=_commit_validate,
-    coexists=("tpc/clinical-v1", "tpc/clinical-v2", "tpc/clinical-v3", "tpc/clinical-v4"))
+    applies=lambda e: _is_commit_event(e) and "commit_schema" not in e, canonical=_commit_canonical, validate=_commit_v1_validate,
+    coexists=("tpc/clinical-v1", "tpc/clinical-v2", "tpc/clinical-v3", "tpc/clinical-v4", "tpc/differential-commit-2"))
+
+# tpc/differential-commit-2 — TPC-SPEC-002 E4 (see products.ts): version 1's
+# list, then commit_schema and the E4 fields in a fixed order, each with its
+# keys sorted at every depth. The objects inside take only their named keys,
+# so every valid record hashes the same in JavaScript and Python.
+_COMMIT_CHECKPOINTS = ("pre_brief", "post_history", "on_evidence", "pre_close")
+_COMMIT_DISCIPLINES = ("OD", "RN", "GM")
+_COMMIT_STATUSES = ("leading", "active", "ruled_out")
+_DISCRIMINATOR_KINDS = ("question", "test", "finding", "time")
+_MAX_RANKED = 5
+
+
+def _non_empty(v: Any) -> bool:
+    return isinstance(v, str) and v != ""
+
+
+def _is_rank(v: Any, n: int) -> bool:
+    """A 1-based position in rankedDifferential (Number.isInteger: 2.0 counts). Integers are
+    compared as integers: a huge one must not be turned into a float (OverflowError)."""
+    if isinstance(v, bool):
+        return False
+    if isinstance(v, int):
+        return 1 <= v <= n
+    return isinstance(v, float) and math.isfinite(v) and v.is_integer() and 1 <= v <= n
+
+
+def _in(v: Any, allowed: tuple) -> bool:
+    return isinstance(v, str) and v in allowed
+
+
+def _only_keys(o: dict, keys: tuple) -> bool:
+    """An object with no key but these (each still checked on its own)."""
+    return all(k in keys for k in o)
+
+
+def _commit_schema_is_2(e: dict) -> bool:
+    return _is_num(e.get("commit_schema")) and e.get("commit_schema") == 2
+
+
+def _is_commit_v2(e: dict) -> bool:
+    return e.get("type") == "differential_commit" and _commit_schema_is_2(e)
+
+
+def _commit_v2_canonical(e: dict, prev: str | None = None) -> str:
+    return js_json_dumps(_commit_v1_list(e) + [e.get("commit_schema")] + [sort_keys_deep(e.get(f)) for f in _COMMIT_V2_FIELDS])
+
+
+def _commit_v2_validate(e: dict) -> list[str]:
+    errors = _commit_validate(e)
+    if not _commit_schema_is_2(e):
+        errors.append(f"invalid commit_schema: {_js_display(e.get('commit_schema', _MISSING))}")
+    if _non_empty(e.get("checkpoint")) and e["checkpoint"] not in _COMMIT_CHECKPOINTS:
+        errors.append(f"invalid checkpoint: {e['checkpoint']}")
+    ranked = e.get("rankedDifferential")
+    n = len(ranked) if isinstance(ranked, list) else 0
+    if not isinstance(ranked, list) or n < 1 or n > _MAX_RANKED or not all(_non_empty(r) for r in ranked):
+        errors.append(f"rankedDifferential must be 1 to {_MAX_RANKED} non-empty strings")
+    if not isinstance(e.get("whyText"), str):
+        errors.append("whyText must be a string")
+    next_action = e.get("nextAction", _MISSING)
+    if next_action is not None and not isinstance(next_action, str):
+        errors.append("nextAction must be a string or null")
+    if not _in(e.get("discipline"), _COMMIT_DISCIPLINES):
+        errors.append(f"invalid discipline: {_js_display(e.get('discipline', _MISSING))}")
+
+    def per_entry(f: str, what: str, ok: Callable[[Any], bool]) -> None:
+        a = e.get(f)
+        if not isinstance(a, list) or len(a) != n or not all(ok(v) for v in a):
+            errors.append(f"{f} must hold one {what} per ranked entry")
+
+    per_entry("concepts", "concept id or null", lambda c: c is None or _non_empty(c))
+    per_entry("statuses", "of leading, active, ruled_out", lambda s: _in(s, _COMMIT_STATUSES))
+    per_entry("confidence", "number 0 to 100 or null", lambda c: c is None or (_is_num(c) and 0 <= c <= 100))
+    snap = e.get("captureSnapshot")
+    snapshot = snap if isinstance(snap, list) and all(_non_empty(s) for s in snap) else None
+    if snapshot is None:
+        errors.append("captureSnapshot must be an array of non-empty strings")
+    links = e.get("evidenceLinks")
+    if not isinstance(links, list):
+        errors.append("evidenceLinks must be an array")
+    else:
+        for i, link in enumerate(links):
+            if (not isinstance(link, dict) or not _only_keys(link, ("rank", "ref", "direction")) or not _is_rank(link.get("rank"), n)
+                    or not _non_empty(link.get("ref")) or not _in(link.get("direction"), ("for", "against"))):
+                errors.append(f"invalid evidenceLinks[{i}]")
+            elif snapshot is not None and link["ref"] not in snapshot:
+                errors.append(f"evidenceLinks[{i}] ref not in captureSnapshot: {link['ref']}")
+    d = e.get("discriminator", _MISSING)
+    if d is not None and (not isinstance(d, dict) or not _only_keys(d, ("kind", "ref", "text")) or not _in(d.get("kind"), _DISCRIMINATOR_KINDS)
+                          or (d.get("ref", _MISSING) is not None and not _non_empty(d.get("ref")))
+                          or not isinstance(d.get("text"), str)):
+        errors.append("invalid discriminator")
+    plan = e.get("planLinks")
+    if not isinstance(plan, list):
+        errors.append("planLinks must be an array")
+    else:
+        for i, link in enumerate(plan):
+            if (not isinstance(link, dict) or not _only_keys(link, ("rank", "ref")) or not _is_rank(link.get("rank"), n)
+                    or not _non_empty(link.get("ref"))):
+                errors.append(f"invalid planLinks[{i}]")
+    trigger = e.get("trigger", _MISSING)
+    if trigger is not None and not _non_empty(trigger):
+        errors.append("trigger must be a non-empty string or null")
+    elif e.get("checkpoint") == "on_evidence" and trigger is None:
+        errors.append("on_evidence needs a trigger")
+    supersedes = e.get("supersedes", _MISSING)
+    if supersedes is not None and not _non_empty(supersedes):
+        errors.append("supersedes must be a hash or null")
+    return errors
+
+
+TPC_DIFFERENTIAL_COMMIT_2 = ChainScheme(
+    id="tpc/differential-commit-2", family="tpc/clinical", since="2026-09-28", hash_field="hash", prev_field="prev_hash", genesis="genesis",
+    applies=_is_commit_v2, canonical=_commit_v2_canonical, validate=_commit_v2_validate,
+    coexists=("tpc/clinical-v1", "tpc/clinical-v2", "tpc/clinical-v3", "tpc/clinical-v4", "tpc/differential-commit-1"))
 
 
 def _rct_canonical(e: dict, prev: str | None = None) -> str:
@@ -611,7 +791,8 @@ YARDSTICK_ACTIVITY_1 = ChainScheme(
 
 PRODUCT_SCHEMES: tuple[ChainScheme, ...] = (PLAY_EMIT_1, PLAY_MEASURE_SESSION_1, PLAY_ENCOUNTER_FNV64_1, PLAY_RESEARCH_PROVENANCE_1,
                                             QCORE_QINVERSE_DJB2_1, STUDIO_LOOP_1, DP_LEDGER_V3, TPC_DSE_JOURNAL_1, YARDSTICK_SPINE_1,
-                                            LABPATH_LEARNING_EVIDENCE_V1, TPC_TRANSCRIPT_1, TPC_DIFFERENTIAL_COMMIT_1, TPC_RCT_INPUT_1,
+                                            LABPATH_LEARNING_EVIDENCE_V1, TPC_TRANSCRIPT_1, TPC_DIFFERENTIAL_COMMIT_2, TPC_DIFFERENTIAL_COMMIT_1,
+                                            TPC_RCT_INPUT_1,
                                             PLAY_WORLD_TRACE_IDENTITY_1, PLAY_WORLD_TRACE_TSIM_1, PLAY_WORLD_TRACE_1,
                                             TPC_YARDSTICK_RECORD_2, TPC_YARDSTICK_RECORD_1, TPC_INTERVENTION_1, TPC_REHEARSAL_STAGE_1,
                                             YARDSTICK_ACTIVITY_1)
