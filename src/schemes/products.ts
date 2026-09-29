@@ -301,20 +301,123 @@ export const TPC_TRANSCRIPT_1: ChainScheme = {
 // sha256 of JSON.stringify(canonical) where canonical is
 //   ["differential_commit", learner, encounter, checkpoint, rankedDifferential, whyText, nextAction, discipline, prev_hash]
 // or ["commit_skipped", learner, encounter, checkpoint, reason, prev_hash]. `turn` is not hashed.
+// 0.7.0: a record that carries commit_schema is never this scheme's, so a
+// version 2 commit's added fields are always covered (version 2, below), and
+// a commit that carries those fields without commit_schema fails validation
+// rather than verifying with them unhashed. Skip records stay here, and
+// acted_without_commit joins the reasons (TPC-SPEC-002 E6). The canonical
+// form is unchanged.
+const isCommitType = (e: ChainEvent): boolean => e.type === "differential_commit" || e.type === "commit_skipped";
+const COMMIT_SKIP_REASONS = ["skip", "timeout", "not_reached", "acted_without_commit"];
+/** The fields version 2 appends to version 1's list, in hash order. */
+const COMMIT_V2_FIELDS = ["concepts", "statuses", "confidence", "evidenceLinks", "discriminator", "planLinks", "trigger", "captureSnapshot", "supersedes"] as const;
+const commitV1List = (e: ChainEvent): unknown[] =>
+  ["differential_commit", e.learner, e.encounter, e.checkpoint, e.rankedDifferential, e.whyText, e.nextAction, e.discipline, e.prev_hash];
+function commitValidate(e: ChainEvent): string[] {
+  const errors: string[] = [];
+  for (const f of ["learner", "encounter", "checkpoint"]) if (typeof e[f] !== "string" || !e[f]) errors.push(`missing ${f}`);
+  if (e.type === "commit_skipped" && !COMMIT_SKIP_REASONS.includes(e.reason as string)) errors.push(`invalid reason: ${String(e.reason)}`);
+  return errors;
+}
+/**
+ * Version 1's checks. As the family's last scheme it also checks a commit
+ * record no scheme applies to, so it says why: a commit_schema that is not
+ * version 2's, or version 2's fields on a record without it.
+ */
+function commitV1Validate(e: ChainEvent): string[] {
+  const errors = commitValidate(e);
+  if (e.commit_schema !== undefined) {
+    errors.push(e.type !== "differential_commit" ? `${String(e.type)} carries no commit_schema`
+      : e.commit_schema === 2 ? "a commit with commit_schema 2 is tpc/differential-commit-2's"
+      : `invalid commit_schema: ${String(e.commit_schema)}`);
+  } else if (e.type === "differential_commit") {
+    const added = COMMIT_V2_FIELDS.filter((f) => e[f] !== undefined);
+    if (added.length > 0) errors.push(`fields without commit_schema 2: ${added.join(", ")}`);
+  }
+  return errors;
+}
 export const TPC_DIFFERENTIAL_COMMIT_1: ChainScheme = {
   id: "tpc/differential-commit-1", family: "tpc/clinical", since: "2026-09-14",
   hashField: "hash", prevField: "prev_hash", genesis: "genesis",
-  applies: (e) => e.type === "differential_commit" || e.type === "commit_skipped",
+  applies: (e) => isCommitType(e) && e.commit_schema === undefined,
   canonical: (e) => JSON.stringify(e.type === "differential_commit"
-    ? ["differential_commit", e.learner, e.encounter, e.checkpoint, e.rankedDifferential, e.whyText, e.nextAction, e.discipline, e.prev_hash]
+    ? commitV1List(e)
     : ["commit_skipped", e.learner, e.encounter, e.checkpoint, e.reason, e.prev_hash]),
-  validate: (e) => {
-    const errors: string[] = [];
-    for (const f of ["learner", "encounter", "checkpoint"]) if (typeof e[f] !== "string" || !e[f]) errors.push(`missing ${f}`);
-    if (e.type === "commit_skipped" && !["skip", "timeout", "not_reached"].includes(e.reason as string)) errors.push(`invalid reason: ${String(e.reason)}`);
-    return errors;
-  },
-  coexists: ["tpc/clinical-v1", "tpc/clinical-v2", "tpc/clinical-v3", "tpc/clinical-v4"],
+  validate: commitV1Validate,
+  coexists: ["tpc/clinical-v1", "tpc/clinical-v2", "tpc/clinical-v3", "tpc/clinical-v4", "tpc/differential-commit-2"],
+};
+
+// ── tpc/differential-commit-2 — TPC-SPEC-002 E4, the commit model ─────────
+// A commit that carries commit_schema: 2. Version 1's list is hashed as it
+// was, then commit_schema and the E4 fields append in this fixed order, each
+// with its keys sorted at every depth (stored rows may reorder keys):
+//   [...version 1's list, commit_schema, concepts, statuses, confidence,
+//    evidenceLinks, discriminator, planLinks, trigger, captureSnapshot, supersedes]
+// Missing fields hash as null and fail validation: every field is written,
+// null where empty. The objects inside take only their named keys, so every
+// valid record hashes the same in JavaScript and Python. Records sealed under
+// version 1 keep verifying under it, and the two coexist in one chain. Its
+// definition; there is no older sealer.
+const COMMIT_CHECKPOINTS = ["pre_brief", "post_history", "on_evidence", "pre_close"];
+const COMMIT_DISCIPLINES = ["OD", "RN", "GM"];
+const COMMIT_STATUSES = ["leading", "active", "ruled_out"];
+const DISCRIMINATOR_KINDS = ["question", "test", "finding", "time"];
+const MAX_RANKED = 5;
+const isRecord = (v: unknown): v is Record<string, unknown> => typeof v === "object" && v !== null && !Array.isArray(v);
+const nonEmpty = (v: unknown): v is string => typeof v === "string" && v !== "";
+/** An object with no key but these (each still checked on its own). */
+const onlyKeys = (o: Record<string, unknown>, keys: readonly string[]): boolean => Object.keys(o).every((k) => keys.includes(k));
+/** A 1-based position in rankedDifferential. */
+const isRank = (v: unknown, n: number): boolean => typeof v === "number" && Number.isInteger(v) && v >= 1 && v <= n;
+
+function commitV2Validate(e: ChainEvent): string[] {
+  const errors = commitValidate(e);
+  if (e.commit_schema !== 2) errors.push(`invalid commit_schema: ${String(e.commit_schema)}`);
+  if (nonEmpty(e.checkpoint) && !COMMIT_CHECKPOINTS.includes(e.checkpoint)) errors.push(`invalid checkpoint: ${e.checkpoint}`);
+  const ranked = e.rankedDifferential;
+  const n = Array.isArray(ranked) ? ranked.length : 0;
+  if (!Array.isArray(ranked) || n < 1 || n > MAX_RANKED || !ranked.every(nonEmpty)) errors.push(`rankedDifferential must be 1 to ${MAX_RANKED} non-empty strings`);
+  if (typeof e.whyText !== "string") errors.push("whyText must be a string");
+  if (e.nextAction !== null && typeof e.nextAction !== "string") errors.push("nextAction must be a string or null");
+  if (!COMMIT_DISCIPLINES.includes(e.discipline as string)) errors.push(`invalid discipline: ${String(e.discipline)}`);
+  const perEntry = (f: string, what: string, ok: (v: unknown) => boolean): void => {
+    const a = e[f];
+    if (!Array.isArray(a) || a.length !== n || !a.every(ok)) errors.push(`${f} must hold one ${what} per ranked entry`);
+  };
+  perEntry("concepts", "concept id or null", (c) => c === null || nonEmpty(c));
+  perEntry("statuses", "of leading, active, ruled_out", (s) => COMMIT_STATUSES.includes(s as string));
+  perEntry("confidence", "number 0 to 100 or null", (c) => c === null || (typeof c === "number" && c >= 0 && c <= 100));
+  const snapshot = Array.isArray(e.captureSnapshot) && e.captureSnapshot.every(nonEmpty) ? (e.captureSnapshot as string[]) : null;
+  if (!snapshot) errors.push("captureSnapshot must be an array of non-empty strings");
+  // E4: evidence links point only into the capture snapshot.
+  if (!Array.isArray(e.evidenceLinks)) errors.push("evidenceLinks must be an array");
+  else e.evidenceLinks.forEach((l: unknown, i: number) => {
+    if (!isRecord(l) || !onlyKeys(l, ["rank", "ref", "direction"]) || !isRank(l.rank, n) || !nonEmpty(l.ref) || (l.direction !== "for" && l.direction !== "against")) {
+      errors.push(`invalid evidenceLinks[${i}]`);
+    } else if (snapshot && !snapshot.includes(l.ref)) errors.push(`evidenceLinks[${i}] ref not in captureSnapshot: ${l.ref}`);
+  });
+  const d = e.discriminator;
+  if (d !== null && (!isRecord(d) || !onlyKeys(d, ["kind", "ref", "text"]) || !DISCRIMINATOR_KINDS.includes(d.kind as string)
+    || (d.ref !== null && !nonEmpty(d.ref)) || typeof d.text !== "string")) {
+    errors.push("invalid discriminator");
+  }
+  if (!Array.isArray(e.planLinks)) errors.push("planLinks must be an array");
+  else e.planLinks.forEach((l: unknown, i: number) => {
+    if (!isRecord(l) || !onlyKeys(l, ["rank", "ref"]) || !isRank(l.rank, n) || !nonEmpty(l.ref)) errors.push(`invalid planLinks[${i}]`);
+  });
+  if (e.trigger !== null && !nonEmpty(e.trigger)) errors.push("trigger must be a non-empty string or null");
+  else if (e.checkpoint === "on_evidence" && e.trigger === null) errors.push("on_evidence needs a trigger");
+  if (e.supersedes !== null && !nonEmpty(e.supersedes)) errors.push("supersedes must be a hash or null");
+  return errors;
+}
+
+export const TPC_DIFFERENTIAL_COMMIT_2: ChainScheme = {
+  id: "tpc/differential-commit-2", family: "tpc/clinical", since: "2026-09-28",
+  hashField: "hash", prevField: "prev_hash", genesis: "genesis",
+  applies: (e) => e.type === "differential_commit" && e.commit_schema === 2,
+  canonical: (e) => JSON.stringify([...commitV1List(e), e.commit_schema, ...COMMIT_V2_FIELDS.map((f) => sortKeysDeep(e[f] ?? null))]),
+  validate: commitV2Validate,
+  coexists: ["tpc/clinical-v1", "tpc/clinical-v2", "tpc/clinical-v3", "tpc/clinical-v4", "tpc/differential-commit-1"],
 };
 
 // ── tpc/rct-input-1 — teachproof src/lib/rct/result-ledger.ts ────────────
@@ -478,7 +581,7 @@ export const YARDSTICK_ACTIVITY_1: ChainScheme = {
 export const PRODUCT_SCHEMES: ChainScheme[] = [
   PLAY_EMIT_1, PLAY_MEASURE_SESSION_1, PLAY_ENCOUNTER_FNV64_1, PLAY_RESEARCH_PROVENANCE_1,
   QCORE_QINVERSE_DJB2_1, STUDIO_LOOP_1, DP_LEDGER_V3, TPC_DSE_JOURNAL_1, YARDSTICK_SPINE_1, LABPATH_LEARNING_EVIDENCE_V1,
-  TPC_TRANSCRIPT_1, TPC_DIFFERENTIAL_COMMIT_1, TPC_RCT_INPUT_1,
+  TPC_TRANSCRIPT_1, TPC_DIFFERENTIAL_COMMIT_2, TPC_DIFFERENTIAL_COMMIT_1, TPC_RCT_INPUT_1,
   PLAY_WORLD_TRACE_IDENTITY_1, PLAY_WORLD_TRACE_TSIM_1, PLAY_WORLD_TRACE_1,
   TPC_YARDSTICK_RECORD_2, TPC_YARDSTICK_RECORD_1, TPC_INTERVENTION_1, TPC_REHEARSAL_STAGE_1, YARDSTICK_ACTIVITY_1,
 ];

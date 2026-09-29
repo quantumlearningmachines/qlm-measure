@@ -1,0 +1,269 @@
+{
+  "scheme": "tpc/differential-commit-2",
+  "family": "tpc/clinical",
+  "source": "tpc-differential-commit-2 with records[3].evidenceLinks[1].direction flipped — covered by version 2",
+  "expect": {
+    "clean": false,
+    "hash_scheme": "tpc/differential-commit-2",
+    "tampered": 1,
+    "tampered_index": 3
+  },
+  "events": [
+    {
+      "type": "differential_commit",
+      "learner": "L-7f3a",
+      "encounter": "DEMO-RN-01",
+      "turn": 0,
+      "commit_schema": 2,
+      "checkpoint": "pre_brief",
+      "rankedDifferential": [
+        "post-op pain, poorly controlled",
+        "atelectasis"
+      ],
+      "concepts": [
+        "rn.acute_pain",
+        null
+      ],
+      "statuses": [
+        "leading",
+        "active"
+      ],
+      "confidence": [
+        62.5,
+        null
+      ],
+      "evidenceLinks": [
+        {
+          "ref": "chart.mar",
+          "direction": "for",
+          "rank": 1
+        }
+      ],
+      "discriminator": {
+        "text": "Is she splinting when she breathes?",
+        "ref": null,
+        "kind": "question"
+      },
+      "nextAction": "reassess pain",
+      "planLinks": [],
+      "whyText": "Day 1 after surgery and the MAR shows two refused doses — pain first.",
+      "discipline": "RN",
+      "trigger": "briefing",
+      "captureSnapshot": [
+        "chart.mar",
+        "chart.vitals"
+      ],
+      "supersedes": null,
+      "prev_hash": "genesis",
+      "hash": "497edcd03360e1c6c4b7b5c2b3a9e18a0096a55d011a88f0c7cba0ac97880476"
+    },
+    {
+      "type": "commit_skipped",
+      "learner": "L-7f3a",
+      "encounter": "DEMO-RN-01",
+      "turn": 4,
+      "checkpoint": "post_history",
+      "reason": "timeout",
+      "prev_hash": "497edcd03360e1c6c4b7b5c2b3a9e18a0096a55d011a88f0c7cba0ac97880476",
+      "hash": "b84feebfdf520eb0cc83ad04321652e0cad808c418250929bab672c721d92975"
+    },
+    {
+      "type": "commit_skipped",
+      "learner": "L-7f3a",
+      "encounter": "DEMO-RN-01",
+      "turn": 4,
+      "checkpoint": "post_history",
+      "reason": "acted_without_commit",
+      "prev_hash": "b84feebfdf520eb0cc83ad04321652e0cad808c418250929bab672c721d92975",
+      "hash": "9cd5556a9c6425535e492853baedd72ce74661d80c1d48239c158ee04aa8309a"
+    },
+    {
+      "type": "differential_commit",
+      "learner": "L-7f3a",
+      "encounter": "DEMO-RN-01",
+      "turn": 7,
+      "commit_schema": 2,
+      "checkpoint": "on_evidence",
+      "rankedDifferential": [
+        "inadequate pain control",
+        "atelectasis",
+        "opioid fear"
+      ],
+      "concepts": [
+        "rn.acute_pain",
+        "rn.atelectasis",
+        "rn.opioid_fear"
+      ],
+      "statuses": [
+        "leading",
+        "active",
+        "active"
+      ],
+      "confidence": [
+        80,
+        45,
+        60
+      ],
+      "evidenceLinks": [
+        {
+          "rank": 1,
+          "ref": "turn.5",
+          "direction": "for"
+        },
+        {
+          "direction": "against",
+          "rank": 2,
+          "ref": "vitals.spo2"
+        },
+        {
+          "ref": "turn.6",
+          "rank": 3,
+          "direction": "for"
+        }
+      ],
+      "discriminator": {
+        "kind": "finding",
+        "ref": "exam.breath_sounds",
+        "text": "diminished bases would move atelectasis up"
+      },
+      "nextAction": "encourage incentive spirometry",
+      "planLinks": [
+        {
+          "ref": "order.incentive_spirometry",
+          "rank": 2
+        }
+      ],
+      "whyText": "She says \"I don't want to get hooked\" — the pain is real and she is guarding. SpO₂ 93% 🫁",
+      "discipline": "RN",
+      "trigger": "learner",
+      "captureSnapshot": [
+        "chart.mar",
+        "chart.vitals",
+        "turn.5",
+        "turn.6",
+        "vitals.spo2"
+      ],
+      "supersedes": "497edcd03360e1c6c4b7b5c2b3a9e18a0096a55d011a88f0c7cba0ac97880476",
+      "prev_hash": "9cd5556a9c6425535e492853baedd72ce74661d80c1d48239c158ee04aa8309a",
+      "hash": "5540640e6dbaea3ed3e8a44198bb4d62e885cbd16514324a1d5958f1e6a41f32"
+    },
+    {
+      "type": "differential_commit",
+      "learner": "L-7f3a",
+      "encounter": "DEMO-RN-01",
+      "turn": 11,
+      "commit_schema": 2,
+      "checkpoint": "on_evidence",
+      "rankedDifferential": [
+        "atelectasis",
+        "inadequate pain control",
+        "pneumonia"
+      ],
+      "concepts": [
+        "rn.atelectasis",
+        "rn.acute_pain",
+        "rn.pneumonia"
+      ],
+      "statuses": [
+        "leading",
+        "active",
+        "ruled_out"
+      ],
+      "confidence": [
+        70,
+        65,
+        5
+      ],
+      "evidenceLinks": [
+        {
+          "rank": 1,
+          "ref": "exam.breath_sounds",
+          "direction": "for"
+        },
+        {
+          "rank": 3,
+          "ref": "lab.LAB-02",
+          "direction": "against"
+        }
+      ],
+      "discriminator": {
+        "kind": "test",
+        "ref": "order.chest_xray",
+        "text": "a film would settle atelectasis against pneumonia"
+      },
+      "nextAction": "notify provider",
+      "planLinks": [
+        {
+          "rank": 1,
+          "ref": "order.chest_xray"
+        },
+        {
+          "rank": 2,
+          "ref": "order.pca_review"
+        }
+      ],
+      "whyText": "White count normal, no fever: not pneumonia. Bases diminished.",
+      "discipline": "RN",
+      "trigger": "LAB-02",
+      "captureSnapshot": [
+        "chart.mar",
+        "chart.vitals",
+        "turn.5",
+        "turn.6",
+        "vitals.spo2",
+        "exam.breath_sounds",
+        "lab.LAB-02"
+      ],
+      "supersedes": "5540640e6dbaea3ed3e8a44198bb4d62e885cbd16514324a1d5958f1e6a41f32",
+      "prev_hash": "5540640e6dbaea3ed3e8a44198bb4d62e885cbd16514324a1d5958f1e6a41f32",
+      "hash": "15b3addf0d940d60a0f6f741b1a834e4d5030034af3506a7cac00263a86b53b7"
+    },
+    {
+      "type": "differential_commit",
+      "learner": "L-7f3a",
+      "encounter": "DEMO-RN-01",
+      "turn": 15,
+      "commit_schema": 2,
+      "checkpoint": "pre_close",
+      "rankedDifferential": [
+        "atelectasis",
+        "pain"
+      ],
+      "concepts": [
+        null,
+        null
+      ],
+      "statuses": [
+        "leading",
+        "active"
+      ],
+      "confidence": [
+        null,
+        null
+      ],
+      "evidenceLinks": [],
+      "discriminator": {
+        "kind": "time",
+        "ref": null,
+        "text": "SpO₂ not back above 95% within the hour"
+      },
+      "nextAction": null,
+      "planLinks": [],
+      "whyText": "",
+      "discipline": "RN",
+      "trigger": "close",
+      "captureSnapshot": [
+        "chart.mar",
+        "chart.vitals",
+        "turn.5",
+        "turn.6",
+        "vitals.spo2",
+        "exam.breath_sounds",
+        "lab.LAB-02"
+      ],
+      "supersedes": "15b3addf0d940d60a0f6f741b1a834e4d5030034af3506a7cac00263a86b53b7",
+      "prev_hash": "15b3addf0d940d60a0f6f741b1a834e4d5030034af3506a7cac00263a86b53b7",
+      "hash": "66a3f12a22637eb32705f36ecb3035334f828916d0ab8d6f97d1cc076fafd737"
+    }
+  ]
+}

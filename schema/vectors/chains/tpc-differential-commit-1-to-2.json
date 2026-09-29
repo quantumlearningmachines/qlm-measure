@@ -1,0 +1,131 @@
+{
+  "scheme": "tpc/differential-commit-2",
+  "family": "tpc/clinical",
+  "source": "one evidence chain across the switch: a commit sealed by differential-commit.ts hashCommit (version 1), then a version 2 commit, with clinical-v4 commit.open events between",
+  "expect": {
+    "clean": true,
+    "hash_scheme": "tpc/clinical-v4",
+    "schemes": {
+      "tpc/clinical-v4": 2,
+      "tpc/differential-commit-1": 1,
+      "tpc/differential-commit-2": 1
+    }
+  },
+  "events": [
+    {
+      "type": "clinical_evidence",
+      "learner": "L-7f3a",
+      "encounter": "DEMO-RN-01",
+      "turn": 4,
+      "construct": "process",
+      "signal": "not_observable",
+      "scaffold": 0,
+      "extractor": "checkpoints",
+      "confidence": 1,
+      "prev_hash": "genesis",
+      "triage_class": null,
+      "engine_version": "tpc-engine-1.6.0",
+      "mapping_version": "0.2.0",
+      "event_kind": "commit.open",
+      "payload": {
+        "trigger": "action_commit",
+        "opened_by": "engine",
+        "checkpoint": "post_history",
+        "mandatory": true,
+        "at_s": 312,
+        "timeout_s": 120
+      },
+      "hash": "dc9aa938fbb2b0f7f5d97c2acc2282dd7622b44367ab28ae40e6b45e2af3d3e2"
+    },
+    {
+      "type": "differential_commit",
+      "learner": "L-7f3a",
+      "encounter": "DEMO-RN-01",
+      "turn": 4,
+      "checkpoint": "post_history",
+      "rankedDifferential": [
+        "inadequate pain control",
+        "atelectasis"
+      ],
+      "nextAction": "reassess pain",
+      "whyText": "Guarding, refused doses.",
+      "discipline": "RN",
+      "prev_hash": "dc9aa938fbb2b0f7f5d97c2acc2282dd7622b44367ab28ae40e6b45e2af3d3e2",
+      "hash": "de720ffef7e38e2577d74aa38fedcb772f67070910d7634fd2dfbc317c9462da"
+    },
+    {
+      "type": "clinical_evidence",
+      "learner": "L-7f3a",
+      "encounter": "DEMO-RN-01",
+      "turn": 15,
+      "construct": "process",
+      "signal": "not_observable",
+      "scaffold": 0,
+      "extractor": "checkpoints",
+      "confidence": 1,
+      "prev_hash": "de720ffef7e38e2577d74aa38fedcb772f67070910d7634fd2dfbc317c9462da",
+      "triage_class": null,
+      "engine_version": "tpc-engine-1.6.0",
+      "mapping_version": "0.2.0",
+      "event_kind": "commit.open",
+      "payload": {
+        "trigger": "close",
+        "opened_by": "engine",
+        "checkpoint": "pre_close",
+        "mandatory": true,
+        "at_s": 1104,
+        "timeout_s": 120
+      },
+      "hash": "bd67849d9374acd643f9944c3bd6503a41ed82ce9d43dbd453cf69a768e9502b"
+    },
+    {
+      "type": "differential_commit",
+      "learner": "L-7f3a",
+      "encounter": "DEMO-RN-01",
+      "turn": 15,
+      "commit_schema": 2,
+      "checkpoint": "pre_close",
+      "rankedDifferential": [
+        "atelectasis",
+        "inadequate pain control"
+      ],
+      "concepts": [
+        "rn.atelectasis",
+        "rn.acute_pain"
+      ],
+      "statuses": [
+        "leading",
+        "active"
+      ],
+      "confidence": [
+        75,
+        50
+      ],
+      "evidenceLinks": [
+        {
+          "rank": 1,
+          "ref": "exam.breath_sounds",
+          "direction": "for"
+        }
+      ],
+      "discriminator": null,
+      "nextAction": "notify provider",
+      "planLinks": [
+        {
+          "rank": 1,
+          "ref": "order.chest_xray"
+        }
+      ],
+      "whyText": "Diminished bases after two days of shallow breathing.",
+      "discipline": "RN",
+      "trigger": "close",
+      "captureSnapshot": [
+        "chart.mar",
+        "exam.breath_sounds"
+      ],
+      "supersedes": "de720ffef7e38e2577d74aa38fedcb772f67070910d7634fd2dfbc317c9462da",
+      "prev_hash": "bd67849d9374acd643f9944c3bd6503a41ed82ce9d43dbd453cf69a768e9502b",
+      "hash": "a83b2a9367fd953fc91d718da6eba65297b5988a92fbd024e8be276317081d7f"
+    }
+  ]
+}

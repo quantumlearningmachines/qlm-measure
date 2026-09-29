@@ -1,6 +1,6 @@
 {
   "name": "qlm-measure",
-  "version": "0.6.0",
+  "version": "0.7.0",
   "description": "Open measurement SDK for education AI \u2014 evidence events, record verification, and dataset clients",
   "license": "Apache-2.0",
   "type": "module",

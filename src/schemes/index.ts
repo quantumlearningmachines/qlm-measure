@@ -138,7 +138,7 @@ function tpcArray(event: ChainEvent, variant: 1 | 2 | 3 | 4): unknown[] {
 
 /** A schema 0.4 event: one with event_kind. Only tpc/clinical-v4 seals it, so its payload is always covered. */
 const hasEventKind = (e: ChainEvent): boolean => e.event_kind !== undefined;
-/** Commit/skip events share the clinical chain but have their own scheme (tpc/differential-commit-1). */
+/** Commit/skip events share the clinical chain but have their own schemes (tpc/differential-commit-1 and -2). */
 const isCommitEvent = (e: ChainEvent): boolean => e.type === "differential_commit" || e.type === "commit_skipped";
 
 function tpcValidate(event: ChainEvent): string[] {
