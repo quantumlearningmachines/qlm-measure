@@ -47,7 +47,8 @@ export function djb2Hex(str) {
 /** The digest a scheme seals with: built in for fnv/djb2, the injected function for sha256. */
 export function digestFor(scheme, sha256) {
     const base = scheme.digest === "fnv1a64" ? fnv1a64Hex : scheme.digest === "djb2-32" ? djb2Hex : sha256;
-    return scheme.truncate ? (c) => base(c).slice(0, scheme.truncate) : base;
+    const cut = scheme.truncate ? (c) => base(c).slice(0, scheme.truncate) : base;
+    return scheme.prefix ? (c) => scheme.prefix + cut(c) : cut;
 }
 // ── Canonical forms ───────────────────────────────────────────────────────
 /** Recursively sorts object keys; arrays keep their order. Mirrors Play's residency canonicalize(). */
@@ -207,7 +208,7 @@ export async function computeEventHashAsyncWith(hash, event, schemeId, prev) {
     if (scheme.digest && scheme.digest !== "sha256")
         return digestFor(scheme, () => "")(scheme.canonical(event, prev));
     const full = await hash(scheme.canonical(event, prev));
-    return scheme.truncate ? full.slice(0, scheme.truncate) : full;
+    return (scheme.prefix ?? "") + (scheme.truncate ? full.slice(0, scheme.truncate) : full);
 }
 /**
  * Returns a copy of `event` with the scheme's hash field set. Never mutates the

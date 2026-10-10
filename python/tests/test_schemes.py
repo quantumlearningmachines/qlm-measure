@@ -46,8 +46,63 @@ def test_registry_order_matches_typescript():
                        "qcore/qinverse-djb2-1", "studio/loop-1", "dp/ledger-v3", "tpc/dse-journal-1", "yardstick/spine-1",
                        "labpath/learning-evidence-v1", "tpc/transcript-1", "tpc/differential-commit-2", "tpc/differential-commit-1",
                        "tpc/rct-input-1", "play/world-trace-identity-1", "play/world-trace-tsim-1", "play/world-trace-1",
-                       "tpc/yardstick-record-2", "tpc/yardstick-record-1", "tpc/intervention-1", "tpc/rehearsal-stage-1", "yardstick/activity-1"]
-    assert len(ids) == 27 and len({s["family"] for s in list_schemes()}) == 19
+                       "tpc/yardstick-record-2", "tpc/yardstick-record-1", "tpc/intervention-1", "tpc/rehearsal-stage-1", "yardstick/activity-1",
+                       "yardstick/depth-1"]
+    assert len(ids) == 28 and len({s["family"] for s in list_schemes()}) == 20
+
+
+# yardstick/depth-1 (YardStick's evidence ledger, Star Map E6): the same canonical string and errors as TypeScript.
+_DEPTH = json.loads((VEC / "yardstick-depth-1.json").read_text())
+
+
+def test_depth_hashes_carry_their_prefix_and_link_to_zeros_first():
+    depth = get_scheme("yardstick/depth-1")
+    assert depth.genesis == "sha256:" + "0" * 64 and depth.prefix == "sha256:"
+    assert _DEPTH["events"][0]["prev"] == depth.genesis
+    assert all(e["hash"].startswith("sha256:") and len(e["hash"]) == 71 for e in _DEPTH["events"])
+    row = next(s for s in list_schemes() if s["id"] == "yardstick/depth-1")
+    assert (row["family"], row["link"], row["digest"]) == ("yardstick/depth", "explicit", "sha256")
+
+
+def test_depth_canonical_matches_typescript():
+    e = {"b": 1e-7, "a": 1, "hash": "x", "prev": "p", "c": [1.5, None, "é", {"y": 1e21, "x": 0.1 + 0.2}], "😀": 0, "｡": 1}
+    assert get_scheme("yardstick/depth-1").canonical(e, None) == \
+        '{"a":1,"b":1e-7,"c":[1.5,null,"é",{"x":0.30000000000000004,"y":1e+21}],"prev":"p","😀":0,"｡":1}'
+
+
+def test_depth_seals_with_its_prefix_and_leaves_the_input_alone():
+    e = dict(_DEPTH["events"][3])
+    stored = e.pop("hash")
+    before = json.dumps(e, sort_keys=True)
+    assert compute_event_hash(e, "yardstick/depth-1") == stored
+    assert seal_event(e, "yardstick/depth-1")["hash"] == stored
+    assert json.dumps(e, sort_keys=True) == before
+    upper = lambda s: __import__("hashlib").sha256(s.encode()).hexdigest().upper()  # noqa: E731
+    assert seal_event(e, "yardstick/depth-1", hash_fn=upper)["hash"] == "sha256:" + stored[7:].upper()
+
+
+def test_depth_covers_the_place_the_learner_and_the_link():
+    depth = get_scheme("yardstick/depth-1")
+    assert depth.applies(_DEPTH["events"][0]) and not depth.applies({**_DEPTH["events"][0], "scheme": "yardstick/activity-1"})
+    for f, val in (("seq", 9), ("learner", "someone-else"), ("prev", "sha256:" + "1" * 64), ("helped", True), ("answer", None)):
+        edited = [{**e, f: val} if i == 5 else e for i, e in enumerate(_DEPTH["events"])]
+        assert verify_chain(edited, scheme="yardstick/depth-1").stats["tampered"] == 1, f
+
+
+def test_depth_validation_matches_typescript():
+    depth = get_scheme("yardstick/depth-1")
+    ok, ver = _DEPTH["events"][0], _DEPTH["events"][5]
+    assert depth.validate(ok) == [] and depth.validate(ver) == []
+    assert depth.validate({**ok, "kind": "note", "seq": 0, "learner": "", "at": "2026-10-01T15:00:00Z"}) == [
+        "invalid seq: 0", "missing learner", "invalid at: 2026-10-01T15:00:00Z", "invalid kind: note"]
+    assert depth.validate({**ok, "correct": "yes", "weight": "0.4", "scaffold": "", "directiveness": -1, "is_probe": None}) == [
+        "invalid correct", "invalid weight", "invalid scaffold", "invalid directiveness", "invalid is_probe"]
+    assert depth.validate({**ver, "outcome": "maybe", "helped": "no", "source": "teacher", "check": "", "answered": "x", "answer": 7}) == [
+        "invalid check", "invalid answered", "invalid source", "invalid outcome", "invalid helped", "invalid answer"]
+
+
+def test_a_scheme_without_a_prefix_hashes_as_before():
+    assert get_scheme("yardstick/activity-1").prefix == ""
 
 
 # tpc/differential-commit-2 (TPC-SPEC-002 E4): the same record, canonical string and errors as the TypeScript tests.

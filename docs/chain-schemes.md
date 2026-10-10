@@ -1,4 +1,4 @@
-# Chain schemes (0.7.0)
+# Chain schemes (0.8.0)
 
 QLM products store one row per evidence event, each carrying its own hash and
 a link to the previous event's hash. Before 0.4.0 every product computed that
@@ -122,6 +122,29 @@ them (array-index keys such as `"9"` and `"10"` first, in numeric order; the
 rest by UTF-16 code units; a `"__proto__"` key dropped). Before, a
 `tpc/clinical-v4` payload with such keys verified in TypeScript and read as
 tampered in Python (vector `tpc-clinical-v4-key-order`).
+
+## YardStick's evidence ledger (0.8.0)
+
+The Star Map planner reads a learner's evidence as one chain and cites its
+entries by hash. YardStick builds that chain from what its Depth Engine
+stores: an evidence entry for every answer it received (what the answer
+moved: weight, prior and posterior as stored, none for an answer it never
+processed), and a verification entry for every quiet check it recorded, which
+names the hash of the answer's entry.
+
+| Scheme | Product source | Digest | Link |
+|---|---|---|---|
+| `yardstick/depth-1` | yardstick `depth_engine/depth_chain.py` `seal_one`: the entry without `hash` in the RFC 8785 form (keys sorted by UTF-16 code units at every depth, numbers as JavaScript writes them); `prev`, `seq`, `scheme` and `learner` are inside | sha256, written `sha256:` + 64 hex | `hash` / `prev`, genesis `"sha256:"` + `"0"` × 64 |
+
+0.8.0 adds `prefix` to a scheme: text written before the digest in the hash
+field. `yardstick/depth-1` is the first scheme to use it, so its hashes read
+like the planner's other hashes (`sha256:` + 64 hex), and a claim can point at
+a verification entry. Every other scheme has no prefix and hashes as before.
+
+The Python sealer in YardStick is the reference, and the vectors
+(`yardstick-depth-1`, and `-tampered`, a pass rewritten as a fail) were sealed
+by it. YardStick keeps its own copy of the hash, pinned to the same two files,
+because its engine does not depend on this SDK.
 
 ## Adding a scheme
 

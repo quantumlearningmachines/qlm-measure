@@ -43,6 +43,8 @@ export interface ChainScheme {
     digest?: Digest;
     /** Keep only the first N hex characters of the digest (play/measure-session stores 32). */
     truncate?: number;
+    /** Written before the digest in the hash field ("sha256:" for yardstick/depth-1). */
+    prefix?: string;
     /** Structural precondition for trying this scheme on an event. */
     applies(event: ChainEvent): boolean;
     /**

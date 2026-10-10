@@ -38,12 +38,54 @@ describe("chain schemes: vectors sealed by the original product code", () => {
 });
 
 describe("chain schemes: behaviour", () => {
-  it("lists twenty-seven schemes across nineteen families, clinical newest first", () => {
+  it("lists twenty-eight schemes across twenty families, clinical newest first", () => {
     const ids = listSchemes().map((s) => s.id);
     expect(ids.slice(0, 5)).toEqual(["tpc/clinical-v4", "tpc/clinical-v3", "tpc/clinical-v2", "tpc/clinical-v1", "play/clinical-clin-1.0"]);
     expect(ids.slice(5)).toEqual(["play/emit-1", "play/measure-session-1", "play/encounter-fnv64-1", "play/research-provenance-1", "qcore/qinverse-djb2-1", "studio/loop-1", "dp/ledger-v3", "tpc/dse-journal-1", "yardstick/spine-1", "labpath/learning-evidence-v1", "tpc/transcript-1", "tpc/differential-commit-2", "tpc/differential-commit-1", "tpc/rct-input-1",
-      "play/world-trace-identity-1", "play/world-trace-tsim-1", "play/world-trace-1", "tpc/yardstick-record-2", "tpc/yardstick-record-1", "tpc/intervention-1", "tpc/rehearsal-stage-1", "yardstick/activity-1"]);
-    expect(new Set(listSchemes().map((s) => s.family)).size).toBe(19);
+      "play/world-trace-identity-1", "play/world-trace-tsim-1", "play/world-trace-1", "tpc/yardstick-record-2", "tpc/yardstick-record-1", "tpc/intervention-1", "tpc/rehearsal-stage-1", "yardstick/activity-1", "yardstick/depth-1"]);
+    expect(new Set(listSchemes().map((s) => s.family)).size).toBe(20);
+  });
+  describe("yardstick/depth-1 (YardStick's evidence ledger, Star Map E6)", () => {
+    const v = vectors.find((v) => v.name === "yardstick-depth-1.json")!;
+    const depth = getScheme("yardstick/depth-1");
+    it("hashes are sha256: and 64 hex; the first entry links to sha256: and 64 zeros", () => {
+      expect(depth.genesis).toBe("sha256:" + "0".repeat(64));
+      expect(v.events[0].prev).toBe(depth.genesis);
+      for (const e of v.events) expect(String(e.hash)).toMatch(/^sha256:[0-9a-f]{64}$/);
+      expect(listSchemes().find((s) => s.id === "yardstick/depth-1")).toMatchObject({ family: "yardstick/depth", hashField: "hash", prevField: "prev", link: "explicit", digest: "sha256" });
+    });
+    it("the canonical form is RFC 8785: the entry without its hash, keys sorted by UTF-16 units, numbers as JavaScript writes them", () => {
+      expect(depth.canonical({ b: 1e-7, a: 1, hash: "x", prev: "p", c: [1.5, null, "é", { y: 1e21, x: 0.30000000000000004 }], "😀": 0, "｡": 1 }))
+        .toBe('{"a":1,"b":1e-7,"c":[1.5,null,"é",{"x":0.30000000000000004,"y":1e+21}],"prev":"p","😀":0,"｡":1}');
+    });
+    it("seals with the prefix, synchronously and with an async hash, and leaves the input alone", async () => {
+      const { hash, ...rest } = v.events[3];
+      const frozen = Object.freeze({ ...rest });
+      expect(computeEventHash(frozen, "yardstick/depth-1")).toBe(hash);
+      expect(sealEvent(frozen, "yardstick/depth-1").hash).toBe(hash);
+      expect((frozen as Record<string, unknown>).hash).toBeUndefined();
+      expect(await computeEventHashAsyncWith(async (s) => sha256Hex(s), rest, "yardstick/depth-1")).toBe(hash);
+      expect(sealEventWith((s) => sha256Hex(s).toUpperCase(), rest, "yardstick/depth-1").hash).toBe("sha256:" + String(hash).slice(7).toUpperCase());
+    });
+    it("applies to entries that name it; the hash covers the place, the learner and the link", () => {
+      expect(depth.applies(v.events[0])).toBe(true);
+      expect(depth.applies({ ...v.events[0], scheme: "yardstick/activity-1" })).toBe(false);
+      for (const [f, val] of [["seq", 9], ["learner", "someone-else"], ["prev", "sha256:" + "1".repeat(64)], ["helped", true], ["answer", null]] as const) {
+        const edited = v.events.map((e: Record<string, unknown>, i: number) => (i === 5 ? { ...e, [f]: val } : e));
+        expect(verifyChain(edited, { scheme: "yardstick/depth-1" }).stats.tampered, f).toBe(1);
+      }
+    });
+    it("checks each entry's shape", () => {
+      const ok = v.events[0];
+      const errs = (e: Record<string, unknown>) => depth.validate(e);
+      expect(errs(ok)).toEqual([]);
+      expect(errs(v.events[5])).toEqual([]);
+      expect(errs({ ...ok, kind: "note", seq: 0, learner: "", at: "2026-10-01T15:00:00Z" })).toEqual(["invalid seq: 0", "missing learner", "invalid at: 2026-10-01T15:00:00Z", "invalid kind: note"]);
+      expect(errs({ ...ok, correct: "yes", weight: "0.4", scaffold: "", directiveness: -1, is_probe: null })).toEqual([
+        "invalid correct", "invalid weight", "invalid scaffold", "invalid directiveness", "invalid is_probe"]);
+      expect(errs({ ...v.events[5], outcome: "maybe", helped: "no", source: "teacher", check: "", answered: "x", answer: 7 })).toEqual([
+        "invalid check", "invalid answered", "invalid source", "invalid outcome", "invalid helped", "invalid answer"]);
+    });
   });
   it("djb2Hex equals the world components' verbatim djb2 (>>> 0 per step) on every string", () => {
     const worldDjb2 = (str: string): string => { let h = 5381; for (let i = 0; i < str.length; i++) h = ((h << 5) + h + str.charCodeAt(i)) >>> 0; return h.toString(16).padStart(8, "0"); };

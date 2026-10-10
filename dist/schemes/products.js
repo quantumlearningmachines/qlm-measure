@@ -619,11 +619,93 @@ export const YARDSTICK_ACTIVITY_1 = {
         return errors;
     },
 };
+// ── yardstick/depth-1 — yardstick packages/engine/depth_engine/depth_chain.py ──
+// The learner's evidence ledger (Star Map E6). An entry's hash is "sha256:" and
+// the SHA-256 of the entry without `hash` in the RFC 8785 form: keys sorted by
+// UTF-16 code units at every depth, numbers as JavaScript writes them. `prev`
+// ("sha256:" and 64 zeros first), `seq`, `scheme` and `learner` are inside what
+// is hashed. Evidence entries carry an answer and what it moved; verification
+// entries a quiet check's outcome and the hash of the answer's entry. The
+// Python sealer is the reference; it writes numbers as this form does.
+const DEPTH_TIME = /^\d{4}-\d\d-\d\dT\d\d:\d\d:\d\d\.\d{6}Z$/;
+const isText = (v) => typeof v === "string" && v.length > 0;
+const isOptText = (v) => v === null || v === undefined || typeof v === "string";
+const isTime = (v) => typeof v === "string" && DEPTH_TIME.test(v);
+const isNum = (v) => typeof v === "number" && Number.isFinite(v);
+export const YARDSTICK_DEPTH_1 = {
+    id: "yardstick/depth-1", family: "yardstick/depth", since: "2026-10-10",
+    hashField: "hash", prevField: "prev", genesis: "sha256:" + "0".repeat(64), prefix: "sha256:",
+    applies: (e) => e.scheme === "yardstick/depth-1",
+    canonical: (e) => {
+        const { hash: _h, ...body } = e;
+        void _h;
+        return canonicalizeRfc8785(body);
+    },
+    validate: (e) => {
+        const errors = [];
+        if (!("seq" in e))
+            errors.push("missing seq");
+        else if (!(Number.isInteger(e.seq) && e.seq >= 1))
+            errors.push(`invalid seq: ${String(e.seq)}`);
+        for (const f of ["learner", "construct", "event"])
+            if (!isText(e[f]))
+                errors.push(`missing ${f}`);
+        if (!("at" in e))
+            errors.push("missing at");
+        else if (!isTime(e.at))
+            errors.push(`invalid at: ${String(e.at)}`);
+        if (e.kind !== "evidence" && e.kind !== "verification")
+            errors.push("kind" in e ? `invalid kind: ${String(e.kind)}` : "missing kind");
+        if (!isOptText(e.item))
+            errors.push("invalid item");
+        if (e.kind === "evidence") {
+            if (e.correct !== null && e.correct !== undefined && typeof e.correct !== "boolean")
+                errors.push("invalid correct");
+            for (const f of ["weight", "prior", "posterior"])
+                if (e[f] !== null && e[f] !== undefined && !isNum(e[f]))
+                    errors.push(`invalid ${f}`);
+            if (!isOptText(e.session))
+                errors.push("invalid session");
+            if (!isText(e.scaffold))
+                errors.push("invalid scaffold");
+            if (!(Number.isInteger(e.directiveness) && e.directiveness >= 0))
+                errors.push("invalid directiveness");
+            if (typeof e.is_probe !== "boolean")
+                errors.push("invalid is_probe");
+            if ("params" in e) {
+                const p = e.params;
+                const keys = p && typeof p === "object" && !Array.isArray(p) ? Object.keys(p).sort() : [];
+                if (keys.join(",") !== "guess,slip" || !isNum(p.slip) || !isNum(p.guess))
+                    errors.push("invalid params");
+            }
+        }
+        else if (e.kind === "verification") {
+            if (!isText(e.check))
+                errors.push("invalid check");
+            for (const f of ["answered", "fired"])
+                if (!isTime(e[f]))
+                    errors.push(`invalid ${f}`);
+            if (e.source !== "need" && e.source !== "program")
+                errors.push("invalid source");
+            if (e.outcome !== "pass" && e.outcome !== "fail")
+                errors.push("invalid outcome");
+            if (typeof e.helped !== "boolean")
+                errors.push("invalid helped");
+            if (!isText(e.decision_hash))
+                errors.push("invalid decision_hash");
+            for (const f of ["answer", "need_id", "plan_hash", "tier_checked", "misconception"])
+                if (!isOptText(e[f]))
+                    errors.push(`invalid ${f}`);
+        }
+        return errors;
+    },
+};
 export const PRODUCT_SCHEMES = [
     PLAY_EMIT_1, PLAY_MEASURE_SESSION_1, PLAY_ENCOUNTER_FNV64_1, PLAY_RESEARCH_PROVENANCE_1,
     QCORE_QINVERSE_DJB2_1, STUDIO_LOOP_1, DP_LEDGER_V3, TPC_DSE_JOURNAL_1, YARDSTICK_SPINE_1, LABPATH_LEARNING_EVIDENCE_V1,
     TPC_TRANSCRIPT_1, TPC_DIFFERENTIAL_COMMIT_2, TPC_DIFFERENTIAL_COMMIT_1, TPC_RCT_INPUT_1,
     PLAY_WORLD_TRACE_IDENTITY_1, PLAY_WORLD_TRACE_TSIM_1, PLAY_WORLD_TRACE_1,
     TPC_YARDSTICK_RECORD_2, TPC_YARDSTICK_RECORD_1, TPC_INTERVENTION_1, TPC_REHEARSAL_STAGE_1, YARDSTICK_ACTIVITY_1,
+    YARDSTICK_DEPTH_1,
 ];
 //# sourceMappingURL=products.js.map
