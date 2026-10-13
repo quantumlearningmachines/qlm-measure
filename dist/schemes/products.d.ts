@@ -32,5 +32,6 @@ export declare const TPC_YARDSTICK_RECORD_1: ChainScheme;
 export declare const TPC_INTERVENTION_1: ChainScheme;
 export declare const TPC_REHEARSAL_STAGE_1: ChainScheme;
 export declare const YARDSTICK_ACTIVITY_1: ChainScheme;
+export declare const YARDSTICK_DEPTH_1: ChainScheme;
 export declare const PRODUCT_SCHEMES: ChainScheme[];
 //# sourceMappingURL=products.d.ts.map

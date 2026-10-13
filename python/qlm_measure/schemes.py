@@ -160,6 +160,7 @@ class ChainScheme:
     link: str | None = None          # "explicit" | "implicit" | "none"; default by prev_field
     digest: str = "sha256"           # "sha256" | "fnv1a64" | "djb2-32"
     truncate: int | None = None
+    prefix: str = ""                 # written before the digest ("sha256:" for yardstick/depth-1)
 
     def link_of(self) -> str:
         return self.link or ("explicit" if self.prev_field else "none")
@@ -192,9 +193,10 @@ def djb2_hex(s: str) -> str:
 
 def digest_for(scheme: "ChainScheme", sha256: HashFn):
     base = fnv1a64_hex if scheme.digest == "fnv1a64" else djb2_hex if scheme.digest == "djb2-32" else sha256
-    if scheme.truncate:
-        return lambda c: base(c)[: scheme.truncate]
-    return base
+    cut = (lambda c: base(c)[: scheme.truncate]) if scheme.truncate else base
+    if scheme.prefix:
+        return lambda c: scheme.prefix + cut(c)
+    return cut
 
 
 def js_string_of(v: Any) -> str:
@@ -788,6 +790,96 @@ YARDSTICK_ACTIVITY_1 = ChainScheme(
     validate=lambda e: ([] if _is_num(e.get("seq")) else ["missing seq"]) + _missing_str(e, ("at", "who", "action")))
 
 
+# ── yardstick/depth-1 — yardstick packages/engine/depth_engine/depth_chain.py ──
+# The learner's evidence ledger (Star Map E6). An entry's hash is "sha256:" and the SHA-256 of the entry without
+# `hash` in the RFC 8785 form: keys sorted by UTF-16 code units at every depth, numbers as JavaScript writes them.
+# `prev` ("sha256:" and 64 zeros first), `seq`, `scheme` and `learner` are inside what is hashed. Evidence entries
+# carry an answer and what it moved; verification entries a quiet check's outcome and the hash of the answer's entry.
+
+def _rfc8785_utf16(value: Any) -> str:
+    if isinstance(value, dict):
+        keys = sorted(value, key=lambda k: str(k).encode("utf-16-be", "surrogatepass"))
+        return "{" + ",".join(js_string(str(k)) + ":" + _rfc8785_utf16(value[k]) for k in keys) + "}"
+    if isinstance(value, (list, tuple)):
+        return "[" + ",".join(_rfc8785_utf16(v) for v in value) + "]"
+    if isinstance(value, float) and (math.isnan(value) or math.isinf(value)):
+        raise ValueError("Non-finite number in canonical event")
+    return js_json_dumps(value)
+
+
+def _depth_canonical(e: dict, prev: str | None = None) -> str:
+    return _rfc8785_utf16({k: v for k, v in e.items() if k != "hash"})
+
+
+_DEPTH_TIME = re.compile(r"\d{4}-\d\d-\d\dT\d\d:\d\d:\d\d\.\d{6}Z")
+
+
+def _depth_validate(e: dict) -> list[str]:
+    errors: list[str] = []
+    is_str = lambda v: isinstance(v, str) and bool(v)  # noqa: E731
+    opt_str = lambda v: v is None or isinstance(v, str)  # noqa: E731
+    is_time = lambda v: isinstance(v, str) and bool(_DEPTH_TIME.fullmatch(v))  # noqa: E731
+    seq = e.get("seq", _MISSING)
+    if seq is _MISSING:
+        errors.append("missing seq")
+    elif not (isinstance(seq, int) and not isinstance(seq, bool) and seq >= 1):
+        errors.append(f"invalid seq: {js_string_of(seq)}")
+    errors += [f"missing {f}" for f in ("learner", "construct", "event") if not is_str(e.get(f))]
+    at = e.get("at", _MISSING)
+    if at is _MISSING:
+        errors.append("missing at")
+    elif not is_time(at):
+        errors.append(f"invalid at: {js_string_of(at)}")
+    kind = e.get("kind", _MISSING)
+    if kind not in ("evidence", "verification"):
+        errors.append("missing kind" if kind is _MISSING else f"invalid kind: {js_string_of(kind)}")
+    if not opt_str(e.get("item")):
+        errors.append("invalid item")
+    if kind == "evidence":
+        if e.get("correct") is not None and not isinstance(e.get("correct"), bool):
+            errors.append("invalid correct")
+        for f in ("weight", "prior", "posterior"):
+            v = e.get(f)
+            if v is not None and not (_is_num(v) and math.isfinite(v)):
+                errors.append(f"invalid {f}")
+        if not opt_str(e.get("session")):
+            errors.append("invalid session")
+        if not is_str(e.get("scaffold")):
+            errors.append("invalid scaffold")
+        d = e.get("directiveness")
+        if not (isinstance(d, int) and not isinstance(d, bool) and d >= 0):
+            errors.append("invalid directiveness")
+        if not isinstance(e.get("is_probe"), bool):
+            errors.append("invalid is_probe")
+        if "params" in e:
+            p = e["params"]
+            if not (isinstance(p, dict) and set(p) == {"slip", "guess"} and all(_is_num(p[k]) for k in p)):
+                errors.append("invalid params")
+    elif kind == "verification":
+        if not is_str(e.get("check")):
+            errors.append("invalid check")
+        for f in ("answered", "fired"):
+            if not is_time(e.get(f)):
+                errors.append(f"invalid {f}")
+        if e.get("source") not in ("need", "program"):
+            errors.append("invalid source")
+        if e.get("outcome") not in ("pass", "fail"):
+            errors.append("invalid outcome")
+        if not isinstance(e.get("helped"), bool):
+            errors.append("invalid helped")
+        if not is_str(e.get("decision_hash")):
+            errors.append("invalid decision_hash")
+        for f in ("answer", "need_id", "plan_hash", "tier_checked", "misconception"):
+            if not opt_str(e.get(f)):
+                errors.append(f"invalid {f}")
+    return errors
+
+
+YARDSTICK_DEPTH_1 = ChainScheme(
+    id="yardstick/depth-1", family="yardstick/depth", since="2026-10-10", hash_field="hash", prev_field="prev",
+    genesis="sha256:" + "0" * 64, prefix="sha256:", applies=lambda e: e.get("scheme") == "yardstick/depth-1",
+    canonical=_depth_canonical, validate=_depth_validate)
+
 
 PRODUCT_SCHEMES: tuple[ChainScheme, ...] = (PLAY_EMIT_1, PLAY_MEASURE_SESSION_1, PLAY_ENCOUNTER_FNV64_1, PLAY_RESEARCH_PROVENANCE_1,
                                             QCORE_QINVERSE_DJB2_1, STUDIO_LOOP_1, DP_LEDGER_V3, TPC_DSE_JOURNAL_1, YARDSTICK_SPINE_1,
@@ -795,7 +887,7 @@ PRODUCT_SCHEMES: tuple[ChainScheme, ...] = (PLAY_EMIT_1, PLAY_MEASURE_SESSION_1,
                                             TPC_RCT_INPUT_1,
                                             PLAY_WORLD_TRACE_IDENTITY_1, PLAY_WORLD_TRACE_TSIM_1, PLAY_WORLD_TRACE_1,
                                             TPC_YARDSTICK_RECORD_2, TPC_YARDSTICK_RECORD_1, TPC_INTERVENTION_1, TPC_REHEARSAL_STAGE_1,
-                                            YARDSTICK_ACTIVITY_1)
+                                            YARDSTICK_ACTIVITY_1, YARDSTICK_DEPTH_1)
 
 _ALL: tuple[ChainScheme, ...] = (TPC_CLINICAL_V4, TPC_CLINICAL_V3, TPC_CLINICAL_V2, TPC_CLINICAL_V1, PLAY_CLINICAL_1_0, *PRODUCT_SCHEMES)
 SCHEMES: dict[str, ChainScheme] = {s.id: s for s in _ALL}
