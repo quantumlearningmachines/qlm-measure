@@ -26,7 +26,7 @@ def main() -> int:
                   "actual_sha256": sha(ROOT / "dist/downloads" / name),
                   "matches": sha(ROOT / "dist/downloads" / name) == expected["sha256"]}
                  for name, expected in release["downloads"].items()}
-    paths = ["dist/index.html", "dist/styles.css", "dist/assistance-gap.mjs", "dist/assistance-profile-examples.mjs",
+    paths = ["dist/demo.html", "dist/styles.css", "dist/assistance-gap.mjs", "dist/assistance-profile-examples.mjs",
              "dist/examples/assistance-profile-bindings.json", "dist/downloads/learnlog-assistance-profile-draft.zip",
              "dist/downloads/qlm-transformer-airflow.zip"]
     counts = {key: int(value) for key, value in re.findall(r"^# (tests|pass|fail|cancelled|skipped|todo) (\d+)\s*$", output, re.MULTILINE)}

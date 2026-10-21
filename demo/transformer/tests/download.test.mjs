@@ -37,7 +37,7 @@ test('Airflow download matches its published byte count and SHA-256',()=>{
 });
 
 test('Website CTA points to the actual downloadable package',()=>{
-  const html=readFileSync(new URL('index.html',base),'utf8');
+  const html=readFileSync(new URL('demo.html',base),'utf8');
   assert.match(html,/id="download-airflow"[^>]+href="\.\/downloads\/qlm-transformer-airflow\.zip"[^>]+download=/);
   assert.match(html,/href="#airflow"/);
   assert.equal(metadata.pipeline_version,'0.5.0rc1');
@@ -46,7 +46,7 @@ test('Website CTA points to the actual downloadable package',()=>{
 });
 
 test('Assistance-profile CTA has a separate packaged implementation download',()=>{
-  const html=readFileSync(new URL('index.html',base),'utf8');
+  const html=readFileSync(new URL('demo.html',base),'utf8');
   assert.match(html,/href="\.\/downloads\/learnlog-assistance-profile-draft\.zip" download="learnlog-assistance-profile-draft\.zip"/);
   const profile=readFileSync(new URL('downloads/learnlog-assistance-profile-draft.zip',base));
   assert.equal(profile.readUInt32LE(0),0x04034b50);
