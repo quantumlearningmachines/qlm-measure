@@ -1,0 +1,29 @@
+{
+ "input_sha256": "1d06aee9e649c5ba9db49052fe9a86e68d0c3ccb4709a7487289d7721f5464db",
+ "main_problem_opportunities": 5819737,
+ "scaffolding_logs": 303533,
+ "students": 46544,
+ "students_who_ever_requested": 32447,
+ "episodes": {
+  "not requested; no help recorded": 4892597,
+  "requested; hints short of the answer": 109140,
+  "requested; hints to the answer (bottom-out)": 683138,
+  "requested; asked for steps (scaffolding)": 21789,
+  "not requested; system gave steps after a wrong first answer": 110513,
+  "not requested; scaffolding present, trigger unclear": 2560
+ },
+ "inferred_top_state_by_request": {
+  "not requested": {
+   "frustrated": 588417,
+   "concentrating": 3434821,
+   "bored": 761276,
+   "confused": 221156
+  },
+  "requested": {
+   "bored": 139848,
+   "concentrating": 573289,
+   "frustrated": 94671,
+   "confused": 6259
+  }
+ }
+}
