@@ -1,0 +1,31 @@
+:root{--paper:#FDFBF8;--ink:#0B1929;--text:#20303F;--teal:#008F80;--teal-pale:#E7F4EE;--muted:#66717C;--line:#E2DDD3;--white:#FFFFFF;--sans:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;--serif:Georgia,"Times New Roman",serif}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--paper);color:var(--text);font-family:var(--sans)}
+.shell{max-width:1040px;margin:0 auto;padding:0 24px;min-height:100vh;display:flex;flex-direction:column}
+.top{display:flex;justify-content:space-between;align-items:center;padding:26px 0}
+.wordmark{display:flex;align-items:center;gap:10px;color:var(--ink);text-decoration:none;font-size:15px}
+.wordmark svg{width:24px;height:24px}
+.slash{color:var(--muted);margin:0 2px}
+.full-demo{color:var(--muted);font-size:13px;text-decoration:none;border-bottom:1px solid var(--line)}
+.full-demo:hover{color:var(--teal);border-color:var(--teal)}
+main{flex:1}
+.hero{padding:56px 0 36px;max-width:760px}
+.eyebrow{font-size:11px;letter-spacing:1.6px;color:var(--teal);margin:0 0 18px}
+h1{font:400 64px/1.05 var(--serif);letter-spacing:-2px;color:var(--ink);margin:0 0 24px}
+h1 em{color:var(--teal)}
+.lede{font-size:18px;line-height:1.65;margin:0 0 28px;max-width:640px}
+.stat{display:flex;gap:18px;align-items:center;margin:0;padding:18px 22px;background:var(--teal-pale);border-radius:8px;max-width:640px}
+.stat strong{font:400 44px/1 var(--serif);color:var(--teal);letter-spacing:-1px}
+.stat span{font-size:14px;line-height:1.55}
+.ctas{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:14px;padding:20px 0 64px}
+.cta{display:flex;flex-direction:column;gap:8px;padding:20px;background:var(--white);border:1px solid var(--line);border-radius:10px;text-decoration:none;color:var(--text);transition:border-color .15s,transform .15s}
+.cta strong{color:var(--ink);font-size:16px}
+.cta span{font-size:13px;line-height:1.5;color:var(--muted)}
+.cta:hover,.cta:focus-visible{border-color:var(--teal);transform:translateY(-2px);outline:none}
+.cta.primary{background:var(--ink);border-color:var(--ink)}
+.cta.primary strong{color:var(--white)}
+.cta.primary span{color:#C7D1DA}
+.foot{display:flex;flex-wrap:wrap;gap:22px;padding:22px 0 30px;border-top:1px solid var(--line);font-size:12px;color:var(--muted)}
+.foot a{color:var(--muted)}
+.foot a:hover{color:var(--teal)}
+@media (max-width:640px){.shell{padding:0 16px}.hero{padding:28px 0 24px}h1{font-size:44px}.lede{font-size:16px}.stat{flex-direction:column;align-items:flex-start}}

@@ -9,7 +9,7 @@ const key='k'.repeat(32),importedAt='2026-10-17T00:00:00Z';
 const options=id=>({profileId:id,text:getSample(id),secret:key,tenant:'demo',importedAt,sourceName:PROFILES.find(p=>p.id===id).sampleName});
 const runs=await Promise.all(PROFILES.map(p=>transform(options(p.id))));
 const transcript=runs.find(r=>r.profile.id==='tutormoments'),participants=runs.find(r=>r.profile.id==='oatutor');
-const html=readFileSync(new URL('../dist/index.html',import.meta.url),'utf8');
+const html=readFileSync(new URL('../dist/demo.html',import.meta.url),'utf8');
 const app=readFileSync(new URL('../dist/app.mjs',import.meta.url),'utf8');
 
 test('Escaping prevents user transcript text from becoming HTML or attributes',()=>{

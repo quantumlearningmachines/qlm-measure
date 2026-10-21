@@ -4,7 +4,7 @@ import {readFileSync} from 'node:fs';
 import {ASSISTANCE_EXAMPLES,assessAssistanceMetric,selectBindingExample} from '../dist/assistance-gap.mjs';
 import PACKAGED_BINDINGS from '../dist/assistance-profile-examples.mjs';
 
-const html=readFileSync(new URL('../dist/index.html',import.meta.url),'utf8');
+const html=readFileSync(new URL('../dist/demo.html',import.meta.url),'utf8');
 const module=readFileSync(new URL('../dist/assistance-gap.mjs',import.meta.url),'utf8');
 
 test('Each metric counts only the observed lifecycle and keeps other observations unknown',()=>{

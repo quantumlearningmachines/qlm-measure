@@ -55,7 +55,7 @@ test('Selection cannot invent a source, accept duplicates in the source definiti
 test('Browser data equals the generated summary and the new panel stays separate from earlier aggregates', () => {
   const json = JSON.parse(readFileSync(new URL('../dist/examples/cross-source-analysis.json', import.meta.url), 'utf8'));
   assert.deepEqual(PACKAGED, json);
-  const html = readFileSync(new URL('../dist/index.html', import.meta.url), 'utf8');
+  const html = readFileSync(new URL('../dist/demo.html', import.meta.url), 'utf8');
   assert.ok(html.indexOf('id="aggregate"') < html.indexOf('id="cross-source-analysis"'));
   assert.ok(html.indexOf('id="cross-source-analysis"') < html.indexOf('id="airflow"'));
   assert.match(html, /does not pool tutor turns, participant summaries or learning effects/);
