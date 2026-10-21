@@ -1,0 +1,3312 @@
+// Generated from pinned public excerpts by scripts/build_scaffolding_evidence.py.
+export const SCAFFOLDING_EVIDENCE = {
+  "measurement_profile": "qlm.tutormoments.source-coded-intervals.v1",
+  "dataset": "tutormoments",
+  "provider": "tutoring_provider_a",
+  "dataset_url": "https://huggingface.co/datasets/allenai/tutormoments-preview",
+  "revision": "3bb0c104d65e29facffca7ba864ef10fa22d0e78",
+  "license": "CC-BY-4.0",
+  "license_url": "https://creativecommons.org/licenses/by/4.0/",
+  "attribution": "TutorMoments-Preview, Albert Zhang and colleagues, Allen Institute for AI and collaborators (2026).",
+  "label_origin": "Published source hybrid LLM-assisted labels over human situation/action/result commentary. QLM ran no new classifier.",
+  "human_text_verification": {
+    "matched_scaffolding_rows": 60,
+    "raw_human_pass_records": 14,
+    "method": "Each included situation/action/result string matches the pinned raw human annotation record exactly by transcript, annotator and turn span."
+  },
+  "sources": {
+    "transcripts.jsonl": {
+      "url": "https://huggingface.co/datasets/allenai/tutormoments-preview/resolve/3bb0c104d65e29facffca7ba864ef10fa22d0e78/transcripts.jsonl",
+      "sha256": "34b5d4483302593043f3d9be3bf37f1cde6cba5b031fd2d20d75a15d5498f276",
+      "size_bytes": 38117914,
+      "sample_url": "https://transformer.quantumlearningmachines.com/samples/tutormoments-real-transcripts.jsonl",
+      "sample_sha256": "7df51fda0fff9c454ba14a33a0d2964d5e94b2556eff1d3897ec4f41373c8a66",
+      "sample_size_bytes": 91515,
+      "source_lines_1_based": [
+        366,
+        435
+      ],
+      "selection": "Exact complete original JSONL lines including original newline bytes; unchanged."
+    },
+    "ground_truth.jsonl": {
+      "url": "https://huggingface.co/datasets/allenai/tutormoments-preview/resolve/3bb0c104d65e29facffca7ba864ef10fa22d0e78/ground_truth.jsonl",
+      "sha256": "9735b8c83575098dfac6928d1ff32a0aa283700651598ab9a7757879d6edcfda",
+      "size_bytes": 11131708,
+      "sample_url": "https://transformer.quantumlearningmachines.com/samples/tutormoments-real-ground-truth.jsonl",
+      "sample_sha256": "cbfa7af79ce6145517003c931ff7dd3aba0bad656df1fc22bf940c8cdb203fa6",
+      "sample_size_bytes": 109455,
+      "source_lines_1_based": [
+        157,
+        190
+      ],
+      "selection": "Exact complete original JSONL lines including original newline bytes; unchanged."
+    },
+    "annotations.jsonl": {
+      "url": "https://huggingface.co/datasets/allenai/tutormoments-preview/resolve/3bb0c104d65e29facffca7ba864ef10fa22d0e78/annotations.jsonl",
+      "sha256": "8a7adc65b8c63a78950a278eda5e4feaa5a093bab02d964bad1027468e18914f",
+      "size_bytes": 10255887,
+      "sample_url": "https://transformer.quantumlearningmachines.com/samples/tutormoments-real-human-annotations.jsonl",
+      "sample_sha256": "d2551b3b2073d6630de6d2908a28295b75e6df92c67af8f2c9e85bf37c2eb85b",
+      "sample_size_bytes": 54983,
+      "source_lines_1_based": [
+        218,
+        268,
+        278,
+        312,
+        316,
+        393,
+        403,
+        490,
+        505,
+        632,
+        716,
+        732,
+        747,
+        756
+      ],
+      "selection": "Exact complete original JSONL lines including original newline bytes; unchanged."
+    }
+  },
+  "transcripts": [
+    {
+      "id": "d21c3b8f-6333-5b8f-b632-7f6aed0ef517",
+      "provider": "tutoring_provider_a",
+      "source_file_line_1_based": 366,
+      "source_record_sha256": "61cbdc2ee22e5576471d7e6d1e9884b42a3cc937a27649b2fdc726c7871d8612",
+      "turns": [
+        {
+          "turn_number": 1,
+          "start_seconds": 614,
+          "end_seconds": 616,
+          "role": "Tutor",
+          "text": "Hi Kayla."
+        },
+        {
+          "turn_number": 2,
+          "start_seconds": 621,
+          "end_seconds": 623,
+          "role": "Student",
+          "text": "Hi."
+        },
+        {
+          "turn_number": 3,
+          "start_seconds": 623,
+          "end_seconds": 625,
+          "role": "Tutor",
+          "text": "How are you?"
+        },
+        {
+          "turn_number": 4,
+          "start_seconds": 625,
+          "end_seconds": 626,
+          "role": "Student",
+          "text": "Good. And you?"
+        },
+        {
+          "turn_number": 5,
+          "start_seconds": 626,
+          "end_seconds": 631,
+          "role": "Tutor",
+          "text": "I'm good. How's school been? Your first, what, three days?"
+        },
+        {
+          "turn_number": 6,
+          "start_seconds": 632,
+          "end_seconds": 634,
+          "role": "Student",
+          "text": "Um, it's been good."
+        },
+        {
+          "turn_number": 7,
+          "start_seconds": 635,
+          "end_seconds": 637,
+          "role": "Tutor",
+          "text": "Are you liking your school so far?"
+        },
+        {
+          "turn_number": 8,
+          "start_seconds": 637,
+          "end_seconds": 638,
+          "role": "Student",
+          "text": "Um, yeah."
+        },
+        {
+          "turn_number": 9,
+          "start_seconds": 639,
+          "end_seconds": 641,
+          "role": "Tutor",
+          "text": "Or is it just like, all right?"
+        },
+        {
+          "turn_number": 10,
+          "start_seconds": 641,
+          "end_seconds": 642,
+          "role": "Student",
+          "text": "I like it."
+        },
+        {
+          "turn_number": 11,
+          "start_seconds": 643,
+          "end_seconds": 644,
+          "role": "Tutor",
+          "text": "Oh, that's good."
+        },
+        {
+          "turn_number": 12,
+          "start_seconds": 645,
+          "end_seconds": 667,
+          "role": "Tutor",
+          "text": "Well, we can get started right away. Um, so, you're going to do, remember we're going to be practicing on your quick, uh, what's it called? Your multiplication, division, just like solving them quick at the end."
+        },
+        {
+          "turn_number": 13,
+          "start_seconds": 667,
+          "end_seconds": 684,
+          "role": "Tutor",
+          "text": "Um, first, I'm going to show you 15 problems. They're pretty easy, okay? Like, they're, you should get most of them done. And what I'm going to do is I'm going to put on a 20-minute timer and see how many you can get done."
+        },
+        {
+          "turn_number": 14,
+          "start_seconds": 685,
+          "end_seconds": 690,
+          "role": "Tutor",
+          "text": "The minimum you should get done is 10 questions, okay?"
+        },
+        {
+          "turn_number": 15,
+          "start_seconds": 690,
+          "end_seconds": 691,
+          "role": "Student",
+          "text": "Okay."
+        },
+        {
+          "turn_number": 16,
+          "start_seconds": 692,
+          "end_seconds": 699,
+          "role": "Tutor",
+          "text": "So as soon as, um, you see them on your screen, get started right away, okay? And remember, you can always ask questions too."
+        },
+        {
+          "turn_number": 17,
+          "start_seconds": 699,
+          "end_seconds": 700,
+          "role": "Student",
+          "text": "Okay."
+        },
+        {
+          "turn_number": 18,
+          "start_seconds": 700,
+          "end_seconds": 702,
+          "role": "Tutor",
+          "text": "All right, here they are."
+        },
+        {
+          "turn_number": 19,
+          "start_seconds": 703,
+          "end_seconds": 706,
+          "role": "Tutor",
+          "text": "I'll check back in at 3:25."
+        },
+        {
+          "turn_number": 20,
+          "start_seconds": 1160,
+          "end_seconds": 1166,
+          "role": "Tutor",
+          "text": "You have about 10, 12 minutes left, all right? Just a reminder."
+        },
+        {
+          "turn_number": 21,
+          "start_seconds": 1166,
+          "end_seconds": 1167,
+          "role": "Student",
+          "text": "Okay."
+        },
+        {
+          "turn_number": 22,
+          "start_seconds": 1528,
+          "end_seconds": 1535,
+          "role": "Tutor",
+          "text": "Hi Kayla. You still have some time, but I was wondering which question are you on?"
+        },
+        {
+          "turn_number": 23,
+          "start_seconds": 1535,
+          "end_seconds": 1537,
+          "role": "Student",
+          "text": "I'm on eight."
+        },
+        {
+          "turn_number": 24,
+          "start_seconds": 1540,
+          "end_seconds": 1560,
+          "role": "Tutor",
+          "text": "All right. All right. Remember, try to go as fast as you can. Um, you should, I think you should be a little farther than eight, but just keep going. Also for number 10, um, go ahead and skip number 10, okay?"
+        },
+        {
+          "turn_number": 25,
+          "start_seconds": 1560,
+          "end_seconds": 1561,
+          "role": "Student",
+          "text": "Okay."
+        },
+        {
+          "turn_number": 26,
+          "start_seconds": 1561,
+          "end_seconds": 1567,
+          "role": "Tutor",
+          "text": "Just keep going with the rest. Keep going, real fast."
+        },
+        {
+          "turn_number": 27,
+          "start_seconds": 1570,
+          "end_seconds": 1573,
+          "role": "Student",
+          "text": "I need help on nine."
+        },
+        {
+          "turn_number": 28,
+          "start_seconds": 1573,
+          "end_seconds": 1576,
+          "role": "Tutor",
+          "text": "Um, you can go ahead and skip nine for now too."
+        },
+        {
+          "turn_number": 29,
+          "start_seconds": 1577,
+          "end_seconds": 1578,
+          "role": "Student",
+          "text": "Oh, okay."
+        },
+        {
+          "turn_number": 30,
+          "start_seconds": 1795,
+          "end_seconds": 1798,
+          "role": "Student",
+          "text": "I'm confused on fourteen."
+        },
+        {
+          "turn_number": 31,
+          "start_seconds": 1801,
+          "end_seconds": 1808,
+          "role": "Tutor",
+          "text": "All right. So, have we not worked on any algebra yet or you just don't remember?"
+        },
+        {
+          "turn_number": 32,
+          "start_seconds": 1808,
+          "end_seconds": 1813,
+          "role": "Student",
+          "text": "Well, I remember but um, it says subtraction."
+        },
+        {
+          "turn_number": 33,
+          "start_seconds": 1813,
+          "end_seconds": 1815,
+          "role": "Tutor",
+          "text": "Yeah, so what's the opposite of subtraction?"
+        },
+        {
+          "turn_number": 34,
+          "start_seconds": 1815,
+          "end_seconds": 1817,
+          "role": "Student",
+          "text": "Um, addition."
+        },
+        {
+          "turn_number": 35,
+          "start_seconds": 1817,
+          "end_seconds": 1820,
+          "role": "Tutor",
+          "text": "So you do addition."
+        },
+        {
+          "turn_number": 36,
+          "start_seconds": 1820,
+          "end_seconds": 1821,
+          "role": "Student",
+          "text": "Oh, okay."
+        },
+        {
+          "turn_number": 37,
+          "start_seconds": 1821,
+          "end_seconds": 1824,
+          "role": "Tutor",
+          "text": "Mhm. And then that would give you X."
+        },
+        {
+          "turn_number": 38,
+          "start_seconds": 1824,
+          "end_seconds": 1826,
+          "role": "Student",
+          "text": "Okay. Thank you."
+        },
+        {
+          "turn_number": 39,
+          "start_seconds": 1826,
+          "end_seconds": 1827,
+          "role": "Tutor",
+          "text": "Yeah."
+        },
+        {
+          "turn_number": 40,
+          "start_seconds": 1948,
+          "end_seconds": 1950,
+          "role": "Tutor",
+          "text": "Did you end up finishing?"
+        },
+        {
+          "turn_number": 41,
+          "start_seconds": 1954,
+          "end_seconds": 1955,
+          "role": "Student",
+          "text": "Yeah."
+        },
+        {
+          "turn_number": 42,
+          "start_seconds": 1956,
+          "end_seconds": 1959,
+          "role": "Tutor",
+          "text": "You did? Up until 15?"
+        },
+        {
+          "turn_number": 43,
+          "start_seconds": 1959,
+          "end_seconds": 1960,
+          "role": "Student",
+          "text": "Yeah."
+        },
+        {
+          "turn_number": 44,
+          "start_seconds": 1960,
+          "end_seconds": 1964,
+          "role": "Tutor",
+          "text": "Okay, remember when you're done, you got to let me know, all right?"
+        },
+        {
+          "turn_number": 45,
+          "start_seconds": 1964,
+          "end_seconds": 1967,
+          "role": "Student",
+          "text": "Yeah, I just finished it right now as soon as you"
+        },
+        {
+          "turn_number": 46,
+          "start_seconds": 1967,
+          "end_seconds": 1968,
+          "role": "Tutor",
+          "text": "Oh, okay."
+        },
+        {
+          "turn_number": 47,
+          "start_seconds": 1968,
+          "end_seconds": 1976,
+          "role": "Tutor",
+          "text": "All right. So, you did all of them except the two I told you to skip, right? Nine and ten?"
+        },
+        {
+          "turn_number": 48,
+          "start_seconds": 1976,
+          "end_seconds": 1977,
+          "role": "Student",
+          "text": "Mhm."
+        },
+        {
+          "turn_number": 49,
+          "start_seconds": 1977,
+          "end_seconds": 2022,
+          "role": "Tutor",
+          "text": "That's good. That you finished exactly at 20 minutes, which is really, really good. That means you took less than two minutes per question. You did really, really good. And I have a lot of faith in you. So I know you I know most, if not all of your answers are right. So I'm not going to make you tell me your answers. I'm actually just going to get started with our um, like lesson type of thing. Um, let me just change my screen. So the two questions, I think today we're going to work a little bit on algebra. And then, um, at the end we'll do that multiple stuff."
+        },
+        {
+          "turn_number": 50,
+          "start_seconds": 2078,
+          "end_seconds": 2090,
+          "role": "Tutor",
+          "text": "I think the algebra you have down pretty well. We just haven't really worked on it in depth. So I think I'll go over more algebra questions just today. So then we can just focus on uh fractions in the future."
+        },
+        {
+          "turn_number": 51,
+          "start_seconds": 2090,
+          "end_seconds": 2095,
+          "role": "Tutor",
+          "text": "So this is algebra right here."
+        },
+        {
+          "turn_number": 52,
+          "start_seconds": 2095,
+          "end_seconds": 2103,
+          "role": "Tutor",
+          "text": "And it's just when you solve for X or any letter at that matter."
+        },
+        {
+          "turn_number": 53,
+          "start_seconds": 2103,
+          "end_seconds": 2113,
+          "role": "Tutor",
+          "text": "So variables are the letters. They can be X, they can be Y, they can be Z. They literally can be any letter."
+        },
+        {
+          "turn_number": 54,
+          "start_seconds": 2113,
+          "end_seconds": 2120,
+          "role": "Tutor",
+          "text": "So if you have X plus two equals eight, this right here is called a what?"
+        },
+        {
+          "turn_number": 55,
+          "start_seconds": 2128,
+          "end_seconds": 2131,
+          "role": "Tutor",
+          "text": "What is this called?"
+        },
+        {
+          "turn_number": 56,
+          "start_seconds": 2131,
+          "end_seconds": 2133,
+          "role": "Student",
+          "text": "X."
+        },
+        {
+          "turn_number": 57,
+          "start_seconds": 2133,
+          "end_seconds": 2136,
+          "role": "Tutor",
+          "text": "Yeah, but what did I just say it's called right here?"
+        },
+        {
+          "turn_number": 58,
+          "start_seconds": 2140,
+          "end_seconds": 2144,
+          "role": "Student",
+          "text": "Ver... I forgot how to say them."
+        },
+        {
+          "turn_number": 59,
+          "start_seconds": 2144,
+          "end_seconds": 2146,
+          "role": "Tutor",
+          "text": "Variable."
+        },
+        {
+          "turn_number": 60,
+          "start_seconds": 2146,
+          "end_seconds": 2153,
+          "role": "Student",
+          "text": "Oh, it's 'cause I saw the line but I didn't know if that was a I or L."
+        },
+        {
+          "turn_number": 61,
+          "start_seconds": 2153,
+          "end_seconds": 2158,
+          "role": "Tutor",
+          "text": "Oh, yeah. Sorry, it's a little scribbly."
+        },
+        {
+          "turn_number": 62,
+          "start_seconds": 2158,
+          "end_seconds": 2160,
+          "role": "Student",
+          "text": "Variable."
+        },
+        {
+          "turn_number": 63,
+          "start_seconds": 2160,
+          "end_seconds": 2172,
+          "role": "Tutor",
+          "text": "Yes. So, this is a variable. Literally all it means is a placeholder. So it's almost as if this was blank. Blank plus two equals eight."
+        },
+        {
+          "turn_number": 64,
+          "start_seconds": 2172,
+          "end_seconds": 2193,
+          "role": "Tutor",
+          "text": "But we put a variable there just to hold the spot. And remember a variable can be any letter. So if you see like Z plus three equals nine, like don't get confused. Like this letter really doesn't mean anything. Like just because it's a different letter doesn't mean anything. It just means you're solving for that for that place."
+        },
+        {
+          "turn_number": 65,
+          "start_seconds": 2193,
+          "end_seconds": 2206,
+          "role": "Tutor",
+          "text": "So another key thing to remember is in algebra, to solve for the missing letter, you do the opposite operation."
+        },
+        {
+          "turn_number": 66,
+          "start_seconds": 2206,
+          "end_seconds": 2217,
+          "role": "Tutor",
+          "text": "Remember operations are these. Operations are the plus, minus, times, division."
+        },
+        {
+          "turn_number": 67,
+          "start_seconds": 2217,
+          "end_seconds": 2228,
+          "role": "Tutor",
+          "text": "So if I say X plus five equals fifteen, what is how no, how do I find X? What do I do first?"
+        },
+        {
+          "turn_number": 68,
+          "start_seconds": 2248,
+          "end_seconds": 2250,
+          "role": "Student",
+          "text": "I don't know."
+        },
+        {
+          "turn_number": 69,
+          "start_seconds": 2250,
+          "end_seconds": 2255,
+          "role": "Tutor",
+          "text": "Yeah, you do. We keep working on these and you always get them right."
+        },
+        {
+          "turn_number": 70,
+          "start_seconds": 2260,
+          "end_seconds": 2263,
+          "role": "Tutor",
+          "text": "How do you solve it? You always get them right."
+        },
+        {
+          "turn_number": 71,
+          "start_seconds": 2263,
+          "end_seconds": 2268,
+          "role": "Student",
+          "text": "Subtract five from fifteen."
+        },
+        {
+          "turn_number": 72,
+          "start_seconds": 2268,
+          "end_seconds": 2285,
+          "role": "Tutor",
+          "text": "Yeah. You subtract five and you subtract five. That means that this cancels out. That means you're only left with X over here on this side. Only left with X. And then you do fifteen minus five, which is what?"
+        },
+        {
+          "turn_number": 73,
+          "start_seconds": 2285,
+          "end_seconds": 2290,
+          "role": "Student",
+          "text": "Ten."
+        },
+        {
+          "turn_number": 74,
+          "start_seconds": 2290,
+          "end_seconds": 2293,
+          "role": "Tutor",
+          "text": "Ten."
+        },
+        {
+          "turn_number": 75,
+          "start_seconds": 2293,
+          "end_seconds": 2301,
+          "role": "Tutor",
+          "text": "And then your answer is what? What does this say? X equals ten."
+        },
+        {
+          "turn_number": 76,
+          "start_seconds": 2301,
+          "end_seconds": 2302,
+          "role": "Student",
+          "text": "Ten."
+        },
+        {
+          "turn_number": 77,
+          "start_seconds": 2302,
+          "end_seconds": 2332,
+          "role": "Tutor",
+          "text": "Yeah. I think that's a habit that you might need, uh, we're we're gonna work on that habit of you saying I don't know because yes, sometimes it's okay to not know. That's how you learn, right? But I just know that a lot of the times you do know, and sometimes you just need a little push, right? To like, um, put out your thoughts. Like for this one, I knew that you know how to solve these. You just need to be confident. Does that make sense?"
+        },
+        {
+          "turn_number": 78,
+          "start_seconds": 2332,
+          "end_seconds": 2334,
+          "role": "Student",
+          "text": "Uh-huh."
+        },
+        {
+          "turn_number": 79,
+          "start_seconds": 2334,
+          "end_seconds": 2349,
+          "role": "Tutor",
+          "text": "So what about, we just did this earlier when you were doing your practice problems. What if I did X minus two equals ten? How do you solve this?"
+        },
+        {
+          "turn_number": 80,
+          "start_seconds": 2362,
+          "end_seconds": 2368,
+          "role": "Student",
+          "text": "Two."
+        },
+        {
+          "turn_number": 81,
+          "start_seconds": 2368,
+          "end_seconds": 2369,
+          "role": "Tutor",
+          "text": "Mhm."
+        },
+        {
+          "turn_number": 82,
+          "start_seconds": 2380,
+          "end_seconds": 2381,
+          "role": "Student",
+          "text": "Adding."
+        },
+        {
+          "turn_number": 83,
+          "start_seconds": 2381,
+          "end_seconds": 2385,
+          "role": "Tutor",
+          "text": "Yes, adding. You got it."
+        },
+        {
+          "turn_number": 84,
+          "start_seconds": 2385,
+          "end_seconds": 2387,
+          "role": "Tutor",
+          "text": "Why do we do adding?"
+        },
+        {
+          "turn_number": 85,
+          "start_seconds": 2387,
+          "end_seconds": 2392,
+          "role": "Student",
+          "text": "Because..."
+        },
+        {
+          "turn_number": 86,
+          "start_seconds": 2392,
+          "end_seconds": 2393,
+          "role": "Student",
+          "text": "Huh?"
+        },
+        {
+          "turn_number": 87,
+          "start_seconds": 2393,
+          "end_seconds": 2402,
+          "role": "Tutor",
+          "text": "Why do we do adding in this situation? We always do the what? The op..."
+        },
+        {
+          "turn_number": 88,
+          "start_seconds": 2402,
+          "end_seconds": 2410,
+          "role": "Student",
+          "text": "Um."
+        },
+        {
+          "turn_number": 89,
+          "start_seconds": 2410,
+          "end_seconds": 2413,
+          "role": "Tutor",
+          "text": "Or tell me why do you why why do we do adding?"
+        },
+        {
+          "turn_number": 90,
+          "start_seconds": 2415,
+          "end_seconds": 2419,
+          "role": "Student",
+          "text": "Like in like in like these problems?"
+        },
+        {
+          "turn_number": 91,
+          "start_seconds": 2419,
+          "end_seconds": 2419,
+          "role": "Tutor",
+          "text": "Yes."
+        },
+        {
+          "turn_number": 92,
+          "start_seconds": 2419,
+          "end_seconds": 2426,
+          "role": "Tutor",
+          "text": "Or like, if it says x plus two, why do we subtract? How do you know when to add or subtract?"
+        },
+        {
+          "turn_number": 93,
+          "start_seconds": 2428,
+          "end_seconds": 2446,
+          "role": "Student",
+          "text": "Um, we use adding because if you did two minus ten, and it's eight, how is eight minus two equals ten?"
+        },
+        {
+          "turn_number": 94,
+          "start_seconds": 2446,
+          "end_seconds": 2459,
+          "role": "Tutor",
+          "text": "Okay, that makes sense. That's that's really good that you were able to explain that. That is technically, yes, you're correct. That's a that's a response I've never heard before, actually."
+        },
+        {
+          "turn_number": 95,
+          "start_seconds": 2459,
+          "end_seconds": 2463,
+          "role": "Tutor",
+          "text": "But yeah, eight minus two doesn't make sense, right? 'Cause that's not ten."
+        },
+        {
+          "turn_number": 96,
+          "start_seconds": 2463,
+          "end_seconds": 2464,
+          "role": "Student",
+          "text": "Mhm."
+        },
+        {
+          "turn_number": 97,
+          "start_seconds": 2464,
+          "end_seconds": 2483,
+          "role": "Tutor",
+          "text": "Remember I said, whenever we solve for missing variables, this is what it's called, a missing variable, which just means that we're solving for x. Whenever we're solving these algebra problems, you do the opposite of this."
+        },
+        {
+          "turn_number": 98,
+          "start_seconds": 2483,
+          "end_seconds": 2484,
+          "role": "Tutor",
+          "text": "Remember?"
+        },
+        {
+          "turn_number": 99,
+          "start_seconds": 2484,
+          "end_seconds": 2485,
+          "role": "Student",
+          "text": "Mhm."
+        },
+        {
+          "turn_number": 100,
+          "start_seconds": 2485,
+          "end_seconds": 2502,
+          "role": "Tutor",
+          "text": "You do the opposite of the operation. This is right here is called an operation. We do the opposite of whatever the operation is. What is this operation right here? What is it?"
+        },
+        {
+          "turn_number": 101,
+          "start_seconds": 2502,
+          "end_seconds": 2503,
+          "role": "Student",
+          "text": "Subtraction."
+        },
+        {
+          "turn_number": 102,
+          "start_seconds": 2503,
+          "end_seconds": 2508,
+          "role": "Tutor",
+          "text": "Yes. And what's the opposite of subtraction?"
+        },
+        {
+          "turn_number": 103,
+          "start_seconds": 2508,
+          "end_seconds": 2509,
+          "role": "Student",
+          "text": "Addition."
+        },
+        {
+          "turn_number": 104,
+          "start_seconds": 2509,
+          "end_seconds": 2534,
+          "role": "Tutor",
+          "text": "Addition. Perfect. So you're right. We're going to I'm going to teach you the formal way to solve these. So, it's you you have to remember this. Remember the saying, whatever you do to one side, you do to the other side. So we can think of this as two sides, watch. This is one side. This is another side. There's always two sides."
+        },
+        {
+          "turn_number": 105,
+          "start_seconds": 2536,
+          "end_seconds": 2546,
+          "role": "Tutor",
+          "text": "So, yes, you're correct. You add two. So you're going to add two to both sides."
+        },
+        {
+          "turn_number": 106,
+          "start_seconds": 2546,
+          "end_seconds": 2561,
+          "role": "Tutor",
+          "text": "Whenever you do opposite operations, these cancel each other out because negative two plus two just equals zero. But that's you don't really have to like think about that because"
+        },
+        {
+          "turn_number": 107,
+          "start_seconds": 2561,
+          "end_seconds": 2572,
+          "role": "Tutor",
+          "text": "that's always going to be the case. If you have plus five, minus five, they just cancel out. If you have minus four, plus four, it just cancels out. That's why we do the opposite. It cancels it out."
+        },
+        {
+          "turn_number": 108,
+          "start_seconds": 2572,
+          "end_seconds": 2584,
+          "role": "Tutor",
+          "text": "And we want to cancel it out so that we can get rid of it like this. And what's all that's left on this side?"
+        },
+        {
+          "turn_number": 109,
+          "start_seconds": 2584,
+          "end_seconds": 2588,
+          "role": "Student",
+          "text": "Uh, X."
+        },
+        {
+          "turn_number": 110,
+          "start_seconds": 2588,
+          "end_seconds": 2611,
+          "role": "Tutor",
+          "text": "Yes, X. X is is all by itself, which is the goal. We always want to get X all by itself so that we can solve it. Look, once you bring it down here, X, then you bring down the equal sign. X equals, what's ten plus two?"
+        },
+        {
+          "turn_number": 111,
+          "start_seconds": 2611,
+          "end_seconds": 2612,
+          "role": "Student",
+          "text": "Twelve."
+        },
+        {
+          "turn_number": 112,
+          "start_seconds": 2612,
+          "end_seconds": 2617,
+          "role": "Tutor",
+          "text": "Twelve. So then we can check it. Twelve minus two equals ten. Is that right?"
+        },
+        {
+          "turn_number": 113,
+          "start_seconds": 2619,
+          "end_seconds": 2620,
+          "role": "Student",
+          "text": "Mhm."
+        },
+        {
+          "turn_number": 114,
+          "start_seconds": 2620,
+          "end_seconds": 2621,
+          "role": "Tutor",
+          "text": "Yes."
+        },
+        {
+          "turn_number": 115,
+          "start_seconds": 2621,
+          "end_seconds": 2629,
+          "role": "Tutor",
+          "text": "This is more of just like the formal explanation that you'll probably have to know later."
+        },
+        {
+          "turn_number": 116,
+          "start_seconds": 2629,
+          "end_seconds": 2632,
+          "role": "Tutor",
+          "text": "So now I'm going to write a few problems for you to solve, okay?"
+        },
+        {
+          "turn_number": 117,
+          "start_seconds": 2632,
+          "end_seconds": 2633,
+          "role": "Student",
+          "text": "Okay."
+        },
+        {
+          "turn_number": 118,
+          "start_seconds": 2633,
+          "end_seconds": 2653,
+          "role": "Tutor",
+          "text": "On your pa- on your paper, I want you to write them down just like how I was. So like, I'll keep this up here as an example. I want you to write it just like this. Okay?"
+        },
+        {
+          "turn_number": 119,
+          "start_seconds": 2653,
+          "end_seconds": 2654,
+          "role": "Student",
+          "text": "Okay."
+        },
+        {
+          "turn_number": 120,
+          "start_seconds": 2654,
+          "end_seconds": 2689,
+          "role": "Tutor",
+          "text": "Now I'm giving you the practice ones. I'll do X plus six equals ten. X minus four equals eight. X plus twenty equals forty. Try these three, okay?"
+        },
+        {
+          "turn_number": 121,
+          "start_seconds": 2689,
+          "end_seconds": 2690,
+          "role": "Student",
+          "text": "Okay."
+        },
+        {
+          "turn_number": 122,
+          "start_seconds": 2692,
+          "end_seconds": 2709,
+          "role": "Tutor",
+          "text": "I'm only going to give you about ten minutes, all right? Because then your time is going to be over. Or I'll only give you like actually, yeah, you only you don't have that much time left and I want you to practice your multiplication. So just about five minutes to solve both of these, okay?"
+        },
+        {
+          "turn_number": 123,
+          "start_seconds": 2709,
+          "end_seconds": 2710,
+          "role": "Student",
+          "text": "Okay."
+        },
+        {
+          "turn_number": 124,
+          "start_seconds": 3004,
+          "end_seconds": 3006,
+          "role": "Student",
+          "text": "I'm done."
+        },
+        {
+          "turn_number": 125,
+          "start_seconds": 3006,
+          "end_seconds": 3010,
+          "role": "Tutor",
+          "text": "Good. That was really good. What did you get for both of them?"
+        },
+        {
+          "turn_number": 126,
+          "start_seconds": 3012,
+          "end_seconds": 3016,
+          "role": "Student",
+          "text": "Uh, I got four and then I got twelve."
+        },
+        {
+          "turn_number": 127,
+          "start_seconds": 3016,
+          "end_seconds": 3021,
+          "role": "Tutor",
+          "text": "Perfect. You got them both right. All right."
+        },
+        {
+          "turn_number": 128,
+          "start_seconds": 3021,
+          "end_seconds": 3032,
+          "role": "Tutor",
+          "text": "That was a at a really good speed too. Right? This isn't very difficult. We just have to like, obviously you have to go over things so you can learn them. But it's not too hard, right?"
+        },
+        {
+          "turn_number": 129,
+          "start_seconds": 3032,
+          "end_seconds": 3034,
+          "role": "Student",
+          "text": "Mhm."
+        },
+        {
+          "turn_number": 130,
+          "start_seconds": 3035,
+          "end_seconds": 3042,
+          "role": "Tutor",
+          "text": "Um, yeah, so we'll probably practice these more later. Um, we only have about five minutes left, so we'll do multiplication."
+        },
+        {
+          "turn_number": 131,
+          "start_seconds": 3042,
+          "end_seconds": 3065,
+          "role": "Tutor",
+          "text": "I will say for the algebra, just a warning now, 'cause I'm pretty sure you're you'll start seeing it soon in middle school. Um, maybe like seventh grade. It gets, it does get a little harder, but it's good that you got the foundation down and that you're actually really good at it. So that's really good. We'll just do your practice multiplication."
+        },
+        {
+          "turn_number": 132,
+          "start_seconds": 3067,
+          "end_seconds": 3073,
+          "role": "Tutor",
+          "text": "For these, you have to go really fast, and I'm gonna time you to finish them, okay?"
+        },
+        {
+          "turn_number": 133,
+          "start_seconds": 3073,
+          "end_seconds": 3074,
+          "role": "Student",
+          "text": "Okay."
+        },
+        {
+          "turn_number": 134,
+          "start_seconds": 3102,
+          "end_seconds": 3104,
+          "role": "Tutor",
+          "text": "All right. You ready?"
+        },
+        {
+          "turn_number": 135,
+          "start_seconds": 3104,
+          "end_seconds": 3108,
+          "role": "Tutor",
+          "text": "I'm gonna share my screen and as soon as I share it, you have to start, okay?"
+        },
+        {
+          "turn_number": 136,
+          "start_seconds": 3108,
+          "end_seconds": 3109,
+          "role": "Student",
+          "text": "Okay."
+        },
+        {
+          "turn_number": 137,
+          "start_seconds": 3109,
+          "end_seconds": 3118,
+          "role": "Tutor",
+          "text": "'Cause if you don't finish all of them in five minutes, you're gonna do it um all over again to practice being able to finish, all right?"
+        },
+        {
+          "turn_number": 138,
+          "start_seconds": 3118,
+          "end_seconds": 3119,
+          "role": "Student",
+          "text": "Okay."
+        },
+        {
+          "turn_number": 139,
+          "start_seconds": 3119,
+          "end_seconds": 3126,
+          "role": "Tutor",
+          "text": "So you have five minutes once I share. So starting..."
+        },
+        {
+          "turn_number": 140,
+          "start_seconds": 3126,
+          "end_seconds": 3127,
+          "role": "Tutor",
+          "text": "now."
+        },
+        {
+          "turn_number": 141,
+          "start_seconds": 3342,
+          "end_seconds": 3344,
+          "role": "Student",
+          "text": "I'm done."
+        },
+        {
+          "turn_number": 142,
+          "start_seconds": 3346,
+          "end_seconds": 3352,
+          "role": "Tutor",
+          "text": "That's really good. You finished in three minutes. Wow. All right, what did you get for all of your answers?"
+        },
+        {
+          "turn_number": 143,
+          "start_seconds": 3352,
+          "end_seconds": 3375,
+          "role": "Student",
+          "text": "I got sixty-four. And then I got twenty-one. And then I got sixteen. And then I got thirty-two. And then I got fifty-four. And then forty-two, thirty-six, forty-eight, and one hundred forty-four."
+        },
+        {
+          "turn_number": 144,
+          "start_seconds": 3375,
+          "end_seconds": 3377,
+          "role": "Tutor",
+          "text": "Yeah, good job."
+        },
+        {
+          "turn_number": 145,
+          "start_seconds": 3377,
+          "end_seconds": 3386,
+          "role": "Tutor",
+          "text": "All right, that's perfect. That's way better than you've been doing before. So I'm super, super proud. We're all done for today. Um..."
+        },
+        {
+          "turn_number": 146,
+          "start_seconds": 3386,
+          "end_seconds": 3390,
+          "role": "Tutor",
+          "text": "I'll see you next until next Wednesday, okay? Have a good weekend."
+        },
+        {
+          "turn_number": 147,
+          "start_seconds": 3390,
+          "end_seconds": 3391,
+          "role": "Student",
+          "text": "You too."
+        },
+        {
+          "turn_number": 148,
+          "start_seconds": 3392,
+          "end_seconds": 3393,
+          "role": "Tutor",
+          "text": "Bye."
+        },
+        {
+          "turn_number": 149,
+          "start_seconds": 3393,
+          "end_seconds": 3394,
+          "role": "Student",
+          "text": "Bye."
+        }
+      ]
+    },
+    {
+      "id": "ed71cb44-228f-5274-b576-519b2b73fd48",
+      "provider": "tutoring_provider_a",
+      "source_file_line_1_based": 435,
+      "source_record_sha256": "f3106419b27102c052089b3a74f3013bf1a65204b6dad6ca555160f04132ef25",
+      "turns": [
+        {
+          "turn_number": 1,
+          "start_seconds": 75,
+          "end_seconds": 77,
+          "role": "Student",
+          "text": "water."
+        },
+        {
+          "turn_number": 2,
+          "start_seconds": 77,
+          "end_seconds": 79,
+          "role": "Tutor",
+          "text": "Hi."
+        },
+        {
+          "turn_number": 3,
+          "start_seconds": 79,
+          "end_seconds": 80,
+          "role": "Student",
+          "text": "Hi."
+        },
+        {
+          "turn_number": 4,
+          "start_seconds": 80,
+          "end_seconds": 82,
+          "role": "Tutor",
+          "text": "How are you doing?"
+        },
+        {
+          "turn_number": 5,
+          "start_seconds": 82,
+          "end_seconds": 83,
+          "role": "Student",
+          "text": "Good."
+        },
+        {
+          "turn_number": 6,
+          "start_seconds": 83,
+          "end_seconds": 85,
+          "role": "Tutor",
+          "text": "Good."
+        },
+        {
+          "turn_number": 7,
+          "start_seconds": 85,
+          "end_seconds": 89,
+          "role": "Tutor",
+          "text": "Ooh, I have to show you something really cool that I just found out."
+        },
+        {
+          "turn_number": 8,
+          "start_seconds": 89,
+          "end_seconds": 90,
+          "role": "Student",
+          "text": "What?"
+        },
+        {
+          "turn_number": 9,
+          "start_seconds": 90,
+          "end_seconds": 96,
+          "role": "Tutor",
+          "text": "There's like a leaderboard thing that we have for our on our um, math website."
+        },
+        {
+          "turn_number": 10,
+          "start_seconds": 96,
+          "end_seconds": 97,
+          "role": "Tutor",
+          "text": "So,"
+        },
+        {
+          "turn_number": 11,
+          "start_seconds": 99,
+          "end_seconds": 100,
+          "role": "Tutor",
+          "text": "you're right here. And so,"
+        },
+        {
+          "turn_number": 12,
+          "start_seconds": 124,
+          "end_seconds": 128,
+          "role": "Tutor",
+          "text": "Ooh, do you want to ch Do you wanna change your picture?"
+        },
+        {
+          "turn_number": 13,
+          "start_seconds": 131,
+          "end_seconds": 133,
+          "role": "Student",
+          "text": "Maybe."
+        },
+        {
+          "turn_number": 14,
+          "start_seconds": 133,
+          "end_seconds": 134,
+          "role": "Tutor",
+          "text": "Okay."
+        },
+        {
+          "turn_number": 15,
+          "start_seconds": 142,
+          "end_seconds": 151,
+          "role": "Tutor",
+          "text": "You can do this afterwards. You can we can do the the schoolwork first and if you're like, I wanna have a new avatar, let me know and I'll we can pick one out together. But, let's see. How was your day today?"
+        },
+        {
+          "turn_number": 16,
+          "start_seconds": 151,
+          "end_seconds": 153,
+          "role": "Student",
+          "text": "Good."
+        },
+        {
+          "turn_number": 17,
+          "start_seconds": 153,
+          "end_seconds": 182,
+          "role": "Tutor",
+          "text": "My day was good too. Um, I went to work as usual and that was nice. I didn't do much today, but one of the ladies who works with me, she walked, we walked together because we live near each other. So that was really nice. I hadn't met her before, so it was nice to get to talk to her. And then, what else did I do? I'm really excited to start today because I love math and I love teaching math. So, let's go to our topics."
+        },
+        {
+          "turn_number": 18,
+          "start_seconds": 189,
+          "end_seconds": 197,
+          "role": "Tutor",
+          "text": "Okay, let's do using drawings or equations to represent addition or subtraction questions."
+        },
+        {
+          "turn_number": 19,
+          "start_seconds": 198,
+          "end_seconds": 202,
+          "role": "Tutor",
+          "text": "Okay. Huh."
+        },
+        {
+          "turn_number": 20,
+          "start_seconds": 202,
+          "end_seconds": 207,
+          "role": "Tutor",
+          "text": "So this is, have you seen something like this before?"
+        },
+        {
+          "turn_number": 21,
+          "start_seconds": 207,
+          "end_seconds": 208,
+          "role": "Student",
+          "text": "Huh?"
+        },
+        {
+          "turn_number": 22,
+          "start_seconds": 208,
+          "end_seconds": 210,
+          "role": "Tutor",
+          "text": "Have you seen anything like this before?"
+        },
+        {
+          "turn_number": 23,
+          "start_seconds": 210,
+          "end_seconds": 211,
+          "role": "Student",
+          "text": "Yeah."
+        },
+        {
+          "turn_number": 24,
+          "start_seconds": 211,
+          "end_seconds": 217,
+          "role": "Tutor",
+          "text": "Okay. Okay, this is my first time seeing it like this, so it's a little bit confusing, but I I think I understand what it's going on."
+        },
+        {
+          "turn_number": 25,
+          "start_seconds": 217,
+          "end_seconds": 226,
+          "role": "Tutor",
+          "text": "There were fifteen birds in a tree. Twelve more birds flew into the tree. Which diagram would be used to find the total?"
+        },
+        {
+          "turn_number": 26,
+          "start_seconds": 269,
+          "end_seconds": 270,
+          "role": "Tutor",
+          "text": "Do you need help?"
+        },
+        {
+          "turn_number": 27,
+          "start_seconds": 270,
+          "end_seconds": 271,
+          "role": "Student",
+          "text": "Yeah."
+        },
+        {
+          "turn_number": 28,
+          "start_seconds": 271,
+          "end_seconds": 336,
+          "role": "Tutor",
+          "text": "Okay. So, I'm not sure. Okay. So, we're trying to find the total. So, we have fifteen birds and twelve birds. So, what do you think we're going to do with those two numbers? Are we going to add them or subtract them? We're trying to find the total. So, we have fifteen birds and then twelve more birds come. So, we're going to add them. So, we're looking for fifteen plus twelve equals question mark. So, which one of these looks like fifteen plus twelve equals question mark?"
+        },
+        {
+          "turn_number": 29,
+          "start_seconds": 399,
+          "end_seconds": 405,
+          "role": "Student",
+          "text": "Um, I think I know."
+        },
+        {
+          "turn_number": 30,
+          "start_seconds": 472,
+          "end_seconds": 473,
+          "role": "Student",
+          "text": "Yeah."
+        },
+        {
+          "turn_number": 31,
+          "start_seconds": 473,
+          "end_seconds": 477,
+          "role": "Student",
+          "text": "Um, A?"
+        },
+        {
+          "turn_number": 32,
+          "start_seconds": 477,
+          "end_seconds": 484,
+          "role": "Tutor",
+          "text": "A? So you think thirteen plus something equals thirty-seven?"
+        },
+        {
+          "turn_number": 33,
+          "start_seconds": 484,
+          "end_seconds": 485,
+          "role": "Student",
+          "text": "Yeah."
+        },
+        {
+          "turn_number": 34,
+          "start_seconds": 485,
+          "end_seconds": 492,
+          "role": "Tutor",
+          "text": "Why do you think that? Why do you think thirteen plus something equals thirty-seven?"
+        },
+        {
+          "turn_number": 35,
+          "start_seconds": 503,
+          "end_seconds": 504,
+          "role": "Student",
+          "text": "Okay."
+        },
+        {
+          "turn_number": 36,
+          "start_seconds": 514,
+          "end_seconds": 516,
+          "role": "Tutor",
+          "text": "So what are we trying to find?"
+        },
+        {
+          "turn_number": 37,
+          "start_seconds": 518,
+          "end_seconds": 520,
+          "role": "Student",
+          "text": "I need help."
+        },
+        {
+          "turn_number": 38,
+          "start_seconds": 520,
+          "end_seconds": 533,
+          "role": "Tutor",
+          "text": "Okay. So we're trying to find the total number of apples. So if we have thirteen green apples and thirty-seven red apples, how would we find the total?"
+        },
+        {
+          "turn_number": 39,
+          "start_seconds": 542,
+          "end_seconds": 543,
+          "role": "Student",
+          "text": "Hmm."
+        },
+        {
+          "turn_number": 40,
+          "start_seconds": 561,
+          "end_seconds": 563,
+          "role": "Student",
+          "text": "I think it's"
+        },
+        {
+          "turn_number": 41,
+          "start_seconds": 596,
+          "end_seconds": 632,
+          "role": "Tutor",
+          "text": "So, we're trying to find the total. So we have thirteen green apples and thirty-seven red apples. So we have to add them together to find the total. So, if we look at C, it says thirteen plus thirty-seven equals blank. So, we're trying to find the total. So, if we read the problem, it says a shop has thirteen green apples and thirty-seven red apples. Which equation can be used to find the total number of apples? So, when we see the word total, we know that we're adding. So, we're going to add thirteen and thirty-seven. So, we're looking for an equation that says thirteen plus thirty-seven equals blank. So, if you look at all of your options, A, B, C, and D, which one says thirteen plus thirty-seven equals blank?"
+        },
+        {
+          "turn_number": 42,
+          "start_seconds": 633,
+          "end_seconds": 635,
+          "role": "Tutor",
+          "text": "Good job. Go ahead and press check."
+        },
+        {
+          "turn_number": 43,
+          "start_seconds": 650,
+          "end_seconds": 651,
+          "role": "Student",
+          "text": "Yeah."
+        },
+        {
+          "turn_number": 44,
+          "start_seconds": 651,
+          "end_seconds": 663,
+          "role": "Tutor",
+          "text": "So, if she has sixty-eight paperclips and she gives twenty-three of them away, are we adding or are we subtracting?"
+        },
+        {
+          "turn_number": 45,
+          "start_seconds": 663,
+          "end_seconds": 664,
+          "role": "Student",
+          "text": "Yeah, the here."
+        },
+        {
+          "turn_number": 46,
+          "start_seconds": 664,
+          "end_seconds": 687,
+          "role": "Tutor",
+          "text": "So, if you have sixty-eight of something and you give twenty-three away, are you going to have more or are you going to have less? You're going to have less, right? So, that means we're subtracting."
+        },
+        {
+          "turn_number": 47,
+          "start_seconds": 687,
+          "end_seconds": 688,
+          "role": "Student",
+          "text": "Subtracting."
+        },
+        {
+          "turn_number": 48,
+          "start_seconds": 688,
+          "end_seconds": 699,
+          "role": "Tutor",
+          "text": "So, we're looking for a diagram that shows sixty-eight minus twenty-three. So, which one of these diagrams shows subtraction?"
+        },
+        {
+          "turn_number": 49,
+          "start_seconds": 717,
+          "end_seconds": 718,
+          "role": "Student",
+          "text": "So, C?"
+        },
+        {
+          "turn_number": 50,
+          "start_seconds": 718,
+          "end_seconds": 731,
+          "role": "Tutor",
+          "text": "So, C shows sixty-eight plus twenty-three. So, that's not what we're looking for. We're looking for sixty-eight minus twenty-three. So, which one do you think it is? D?"
+        },
+        {
+          "turn_number": 51,
+          "start_seconds": 731,
+          "end_seconds": 732,
+          "role": "Student",
+          "text": "D?"
+        },
+        {
+          "turn_number": 52,
+          "start_seconds": 732,
+          "end_seconds": 749,
+          "role": "Tutor",
+          "text": "So D shows twenty-three plus sixty-eight. So, that's not what we're looking for. We're looking for sixty-eight minus twenty-three. So, which one of these diagrams shows subtraction?"
+        },
+        {
+          "turn_number": 53,
+          "start_seconds": 749,
+          "end_seconds": 750,
+          "role": "Student",
+          "text": "Anyhow."
+        },
+        {
+          "turn_number": 54,
+          "start_seconds": 750,
+          "end_seconds": 752,
+          "role": "Tutor",
+          "text": "You need help?"
+        },
+        {
+          "turn_number": 55,
+          "start_seconds": 752,
+          "end_seconds": 752,
+          "role": "Student",
+          "text": "Yeah."
+        },
+        {
+          "turn_number": 56,
+          "start_seconds": 752,
+          "end_seconds": 777,
+          "role": "Tutor",
+          "text": "Okay. So, if we look at A, it shows sixty-eight minus twenty-three. And if we look at B, it shows sixty-eight minus twenty-three. So, we know it's either A or B. But if we look at C and D, it shows sixty-eight plus twenty-three. So, we know it's not C or D. So, we're looking for the one that shows sixty-eight minus twenty-three. So, which one do you think it is?"
+        },
+        {
+          "turn_number": 57,
+          "start_seconds": 778,
+          "end_seconds": 792,
+          "role": "Tutor",
+          "text": "Good job. So, we know that the total is sixty-eight, so that's going to be our big number. And then we're taking away twenty-three. So, B is the correct answer. Go ahead and press check."
+        },
+        {
+          "turn_number": 58,
+          "start_seconds": 826,
+          "end_seconds": 831,
+          "role": "Tutor",
+          "text": "So, what is the total number of pens that she has?"
+        },
+        {
+          "turn_number": 59,
+          "start_seconds": 831,
+          "end_seconds": 832,
+          "role": "Student",
+          "text": "Twenty-one."
+        },
+        {
+          "turn_number": 60,
+          "start_seconds": 832,
+          "end_seconds": 840,
+          "role": "Tutor",
+          "text": "Twenty-one. So, we're looking for an equation that equals twenty-one. So, which ones equal twenty-one?"
+        },
+        {
+          "turn_number": 61,
+          "start_seconds": 840,
+          "end_seconds": 844,
+          "role": "Student",
+          "text": "Yeah. Oh, so minus."
+        },
+        {
+          "turn_number": 62,
+          "start_seconds": 844,
+          "end_seconds": 864,
+          "role": "Tutor",
+          "text": "So, we know that it's not C, because C doesn't equal twenty-one. So, we're looking at A, B, and D. So, if she has some pens and she buys fifteen new pens, are we adding or are we subtracting?"
+        },
+        {
+          "turn_number": 63,
+          "start_seconds": 874,
+          "end_seconds": 876,
+          "role": "Student",
+          "text": "So, it would be"
+        },
+        {
+          "turn_number": 64,
+          "start_seconds": 902,
+          "end_seconds": 909,
+          "role": "Student",
+          "text": "Um."
+        },
+        {
+          "turn_number": 65,
+          "start_seconds": 909,
+          "end_seconds": 910,
+          "role": "Student",
+          "text": "Yeah."
+        },
+        {
+          "turn_number": 66,
+          "start_seconds": 910,
+          "end_seconds": 912,
+          "role": "Tutor",
+          "text": "Do you know what we're doing?"
+        },
+        {
+          "turn_number": 67,
+          "start_seconds": 912,
+          "end_seconds": 917,
+          "role": "Student",
+          "text": "Why... adding?"
+        },
+        {
+          "turn_number": 68,
+          "start_seconds": 917,
+          "end_seconds": 920,
+          "role": "Tutor",
+          "text": "Are we adding or subtracting?"
+        },
+        {
+          "turn_number": 69,
+          "start_seconds": 920,
+          "end_seconds": 921,
+          "role": "Student",
+          "text": "Oh, subtracting?"
+        },
+        {
+          "turn_number": 70,
+          "start_seconds": 921,
+          "end_seconds": 930,
+          "role": "Tutor",
+          "text": "So we're trying to figure out what the equation is. So we don't know how many pens she had at first."
+        },
+        {
+          "turn_number": 71,
+          "start_seconds": 962,
+          "end_seconds": 984,
+          "role": "Student",
+          "text": "So, I think it is... I..."
+        },
+        {
+          "turn_number": 72,
+          "start_seconds": 1021,
+          "end_seconds": 1023,
+          "role": "Tutor",
+          "text": "So what do you think?"
+        },
+        {
+          "turn_number": 73,
+          "start_seconds": 1023,
+          "end_seconds": 1024,
+          "role": "Student",
+          "text": "Yeah."
+        },
+        {
+          "turn_number": 74,
+          "start_seconds": 1024,
+          "end_seconds": 1038,
+          "role": "Tutor",
+          "text": "So we have an unknown number, right? And we're adding fifteen to it, and it equals twenty-one. So which one of these would be the correct one?"
+        },
+        {
+          "turn_number": 75,
+          "start_seconds": 1038,
+          "end_seconds": 1043,
+          "role": "Student",
+          "text": "Oh, so now I know."
+        },
+        {
+          "turn_number": 76,
+          "start_seconds": 1043,
+          "end_seconds": 1051,
+          "role": "Tutor",
+          "text": "Which one do you think it is?"
+        },
+        {
+          "turn_number": 77,
+          "start_seconds": 1066,
+          "end_seconds": 1067,
+          "role": "Student",
+          "text": "Yeah."
+        },
+        {
+          "turn_number": 78,
+          "start_seconds": 1112,
+          "end_seconds": 1117,
+          "role": "Student",
+          "text": "I think I know the answer. C."
+        },
+        {
+          "turn_number": 79,
+          "start_seconds": 1154,
+          "end_seconds": 1161,
+          "role": "Tutor",
+          "text": "Okay, so what should go in the gap to make this statement true?"
+        },
+        {
+          "turn_number": 80,
+          "start_seconds": 1161,
+          "end_seconds": 1169,
+          "role": "Student",
+          "text": "What?"
+        },
+        {
+          "turn_number": 81,
+          "start_seconds": 1169,
+          "end_seconds": 1173,
+          "role": "Tutor",
+          "text": "What should go in the gap to make this statement true?"
+        },
+        {
+          "turn_number": 82,
+          "start_seconds": 1173,
+          "end_seconds": 1187,
+          "role": "Student",
+          "text": "Yeah. Is less."
+        },
+        {
+          "turn_number": 83,
+          "start_seconds": 1194,
+          "end_seconds": 1196,
+          "role": "Tutor",
+          "text": "Okay, what about this one?"
+        },
+        {
+          "turn_number": 84,
+          "start_seconds": 1223,
+          "end_seconds": 1225,
+          "role": "Student",
+          "text": "Greater than?"
+        },
+        {
+          "turn_number": 85,
+          "start_seconds": 1272,
+          "end_seconds": 1277,
+          "role": "Student",
+          "text": "Two fifty greater than three sixty? No."
+        },
+        {
+          "turn_number": 86,
+          "start_seconds": 1277,
+          "end_seconds": 1280,
+          "role": "Tutor",
+          "text": "Right. So that means A can't be the answer because both of them have to be true."
+        },
+        {
+          "turn_number": 87,
+          "start_seconds": 1329,
+          "end_seconds": 1330,
+          "role": "Student",
+          "text": "Yeah."
+        },
+        {
+          "turn_number": 88,
+          "start_seconds": 1341,
+          "end_seconds": 1342,
+          "role": "Student",
+          "text": "Wait, what?"
+        },
+        {
+          "turn_number": 89,
+          "start_seconds": 1355,
+          "end_seconds": 1355,
+          "role": "Student",
+          "text": "Okay."
+        },
+        {
+          "turn_number": 90,
+          "start_seconds": 1382,
+          "end_seconds": 1385,
+          "role": "Student",
+          "text": "Four hundred seventy-two."
+        },
+        {
+          "turn_number": 91,
+          "start_seconds": 1408,
+          "end_seconds": 1410,
+          "role": "Tutor",
+          "text": "So which one has two true statements?"
+        },
+        {
+          "turn_number": 92,
+          "start_seconds": 1422,
+          "end_seconds": 1423,
+          "role": "Tutor",
+          "text": "Bye."
+        },
+        {
+          "turn_number": 93,
+          "start_seconds": 1447,
+          "end_seconds": 1448,
+          "role": "Student",
+          "text": "Greater?"
+        },
+        {
+          "turn_number": 94,
+          "start_seconds": 1448,
+          "end_seconds": 1454,
+          "role": "Tutor",
+          "text": "So which number is bigger? Four hundred six or four hundred sixty?"
+        },
+        {
+          "turn_number": 95,
+          "start_seconds": 1454,
+          "end_seconds": 1456,
+          "role": "Student",
+          "text": "Four hundred sixty."
+        },
+        {
+          "turn_number": 96,
+          "start_seconds": 1456,
+          "end_seconds": 1461,
+          "role": "Tutor",
+          "text": "Okay. So the alligator mouth should be eating which number?"
+        },
+        {
+          "turn_number": 97,
+          "start_seconds": 1461,
+          "end_seconds": 1462,
+          "role": "Student",
+          "text": "Four hundred sixty."
+        },
+        {
+          "turn_number": 98,
+          "start_seconds": 1463,
+          "end_seconds": 1464,
+          "role": "Tutor",
+          "text": "Okay."
+        },
+        {
+          "turn_number": 99,
+          "start_seconds": 1467,
+          "end_seconds": 1468,
+          "role": "Tutor",
+          "text": "So you see how the mouth is open to the bigger number?"
+        },
+        {
+          "turn_number": 100,
+          "start_seconds": 1468,
+          "end_seconds": 1470,
+          "role": "Student",
+          "text": "Yeah, I am."
+        },
+        {
+          "turn_number": 101,
+          "start_seconds": 1473,
+          "end_seconds": 1477,
+          "role": "Student",
+          "text": "One inside."
+        },
+        {
+          "turn_number": 102,
+          "start_seconds": 1496,
+          "end_seconds": 1497,
+          "role": "Tutor",
+          "text": "Um."
+        },
+        {
+          "turn_number": 103,
+          "start_seconds": 1506,
+          "end_seconds": 1507,
+          "role": "Student",
+          "text": "Um, B?"
+        },
+        {
+          "turn_number": 104,
+          "start_seconds": 1580,
+          "end_seconds": 1581,
+          "role": "Student",
+          "text": "Yeah."
+        },
+        {
+          "turn_number": 105,
+          "start_seconds": 1589,
+          "end_seconds": 1590,
+          "role": "Student",
+          "text": "Where, right here?"
+        },
+        {
+          "turn_number": 106,
+          "start_seconds": 1600,
+          "end_seconds": 1601,
+          "role": "Student",
+          "text": "Yeah."
+        },
+        {
+          "turn_number": 107,
+          "start_seconds": 1780,
+          "end_seconds": 1781,
+          "role": "Student",
+          "text": "Hmm."
+        },
+        {
+          "turn_number": 108,
+          "start_seconds": 1781,
+          "end_seconds": 1811,
+          "role": "Student",
+          "text": "So you put, so you do nine plus one, it's ten. You put the one, um, on top of the eight. Nine plus the eight and one, it's nine. And then you plus the one, and then it's ten. So it's a hundred."
+        },
+        {
+          "turn_number": 109,
+          "start_seconds": 1813,
+          "end_seconds": 1815,
+          "role": "Tutor",
+          "text": "So what do we do with this one?"
+        },
+        {
+          "turn_number": 110,
+          "start_seconds": 1825,
+          "end_seconds": 1826,
+          "role": "Student",
+          "text": "I forgot."
+        },
+        {
+          "turn_number": 111,
+          "start_seconds": 1860,
+          "end_seconds": 1868,
+          "role": "Tutor",
+          "text": "Okay, so Darius rolls a six-sided dice twice to fill in the missing digits. He says that no matter what numbers he rolls, he will have to carry or exchange once."
+        },
+        {
+          "turn_number": 112,
+          "start_seconds": 1897,
+          "end_seconds": 1898,
+          "role": "Tutor",
+          "text": "Okay."
+        },
+        {
+          "turn_number": 113,
+          "start_seconds": 1917,
+          "end_seconds": 1918,
+          "role": "Student",
+          "text": "Subtracting?"
+        },
+        {
+          "turn_number": 114,
+          "start_seconds": 1918,
+          "end_seconds": 1923,
+          "role": "Tutor",
+          "text": "Yes, we're going to subtract."
+        },
+        {
+          "turn_number": 115,
+          "start_seconds": 1953,
+          "end_seconds": 1957,
+          "role": "Student",
+          "text": "Hmm."
+        },
+        {
+          "turn_number": 116,
+          "start_seconds": 1957,
+          "end_seconds": 1958,
+          "role": "Tutor",
+          "text": "Yeah."
+        },
+        {
+          "turn_number": 117,
+          "start_seconds": 1967,
+          "end_seconds": 1980,
+          "role": "Student",
+          "text": "So you borrow from the eight. That's a seven. And then you borrow from the two. That's a twelve."
+        },
+        {
+          "turn_number": 118,
+          "start_seconds": 1988,
+          "end_seconds": 1997,
+          "role": "Student",
+          "text": "And then twelve minus five. Seven."
+        },
+        {
+          "turn_number": 119,
+          "start_seconds": 2008,
+          "end_seconds": 2016,
+          "role": "Student",
+          "text": "And then you do seven minus four. And then that's three."
+        },
+        {
+          "turn_number": 120,
+          "start_seconds": 2025,
+          "end_seconds": 2057,
+          "role": "Student",
+          "text": "You do seven minus eight is one."
+        },
+        {
+          "turn_number": 121,
+          "start_seconds": 2057,
+          "end_seconds": 2072,
+          "role": "Student",
+          "text": "Oh. For two."
+        },
+        {
+          "turn_number": 122,
+          "start_seconds": 2093,
+          "end_seconds": 2096,
+          "role": "Student",
+          "text": "Nine."
+        },
+        {
+          "turn_number": 123,
+          "start_seconds": 2101,
+          "end_seconds": 2102,
+          "role": "Student",
+          "text": "Two."
+        },
+        {
+          "turn_number": 124,
+          "start_seconds": 2124,
+          "end_seconds": 2177,
+          "role": "Tutor",
+          "text": "Okay. So, what I want you to do is I want you to read this question for me. And then I want you to tell me what you think we're supposed to do. Are we adding or are we subtracting? And then I want you to tell me why you think that. Okay? So, I want you to read the question first. And then tell me if we're adding or subtracting. And then tell me why you think we're adding or subtracting. Okay? So, what's the first thing you're gonna do? You're gonna read the question. What's the second thing you're gonna do? You're gonna tell me if we're adding or subtracting. What's the third thing you're gonna do? You're gonna tell me why we're adding or subtracting. Okay? So, go ahead and read the question for me."
+        },
+        {
+          "turn_number": 125,
+          "start_seconds": 2210,
+          "end_seconds": 2230,
+          "role": "Student",
+          "text": "I have... eight point six... five by ten..."
+        },
+        {
+          "turn_number": 126,
+          "start_seconds": 2252,
+          "end_seconds": 2270,
+          "role": "Student",
+          "text": "I can't remember the..."
+        },
+        {
+          "turn_number": 127,
+          "start_seconds": 2271,
+          "end_seconds": 2287,
+          "role": "Tutor",
+          "text": "Okay. So, eighty-six..."
+        },
+        {
+          "turn_number": 128,
+          "start_seconds": 2287,
+          "end_seconds": 2301,
+          "role": "Tutor",
+          "text": "is the same as eighty-six. Seventy-five..."
+        },
+        {
+          "turn_number": 129,
+          "start_seconds": 2301,
+          "end_seconds": 2317,
+          "role": "Tutor",
+          "text": "is the same as seventy-five."
+        },
+        {
+          "turn_number": 130,
+          "start_seconds": 2317,
+          "end_seconds": 2328,
+          "role": "Student",
+          "text": "Okay. Oh. I got it now."
+        },
+        {
+          "turn_number": 131,
+          "start_seconds": 2328,
+          "end_seconds": 2329,
+          "role": "Tutor",
+          "text": "Yeah?"
+        },
+        {
+          "turn_number": 132,
+          "start_seconds": 2329,
+          "end_seconds": 2359,
+          "role": "Student",
+          "text": "So... So, first you borrow from the eight and it turns into a seven."
+        },
+        {
+          "turn_number": 133,
+          "start_seconds": 2359,
+          "end_seconds": 2393,
+          "role": "Student",
+          "text": "And then... what you do is sixteen minus seven... nine. And then you do... seven minus..."
+        },
+        {
+          "turn_number": 134,
+          "start_seconds": 2393,
+          "end_seconds": 2404,
+          "role": "Student",
+          "text": "one is six. So, sixty-nine."
+        },
+        {
+          "turn_number": 135,
+          "start_seconds": 2404,
+          "end_seconds": 2407,
+          "role": "Student",
+          "text": "seven minus one is six."
+        },
+        {
+          "turn_number": 136,
+          "start_seconds": 2407,
+          "end_seconds": 2411,
+          "role": "Student",
+          "text": "Ah, that's sixty-nine."
+        },
+        {
+          "turn_number": 137,
+          "start_seconds": 2430,
+          "end_seconds": 2436,
+          "role": "Student",
+          "text": "Ah."
+        },
+        {
+          "turn_number": 138,
+          "start_seconds": 2447,
+          "end_seconds": 2448,
+          "role": "Tutor",
+          "text": "Alright."
+        },
+        {
+          "turn_number": 139,
+          "start_seconds": 2465,
+          "end_seconds": 2471,
+          "role": "Tutor",
+          "text": "Alright. So we have six minus something equals seven."
+        },
+        {
+          "turn_number": 140,
+          "start_seconds": 2477,
+          "end_seconds": 2478,
+          "role": "Student",
+          "text": "No."
+        },
+        {
+          "turn_number": 141,
+          "start_seconds": 2483,
+          "end_seconds": 2485,
+          "role": "Tutor",
+          "text": "Can we do that?"
+        },
+        {
+          "turn_number": 142,
+          "start_seconds": 2485,
+          "end_seconds": 2487,
+          "role": "Student",
+          "text": "No."
+        },
+        {
+          "turn_number": 143,
+          "start_seconds": 2487,
+          "end_seconds": 2500,
+          "role": "Tutor",
+          "text": "No. So what do we have to do?"
+        },
+        {
+          "turn_number": 144,
+          "start_seconds": 2533,
+          "end_seconds": 2534,
+          "role": "Student",
+          "text": "Thirteen?"
+        },
+        {
+          "turn_number": 145,
+          "start_seconds": 2534,
+          "end_seconds": 2543,
+          "role": "Tutor",
+          "text": "So if we borrow, this number is gonna become a sixteen."
+        },
+        {
+          "turn_number": 146,
+          "start_seconds": 2556,
+          "end_seconds": 2561,
+          "role": "Tutor",
+          "text": "So what is sixteen... Mhm."
+        },
+        {
+          "turn_number": 147,
+          "start_seconds": 2583,
+          "end_seconds": 2588,
+          "role": "Tutor",
+          "text": "So what is..."
+        },
+        {
+          "turn_number": 148,
+          "start_seconds": 2603,
+          "end_seconds": 2604,
+          "role": "Student",
+          "text": "Thirteen."
+        },
+        {
+          "turn_number": 149,
+          "start_seconds": 2674,
+          "end_seconds": 2675,
+          "role": "Student",
+          "text": "Nine?"
+        },
+        {
+          "turn_number": 150,
+          "start_seconds": 2675,
+          "end_seconds": 2677,
+          "role": "Tutor",
+          "text": "Nine."
+        },
+        {
+          "turn_number": 151,
+          "start_seconds": 2677,
+          "end_seconds": 2680,
+          "role": "Tutor",
+          "text": "Mhm. So this number is nine."
+        },
+        {
+          "turn_number": 152,
+          "start_seconds": 2680,
+          "end_seconds": 2683,
+          "role": "Student",
+          "text": "Hmm."
+        },
+        {
+          "turn_number": 153,
+          "start_seconds": 2683,
+          "end_seconds": 2691,
+          "role": "Tutor",
+          "text": "This is a hard one, I know."
+        },
+        {
+          "turn_number": 154,
+          "start_seconds": 2749,
+          "end_seconds": 2751,
+          "role": "Student",
+          "text": "Um, wait, what?"
+        },
+        {
+          "turn_number": 155,
+          "start_seconds": 2751,
+          "end_seconds": 2757,
+          "role": "Tutor",
+          "text": "So, what would we do for this one?"
+        },
+        {
+          "turn_number": 156,
+          "start_seconds": 2757,
+          "end_seconds": 2761,
+          "role": "Student",
+          "text": "Five minus one."
+        },
+        {
+          "turn_number": 157,
+          "start_seconds": 2761,
+          "end_seconds": 2765,
+          "role": "Tutor",
+          "text": "So remember, we're doing subtraction."
+        },
+        {
+          "turn_number": 158,
+          "start_seconds": 2765,
+          "end_seconds": 2772,
+          "role": "Student",
+          "text": "Four."
+        },
+        {
+          "turn_number": 159,
+          "start_seconds": 2783,
+          "end_seconds": 2798,
+          "role": "Tutor",
+          "text": "So,"
+        },
+        {
+          "turn_number": 160,
+          "start_seconds": 2798,
+          "end_seconds": 2801,
+          "role": "Student",
+          "text": "Five plus one, six."
+        },
+        {
+          "turn_number": 161,
+          "start_seconds": 2801,
+          "end_seconds": 2813,
+          "role": "Tutor",
+          "text": "So remember, we're not adding, we're subtracting. So we're taking away."
+        }
+      ]
+    }
+  ],
+  "windows": [
+    {
+      "id": "d21c3b8f-6333-5b8f-b632-7f6aed0ef517:scaffolding:22-49",
+      "transcript_id": "d21c3b8f-6333-5b8f-b632-7f6aed0ef517",
+      "turn_start": 22,
+      "turn_end": 49,
+      "need": "rigor",
+      "action": "both",
+      "annotation_rows": 6,
+      "annotations": [
+        {
+          "annotator_id": "04abe44e-c837-589b-9d8c-6a71d3694e46",
+          "situation": "This is an interesting beginning of the session, because the tutor specifically asks the student to get through as many problems as they can and tells the student to ask for help if they need help.  Then, when the student asks for help, the tutor just tells them to skip the problem.  I wonder if the tutor was concerned about taking up time out of the 20 minutes to explain the problems that the student needed support on.  If that's the case, the tutor should have just said, \"If there is a problem you are not sure how to solve, either take an educated guess or skip it.\"  It seems like the tutor is avoiding the more rigorous parts of the problem set.  Also, since the tutor didn't check the student's answers, now the tutor doesn't know how the student did on this problem set other than having trouble with problems 9 and 14.  If the tutor knows that the student is struggling, it would make sense for the tutor to find out which problems the student did well on and which ones the student needs support with.",
+          "action": "I did not see a particular strategy used to push for rigor, but the tutor seemed to attempt to scaffold during lines 37-43.  The tutor did not seem to be pushing the student's thinking about the work yet.  The tutor gave the student the problem set and the time to work on it, and briefly checked in to see how far along the student was.  When the tutor addressed the student's hesitation on problem 14, the tutor gave very quick and minimal guidance that reminded the student of a rule but didn't necessarily help the student with their misconception in an effective way.  I am curious to know how the student has been working on topics like this previously because it seems that the student is taking extra time on problems that are relatively quick, and that the student needs more support on a few of the problems. ",
+          "result": "The tutor's strategy does not seem to be effective yet because the tutor spends 20 minutes of the tutoring session on a very worthwhile problem set containing lots of important math concepts, and then does not review it at all to see how the student did.  It seems unusual to not gather the information from the student, especially if the student took longer than expected to complete the work and struggled on at least two problems that we know about.  Having taught 6th grade math before, I would be concerned about fact fluency and pace of work completion if it took a student 20 minutes to complete this particular problem set, unless there was a situation where the student had a processing or learning difference that prevented them from working at a typical pace.  These 15 problems could mostly be done with quick mental math, so I was surprised to see the student took the full 20 minutes.  It seems like it would be well worth the tutor's and student's time to take a few minutes to review the problems, have the student explain their thinking, and reteach concepts that the student needed help with.  However, it is important to note that the tutor immediately goes into a well-scaffolded lesson on what algebra is, what variables are, and how to solve for a variable, so it seems that the tutor is addressing the student's misconceptions.  With that assistance, the student begins to demonstrate better understanding and quicker work completion.  I still think it would be worthwhile for the tutor to see how the student did on these 15 problems so that the tutor will know which concepts they need to review and/or reteach with the student.",
+          "ground_truth_key_moment_index_0_based": 0,
+          "human_annotation_matches": [
+            {
+              "source_line_1_based": 218,
+              "turn_annotation_index_0_based": 0,
+              "interface_version": "untracked"
+            }
+          ]
+        },
+        {
+          "annotator_id": "556cdd5d-283b-5bbc-8560-96f762a4b0c5",
+          "situation": "This was an appropriate time to push for rigor because it appears this was a timed assessment or task. The tutor wants to test to see if the student can complete a set number of problems in twenty minutes, testing the student's automaticity. This is assuming the student has already learned these skills and this is the assessment task. The student was confused on a problem and the tutor provided the answer directly telling the student what operation to use, which would be considered a scaffold to allow them to solve the problem.",
+          "action": "The tutor told the student to keep working faster and skip over the problem they did not know. Then when the student came to another problem they did not know and asked for help the tutor scaffolded by guiding them to the operation needed and telling them what to do to solve, but did so by asking what the opposite operation was, challenging them to still think of this on their own rather than just telling them exactly what to do. ",
+          "result": "This was  affective. The  this was satisfactorily effective. The tutor did not directly give away the answer to which operation the student should be using, but rather used a probing question to get them to deduce the operation by themselves. This is effective because the tutor did not just tell them to add, and also asked them if they remember algebra, which is a good way to connect the student's brain back to the skill or specific topic that they should be thinking about.",
+          "ground_truth_key_moment_index_0_based": 4,
+          "human_annotation_matches": [
+            {
+              "source_line_1_based": 747,
+              "turn_annotation_index_0_based": 0,
+              "interface_version": "v2_preselected"
+            }
+          ]
+        },
+        {
+          "annotator_id": "094b1c5d-3322-5e14-a80d-fbf818c7932c",
+          "situation": "They were working on some problems together at the start of their session.",
+          "action": "The tutor was asking the student if they needed any help and gave them compliments at the end of the questions about how well they were doing.",
+          "result": "It was effective, the student was getting questions correct and did a good job.",
+          "ground_truth_key_moment_index_0_based": 9,
+          "human_annotation_matches": [
+            {
+              "source_line_1_based": 732,
+              "turn_annotation_index_0_based": 0,
+              "interface_version": "v2_preselected"
+            }
+          ]
+        },
+        {
+          "annotator_id": "09454074-1a5c-57be-8676-7015478c1360",
+          "situation": "Student asked for help on a question so it's a good moment to scaffold.",
+          "action": "Tutor gave a quick hint about inverse operations and moved on without checking if student applied it correctly.",
+          "result": "Decent scaffold but too fast, tutor never confirmed student actually solved it with the right understanding.",
+          "ground_truth_key_moment_index_0_based": 13,
+          "human_annotation_matches": [
+            {
+              "source_line_1_based": 393,
+              "turn_annotation_index_0_based": 0,
+              "interface_version": "v2_preselected"
+            }
+          ]
+        },
+        {
+          "annotator_id": "27f469ba-1dc3-5523-a38c-b5faa49bbda6",
+          "situation": "This is an appropriate place to build for rigor because the tutor is asking the student to work independently, giving the student support would not provide an accurate representation of what the student is fully capable of going into the lesson.",
+          "action": "The tutor pushes for rigor but not providing any support to students on the work being assigned independently.",
+          "result": "It is difficult to say how effective this strategy is because the tutor did not check the accuracy of the student work.",
+          "ground_truth_key_moment_index_0_based": 17,
+          "human_annotation_matches": [
+            {
+              "source_line_1_based": 632,
+              "turn_annotation_index_0_based": 0,
+              "interface_version": "v2_preselected"
+            }
+          ]
+        },
+        {
+          "annotator_id": "389c167a-ad87-5fcf-b6a3-192d34bb9dbf",
+          "situation": "This is the time to push for rigor with two of the problems the tutor told the student to skip because it seems they are 'algebra' problems. ",
+          "action": "The tutor is just making sure the student completes the assignment with the exception of two questions and is not using any strategy",
+          "result": "No strategy was used.",
+          "ground_truth_key_moment_index_0_based": 26,
+          "human_annotation_matches": [
+            {
+              "source_line_1_based": 756,
+              "turn_annotation_index_0_based": 0,
+              "interface_version": "v2_preselected"
+            }
+          ]
+        }
+      ],
+      "ground_truth_source_line_1_based": 157,
+      "ground_truth_source_line_sha256": "7b7a61979d4bc871165319858b1dc12b1eb962c37f65793d392669be7503fb51"
+    },
+    {
+      "id": "d21c3b8f-6333-5b8f-b632-7f6aed0ef517:scaffolding:26-32",
+      "transcript_id": "d21c3b8f-6333-5b8f-b632-7f6aed0ef517",
+      "turn_start": 26,
+      "turn_end": 32,
+      "need": "scaffolding",
+      "action": "both",
+      "annotation_rows": 9,
+      "annotations": [
+        {
+          "annotator_id": "76008394-528c-5d2f-b032-100997de8020",
+          "situation": "The student is stating that they need help, but the tutor is focused on speed instead of understanding.",
+          "action": "No strategy, just telling the student to skip the questions they don't understand.",
+          "result": "The tutor did later explain problems like number 14, but never addressed number 9.",
+          "ground_truth_key_moment_index_0_based": 3,
+          "human_annotation_matches": [
+            {
+              "source_line_1_based": 312,
+              "turn_annotation_index_0_based": 0,
+              "interface_version": "v1_cut_point"
+            }
+          ]
+        },
+        {
+          "annotator_id": "556cdd5d-283b-5bbc-8560-96f762a4b0c5",
+          "situation": "This was an appropriate time to scaffold but the tutor did not do so the first time the student asked. ",
+          "action": "The tutor told the student to skip one problem but then chose to scaffold the next problem that the student needed help with by asking if they were confused on what to do or if they did not know how to solve algebraic expressions. ",
+          "result": "This was ineffective. This resulted in the student not answering one of the questions due to not being provided a scaffold to persevere through the task. This is contradictory to the next behavior of the tutor where they do provide a scaffold by asking probing questions to help guide the student on what operation to use to solve. ",
+          "ground_truth_key_moment_index_0_based": 5,
+          "human_annotation_matches": [
+            {
+              "source_line_1_based": 747,
+              "turn_annotation_index_0_based": 1,
+              "interface_version": "v2_preselected"
+            }
+          ]
+        },
+        {
+          "annotator_id": "094b1c5d-3322-5e14-a80d-fbf818c7932c",
+          "situation": "This was in the middle of some questions they were doing, the perfect time to scaffold.",
+          "action": "The tutor was trying to get them to do questions quickly and was asking clarifying questions when the student was confused.",
+          "result": "I don't agree with the tutor telling them to skip the question. They should have asked clarifying questions about why they were confused and which part they were getting stuck at. Especially since the student was confused on two different questions, they could have seen if they were getting stuck on the same part.",
+          "ground_truth_key_moment_index_0_based": 10,
+          "human_annotation_matches": [
+            {
+              "source_line_1_based": 732,
+              "turn_annotation_index_0_based": 1,
+              "interface_version": "v2_preselected"
+            }
+          ]
+        },
+        {
+          "annotator_id": "09454074-1a5c-57be-8676-7015478c1360",
+          "situation": "Student said they remember algebra but got confused, good moment to scaffold without over-explaining.",
+          "action": "Tutor asked about inverse operations to activate what student already knew.",
+          "result": "Good brief scaffold, tutor trusted student memory and pushed them to recall instead of explaining directly.",
+          "ground_truth_key_moment_index_0_based": 14,
+          "human_annotation_matches": [
+            {
+              "source_line_1_based": 393,
+              "turn_annotation_index_0_based": 1,
+              "interface_version": "v2_preselected"
+            }
+          ]
+        },
+        {
+          "annotator_id": "27f469ba-1dc3-5523-a38c-b5faa49bbda6",
+          "situation": "This is an appropriate place to build for rigor because the tutor is asking the student to work independently, giving the student support would not provide an accurate representation of what the student is fully capable of going into the lesson.",
+          "action": "The tutor pushes for rigor but not providing any support to students on the work being assigned independently.",
+          "result": "the",
+          "ground_truth_key_moment_index_0_based": 18,
+          "human_annotation_matches": [
+            {
+              "source_line_1_based": 632,
+              "turn_annotation_index_0_based": 2,
+              "interface_version": "v2_preselected"
+            }
+          ]
+        },
+        {
+          "annotator_id": "27f469ba-1dc3-5523-a38c-b5faa49bbda6",
+          "situation": "This is an appropriate place to build for rigor because the tutor is asking the student to work independently, giving the student support would not provide an accurate representation of what the student is fully capable of going into the lesson.",
+          "action": "The tutor pushes for rigor but not providing any support to students on the work being assigned independently.",
+          "result": "It is difficult to say how effective this strategy is because the tutor did not check the accuracy of the student work.",
+          "ground_truth_key_moment_index_0_based": 19,
+          "human_annotation_matches": [
+            {
+              "source_line_1_based": 632,
+              "turn_annotation_index_0_based": 3,
+              "interface_version": "v2_preselected"
+            },
+            {
+              "source_line_1_based": 632,
+              "turn_annotation_index_0_based": 4,
+              "interface_version": "v2_preselected"
+            },
+            {
+              "source_line_1_based": 632,
+              "turn_annotation_index_0_based": 5,
+              "interface_version": "v2_preselected"
+            }
+          ]
+        },
+        {
+          "annotator_id": "27f469ba-1dc3-5523-a38c-b5faa49bbda6",
+          "situation": "This is an appropriate place to build for rigor because the tutor is asking the student to work independently, giving the student support would not provide an accurate representation of what the student is fully capable of going into the lesson.",
+          "action": "The tutor pushes for rigor but not providing any support to students on the work being assigned independently.",
+          "result": "It is difficult to say how effective this strategy is because the tutor did not check the accuracy of the student work.",
+          "ground_truth_key_moment_index_0_based": 20,
+          "human_annotation_matches": [
+            {
+              "source_line_1_based": 632,
+              "turn_annotation_index_0_based": 3,
+              "interface_version": "v2_preselected"
+            },
+            {
+              "source_line_1_based": 632,
+              "turn_annotation_index_0_based": 4,
+              "interface_version": "v2_preselected"
+            },
+            {
+              "source_line_1_based": 632,
+              "turn_annotation_index_0_based": 5,
+              "interface_version": "v2_preselected"
+            }
+          ]
+        },
+        {
+          "annotator_id": "27f469ba-1dc3-5523-a38c-b5faa49bbda6",
+          "situation": "This is an appropriate place to build for rigor because the tutor is asking the student to work independently, giving the student support would not provide an accurate representation of what the student is fully capable of going into the lesson.",
+          "action": "The tutor pushes for rigor but not providing any support to students on the work being assigned independently.",
+          "result": "It is difficult to say how effective this strategy is because the tutor did not check the accuracy of the student work.",
+          "ground_truth_key_moment_index_0_based": 21,
+          "human_annotation_matches": [
+            {
+              "source_line_1_based": 632,
+              "turn_annotation_index_0_based": 3,
+              "interface_version": "v2_preselected"
+            },
+            {
+              "source_line_1_based": 632,
+              "turn_annotation_index_0_based": 4,
+              "interface_version": "v2_preselected"
+            },
+            {
+              "source_line_1_based": 632,
+              "turn_annotation_index_0_based": 5,
+              "interface_version": "v2_preselected"
+            }
+          ]
+        },
+        {
+          "annotator_id": "389c167a-ad87-5fcf-b6a3-192d34bb9dbf",
+          "situation": "This is an appropriate time for the tutor to address the problems the student is struggling with rather than skip them in order to complete the assignment.",
+          "action": "The tutor is not using a strategy but is skipping the problems that they should address and scaffold to teach the concept or push for rigor to challenge the student.",
+          "result": "The tutor's lack of strategy makes this ineffective. The tutor is not adapting to address the student's misconception or lack of understanding to fully complete the assignment.",
+          "ground_truth_key_moment_index_0_based": 27,
+          "human_annotation_matches": [
+            {
+              "source_line_1_based": 756,
+              "turn_annotation_index_0_based": 1,
+              "interface_version": "v2_preselected"
+            }
+          ]
+        }
+      ],
+      "ground_truth_source_line_1_based": 157,
+      "ground_truth_source_line_sha256": "7b7a61979d4bc871165319858b1dc12b1eb962c37f65793d392669be7503fb51"
+    },
+    {
+      "id": "d21c3b8f-6333-5b8f-b632-7f6aed0ef517:scaffolding:67-74",
+      "transcript_id": "d21c3b8f-6333-5b8f-b632-7f6aed0ef517",
+      "turn_start": 67,
+      "turn_end": 74,
+      "need": "rigor",
+      "action": "both",
+      "annotation_rows": 7,
+      "annotations": [
+        {
+          "annotator_id": "d3d30e0d-af8c-5733-8a7b-a1cf17ebbb63",
+          "situation": "This is an appropriate time to push for rigor because the tutor knows the student can solve this problem.",
+          "action": "The tutor reminds the student they always get these problems right.",
+          "result": "This is an effective strategy. The tutor doesn't need to help the student who is able to solve the problem correctly and independently.",
+          "ground_truth_key_moment_index_0_based": 1,
+          "human_annotation_matches": [
+            {
+              "source_line_1_based": 278,
+              "turn_annotation_index_0_based": 0,
+              "interface_version": "v1_cut_point"
+            }
+          ]
+        },
+        {
+          "annotator_id": "556cdd5d-283b-5bbc-8560-96f762a4b0c5",
+          "situation": "This is an appropriate time to push for rigor because the tutor is asking the student about a concept previously taught that the student has demonstrated mastery or proficient understanding of but the student responded that they didn't know the answer. ",
+          "action": "The tutor provided positive reinforcement to encourage the student to answer rather than just say they don't know about a concept they have already taught. ",
+          "result": "This was moderately effective. It was enough of a push to have the student answer but it was not the most effective way to push the student. After the student said they didn't know, the tutor could have taken this as an opportunity to restate key vocabulary terms that would have allowed the student to connect prior knowledge to the task and then realize that they know the answer or at least what to do to solve. Instead, the tutor repeatedly told the student they could do it, then there was about a 13 minute break in the transcript, and no opportunity for deeper thinking or understanding was provided. Rather, the tutor could have said something like [what operation do you use to solve when the original problem uses plus, or addition?] or [instead of adding the variable, what operation is the opposite?] ",
+          "ground_truth_key_moment_index_0_based": 6,
+          "human_annotation_matches": [
+            {
+              "source_line_1_based": 747,
+              "turn_annotation_index_0_based": 2,
+              "interface_version": "v2_preselected"
+            },
+            {
+              "source_line_1_based": 747,
+              "turn_annotation_index_0_based": 3,
+              "interface_version": "v2_preselected"
+            }
+          ]
+        },
+        {
+          "annotator_id": "556cdd5d-283b-5bbc-8560-96f762a4b0c5",
+          "situation": "This is an appropriate time to push for rigor because the tutor is asking the student about a concept previously taught that the student has demonstrated mastery or proficient understanding of but the student responded that they didn't know the answer. ",
+          "action": "The tutor provided positive reinforcement to encourage the student to answer rather than just say they don't know about a concept they have already taught. ",
+          "result": "This was moderately effective. It was enough of a push to have the student answer but it was not the most effective way to push the student. After the student said they didn't know, the tutor could have taken this as an opportunity to restate key vocabulary terms that would have allowed the student to connect prior knowledge to the task and then realize that they know the answer or at least what to do to solve. Instead, the tutor repeatedly told the student they could do it, then there was about a 13 minute break in the transcript, and no opportunity for deeper thinking or understanding was provided. Rather, the tutor could have said something like [what operation do you use to solve when the original problem uses plus, or addition?] or [instead of adding the variable, what operation is the opposite?] ",
+          "ground_truth_key_moment_index_0_based": 7,
+          "human_annotation_matches": [
+            {
+              "source_line_1_based": 747,
+              "turn_annotation_index_0_based": 2,
+              "interface_version": "v2_preselected"
+            },
+            {
+              "source_line_1_based": 747,
+              "turn_annotation_index_0_based": 3,
+              "interface_version": "v2_preselected"
+            }
+          ]
+        },
+        {
+          "annotator_id": "094b1c5d-3322-5e14-a80d-fbf818c7932c",
+          "situation": "This was the perfect time to scaffold because the student was just saying they didn't know what to do when they did, they were just refusing to answer for some reason.",
+          "action": "The tutor was boosting the student's confidence. \"Yeah you do, you always get them right.\" ",
+          "result": "It was effective because the student eventually told them the correct answer and got there without being directly told what it was.",
+          "ground_truth_key_moment_index_0_based": 11,
+          "human_annotation_matches": [
+            {
+              "source_line_1_based": 732,
+              "turn_annotation_index_0_based": 2,
+              "interface_version": "v2_preselected"
+            }
+          ]
+        },
+        {
+          "annotator_id": "09454074-1a5c-57be-8676-7015478c1360",
+          "situation": "Student said they don't know but tutor believed they could remember, good moment to push for rigor.",
+          "action": "Tutor encouraged student directly then walked through each step after student gave first answer.",
+          "result": "Good start pushing for rigor, but then over-explained the steps instead of trusting in the student independence.",
+          "ground_truth_key_moment_index_0_based": 15,
+          "human_annotation_matches": [
+            {
+              "source_line_1_based": 393,
+              "turn_annotation_index_0_based": 2,
+              "interface_version": "v2_preselected"
+            }
+          ]
+        },
+        {
+          "annotator_id": "27f469ba-1dc3-5523-a38c-b5faa49bbda6",
+          "situation": "This is an appropriate place for rigor because the student has shown mastery of a skill so if the tutor pushes for rigor here the student could deepen their understanding so they are able to apply this skill to other problems.",
+          "action": "The tutor asks the student to explain how they got their answer.",
+          "result": "The tutor's strategy is effective because the student is able to explain their answer to the problem showing a deep and transferable understanding of the concept.",
+          "ground_truth_key_moment_index_0_based": 22,
+          "human_annotation_matches": [
+            {
+              "source_line_1_based": 632,
+              "turn_annotation_index_0_based": 6,
+              "interface_version": "v2_preselected"
+            }
+          ]
+        },
+        {
+          "annotator_id": "389c167a-ad87-5fcf-b6a3-192d34bb9dbf",
+          "situation": "The context includes lines 58 through line 83. It is exactly the time to push for rigor and to scaffold since the student does have a basic understanding of algebra and really just needs a review in order to proceed.",
+          "action": "The tutor is using scaffolding and pushing a little towards rigor by asking open ended questions for each step of the scaffolding as part of their review.",
+          "result": "The tutor has addressed the student's need for reviewing algebra and successfully used scaffolding without giving the student too much information so the student fills in the blanks.",
+          "ground_truth_key_moment_index_0_based": 28,
+          "human_annotation_matches": [
+            {
+              "source_line_1_based": 756,
+              "turn_annotation_index_0_based": 2,
+              "interface_version": "v2_preselected"
+            }
+          ]
+        }
+      ],
+      "ground_truth_source_line_1_based": 157,
+      "ground_truth_source_line_sha256": "7b7a61979d4bc871165319858b1dc12b1eb962c37f65793d392669be7503fb51"
+    },
+    {
+      "id": "d21c3b8f-6333-5b8f-b632-7f6aed0ef517:scaffolding:79-94",
+      "transcript_id": "d21c3b8f-6333-5b8f-b632-7f6aed0ef517",
+      "turn_start": 79,
+      "turn_end": 94,
+      "need": "rigor",
+      "action": "both",
+      "annotation_rows": 9,
+      "annotations": [
+        {
+          "annotator_id": "d3d30e0d-af8c-5733-8a7b-a1cf17ebbb63",
+          "situation": "This is an appropriate time to push for rigor. The student has the correct steps but needs to be able to bring it to the next level.",
+          "action": "The tutor asks the student to explain how they know what to do.",
+          "result": "This is an effective strategy. It's really important for a student to know why something in math works and not just that it does work.",
+          "ground_truth_key_moment_index_0_based": 2,
+          "human_annotation_matches": [
+            {
+              "source_line_1_based": 278,
+              "turn_annotation_index_0_based": 1,
+              "interface_version": "v1_cut_point"
+            }
+          ]
+        },
+        {
+          "annotator_id": "556cdd5d-283b-5bbc-8560-96f762a4b0c5",
+          "situation": "Yes appropriate to push for rigor because in line 87 the tutor addressed the student's habit of saying they don't know when they do know the answer from being previously taught the skill. However, the tutor did not need to scaffolding by guiding the student as much in line 97 toward the reasoning for using addition to solve the problem. The tutor said the student could do it and knew the answers and the steps but then immediately after responded with a scaffold. So either, it was not appropriate to push for rigor and the student does not know the material well enough, or the student does know it and by over scaffolding they are becoming confused, as evidenced in line 100 where the student is trying to clarify what is being asked. ",
+          "action": "The tutor tried to scaffold by guiding the student with restating the question and beginning the phrase that the tutor was looking for. This does not advance metacognition it just serves to let the student guess the answer the tutor is saying.",
+          "result": "This was not very effective. The tutor confused the student when they were attempting to determine conceptual understanding as to why the answer is adding, aiming for the student to explain that using the inverse is how to solve these equations. Then when the tutor asked the student to explain, and the student clarified what the tutor was asking, the tutor did not allow the student time to think, and then provided another scaffolded answer, and then the students response did not show conceptual understanding of the inverse operation just that the other operation would not equal the answer. ",
+          "ground_truth_key_moment_index_0_based": 8,
+          "human_annotation_matches": [
+            {
+              "source_line_1_based": 747,
+              "turn_annotation_index_0_based": 4,
+              "interface_version": "v2_preselected"
+            }
+          ]
+        },
+        {
+          "annotator_id": "094b1c5d-3322-5e14-a80d-fbf818c7932c",
+          "situation": "This is a great time to scaffold when they are doing problems together.",
+          "action": "The tutor was asking guiding questions to get the student to the correct answer and told them did a great job when explaining their answer.",
+          "result": "It was very effective, the student eventually got to the correct answer.",
+          "ground_truth_key_moment_index_0_based": 12,
+          "human_annotation_matches": [
+            {
+              "source_line_1_based": 732,
+              "turn_annotation_index_0_based": 3,
+              "interface_version": "v2_preselected"
+            }
+          ]
+        },
+        {
+          "annotator_id": "09454074-1a5c-57be-8676-7015478c1360",
+          "situation": "Student solved correctly but tutor pushed to explain reasoning, good moment to scaffold.",
+          "action": "Tutor asked why he add then let student explain in their own way.",
+          "result": "Effective, tutor accepted unusual but valid explanation and confirmed it.",
+          "ground_truth_key_moment_index_0_based": 16,
+          "human_annotation_matches": [
+            {
+              "source_line_1_based": 393,
+              "turn_annotation_index_0_based": 3,
+              "interface_version": "v2_preselected"
+            }
+          ]
+        },
+        {
+          "annotator_id": "27f469ba-1dc3-5523-a38c-b5faa49bbda6",
+          "situation": "This is an appropriate place for rigor because the student has shown mastery of a skill so if the tutor pushes for rigor here the student could deepen their understanding so they are able to apply this skill to other problems.",
+          "action": "The tutor asks the student to explain how they solved a problem.",
+          "result": "The ",
+          "ground_truth_key_moment_index_0_based": 23,
+          "human_annotation_matches": [
+            {
+              "source_line_1_based": 632,
+              "turn_annotation_index_0_based": 7,
+              "interface_version": "v2_preselected"
+            }
+          ]
+        },
+        {
+          "annotator_id": "27f469ba-1dc3-5523-a38c-b5faa49bbda6",
+          "situation": "This is an appropriate place for rigor because the student has shown mastery of a skill so if the tutor pushes for rigor here the student could deepen their understanding so they are able to apply this skill to other problems.",
+          "action": "The tutor asks the student to explain how they solved a problem.",
+          "result": "The tutor's strategy is effective because the student is able to explain their answer to the problem showing a deep and transferable understanding of the concept.",
+          "ground_truth_key_moment_index_0_based": 24,
+          "human_annotation_matches": [
+            {
+              "source_line_1_based": 632,
+              "turn_annotation_index_0_based": 8,
+              "interface_version": "v2_preselected"
+            },
+            {
+              "source_line_1_based": 632,
+              "turn_annotation_index_0_based": 9,
+              "interface_version": "v2_preselected"
+            }
+          ]
+        },
+        {
+          "annotator_id": "27f469ba-1dc3-5523-a38c-b5faa49bbda6",
+          "situation": "This is an appropriate place for rigor because the student has shown mastery of a skill so if the tutor pushes for rigor here the student could deepen their understanding so they are able to apply this skill to other problems.",
+          "action": "The tutor asks the student to explain how they solved a problem.",
+          "result": "The tutor's strategy is effective because the student is able to explain their answer to the problem showing a deep and transferable understanding of the concept.",
+          "ground_truth_key_moment_index_0_based": 25,
+          "human_annotation_matches": [
+            {
+              "source_line_1_based": 632,
+              "turn_annotation_index_0_based": 8,
+              "interface_version": "v2_preselected"
+            },
+            {
+              "source_line_1_based": 632,
+              "turn_annotation_index_0_based": 9,
+              "interface_version": "v2_preselected"
+            }
+          ]
+        },
+        {
+          "annotator_id": "389c167a-ad87-5fcf-b6a3-192d34bb9dbf",
+          "situation": "The tutor is pushing for rigor because the student has reviewed basic algebra concepts for a two-step equation and is also scaffolding to ensure the steps required to solve the problem are followed to a successful conclusion on the part of the student.",
+          "action": "The tutor is scaffolding and pushing for rigor at the same time. The tutor is asking open ended questions with each step of the equation so that the student has to describe what thought process they are using to complete that step.",
+          "result": "Yes, these strategies are effective. The tutor has done well to ask questions and get the student to respond rather than telling the student everything about each step of the equation.",
+          "ground_truth_key_moment_index_0_based": 29,
+          "human_annotation_matches": [
+            {
+              "source_line_1_based": 756,
+              "turn_annotation_index_0_based": 3,
+              "interface_version": "v2_preselected"
+            },
+            {
+              "source_line_1_based": 756,
+              "turn_annotation_index_0_based": 4,
+              "interface_version": "v2_preselected"
+            }
+          ]
+        },
+        {
+          "annotator_id": "389c167a-ad87-5fcf-b6a3-192d34bb9dbf",
+          "situation": "The tutor is pushing for rigor because the student has reviewed basic algebra concepts for a two-step equation and is also scaffolding to ensure the steps required to solve the problem are followed to a successful conclusion on the part of the student.",
+          "action": "The tutor is scaffolding and pushing for rigor at the same time. The tutor is asking open ended questions with each step of the equation so that the student has to describe what thought process they are using to complete that step.",
+          "result": "Yes, these strategies are effective. The tutor has done well to ask questions and get the student to respond rather than telling the student everything about each step of the equation.",
+          "ground_truth_key_moment_index_0_based": 30,
+          "human_annotation_matches": [
+            {
+              "source_line_1_based": 756,
+              "turn_annotation_index_0_based": 3,
+              "interface_version": "v2_preselected"
+            },
+            {
+              "source_line_1_based": 756,
+              "turn_annotation_index_0_based": 4,
+              "interface_version": "v2_preselected"
+            }
+          ]
+        }
+      ],
+      "ground_truth_source_line_1_based": 157,
+      "ground_truth_source_line_sha256": "7b7a61979d4bc871165319858b1dc12b1eb962c37f65793d392669be7503fb51"
+    },
+    {
+      "id": "ed71cb44-228f-5274-b576-519b2b73fd48:scaffolding:25-42",
+      "transcript_id": "ed71cb44-228f-5274-b576-519b2b73fd48",
+      "turn_start": 25,
+      "turn_end": 42,
+      "need": "scaffolding",
+      "action": "both",
+      "annotation_rows": 5,
+      "annotations": [
+        {
+          "annotator_id": "a9403da5-b7f9-5d7e-b25d-77669c9f41d5",
+          "situation": "This is an appropriate time to scaffold because the student is expressing confusion about the content.",
+          "action": "The tutor asks some questions to the student and gives several hints. ",
+          "result": "The hints were overly directive, telling the student what to do instead of prompting reasoning about the problem and the models. The tutor should ask the student what they understand about the numbers and relate the situation to a whole-part-part relationship. Are we provided with the total or do we need to find a part? The tutor should ask questions to have the student make sense of the situation before giving such directive hints about what needs to be done (add or subtract). Additionally, it seems like the student might have never been exposed to these bar models before so it might be helpful to scaffold the meaning of these diagrams and even have the student construct them from simple equations (2 + 1=3). ",
+          "ground_truth_key_moment_index_0_based": 3,
+          "human_annotation_matches": [
+            {
+              "source_line_1_based": 268,
+              "turn_annotation_index_0_based": 0,
+              "interface_version": "v1_cut_point"
+            }
+          ]
+        },
+        {
+          "annotator_id": "09454074-1a5c-57be-8676-7015478c1360",
+          "situation": "Student was struggling and showed a misconception, good moment to scaffold carefully without giving the answer.",
+          "action": "Tutor asked why, then gave up quickly and explained everything including pointing to correct option.",
+          "result": "Too much scaffold, student never had real chance to correct their own thinking.",
+          "ground_truth_key_moment_index_0_based": 39,
+          "human_annotation_matches": [
+            {
+              "source_line_1_based": 403,
+              "turn_annotation_index_0_based": 0,
+              "interface_version": "v2_preselected"
+            }
+          ]
+        },
+        {
+          "annotator_id": "d3d30e0d-af8c-5733-8a7b-a1cf17ebbb63",
+          "situation": "This is an appropriate time to provide scaffolding because the student asked for help and doesn't understand how the word problem.",
+          "action": "The tutor helps explain the problem to the student and provides suggestions on what to do. ",
+          "result": "The strategy is effective because the student displays an understanding of how to convert the word problem into an equation by the end of the highlighted text.",
+          "ground_truth_key_moment_index_0_based": 46,
+          "human_annotation_matches": [
+            {
+              "source_line_1_based": 490,
+              "turn_annotation_index_0_based": 0,
+              "interface_version": "v2_preselected"
+            }
+          ]
+        },
+        {
+          "annotator_id": "c0d23f9c-834b-529c-8921-533d0b979d22",
+          "situation": "The student expresses that they need help solving. Scaffolding is appropriate here to help the student arrive at the solution. ",
+          "action": "The tutor does not scaffold, but instead just explains the solution and answer on their own. ",
+          "result": "This is not effective scaffolding. The student did not participate at all in the thinking or problem solving process. ",
+          "ground_truth_key_moment_index_0_based": 50,
+          "human_annotation_matches": [
+            {
+              "source_line_1_based": 716,
+              "turn_annotation_index_0_based": 0,
+              "interface_version": "v2_preselected"
+            }
+          ]
+        },
+        {
+          "annotator_id": "c3ec8607-170b-5bfb-8c57-7888279b57d9",
+          "situation": "The tutor provides the student with a new word problem. The student admits they need help. This is a good time for scaffolding. ",
+          "action": "The tutor does a good job of scaffolding at this point in the lesson. They explain the word problem, its meaning, and what the question is asking the student to solve for. The tutor continues providing scaffolding for the next word problem. The student tries it on their own but admits they still need more help. The tutor all but completes the problem for them. ",
+          "result": "I feel the tutor did a good job offering supports until the very end, then i think they may have added a bit too much. This strategy proved to be successful for the student as they ended with the correct final answer. ",
+          "ground_truth_key_moment_index_0_based": 56,
+          "human_annotation_matches": [
+            {
+              "source_line_1_based": 505,
+              "turn_annotation_index_0_based": 0,
+              "interface_version": "v2_preselected"
+            }
+          ]
+        }
+      ],
+      "ground_truth_source_line_1_based": 190,
+      "ground_truth_source_line_sha256": "6d1cae70f5b6da0b8e1d7a0a75969d92ee9a5e83a4395bac25647d0962999102"
+    },
+    {
+      "id": "ed71cb44-228f-5274-b576-519b2b73fd48:scaffolding:41-42",
+      "transcript_id": "ed71cb44-228f-5274-b576-519b2b73fd48",
+      "turn_start": 41,
+      "turn_end": 42,
+      "need": "scaffolding",
+      "action": "scaffolding",
+      "annotation_rows": 5,
+      "annotations": [
+        {
+          "annotator_id": "76008394-528c-5d2f-b032-100997de8020",
+          "situation": "It seems like the tutor did the first problem for the student, and the student doesn't seem to be understanding what the problems are asking for, so they do need some scaffolding.",
+          "action": "Mostly just restating the question multiple times and then basically giving the answer. The only bit of teaching/explanation is that the work total is a signal for addition, but otherwise they seem to just be giving the answer rather than truly building an understanding of the problem.",
+          "result": "Not effective. The student continues to struggle, and there is not a lot of questioning by the tutor to try to understand the student thought process or where they are getting lost. It mostly seems like a lot of repetition of the problem, and then mostly giving them the answer rather than building understanding.",
+          "ground_truth_key_moment_index_0_based": 8,
+          "human_annotation_matches": [
+            {
+              "source_line_1_based": 316,
+              "turn_annotation_index_0_based": 0,
+              "interface_version": "v1_cut_point"
+            }
+          ]
+        },
+        {
+          "annotator_id": "09454074-1a5c-57be-8676-7015478c1360",
+          "situation": "The student was about to answer, so the tutor didn't need to scaffold yet.",
+          "action": "The tutor re-explained the full problem and pointed directly to the correct answer option.",
+          "result": "Big over-scaffold, the student lost the chance to try independently first.",
+          "ground_truth_key_moment_index_0_based": 38,
+          "human_annotation_matches": [
+            {
+              "source_line_1_based": 403,
+              "turn_annotation_index_0_based": 1,
+              "interface_version": "v2_preselected"
+            }
+          ]
+        },
+        {
+          "annotator_id": "d3d30e0d-af8c-5733-8a7b-a1cf17ebbb63",
+          "situation": "This is an appropriate time to provide scaffolding because the student did not know how to convert the word problem to an equation.",
+          "action": "The tutor explains to the student that the problem requires addition. ",
+          "result": "This is an effective strategy because the student was able to understand what to do and select the correct answer.",
+          "ground_truth_key_moment_index_0_based": 45,
+          "human_annotation_matches": [
+            {
+              "source_line_1_based": 490,
+              "turn_annotation_index_0_based": 1,
+              "interface_version": "v2_preselected"
+            }
+          ]
+        },
+        {
+          "annotator_id": "c0d23f9c-834b-529c-8921-533d0b979d22",
+          "situation": "Prior to this highlighted section, the student asks for help. Scaffolding is needed to support student understanding. ",
+          "action": "Prior to this highlighted section, the tutor asks some prompting questions to get the student to think about what operation to use to solve. When the student still is unsure, the tutor explains the strategy for solving, but has the student select the final answer. ",
+          "result": "This highlighted section only shows the explaining and leaves off the scaffolding that the tutor did prior to this. If only looking here, this is too much direct instruction. However, knowing that the tutor tried other scaffolding first that was unsuccessful, this is appropriate and effective to teach the student how to do problems like this. ",
+          "ground_truth_key_moment_index_0_based": 49,
+          "human_annotation_matches": [
+            {
+              "source_line_1_based": 716,
+              "turn_annotation_index_0_based": 1,
+              "interface_version": "v2_preselected"
+            }
+          ]
+        },
+        {
+          "annotator_id": "c3ec8607-170b-5bfb-8c57-7888279b57d9",
+          "situation": "Here the tutor is reading the word problem with the student and asking them to solve. The tutor provides scaffolding at this point",
+          "action": "The tutor is reading this word problem to the student and explaining what the word problem is asking. The tutor practically completed the task for the student by telling them what to look for.",
+          "result": "I feel the tutor did too much scaffolding at this point. In this small section of highlighted text all you can see is the tutor telling the student how to complete the task. This would not be effective",
+          "ground_truth_key_moment_index_0_based": 55,
+          "human_annotation_matches": [
+            {
+              "source_line_1_based": 505,
+              "turn_annotation_index_0_based": 1,
+              "interface_version": "v2_preselected"
+            }
+          ]
+        }
+      ],
+      "ground_truth_source_line_1_based": 190,
+      "ground_truth_source_line_sha256": "6d1cae70f5b6da0b8e1d7a0a75969d92ee9a5e83a4395bac25647d0962999102"
+    },
+    {
+      "id": "ed71cb44-228f-5274-b576-519b2b73fd48:scaffolding:42-57",
+      "transcript_id": "ed71cb44-228f-5274-b576-519b2b73fd48",
+      "turn_start": 42,
+      "turn_end": 57,
+      "need": "scaffolding",
+      "action": "scaffolding",
+      "annotation_rows": 5,
+      "annotations": [
+        {
+          "annotator_id": "a9403da5-b7f9-5d7e-b25d-77669c9f41d5",
+          "situation": "This is an appropriate time to scaffold because the student has a misconception around the bar models.",
+          "action": "The tutor asked guided questions and broke the task down. The tutor provided hints about what to look for in the diagram. ",
+          "result": "The tutor provided helpful support, but the support was sometimes too directive and did not directly address the misconception that the student is having with the bar models. The student likely needs a quick mini lesson about bar models, part part whole relationships, and the connection with equations. ",
+          "ground_truth_key_moment_index_0_based": 4,
+          "human_annotation_matches": [
+            {
+              "source_line_1_based": 268,
+              "turn_annotation_index_0_based": 1,
+              "interface_version": "v1_cut_point"
+            }
+          ]
+        },
+        {
+          "annotator_id": "09454074-1a5c-57be-8676-7015478c1360",
+          "situation": "Student was confused about which diagram showed subtraction, good moment to scaffold diagram reading.",
+          "action": "Tutor eliminated wrong answers and narrowed to A or B, then confirmed B without student deciding.",
+          "result": "Over-scaffold, student never interpreted the diagrams themselves.",
+          "ground_truth_key_moment_index_0_based": 40,
+          "human_annotation_matches": [
+            {
+              "source_line_1_based": 403,
+              "turn_annotation_index_0_based": 2,
+              "interface_version": "v2_preselected"
+            }
+          ]
+        },
+        {
+          "annotator_id": "d3d30e0d-af8c-5733-8a7b-a1cf17ebbb63",
+          "situation": "This is not an appropriate time to provide scaffolding because the tutor has already helped the student with two word problems and the tutor should see what the student can work on independently.",
+          "action": "The tutor asks the student guiding questions to answer the question.",
+          "result": "This is not an effective strategy. At this time, the tutor should see what the student can do without scaffolding. This is a case of over-scaffolding because the tutor has no way to know if the previous assistance was successful.",
+          "ground_truth_key_moment_index_0_based": 47,
+          "human_annotation_matches": [
+            {
+              "source_line_1_based": 490,
+              "turn_annotation_index_0_based": 2,
+              "interface_version": "v2_preselected"
+            }
+          ]
+        },
+        {
+          "annotator_id": "c0d23f9c-834b-529c-8921-533d0b979d22",
+          "situation": "The student struggles to answer another question. This is an appropriate time for scaffolding. ",
+          "action": "The tutor rereads the question and prompts the student to think about what operation to use. When the student is unsure, the tutor prompts further asking the student if the value is getting larger or smaller to help indicate what operation to use. As the student continues to struggle, the tutor ultimately explains the solution to the problem to the student. ",
+          "result": "This is effective in getting the student to the answer, but the student's significant troubles on this problem indicate a need for more direct instruction and scaffolding on this topic. ",
+          "ground_truth_key_moment_index_0_based": 51,
+          "human_annotation_matches": [
+            {
+              "source_line_1_based": 716,
+              "turn_annotation_index_0_based": 2,
+              "interface_version": "v2_preselected"
+            }
+          ]
+        },
+        {
+          "annotator_id": "c3ec8607-170b-5bfb-8c57-7888279b57d9",
+          "situation": "The tutor and student move on to a new equation. The student struggles with this equation and the tutor offers help",
+          "action": "The tutor scaffolds this lesson by helping to explain what the word problem is looking for. The student seems to struggle with knowing what operation to perform when reading word problems so the tutor is good about picking out key words and explaining what they mean- like key words to remember. The tutor was good about explaining why the wrong answers were wrong so the student could understand better.",
+          "result": "The tutor offers the right amount of supports to help the student reach the final steps in completing this word problem. The strategies used were effective. ",
+          "ground_truth_key_moment_index_0_based": 57,
+          "human_annotation_matches": [
+            {
+              "source_line_1_based": 505,
+              "turn_annotation_index_0_based": 2,
+              "interface_version": "v2_preselected"
+            }
+          ]
+        }
+      ],
+      "ground_truth_source_line_1_based": 190,
+      "ground_truth_source_line_sha256": "6d1cae70f5b6da0b8e1d7a0a75969d92ee9a5e83a4395bac25647d0962999102"
+    },
+    {
+      "id": "ed71cb44-228f-5274-b576-519b2b73fd48:scaffolding:58-76",
+      "transcript_id": "ed71cb44-228f-5274-b576-519b2b73fd48",
+      "turn_start": 58,
+      "turn_end": 76,
+      "need": "scaffolding",
+      "action": "scaffolding",
+      "annotation_rows": 5,
+      "annotations": [
+        {
+          "annotator_id": "a9403da5-b7f9-5d7e-b25d-77669c9f41d5",
+          "situation": "This is an appropriate time to scaffold because the student had difficulty with the last two problems. ",
+          "action": "The tutor broke the task into chunks and asked guided questions.",
+          "result": "It was great that the tutor asked a sense making question at the beginning of this exchange because that question was strategic and let the tutor know what the student understood about the problem. The tutor provided a helpful hint (we are looking for the total and an equation where it equals 21). The tutor asked if they need to add or subtract which is different from the answer options that are presented. The student initially stated that they would subtract (to solve themselves), but the correct answer choice was D (an addition equation). So while these hints were helpful and did put most of the thinking on the student, they didn't directly address the student's misconception around the part part whole relationship. The tutor can use a number bond and have the student complete the number bond (21 as the whole and 15 as the part). Given this number bond, what equations can we make that would be true?",
+          "ground_truth_key_moment_index_0_based": 5,
+          "human_annotation_matches": [
+            {
+              "source_line_1_based": 268,
+              "turn_annotation_index_0_based": 2,
+              "interface_version": "v1_cut_point"
+            }
+          ]
+        },
+        {
+          "annotator_id": "09454074-1a5c-57be-8676-7015478c1360",
+          "situation": "Student was unsure but showing some thinking, good moment to give scaffold.",
+          "action": "Tutor restated the problem structure clearly and let student choose the final answer independently.",
+          "result": "Good balance, tutor scaffolded the reasoning but left the decision to the student successfully.",
+          "ground_truth_key_moment_index_0_based": 41,
+          "human_annotation_matches": [
+            {
+              "source_line_1_based": 403,
+              "turn_annotation_index_0_based": 3,
+              "interface_version": "v2_preselected"
+            }
+          ]
+        },
+        {
+          "annotator_id": "d3d30e0d-af8c-5733-8a7b-a1cf17ebbb63",
+          "situation": "This is not an appropriate time to provide scaffolding because the tutor is not giving the student an opportunity to work on this independently.",
+          "action": "The tutor tells the student what the equation needs to equal and helps the student solve the problem.",
+          "result": "This is not an effective strategy and is a case of over-scaffolding. We see the student knows which operation to use and the tutor keeps discussing the problem without giving the student the opportunity to learn.",
+          "ground_truth_key_moment_index_0_based": 48,
+          "human_annotation_matches": [
+            {
+              "source_line_1_based": 490,
+              "turn_annotation_index_0_based": 3,
+              "interface_version": "v2_preselected"
+            }
+          ]
+        },
+        {
+          "annotator_id": "c0d23f9c-834b-529c-8921-533d0b979d22",
+          "situation": "The student is presented with a new problem. Normally allowing the student to try it on their own first would be the best strategy, but the student has struggled quite a bit on previous problems on this topic, so scaffolding from the beginning is appropriate.",
+          "action": "The tutor sets up the problem for the student and prompts them to think about what operation to use. ",
+          "result": "The tutor does not address the fact that this information could be written in different equations depending on what they are trying to represent. This is helpful context that is needed to answer the question about it being addition or subtraction. ",
+          "ground_truth_key_moment_index_0_based": 52,
+          "human_annotation_matches": [
+            {
+              "source_line_1_based": 716,
+              "turn_annotation_index_0_based": 3,
+              "interface_version": "v2_preselected"
+            }
+          ]
+        },
+        {
+          "annotator_id": "c3ec8607-170b-5bfb-8c57-7888279b57d9",
+          "situation": "Here the student is being asked to solve for an unknown number is a word problem. The student struggles with this task and the tutor offers scaffolding supports ",
+          "action": "The tutor provides supports for the student by walking them through how to complete this problem. The tutor asks the student if they understand what is being asked of them, the student admits they do not. Once the tutor realizes the student doesn't know they step in and explain. The tutor helps to activate prior knowledge to help the student determine which operation they need to use in order to solve the equation.",
+          "result": "Yes, the strategies used were effective for the student. The student was able to answer the word problem correctly with the help from the tutor.",
+          "ground_truth_key_moment_index_0_based": 58,
+          "human_annotation_matches": [
+            {
+              "source_line_1_based": 505,
+              "turn_annotation_index_0_based": 3,
+              "interface_version": "v2_preselected"
+            }
+          ]
+        }
+      ],
+      "ground_truth_source_line_1_based": 190,
+      "ground_truth_source_line_sha256": "6d1cae70f5b6da0b8e1d7a0a75969d92ee9a5e83a4395bac25647d0962999102"
+    },
+    {
+      "id": "ed71cb44-228f-5274-b576-519b2b73fd48:scaffolding:82-84",
+      "transcript_id": "ed71cb44-228f-5274-b576-519b2b73fd48",
+      "turn_start": 82,
+      "turn_end": 84,
+      "need": "neither",
+      "action": "rigor",
+      "annotation_rows": 5,
+      "annotations": [
+        {
+          "annotator_id": "a9403da5-b7f9-5d7e-b25d-77669c9f41d5",
+          "situation": "This is an appropriate time to push for rigor because the student is demonstrating understanding of this concept.",
+          "action": "The tutor did not push for rigor in this moment. ",
+          "result": "The tutor should ask the student to use place value understanding to justify their response. \"Which place value helped you determine what was larger?\"",
+          "ground_truth_key_moment_index_0_based": 6,
+          "human_annotation_matches": [
+            {
+              "source_line_1_based": 268,
+              "turn_annotation_index_0_based": 3,
+              "interface_version": "v1_cut_point"
+            }
+          ]
+        },
+        {
+          "annotator_id": "09454074-1a5c-57be-8676-7015478c1360",
+          "situation": "Student answered confidently and correctly with no hesitation, no scaffolding was needed here.",
+          "action": "The tutor let the student answer alone.",
+          "result": "Good decision, tutor stayed back and student showed real independent understanding.",
+          "ground_truth_key_moment_index_0_based": 42,
+          "human_annotation_matches": [
+            {
+              "source_line_1_based": 403,
+              "turn_annotation_index_0_based": 4,
+              "interface_version": "v2_preselected"
+            },
+            {
+              "source_line_1_based": 403,
+              "turn_annotation_index_0_based": 5,
+              "interface_version": "v2_preselected"
+            }
+          ]
+        },
+        {
+          "annotator_id": "09454074-1a5c-57be-8676-7015478c1360",
+          "situation": "Student answered confidently and correctly with no hesitation, no scaffolding was needed here.",
+          "action": "The tutor let the student answer alone.",
+          "result": "Good decision, tutor stayed back and student showed real independent understanding.",
+          "ground_truth_key_moment_index_0_based": 43,
+          "human_annotation_matches": [
+            {
+              "source_line_1_based": 403,
+              "turn_annotation_index_0_based": 4,
+              "interface_version": "v2_preselected"
+            },
+            {
+              "source_line_1_based": 403,
+              "turn_annotation_index_0_based": 5,
+              "interface_version": "v2_preselected"
+            }
+          ]
+        },
+        {
+          "annotator_id": "c0d23f9c-834b-529c-8921-533d0b979d22",
+          "situation": "The student is presented with a new problem that they answer on their own. This is not a moment of scaffolding or rigor. ",
+          "action": "The tutor allows the student to answer the question (no scaffolding used or needed)",
+          "result": "This is effective. Unless the student shows signs of struggling. It's always betst to allow the student to try a problem on their own first. ",
+          "ground_truth_key_moment_index_0_based": 53,
+          "human_annotation_matches": [
+            {
+              "source_line_1_based": 716,
+              "turn_annotation_index_0_based": 4,
+              "interface_version": "v2_preselected"
+            }
+          ]
+        },
+        {
+          "annotator_id": "c3ec8607-170b-5bfb-8c57-7888279b57d9",
+          "situation": "Here the student is being asked to complete a greater than less than equation. The student seems to be doing well on their own and doesn't need scaffolding.",
+          "action": "The student is answering the questions correctly and doesn't require any scaffolding from the tutor at this point. There are not strategies being used.",
+          "result": "There are no strategies being used at this point in the lesson. ",
+          "ground_truth_key_moment_index_0_based": 59,
+          "human_annotation_matches": [
+            {
+              "source_line_1_based": 505,
+              "turn_annotation_index_0_based": 4,
+              "interface_version": "v2_preselected"
+            }
+          ]
+        }
+      ],
+      "ground_truth_source_line_1_based": 190,
+      "ground_truth_source_line_sha256": "6d1cae70f5b6da0b8e1d7a0a75969d92ee9a5e83a4395bac25647d0962999102"
+    },
+    {
+      "id": "ed71cb44-228f-5274-b576-519b2b73fd48:scaffolding:92-98",
+      "transcript_id": "ed71cb44-228f-5274-b576-519b2b73fd48",
+      "turn_start": 92,
+      "turn_end": 98,
+      "need": "mixed",
+      "action": "scaffolding",
+      "annotation_rows": 4,
+      "annotations": [
+        {
+          "annotator_id": "a9403da5-b7f9-5d7e-b25d-77669c9f41d5",
+          "situation": "This is an appropriate time to push for rigor because the student is demonstrating understanding of this concept. ",
+          "action": "The tutor asked the student which direction the symbol should face. ",
+          "result": "The tutor can improve this strategy by asking the student to justify their response by using place value language and understanding. Additionally, instead of asking the student about the alligator mouth, ask the student which symbol belongs in between- not which number is larger. This will help the tutor identify if the student has mastery over the symbols as well as the place value understanding. ",
+          "ground_truth_key_moment_index_0_based": 7,
+          "human_annotation_matches": [
+            {
+              "source_line_1_based": 268,
+              "turn_annotation_index_0_based": 4,
+              "interface_version": "v1_cut_point"
+            }
+          ]
+        },
+        {
+          "annotator_id": "09454074-1a5c-57be-8676-7015478c1360",
+          "situation": "Student said \"greater\" but then correctly identified 460 as bigger, a small confusion worth to scaffold..",
+          "action": "Tutor used a metaphor to help student connect the symbol to the correct direction.",
+          "result": "Good scaffold, but the tutor accepted the answer without confirming the student fully understood the concept.",
+          "ground_truth_key_moment_index_0_based": 44,
+          "human_annotation_matches": [
+            {
+              "source_line_1_based": 403,
+              "turn_annotation_index_0_based": 6,
+              "interface_version": "v2_preselected"
+            }
+          ]
+        },
+        {
+          "annotator_id": "c0d23f9c-834b-529c-8921-533d0b979d22",
+          "situation": "The student is faced with a new problem. No scaffolding is needed. ",
+          "action": "The tutor prompts the student to first think about which value is larger, then to connect that to the correct symbol. The tutor uses an analogy of an inequality being an alligator's mouth. ",
+          "result": "The tutor largely allows the student to do this problem on their own which is good. Using the alligator mouth analogy makes a connection between a visual cue and the understanding of inequality symbols and seems to be effective for this student, likely because they have used this same analogy previously. ",
+          "ground_truth_key_moment_index_0_based": 54,
+          "human_annotation_matches": [
+            {
+              "source_line_1_based": 716,
+              "turn_annotation_index_0_based": 5,
+              "interface_version": "v2_preselected"
+            }
+          ]
+        },
+        {
+          "annotator_id": "c3ec8607-170b-5bfb-8c57-7888279b57d9",
+          "situation": "The student is being asked to compare two different numbers. The student answers but needs assistance from the tutor ",
+          "action": "The student gives an answer but the tutor steps in to scaffold to help the student understand what they are truly answering. The tutor helps to activate the students prior knowledge o greater than vs less than numbers by talking about the alligator mouth eating the bigger number. The student is then able to identify the larger number and able to answer the question correctly.",
+          "result": "The tutor provided the correct amount of supports to help guide the student to the correct final answer. This strategy was effective. ",
+          "ground_truth_key_moment_index_0_based": 60,
+          "human_annotation_matches": [
+            {
+              "source_line_1_based": 505,
+              "turn_annotation_index_0_based": 5,
+              "interface_version": "v2_preselected"
+            }
+          ]
+        }
+      ],
+      "ground_truth_source_line_1_based": 190,
+      "ground_truth_source_line_sha256": "6d1cae70f5b6da0b8e1d7a0a75969d92ee9a5e83a4395bac25647d0962999102"
+    }
+  ],
+  "limitations": [
+    "Two purposively selected sessions from one anonymized provider; this is cross-session aggregation, not cross-product validation.",
+    "Published categorical labels are subjective and LLM-assisted; faithful transformation does not establish their semantic accuracy or learning effectiveness.",
+    "The denominator is distinct exact-span coded intervals, not learners, hints, unique help events or independent observations; some intervals overlap or are nested.",
+    "Repeated annotation rows and interface passes are preserved but do not add interval counts or independent votes.",
+    "Uncoded turns and sources without compatible annotations are unmeasured, not zero assistance.",
+    "A scaffolding or both action label is not itself a learning gain, appropriate help, over-scaffolding or an effectiveness score.",
+    "Human commentary may refer to context outside its highlighted span; inspect the surrounding dialogue.",
+    "Transcripts represent real human sessions machine-transcribed by the publisher using Gemini 2.5 Pro; original recordings are not independently verified here.",
+    "Annotations are a companion layer; they add no observed utterance or assistance events to the Learnlog records."
+  ]
+};
+export default SCAFFOLDING_EVIDENCE;

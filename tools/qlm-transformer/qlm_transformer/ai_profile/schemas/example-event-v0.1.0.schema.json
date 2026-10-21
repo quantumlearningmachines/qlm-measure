@@ -1,0 +1,361 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.org/learnlog/102026/ai-use/v0.1.0/example-event.schema.json",
+  "title": "Restricted synthetic example event envelope v0.1.0",
+  "$comment": "Proposed v0.1.0 companion; example.org URIs are illustrative and unregistered.",
+  "type": "object",
+  "properties": {
+    "name": {
+      "enum": [
+        "example_learning:task_presented",
+        "assist:help_requested",
+        "assist:scaffold_provided",
+        "example_learning:response_committed"
+      ]
+    },
+    "salt": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9_-]{22,}$"
+    },
+    "data": {
+      "type": "object"
+    },
+    "actor": {
+      "type": "object",
+      "properties": {
+        "role": {
+          "enum": [
+            "learner",
+            "assistant",
+            "system"
+          ]
+        },
+        "kind": {
+          "enum": [
+            "human",
+            "software"
+          ]
+        },
+        "id": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "required": [
+        "role",
+        "kind"
+      ],
+      "additionalProperties": false
+    },
+    "to": {
+      "type": "object",
+      "properties": {
+        "role": {
+          "enum": [
+            "learner",
+            "assistant",
+            "system"
+          ]
+        },
+        "kind": {
+          "enum": [
+            "human",
+            "software"
+          ]
+        },
+        "id": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "required": [
+        "role",
+        "kind"
+      ],
+      "additionalProperties": false
+    },
+    "session": {
+      "type": "string",
+      "minLength": 1
+    },
+    "activity": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "version": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "required": [
+        "id",
+        "version"
+      ],
+      "additionalProperties": false
+    },
+    "instrument": {
+      "type": "object",
+      "properties": {
+        "source": {
+          "enum": [
+            "human",
+            "model",
+            "deterministic"
+          ]
+        },
+        "model": {
+          "type": "string",
+          "minLength": 1
+        },
+        "config_hash": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "parameters": {
+          "type": "object"
+        },
+        "validated": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "source"
+      ],
+      "additionalProperties": false,
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "source": {
+                "const": "model"
+              }
+            },
+            "required": [
+              "source"
+            ]
+          },
+          "then": {
+            "required": [
+              "model",
+              "config_hash"
+            ]
+          }
+        }
+      ]
+    },
+    "ai_context": {
+      "type": "object",
+      "properties": {
+        "context_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "stage": {
+          "enum": [
+            "learning",
+            "practice",
+            "assessment",
+            "baseline",
+            "follow_up"
+          ]
+        },
+        "policy_id": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "required": [
+        "context_id",
+        "stage",
+        "policy_id"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "required": [
+    "name",
+    "salt",
+    "data",
+    "actor",
+    "to",
+    "session",
+    "activity",
+    "instrument",
+    "ai_context"
+  ],
+  "additionalProperties": false,
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "name": {
+            "const": "example_learning:task_presented"
+          }
+        },
+        "required": [
+          "name"
+        ]
+      },
+      "then": {
+        "properties": {
+          "data": {
+            "type": "object",
+            "properties": {
+              "task_id": {
+                "type": "string",
+                "minLength": 1
+              },
+              "task_version": {
+                "type": "string",
+                "minLength": 1
+              },
+              "prompt": {
+                "type": "string",
+                "minLength": 1
+              },
+              "requires_explanation": {
+                "const": true
+              },
+              "synthetic": {
+                "const": true
+              }
+            },
+            "required": [
+              "task_id",
+              "task_version",
+              "prompt",
+              "requires_explanation",
+              "synthetic"
+            ],
+            "additionalProperties": false
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "name": {
+            "const": "assist:help_requested"
+          }
+        },
+        "required": [
+          "name"
+        ]
+      },
+      "then": {
+        "properties": {
+          "data": {
+            "type": "object",
+            "properties": {
+              "type": {
+                "enum": [
+                  "metacognitive",
+                  "explain"
+                ]
+              }
+            },
+            "required": [],
+            "additionalProperties": false
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "name": {
+            "const": "assist:scaffold_provided"
+          }
+        },
+        "required": [
+          "name"
+        ]
+      },
+      "then": {
+        "properties": {
+          "data": {
+            "type": "object",
+            "properties": {
+              "type": {
+                "enum": [
+                  "metacognitive",
+                  "explain"
+                ]
+              },
+              "request": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 9007199254740991
+              },
+              "level": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 9007199254740991
+              },
+              "reveals_answer": {
+                "type": "boolean"
+              },
+              "modality": {
+                "const": "text"
+              },
+              "content": {
+                "type": "string",
+                "minLength": 1
+              }
+            },
+            "required": [
+              "type",
+              "request",
+              "reveals_answer",
+              "modality",
+              "content"
+            ],
+            "additionalProperties": false
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "name": {
+            "const": "example_learning:response_committed"
+          }
+        },
+        "required": [
+          "name"
+        ]
+      },
+      "then": {
+        "properties": {
+          "data": {
+            "type": "object",
+            "properties": {
+              "answer": {
+                "type": "string",
+                "minLength": 1
+              },
+              "explanation": {
+                "type": "string",
+                "minLength": 1
+              },
+              "synthetic": {
+                "const": true
+              }
+            },
+            "required": [
+              "answer",
+              "explanation",
+              "synthetic"
+            ],
+            "additionalProperties": false
+          }
+        }
+      }
+    }
+  ]
+}

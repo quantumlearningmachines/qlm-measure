@@ -1,0 +1,259 @@
+{
+  "status": "prepared_private_candidate",
+  "checked_utc": "2026-10-20T21:01:37.712374+00:00",
+  "target_repository": "https://github.com/quantumlearningmachines/qlm-measure",
+  "target_base_commit": "41b41ba31be02ddfcde0b5be99b723d8749c6074",
+  "implementation_commit": "d7f78dbc949a2170bdbd600dfd3d19cb6aa8fedf",
+  "tests": {
+    "transformer": {
+      "passed": 75,
+      "failed": 0,
+      "skipped": 0,
+      "log_sha256": "cd87d11ee782320718a6dd68c3d69696ff2101be5b804853ddbed0e8364e5da1"
+    },
+    "capture-analysis": {
+      "passed": 35,
+      "failed": 0,
+      "skipped": 0,
+      "log_sha256": "db760902e92986aae046aa21721e3980fe9acb0fb3276b76e6babcc8bf74f1e9"
+    },
+    "capture-contract": {
+      "passed": 73,
+      "failed": 0,
+      "skipped": 0,
+      "log_sha256": "b50065197d75aeabd4e7698c791692c1978857ed0173a4ba9d45ed27c289ad4a"
+    },
+    "capture-sql": {
+      "passed": 17,
+      "failed": 0,
+      "skipped": 0,
+      "log_sha256": "729d26a6de5bcaa9471aa51ccf4aa4843559c72682def8abad73500cc3e8c814"
+    },
+    "pipeline": {
+      "passed": 58,
+      "failed": 0,
+      "skipped": 0,
+      "log_sha256": "e3e6dee782168c8eb2afa55f45d2ab2578d5e6eb82cb2bca14f1b9853840e112"
+    },
+    "demo": {
+      "passed": 138,
+      "failed": 0,
+      "skipped": 0
+    },
+    "existing_sdk_python": {
+      "passed": 144,
+      "failed": 0
+    },
+    "existing_sdk_typescript": {
+      "passed": 175,
+      "failed": 0
+    }
+  },
+  "automated_tests_passed": 715,
+  "sdk_typescript_typecheck_passed": true,
+  "distributions": {
+    "passed": true,
+    "checks": [
+      {
+        "kind": "wheel",
+        "versions": {
+          "transformer": "0.3.0rc1",
+          "airflow": "0.5.0rc1",
+          "transformer_module": "0.3.0rc1",
+          "airflow_module": "0.5.0rc1"
+        },
+        "pip_check": true,
+        "synthetic_request_observations": 2,
+        "writer_convert_and_verify": true,
+        "transcript_and_participant_observations": 322,
+        "contained_records": 14,
+        "execution_outside_source_checkout": true
+      },
+      {
+        "kind": "sdist",
+        "versions": {
+          "transformer": "0.3.0rc1",
+          "airflow": "0.5.0rc1",
+          "transformer_module": "0.3.0rc1",
+          "airflow_module": "0.5.0rc1"
+        },
+        "pip_check": true,
+        "synthetic_request_observations": 2,
+        "writer_convert_and_verify": true,
+        "transcript_and_participant_observations": 322,
+        "contained_records": 14,
+        "execution_outside_source_checkout": true
+      },
+      {
+        "kind": "standalone_zip",
+        "versions": {
+          "transformer": "0.3.0rc1",
+          "airflow": "0.5.0rc1",
+          "transformer_module": "0.3.0rc1",
+          "airflow_module": "0.5.0rc1"
+        },
+        "pip_check": true,
+        "synthetic_request_observations": 2,
+        "writer_convert_and_verify": true,
+        "transcript_and_participant_observations": 322,
+        "contained_records": 14,
+        "execution_outside_source_checkout": true
+      }
+    ]
+  },
+  "airflow_version": "3.3.2",
+  "airflow_cases": [
+    {
+      "case": "final-capture-dag",
+      "dag_id": "learnlog_recorded_requests",
+      "run_id": "manual__2026-10-20T20:54:00.767118+00:00",
+      "state": "success",
+      "successful_task_updates_in_log": 3,
+      "log_sha256": "8e45f187b852a389ad391ff7960249e01c47eb8fd04e07674557a6f1dae50ce8",
+      "metadata_task_states": [],
+      "evidence_note": "Airflow dags test replaces older runs at the same logical date; the synthetic run remains evidenced by its execution log."
+    },
+    {
+      "case": "final-transcript-dag",
+      "dag_id": "qlm_transformer_exports",
+      "run_id": "manual__2026-10-20T20:55:13.455587+00:00",
+      "state": "success",
+      "successful_task_updates_in_log": 5,
+      "log_sha256": "3f596a3caee9e812d8a81930f0ff0ff70affcef707e78b6b6dc849446375a397",
+      "metadata_task_states": [
+        [
+          "prepare",
+          -1,
+          "success"
+        ],
+        [
+          "dataset_ids",
+          -1,
+          "success"
+        ],
+        [
+          "convert",
+          0,
+          "success"
+        ],
+        [
+          "combine",
+          -1,
+          "success"
+        ],
+        [
+          "convert",
+          1,
+          "success"
+        ]
+      ],
+      "evidence_note": "Airflow dags test replaces older runs at the same logical date; the synthetic run remains evidenced by its execution log."
+    },
+    {
+      "case": "final-research-dag",
+      "dag_id": "learnlog_recorded_requests",
+      "run_id": "manual__2026-10-20T20:56:15.961309+00:00",
+      "state": "success",
+      "successful_task_updates_in_log": 3,
+      "log_sha256": "757032f6d4500085876692a4f2f8ca4d91864a1e45526c09fa055e53fc80e76a",
+      "metadata_task_states": [
+        [
+          "prepare",
+          -1,
+          "success"
+        ],
+        [
+          "transform_and_analyze",
+          -1,
+          "success"
+        ],
+        [
+          "check_summary",
+          -1,
+          "success"
+        ]
+      ],
+      "evidence_note": "Airflow dags test replaces older runs at the same logical date; the synthetic run remains evidenced by its execution log.",
+      "recorded_request_observations": 1109,
+      "shared_sql_results_identical": true
+    }
+  ],
+  "airflow_execution_scope": "Actual tasks and local test services via dags test; not a production scheduler or remote-worker deployment.",
+  "research": {
+    "native_rows": 1090554,
+    "recorded_request_observations": 1109,
+    "strata": {
+      "hint_button": 960,
+      "hint_retry": 90,
+      "chat_query": 59
+    },
+    "source_files_re_read_and_hash_checked": true,
+    "new_source_download_claimed": false,
+    "all_three_sql_representations_match": true,
+    "actual_request_total": null,
+    "request_rate": null,
+    "learning_effect": null,
+    "independent_human_mapping_review": false
+  },
+  "download": {
+    "file": "qlm-transformer-airflow.zip",
+    "sha256": "cbd6944bf02bfbf5aac7502385f1638cefec4490e75d93675c92c4ed1d34bc7d",
+    "bytes": 390670,
+    "manifest_entries_verified": 184,
+    "vendor_source_matches_canonical_package": true,
+    "raw_zenodo_idetrace_telemetry_bundled": false
+  },
+  "package_artifacts": {
+    "qlm_transformer-0.3.0rc1-py3-none-any.whl": {
+      "bytes": 168722,
+      "sha256": "4bea9e155dca9bf6426ce75b1c6af80cde7276d9b8c80abd69f6182702ae1d0b"
+    },
+    "qlm_transformer-0.3.0rc1.tar.gz": {
+      "bytes": 142064,
+      "sha256": "02c850ab96bd0b357534b0f1b84438b626c5836d2060be14acc2d12847d15211"
+    },
+    "qlm_transformer_airflow_demo-0.5.0rc1-py3-none-any.whl": {
+      "bytes": 37726,
+      "sha256": "3d299e4ab305e02794aacf5bb8513688b138e232d30b493f0376bc50bc55bdb0"
+    },
+    "qlm_transformer_airflow_demo-0.5.0rc1.tar.gz": {
+      "bytes": 143189,
+      "sha256": "d90f3774d3105cae46f9476043380ca6bdca04d681839d1daa0c98cb228d9a50"
+    }
+  },
+  "patch_transfer": {
+    "patch_applies_to_target_base": true,
+    "applied_tree_matches_candidate": true,
+    "tree": "89257bccfc0ac76d7c09933d273a1e4f68eea9ad"
+  },
+  "source_data_bytes_preserved": true,
+  "browser_visual_or_interaction_qa": false,
+  "hosted_ci_run": false,
+  "public_source_release_made": false,
+  "production_deployment_made": false,
+  "deployment": {
+    "target_domain": "transformer.quantumlearningmachines.com",
+    "project_id": "prj_mzqznA27d4v3SK79RXxLQxNBceiq",
+    "team_id": "team_UoeCtnqdrONgbWwvjg11hw9N",
+    "project_name": "qlm-transformer",
+    "prepared_root": "demo/transformer",
+    "prepared_output": "dist",
+    "project_list_confirmed": true,
+    "project_detail_access": "403 missing Vercel team grant",
+    "current_git_linkage_verified": false,
+    "deployment_protection_verified": false,
+    "production_updated": false,
+    "preview_created": false,
+    "browser_qa_performed": false,
+    "browser_qa_reason": "No control-browser skill is exposed in the managed environment."
+  },
+  "additional_probe_limits": [
+    "Nested smoke-runner probes failed with psutil.NoSuchProcess in this managed environment. Those runners are excluded. The shipped workflow uses the direct Airflow CLI commands that passed above."
+  ],
+  "interpretation_limits": [
+    "No independent human mapping review or upstream capture-completeness validation.",
+    "No comparative measurement-benefit, learning-effect or product-adoption result.",
+    "No xAPI live-LRS interoperability or Caliper certification result.",
+    "No raw Zenodo/IDETrace telemetry or private estimation engine is released."
+  ]
+}

@@ -1,0 +1,94 @@
+{
+  "result": "PASS",
+  "cases": {
+    "combined": {
+      "status": "available",
+      "intervals": 10,
+      "annotation_rows": 60,
+      "sessions": 2,
+      "providers": 1,
+      "action_includes_scaffolding": {
+        "numerator": 9,
+        "denominator": 10
+      }
+    },
+    "transcript": {
+      "status": "available",
+      "intervals": 10,
+      "annotation_rows": 60,
+      "sessions": 2,
+      "providers": 1,
+      "action_includes_scaffolding": {
+        "numerator": 9,
+        "denominator": 10
+      }
+    },
+    "summary_only": {
+      "status": "unmeasured",
+      "intervals": 0,
+      "annotation_rows": 0,
+      "sessions": 0,
+      "providers": 0,
+      "action_includes_scaffolding": {
+        "numerator": 0,
+        "denominator": 0
+      }
+    },
+    "empty": {
+      "status": "unmeasured",
+      "intervals": 0,
+      "annotation_rows": 0,
+      "sessions": 0,
+      "providers": 0,
+      "action_includes_scaffolding": {
+        "numerator": 0,
+        "denominator": 0
+      }
+    },
+    "duplicate_session": {
+      "status": "available",
+      "intervals": 10,
+      "annotation_rows": 60,
+      "sessions": 2,
+      "providers": 1,
+      "action_includes_scaffolding": {
+        "numerator": 9,
+        "denominator": 10
+      }
+    },
+    "changed_transformed_dialogue": {
+      "status": "available",
+      "intervals": 6,
+      "annotation_rows": 29,
+      "sessions": 1,
+      "providers": 1,
+      "action_includes_scaffolding": {
+        "numerator": 5,
+        "denominator": 6
+      }
+    },
+    "boolean_turn_number": {
+      "status": "available",
+      "intervals": 6,
+      "annotation_rows": 29,
+      "sessions": 1,
+      "providers": 1,
+      "action_includes_scaffolding": {
+        "numerator": 5,
+        "denominator": 6
+      }
+    },
+    "unverified_input": {
+      "status": "unmeasured",
+      "intervals": 0,
+      "annotation_rows": 0,
+      "sessions": 0,
+      "providers": 0,
+      "action_includes_scaffolding": {
+        "numerator": 0,
+        "denominator": 0
+      }
+    }
+  },
+  "scope": "Complete measurement JSON and CSV bytes on the same real transformed Learnlog records, including duplicate, edited and unverified inputs."
+}

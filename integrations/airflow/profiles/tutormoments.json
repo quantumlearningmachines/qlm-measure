@@ -1,0 +1,88 @@
+{
+  "id": "tutormoments",
+  "name": "TutorMoments",
+  "description": "Real human math tutoring transcripts; publisher machine transcription and deidentification disclosed.",
+  "mode": "dialogue",
+  "status": "source_specific_research_adapter",
+  "fields": {
+    "subject_id": "session.student_id",
+    "activity_id": "transcript_id"
+  },
+  "metrics": {},
+  "mapping": {
+    "platform": "tutormoments",
+    "status": "source_specific_research_adapter",
+    "version": "0.4.0",
+    "mode": "dialogue",
+    "fields": {
+      "subject_id": "session.student_id",
+      "activity_id": "transcript_id"
+    },
+    "metrics": {},
+    "source_unit": "transcript_session",
+    "time_basis": "import_time_with_source_offsets",
+    "event_name": "qlm_import:dialogue_turn_observed",
+    "excluded_observed_fields": [
+      "enrichments",
+      "annotations",
+      "action_taxonomy"
+    ],
+    "identifier_handling": "Known subject identifiers are HMAC pseudonymized; selected source fields and text are retained. This is not a general anonymizer.",
+    "dialogue": {
+      "turns": "turns",
+      "role": "role",
+      "text": "text",
+      "turn_number": "turn_number",
+      "offsets": [
+        "start_seconds",
+        "end_seconds"
+      ]
+    }
+  },
+  "sampleName": "tutormoments-real-transcripts.jsonl",
+  "subjectScope": "dataset + tenant + key",
+  "recordScope": "transcript_session",
+  "source": {
+    "kind": "published_research_data",
+    "url": "https://huggingface.co/datasets/allenai/tutormoments-preview",
+    "downloadUrl": "https://huggingface.co/datasets/allenai/tutormoments-preview/resolve/3bb0c104d65e29facffca7ba864ef10fa22d0e78/transcripts.jsonl",
+    "revision": "3bb0c104d65e29facffca7ba864ef10fa22d0e78",
+    "license": "CC-BY-4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
+    "citation": "TutorMoments-Preview, Albert Zhang and colleagues, Allen Institute for AI and collaborators (2026).",
+    "selectionNote": "Exact complete source JSONL lines 366 and 435, retained in source order including original newline bytes. No text, metadata, IDs, dates or events added or altered.",
+    "limitations": [
+      "These are transcripts of real human tutoring sessions, not simulated student conversations and not native vendor clickstream exports.",
+      "Released text was transcribed by SUT (Gemini 2.5 Pro); preserve that provenance and do not call it verified verbatim audio or a perfect transcription.",
+      "Publisher deidentifies free text with fabricated surrogates or tags; apparent names in the selected text are not real per publisher documentation. UUIDv5 identifiers are publisher surrogates.",
+      "Absolute session dates are removed. start_seconds/end_seconds are relative source offsets; do not synthesize wall-clock event timestamps.",
+      "The source anonymizes the provider as tutoring_provider_a. Do not relabel it Khan Academy, MATHia, IXL, DreamBox or ALEKS.",
+      "Source enrichments are model-generated screen/pause narratives; do not convert them into observed assistance events.",
+      "Ground-truth annotations are LLM-assisted and action-taxonomy labels model-generated; this sample does not include either as observed learner events.",
+      "A question mark or Tutor role alone does not establish a hint request or help effectiveness. Preserve role/text conservatively; explicitly mark any semantic classification as derived.",
+      "No original recording is released (has_video false). Raw transcripts and their offsets cannot independently establish fidelity to underlying audio.",
+      "Data involves minors. No reidentification. Report residual PII and do not redistribute affected records per publisher guidance."
+    ],
+    "sampleSha256": "7df51fda0fff9c454ba14a33a0d2964d5e94b2556eff1d3897ec4f41373c8a66",
+    "sourceSha256": "34b5d4483302593043f3d9be3bf37f1cde6cba5b031fd2d20d75a15d5498f276",
+    "sourceRows": [
+      366,
+      435
+    ],
+    "provenanceUrl": "./provenance/tutormoments.json",
+    "sampleUrl": "./samples/tutormoments-real-transcripts.jsonl",
+    "summary": "2 transcript sessions · 310 source turns",
+    "demonstrationWindows": [
+      {
+        "recordIndex": 0,
+        "startTurn": 27,
+        "endTurn": 39
+      },
+      {
+        "recordIndex": 1,
+        "startTurn": 31,
+        "endTurn": 57
+      }
+    ]
+  }
+}

@@ -1,0 +1,247 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.org/learnlog/102026/ai-use/v0.1.0/ai-context.schema.json",
+  "title": "Proposed immutable RecordHeader.ai_context v0.1.0",
+  "$comment": "Proposed v0.1.0 companion; example.org URIs are illustrative and unregistered.",
+  "type": "object",
+  "properties": {
+    "profile_id": {
+      "const": "https://example.org/learnlog/102026/ai-use/v0.1.0"
+    },
+    "profile_version": {
+      "const": "0.1.0"
+    },
+    "context_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "phase": {
+      "enum": [
+        "learning",
+        "practice",
+        "assessment",
+        "baseline",
+        "follow_up"
+      ]
+    },
+    "activity": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "version": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "required": [
+        "id",
+        "version"
+      ],
+      "additionalProperties": false
+    },
+    "policy": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "version": {
+          "type": "string",
+          "minLength": 1
+        },
+        "phase": {
+          "enum": [
+            "learning",
+            "practice",
+            "assessment",
+            "baseline",
+            "follow_up"
+          ]
+        },
+        "permission": {
+          "enum": [
+            "permitted",
+            "prohibited",
+            "restricted",
+            "unknown"
+          ]
+        },
+        "allowed_assistance": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "minItems": 0,
+          "uniqueItems": true
+        },
+        "authority": {
+          "type": "string",
+          "minLength": 1
+        },
+        "statement": {
+          "type": "string",
+          "minLength": 1
+        },
+        "scope": {
+          "type": "object",
+          "properties": {
+            "actor": {
+              "const": "subject"
+            },
+            "activity_id": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          "required": [
+            "actor",
+            "activity_id"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "id",
+        "version",
+        "phase",
+        "permission",
+        "allowed_assistance",
+        "authority",
+        "statement",
+        "scope"
+      ],
+      "additionalProperties": false
+    },
+    "observation": {
+      "type": "object",
+      "properties": {
+        "domain": {
+          "const": "producer_activity_only"
+        },
+        "declaration_kind": {
+          "const": "producer_asserted"
+        },
+        "capture_status": {
+          "enum": [
+            "declared_complete_within_scope",
+            "partial",
+            "unknown"
+          ]
+        },
+        "scope": {
+          "type": "object",
+          "properties": {
+            "session": {
+              "type": "string",
+              "minLength": 1
+            },
+            "first_seq": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 9007199254740991
+            },
+            "last_seq": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 9007199254740991
+            }
+          },
+          "required": [
+            "session",
+            "first_seq",
+            "last_seq"
+          ],
+          "additionalProperties": false
+        },
+        "planned_channels": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "minItems": 0,
+          "uniqueItems": true
+        },
+        "claimed_channels": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "minItems": 1,
+          "uniqueItems": true
+        },
+        "exclusions": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "source": {
+                "type": "string",
+                "minLength": 1
+              },
+              "status": {
+                "const": "unknown"
+              },
+              "reason": {
+                "enum": [
+                  "conflicting_evidence",
+                  "missing_comparator",
+                  "not_collected",
+                  "not_reported_after_review",
+                  "outside_observation",
+                  "redacted",
+                  "truncated",
+                  "unavailable_source"
+                ]
+              },
+              "detail": {
+                "type": "string",
+                "minLength": 1
+              }
+            },
+            "required": [
+              "source",
+              "status",
+              "reason",
+              "detail"
+            ],
+            "additionalProperties": false
+          },
+          "minItems": 1
+        },
+        "basis": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "required": [
+        "domain",
+        "declaration_kind",
+        "capture_status",
+        "scope",
+        "planned_channels",
+        "claimed_channels",
+        "exclusions",
+        "basis"
+      ],
+      "additionalProperties": false,
+      "description": "Producer's coverage declaration. Hash consistency does not verify its truth or actual completeness."
+    }
+  },
+  "required": [
+    "profile_id",
+    "profile_version",
+    "context_id",
+    "phase",
+    "activity",
+    "policy",
+    "observation"
+  ],
+  "additionalProperties": false
+}

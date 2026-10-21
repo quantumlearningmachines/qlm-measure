@@ -1,0 +1,35 @@
+{
+  "origin": "QLM-authored assistance capture payload 0.1.0-draft; corrected binding 0.1.1-draft on 20 October 2026. Earlier manifest preserved in the historical submission records.",
+  "files": [
+    {
+      "path": "LICENSE",
+      "bytes": 1360,
+      "sha256": "8b77521fec9b625f88bbc980ac9ad4ff6fbe300d208e8df474b9d36b603164c6"
+    },
+    {
+      "path": "assistance-capture.schema.json",
+      "bytes": 21971,
+      "sha256": "103b32b4c1643f44fb9c810ffd151572d7ba5f0e921ba7b73f346ac38feeb236"
+    },
+    {
+      "path": "carrier_bindings.py",
+      "bytes": 14135,
+      "sha256": "036ed438494ebbf538c60cb43268d901d1042127f42e9d0bb53edd7f988117fc"
+    },
+    {
+      "path": "carrier_fragments.py",
+      "bytes": 1353,
+      "sha256": "226821e5af14ece13cbef4b46872143e2015913a50a1c0e03805162d855141bf"
+    },
+    {
+      "path": "requirements.txt",
+      "bytes": 19,
+      "sha256": "756cc9e506ae4ee1a6f6c0507088b5cfc0dc8ba350fb2d2d46f1ffa72033adb6"
+    },
+    {
+      "path": "validate_contract.py",
+      "bytes": 4239,
+      "sha256": "3b7ca50bbb31eacf1e428c8d3c99ba26c7bb8c791a81d3ce6b331ab6ba7cb22c"
+    }
+  ]
+}

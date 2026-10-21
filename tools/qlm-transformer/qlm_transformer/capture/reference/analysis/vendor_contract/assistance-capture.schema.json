@@ -1,0 +1,912 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:learnlog:proposal:assistance-capture:0.1.0",
+  "title": "Proposed Learnlog transport-neutral assistance capture contract",
+  "description": "Experimental contract; syntactic validity is not evidence of truth, independent review, learning, or comparability.",
+  "type": "object",
+  "properties": {
+    "schema_version": {
+      "const": "0.1.0-draft"
+    },
+    "record_id": {
+      "$ref": "#/$defs/scoped_id"
+    },
+    "record_kind": {
+      "const": "assistance_event_observation"
+    },
+    "source": {
+      "type": "object",
+      "properties": {
+        "source_id": {
+          "type": "string",
+          "minLength": 1,
+          "format": "uri",
+          "pattern": "^[A-Za-z][A-Za-z0-9+.-]*:\\S+$"
+        },
+        "product_version": {
+          "allOf": [
+            {
+              "$ref": "#/$defs/knowledge"
+            },
+            {
+              "if": {
+                "properties": {
+                  "state": {
+                    "const": "observed"
+                  }
+                }
+              },
+              "then": {
+                "properties": {
+                  "value": {
+                    "type": "string",
+                    "minLength": 1
+                  }
+                }
+              }
+            }
+          ]
+        },
+        "model_version": {
+          "allOf": [
+            {
+              "$ref": "#/$defs/knowledge"
+            },
+            {
+              "if": {
+                "properties": {
+                  "state": {
+                    "const": "observed"
+                  }
+                }
+              },
+              "then": {
+                "properties": {
+                  "value": {
+                    "type": "string",
+                    "minLength": 1
+                  }
+                }
+              }
+            }
+          ]
+        },
+        "source_revision": {
+          "allOf": [
+            {
+              "$ref": "#/$defs/knowledge"
+            },
+            {
+              "if": {
+                "properties": {
+                  "state": {
+                    "const": "observed"
+                  }
+                }
+              },
+              "then": {
+                "properties": {
+                  "value": {
+                    "type": "string",
+                    "minLength": 1
+                  }
+                }
+              }
+            }
+          ]
+        }
+      },
+      "required": [
+        "source_id",
+        "product_version",
+        "model_version",
+        "source_revision"
+      ],
+      "additionalProperties": false
+    },
+    "assistance": {
+      "type": "object",
+      "properties": {
+        "label": {
+          "type": "string",
+          "minLength": 1
+        },
+        "lifecycle": {
+          "allOf": [
+            {
+              "$ref": "#/$defs/knowledge"
+            },
+            {
+              "if": {
+                "properties": {
+                  "state": {
+                    "const": "observed"
+                  }
+                }
+              },
+              "then": {
+                "properties": {
+                  "value": {
+                    "enum": [
+                      "requested",
+                      "generated",
+                      "transmitted",
+                      "displayed",
+                      "accepted"
+                    ]
+                  }
+                }
+              }
+            }
+          ]
+        },
+        "event_time": {
+          "type": "object",
+          "properties": {
+            "original": {
+              "allOf": [
+                {
+                  "$ref": "#/$defs/knowledge"
+                },
+                {
+                  "if": {
+                    "properties": {
+                      "state": {
+                        "const": "observed"
+                      }
+                    }
+                  },
+                  "then": {
+                    "properties": {
+                      "value": {
+                        "type": [
+                          "string",
+                          "number"
+                        ]
+                      }
+                    }
+                  }
+                }
+              ]
+            },
+            "utc": {
+              "allOf": [
+                {
+                  "$ref": "#/$defs/knowledge"
+                },
+                {
+                  "if": {
+                    "properties": {
+                      "state": {
+                        "const": "observed"
+                      }
+                    }
+                  },
+                  "then": {
+                    "properties": {
+                      "value": {
+                        "type": "string",
+                        "format": "date-time"
+                      }
+                    }
+                  }
+                }
+              ]
+            },
+            "clock_basis": {
+              "allOf": [
+                {
+                  "$ref": "#/$defs/knowledge"
+                },
+                {
+                  "if": {
+                    "properties": {
+                      "state": {
+                        "const": "observed"
+                      }
+                    }
+                  },
+                  "then": {
+                    "properties": {
+                      "value": {
+                        "type": "string",
+                        "minLength": 1
+                      }
+                    }
+                  }
+                }
+              ]
+            }
+          },
+          "required": [
+            "original",
+            "utc",
+            "clock_basis"
+          ],
+          "additionalProperties": false
+        },
+        "assistance_id": {
+          "$ref": "#/$defs/scoped_id"
+        }
+      },
+      "required": [
+        "label",
+        "lifecycle",
+        "event_time"
+      ],
+      "additionalProperties": false
+    },
+    "subject": {
+      "$ref": "#/$defs/scoped_id"
+    },
+    "capture": {
+      "type": "object",
+      "properties": {
+        "instrument_id": {
+          "type": "string",
+          "minLength": 1,
+          "format": "uri",
+          "pattern": "^[A-Za-z][A-Za-z0-9+.-]*:\\S+$"
+        },
+        "capabilities": {
+          "type": "object",
+          "properties": {
+            "requested": {
+              "allOf": [
+                {
+                  "$ref": "#/$defs/knowledge"
+                },
+                {
+                  "if": {
+                    "properties": {
+                      "state": {
+                        "const": "observed"
+                      }
+                    }
+                  },
+                  "then": {
+                    "properties": {
+                      "value": {
+                        "type": "boolean"
+                      }
+                    }
+                  }
+                }
+              ]
+            },
+            "generated": {
+              "allOf": [
+                {
+                  "$ref": "#/$defs/knowledge"
+                },
+                {
+                  "if": {
+                    "properties": {
+                      "state": {
+                        "const": "observed"
+                      }
+                    }
+                  },
+                  "then": {
+                    "properties": {
+                      "value": {
+                        "type": "boolean"
+                      }
+                    }
+                  }
+                }
+              ]
+            },
+            "transmitted": {
+              "allOf": [
+                {
+                  "$ref": "#/$defs/knowledge"
+                },
+                {
+                  "if": {
+                    "properties": {
+                      "state": {
+                        "const": "observed"
+                      }
+                    }
+                  },
+                  "then": {
+                    "properties": {
+                      "value": {
+                        "type": "boolean"
+                      }
+                    }
+                  }
+                }
+              ]
+            },
+            "displayed": {
+              "allOf": [
+                {
+                  "$ref": "#/$defs/knowledge"
+                },
+                {
+                  "if": {
+                    "properties": {
+                      "state": {
+                        "const": "observed"
+                      }
+                    }
+                  },
+                  "then": {
+                    "properties": {
+                      "value": {
+                        "type": "boolean"
+                      }
+                    }
+                  }
+                }
+              ]
+            },
+            "accepted": {
+              "allOf": [
+                {
+                  "$ref": "#/$defs/knowledge"
+                },
+                {
+                  "if": {
+                    "properties": {
+                      "state": {
+                        "const": "observed"
+                      }
+                    }
+                  },
+                  "then": {
+                    "properties": {
+                      "value": {
+                        "type": "boolean"
+                      }
+                    }
+                  }
+                }
+              ]
+            }
+          },
+          "required": [
+            "requested",
+            "generated",
+            "transmitted",
+            "displayed",
+            "accepted"
+          ],
+          "additionalProperties": false
+        },
+        "boundary": {
+          "type": "object",
+          "properties": {
+            "systems": {
+              "type": "array",
+              "minItems": 1,
+              "uniqueItems": true,
+              "items": {
+                "type": "string",
+                "minLength": 1
+              }
+            },
+            "event_classes": {
+              "type": "array",
+              "minItems": 1,
+              "uniqueItems": true,
+              "items": {
+                "enum": [
+                  "requested",
+                  "generated",
+                  "transmitted",
+                  "displayed",
+                  "accepted"
+                ]
+              }
+            },
+            "exclusions": {
+              "type": "array",
+              "minItems": 1,
+              "items": {
+                "type": "string",
+                "minLength": 1
+              }
+            }
+          },
+          "required": [
+            "systems",
+            "event_classes",
+            "exclusions"
+          ],
+          "additionalProperties": false
+        },
+        "window": {
+          "type": "object",
+          "properties": {
+            "start": {
+              "allOf": [
+                {
+                  "$ref": "#/$defs/knowledge"
+                },
+                {
+                  "if": {
+                    "properties": {
+                      "state": {
+                        "const": "observed"
+                      }
+                    }
+                  },
+                  "then": {
+                    "properties": {
+                      "value": {
+                        "type": "string",
+                        "format": "date-time"
+                      }
+                    }
+                  }
+                }
+              ]
+            },
+            "end": {
+              "allOf": [
+                {
+                  "$ref": "#/$defs/knowledge"
+                },
+                {
+                  "if": {
+                    "properties": {
+                      "state": {
+                        "const": "observed"
+                      }
+                    }
+                  },
+                  "then": {
+                    "properties": {
+                      "value": {
+                        "type": "string",
+                        "format": "date-time"
+                      }
+                    }
+                  }
+                }
+              ]
+            }
+          },
+          "required": [
+            "start",
+            "end"
+          ],
+          "additionalProperties": false
+        },
+        "coverage": {
+          "allOf": [
+            {
+              "$ref": "#/$defs/knowledge"
+            },
+            {
+              "if": {
+                "properties": {
+                  "state": {
+                    "const": "observed"
+                  }
+                }
+              },
+              "then": {
+                "properties": {
+                  "value": {
+                    "enum": [
+                      "complete_within_boundary",
+                      "partial"
+                    ]
+                  }
+                }
+              }
+            }
+          ]
+        }
+      },
+      "required": [
+        "instrument_id",
+        "capabilities",
+        "boundary",
+        "window",
+        "coverage"
+      ],
+      "additionalProperties": false
+    },
+    "context": {
+      "type": "object",
+      "properties": {
+        "activity_reference": {
+          "allOf": [
+            {
+              "$ref": "#/$defs/knowledge"
+            },
+            {
+              "if": {
+                "properties": {
+                  "state": {
+                    "const": "observed"
+                  }
+                }
+              },
+              "then": {
+                "properties": {
+                  "value": {
+                    "type": "string",
+                    "minLength": 1,
+                    "format": "uri",
+                    "pattern": "^[A-Za-z][A-Za-z0-9+.-]*:\\S+$"
+                  }
+                }
+              }
+            }
+          ]
+        },
+        "phase": {
+          "allOf": [
+            {
+              "$ref": "#/$defs/knowledge"
+            },
+            {
+              "if": {
+                "properties": {
+                  "state": {
+                    "const": "observed"
+                  }
+                }
+              },
+              "then": {
+                "properties": {
+                  "value": {
+                    "enum": [
+                      "practice",
+                      "assessment",
+                      "other"
+                    ]
+                  }
+                }
+              }
+            }
+          ]
+        },
+        "permission": {
+          "allOf": [
+            {
+              "$ref": "#/$defs/knowledge"
+            },
+            {
+              "if": {
+                "properties": {
+                  "state": {
+                    "const": "observed"
+                  }
+                }
+              },
+              "then": {
+                "properties": {
+                  "value": {
+                    "enum": [
+                      "permitted",
+                      "prohibited",
+                      "restricted"
+                    ]
+                  }
+                }
+              }
+            }
+          ]
+        }
+      },
+      "required": [
+        "activity_reference",
+        "phase",
+        "permission"
+      ],
+      "additionalProperties": false
+    },
+    "provenance": {
+      "type": "object",
+      "properties": {
+        "native_record_reference": {
+          "type": "string",
+          "minLength": 1,
+          "format": "uri",
+          "pattern": "^[A-Za-z][A-Za-z0-9+.-]*:\\S+$"
+        },
+        "mapping_reference": {
+          "type": "string",
+          "minLength": 1,
+          "format": "uri",
+          "pattern": "^[A-Za-z][A-Za-z0-9+.-]*:\\S+$"
+        },
+        "mapping_review": {
+          "allOf": [
+            {
+              "$ref": "#/$defs/knowledge"
+            },
+            {
+              "if": {
+                "properties": {
+                  "state": {
+                    "const": "observed"
+                  }
+                }
+              },
+              "then": {
+                "properties": {
+                  "value": {
+                    "enum": [
+                      "author_reviewed",
+                      "independently_reviewed",
+                      "disputed"
+                    ]
+                  }
+                }
+              }
+            }
+          ]
+        }
+      },
+      "required": [
+        "native_record_reference",
+        "mapping_reference",
+        "mapping_review"
+      ],
+      "additionalProperties": false
+    },
+    "evidence": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/$defs/evidence"
+      }
+    },
+    "derived_labels": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "label": {
+            "type": "string",
+            "minLength": 1
+          },
+          "value": {
+            "not": {
+              "type": "null"
+            }
+          },
+          "method_reference": {
+            "type": "string",
+            "minLength": 1,
+            "format": "uri",
+            "pattern": "^[A-Za-z][A-Za-z0-9+.-]*:\\S+$"
+          },
+          "evidence_refs": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1
+            },
+            "uniqueItems": true,
+            "minItems": 1
+          }
+        },
+        "required": [
+          "label",
+          "value",
+          "method_reference",
+          "evidence_refs"
+        ],
+        "additionalProperties": false
+      }
+    }
+  },
+  "required": [
+    "schema_version",
+    "record_id",
+    "record_kind",
+    "source",
+    "assistance",
+    "capture",
+    "context",
+    "provenance",
+    "evidence"
+  ],
+  "additionalProperties": false,
+  "$defs": {
+    "knowledge": {
+      "type": "object",
+      "properties": {
+        "state": {
+          "enum": [
+            "observed",
+            "not_collected",
+            "not_reported",
+            "not_reviewed",
+            "unknown",
+            "not_applicable"
+          ]
+        },
+        "reason": {
+          "type": "string",
+          "minLength": 1
+        },
+        "value": {
+          "not": {
+            "type": "null"
+          }
+        },
+        "evidence_refs": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "uniqueItems": true
+        },
+        "review_scope": {
+          "type": "object",
+          "properties": {
+            "searched_evidence_refs": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "minLength": 1
+              },
+              "uniqueItems": true,
+              "minItems": 1
+            },
+            "search_description": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          "required": [
+            "searched_evidence_refs",
+            "search_description"
+          ],
+          "additionalProperties": false
+        },
+        "capture_basis": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "required": [
+        "state",
+        "reason",
+        "evidence_refs"
+      ],
+      "additionalProperties": false,
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "state": {
+                "const": "observed"
+              }
+            }
+          },
+          "then": {
+            "required": [
+              "value"
+            ],
+            "properties": {
+              "evidence_refs": {
+                "minItems": 1
+              }
+            }
+          },
+          "else": {
+            "not": {
+              "required": [
+                "value"
+              ]
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "state": {
+                "enum": [
+                  "not_collected",
+                  "not_reported",
+                  "not_applicable"
+                ]
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "evidence_refs": {
+                "minItems": 1
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "state": {
+                "const": "not_reported"
+              }
+            }
+          },
+          "then": {
+            "required": [
+              "review_scope"
+            ]
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "state": {
+                "const": "not_collected"
+              }
+            }
+          },
+          "then": {
+            "required": [
+              "capture_basis"
+            ]
+          }
+        }
+      ]
+    },
+    "scoped_id": {
+      "type": "object",
+      "properties": {
+        "scope": {
+          "type": "string",
+          "minLength": 1,
+          "format": "uri",
+          "pattern": "^[A-Za-z][A-Za-z0-9+.-]*:\\S+$"
+        },
+        "local_id": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "required": [
+        "scope",
+        "local_id"
+      ],
+      "additionalProperties": false
+    },
+    "evidence": {
+      "type": "object",
+      "properties": {
+        "evidence_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "kind": {
+          "enum": [
+            "native_record",
+            "source_documentation",
+            "instrumentation_test",
+            "synthetic_fixture"
+          ]
+        },
+        "reference": {
+          "type": "string",
+          "minLength": 1,
+          "format": "uri",
+          "pattern": "^[A-Za-z][A-Za-z0-9+.-]*:\\S+$"
+        },
+        "description": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "required": [
+        "evidence_id",
+        "kind",
+        "reference",
+        "description"
+      ],
+      "additionalProperties": false
+    }
+  }
+}

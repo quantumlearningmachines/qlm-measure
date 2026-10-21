@@ -1,0 +1,5 @@
+{
+  "fixture": "synthetic_transformer_ai",
+  "scaffold": "Which quantities are given? Explain your plan before calculating.",
+  "synthetic": true
+}

@@ -1,0 +1,16 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite it using this metadata."
+type: software
+title: "QLM Transformer"
+version: 0.3.0rc1
+authors:
+  - family-names: Srivastava
+    given-names: Kumar
+    affiliation: Quantum Learning Machines
+abstract: >-
+  Prepared assistance-capture profile and native-export transformation tools,
+  preserving stages, capture declarations, mapping provenance and unknowns.
+  Optional xAPI and Caliper bindings support existing logging ecosystems.
+  Candidate mappings and software checks do not establish complete capture,
+  measurement superiority or learning effects.
+license: MIT

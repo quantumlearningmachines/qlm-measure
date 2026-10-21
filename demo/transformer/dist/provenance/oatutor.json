@@ -1,0 +1,84 @@
+{
+  "sample_name": "OATutor 2024 help-condition study: first 12 participant summaries",
+  "retrieved_at": "2026-10-17",
+  "dataset_url": "https://figshare.com/articles/dataset/ChatGPT-generated_help_produces_learning_gains_equivalent_to_human_tutors_on_mathematics_skills/23935269",
+  "paper_url": "https://doi.org/10.1371/journal.pone.0304013",
+  "revision": "10.6084/m9.figshare.23935269.v1",
+  "license": "CC-BY-4.0",
+  "license_url": "https://creativecommons.org/licenses/by/4.0/",
+  "attribution": "Pardos, Zachary; Bhandari, Shreya (2023). ChatGPT-generated help produces learning gains equivalent to human tutors on mathematics skills. figshare. Dataset. https://doi.org/10.6084/m9.figshare.23935269.v1",
+  "source_file": {
+    "name": "Participants.csv",
+    "download_url": "https://ndownloader.figshare.com/files/41974569",
+    "size_bytes": 23144,
+    "sha256": "e6801fb72e0642df548d63fa75ec3487e3b4b283df5759ba2b70d7e2e41289c4",
+    "md5": "6a3661ef8dd4aec25bcffef69f7ab43a"
+  },
+  "sample_file": {
+    "name": "oatutor-real-participants.csv",
+    "size_bytes": 1137,
+    "sha256": "26b98b6f5718f5c2f473d81ae1ad8e1817d18bada3ba7390d8e0ac445a8ad5a2",
+    "changed_fields": [],
+    "selection": "Exact source header and first 12 data records, preserving original bytes and CRLF newlines. No values, columns or records added or altered."
+  },
+  "records": [
+    {
+      "source_line_1_based": 2,
+      "line_sha256": "90e00ecec2f038cd1a5b6b8f1992281781e798b8801135c9cbdfa64fc9099cbf"
+    },
+    {
+      "source_line_1_based": 3,
+      "line_sha256": "077841976a59e3c7bb69fb19bd9b651504348157625ca187fd20a98053e278d6"
+    },
+    {
+      "source_line_1_based": 4,
+      "line_sha256": "b8253defb627d14042cc843e702d56526ecdb329b831745cf692d8bf3c19f9be"
+    },
+    {
+      "source_line_1_based": 5,
+      "line_sha256": "4523a33f7ba64ab369f36093ba2ae3171b9ec436d5c2c23e890b8bcaebde9351"
+    },
+    {
+      "source_line_1_based": 6,
+      "line_sha256": "39dfa9011dd77f424375ba129104749814120bd3611bdd2291632e981bf1e577"
+    },
+    {
+      "source_line_1_based": 7,
+      "line_sha256": "3705c3cf1c16207bafb616b08e2c77ff07785cda31220fce00b9a3c3eebde8de"
+    },
+    {
+      "source_line_1_based": 8,
+      "line_sha256": "68ae06c28c6f5cfb66348db4693adb76428dbe7dd7df2792176b85ca6b71734d"
+    },
+    {
+      "source_line_1_based": 9,
+      "line_sha256": "16f49e582e93cfca4974996fcbd0dd19ba81b01cfe3c2ace1d135e0123c12d2c"
+    },
+    {
+      "source_line_1_based": 10,
+      "line_sha256": "712f8507d00c749e3463d48934e0a2c877d56eeb056a404c21c27443742c8ad1"
+    },
+    {
+      "source_line_1_based": 11,
+      "line_sha256": "876484a49338017c4d907d6a5552be7eb0e98776db64e36fc7f00625a9921560"
+    },
+    {
+      "source_line_1_based": 12,
+      "line_sha256": "166128a1306fa2c1471e72d3ef21c68b35f3f231d054326354d2f63aba3049d1"
+    },
+    {
+      "source_line_1_based": 13,
+      "line_sha256": "9de7bdbae790bb2208b3cc045a6cb0ad6fb9d1e7e4971cb641e11da5fad40ee8"
+    }
+  ],
+  "selection_rationale": "First 12 source records in published order; includes all three assigned conditions. Convenience demonstration subset, not a representative sample or a new study.",
+  "interpretation_limits": [
+    "These are participant-level study summaries, not a product export or a hint/clickstream log.",
+    "condition is the assigned help condition, not proof that a participant opened or received a particular hint.",
+    "The participant table supplies no individual inquiry, hint text, event sequence or event timestamps.",
+    "preTest, postTest, sessionTime, totalUniqueSteps and learningGain remain original columns and values. No new effect size, pooled score or causal analysis is calculated.",
+    "anonUserID is a publisher anonymous participant identifier. Learnlog output replaces the known subject identifier with a scoped HMAC pseudonym. The original public sample remains unchanged.",
+    "The published paper states the no-hint control still received correctness feedback and could request a bottom-out answer. The condition label is not evidence of no assistance.",
+    "The raw Human tutor condition means human tutor-authored hints, and ChatGPT means pre-generated ChatGPT solution hints. These are not recordings of live human or AI tutoring conversations."
+  ]
+}

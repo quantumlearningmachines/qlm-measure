@@ -1,0 +1,84 @@
+{
+  "tutormoments": {
+    "kind": "published_research_data",
+    "url": "https://huggingface.co/datasets/allenai/tutormoments-preview",
+    "downloadUrl": "https://huggingface.co/datasets/allenai/tutormoments-preview/resolve/3bb0c104d65e29facffca7ba864ef10fa22d0e78/transcripts.jsonl",
+    "revision": "3bb0c104d65e29facffca7ba864ef10fa22d0e78",
+    "license": "CC-BY-4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
+    "citation": "TutorMoments-Preview, Albert Zhang and colleagues, Allen Institute for AI and collaborators (2026).",
+    "selectionNote": "Exact complete source JSONL lines 366 and 435, retained in source order including original newline bytes. No text, metadata, IDs, dates or events added or altered.",
+    "limitations": [
+      "These are transcripts of real human tutoring sessions, not simulated student conversations and not native vendor clickstream exports.",
+      "Released text was transcribed by SUT (Gemini 2.5 Pro); preserve that provenance and do not call it verified verbatim audio or a perfect transcription.",
+      "Publisher deidentifies free text with fabricated surrogates or tags; apparent names in the selected text are not real per publisher documentation. UUIDv5 identifiers are publisher surrogates.",
+      "Absolute session dates are removed. start_seconds/end_seconds are relative source offsets; do not synthesize wall-clock event timestamps.",
+      "The source anonymizes the provider as tutoring_provider_a. Do not relabel it Khan Academy, MATHia, IXL, DreamBox or ALEKS.",
+      "Source enrichments are model-generated screen/pause narratives; do not convert them into observed assistance events.",
+      "Ground-truth annotations are LLM-assisted and action-taxonomy labels model-generated; this sample does not include either as observed learner events.",
+      "A question mark or Tutor role alone does not establish a hint request or help effectiveness. Preserve role/text conservatively; explicitly mark any semantic classification as derived.",
+      "No original recording is released (has_video false). Raw transcripts and their offsets cannot independently establish fidelity to underlying audio.",
+      "Data involves minors. No reidentification. Report residual PII and do not redistribute affected records per publisher guidance."
+    ],
+    "sampleSha256": "7df51fda0fff9c454ba14a33a0d2964d5e94b2556eff1d3897ec4f41373c8a66",
+    "sourceSha256": "34b5d4483302593043f3d9be3bf37f1cde6cba5b031fd2d20d75a15d5498f276",
+    "sourceRows": [
+      366,
+      435
+    ],
+    "provenanceUrl": "./provenance/tutormoments.json",
+    "sampleUrl": "./samples/tutormoments-real-transcripts.jsonl",
+    "summary": "2 transcript sessions \u00b7 310 source turns",
+    "demonstrationWindows": [
+      {
+        "recordIndex": 0,
+        "startTurn": 27,
+        "endTurn": 39
+      },
+      {
+        "recordIndex": 1,
+        "startTurn": 31,
+        "endTurn": 57
+      }
+    ]
+  },
+  "oatutor": {
+    "kind": "published_research_data",
+    "url": "https://figshare.com/articles/dataset/ChatGPT-generated_help_produces_learning_gains_equivalent_to_human_tutors_on_mathematics_skills/23935269",
+    "downloadUrl": "https://ndownloader.figshare.com/files/41974569",
+    "revision": "10.6084/m9.figshare.23935269.v1",
+    "license": "CC-BY-4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
+    "citation": "Pardos, Zachary; Bhandari, Shreya (2023). ChatGPT-generated help produces learning gains equivalent to human tutors on mathematics skills. figshare. Dataset. https://doi.org/10.6084/m9.figshare.23935269.v1",
+    "selectionNote": "Exact source header and first 12 data records, preserving original bytes and CRLF newlines. No values, columns or records added or altered.",
+    "limitations": [
+      "These are participant-level study summaries, not a product export or a hint/clickstream log.",
+      "condition is the assigned help condition, not proof that a participant opened or received a particular hint.",
+      "The participant table supplies no individual inquiry, hint text, event sequence or event timestamps.",
+      "The no-hint control still received correctness feedback and could request a bottom-out answer; assignment is not proof of no assistance.",
+      "The raw Human tutor condition means human tutor-authored hints, and ChatGPT means pre-generated ChatGPT solution hints. These are not recordings of live human or AI tutoring conversations.",
+      "preTest, postTest, sessionTime, totalUniqueSteps and learningGain remain original columns and values. No new effect size, pooled score or causal analysis is calculated.",
+      "anonUserID is a publisher anonymous participant identifier. Learnlog output replaces the known subject identifier with a scoped HMAC pseudonym. The original public sample remains unchanged."
+    ],
+    "sampleSha256": "26b98b6f5718f5c2f473d81ae1ad8e1817d18bada3ba7390d8e0ac445a8ad5a2",
+    "sourceSha256": "e6801fb72e0642df548d63fa75ec3487e3b4b283df5759ba2b70d7e2e41289c4",
+    "sourceRows": [
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12,
+      13
+    ],
+    "provenanceUrl": "./provenance/oatutor.json",
+    "sampleUrl": "./samples/oatutor-real-participants.csv",
+    "summary": "12 participant summaries \u00b7 3 assigned conditions",
+    "demonstrationWindows": []
+  }
+}

@@ -1,0 +1,237 @@
+{
+  "schema_version": "1.0.0",
+  "analysis_id": "recorded-assistance-requests-20261018",
+  "executed_utc": "2026-10-20T20:35:45.816Z",
+  "distribution_scope": "research_aggregate_facts_only_no_raw_redistribution",
+  "metric": {
+    "id": "recorded_help_request_observations",
+    "label": "Recorded learner help-request observations",
+    "unit": "Source-native request-record occurrences in the selected published releases",
+    "common_definition": "A released source row records a learner asking the in-product assistance system for help; original request subtype and source remain separate strata.",
+    "arithmetic_claim": "Counts of eligible recorded observations are summed across disjoint source-release namespaces. This does not establish equivalence of pedagogy, request opportunities, intensity, capture coverage or populations."
+  },
+  "sources": [
+    {
+      "source_id": "zenodo.17551130",
+      "scope": "urn:learnlog:release:zenodo:17551130:v1:sha256:5527127f0a3c939601b17ef207ef8b34df7cad9159c9617f879efbf4e989d499",
+      "label": "JetBrains Academy next-step hint study",
+      "source_url": "https://zenodo.org/records/17551130",
+      "documentation_url": "https://arxiv.org/html/2511.06362v1",
+      "release": "Zenodo 17551130 v1 / ai_hints_interaction.zip",
+      "license": "CC-BY-4.0",
+      "commercial_demo_eligible": true,
+      "commercial_demo_scope": "Aggregate factual outputs only; learner content and event-level records excluded",
+      "input_sha256": "5527127f0a3c939601b17ef207ef8b34df7cad9159c9617f879efbf4e989d499",
+      "native_unit": "Native Log observations embedded in the released scenario HTML reports",
+      "mapping_basis": "Native Log labels 'Hint button is clicked' and 'Hint retry is clicked' record learner Get Hint/Retry requests; system 'Code hint requested' is excluded.",
+      "request_rule": "type == 'Log' and description in {'Hint button is clicked', 'Hint retry is clicked'}",
+      "identity_basis": "pinned archive SHA-256 + member path + zero-based eventsData ordinal; this is a release-occurrence locator, not an authoritative learner/request ID",
+      "native_input_count": 1060271,
+      "native_assistance_log_count": 5275,
+      "native_log_label_counts": {
+        "Code banner shown": 735,
+        "Code hint generated": 734,
+        "Code hint is accepted": 300,
+        "Code hint is cancelled": 18,
+        "Code hint requested": 1028,
+        "Dislike": 119,
+        "Error banner shown": 266,
+        "Error hint: An unexpected error occurred, please try again.": 265,
+        "Error hint: Please check your internet connection and try again!": 1,
+        "Hint banner is closed": 207,
+        "Hint button is clicked": 960,
+        "Hint retry is clicked": 90,
+        "Like": 94,
+        "Show code hint is clicked": 453,
+        "Text banner shown": 2,
+        "Text hint generated": 3
+      },
+      "source_file_count": 1050,
+      "assistance_request_observations": 1050,
+      "help_request_subtypes": [
+        {
+          "label": "Hint button is clicked",
+          "count": 960
+        },
+        {
+          "label": "Hint retry is clicked",
+          "count": 90
+        }
+      ],
+      "capture_coverage": {
+        "state": "unknown",
+        "reason": "Released observations are countable; complete real-world capture is not established."
+      },
+      "model_version": {
+        "state": "unknown",
+        "reason": "This mapping does not establish exact AI model versions."
+      },
+      "metric_eligibility": [
+        {
+          "metric_id": "recorded_help_request_observations",
+          "eligible": true,
+          "reason": "Native row plus documented candidate mapping supports a recorded learner help-request observation within this release."
+        },
+        {
+          "metric_id": "actual_request_total",
+          "eligible": false,
+          "reason": "Unknown source capture completeness and release-selection mechanisms."
+        },
+        {
+          "metric_id": "request_rate",
+          "eligible": false,
+          "reason": "No comparable exposure denominator is established."
+        },
+        {
+          "metric_id": "request_to_display_rate",
+          "eligible": false,
+          "reason": "No authoritative cross-stage request-response links are established."
+        },
+        {
+          "metric_id": "learning_effect",
+          "eligible": false,
+          "reason": "A descriptive assistance-log count is not an educational outcome or causal estimate."
+        }
+      ]
+    },
+    {
+      "source_id": "tutortrace.deployment8",
+      "scope": "urn:learnlog:release:tutortrace:bc7990370da18a611a122255ebc3e475bd8a3fc6:deployment8:sha256:09972201c16a9f6def7d1e25a9b9e6827994601d720a37696afb0927168befc8",
+      "label": "TutorTrace / IDETrace deployment 8",
+      "source_url": "https://github.com/divadbaroon/TutorTrace_dataset_and_benchmark/tree/bc7990370da18a611a122255ebc3e475bd8a3fc6",
+      "documentation_url": "https://vizpi.org/dataset",
+      "release": "bc7990370da18a611a122255ebc3e475bd8a3fc6 / dataset/raw_telemetry/deployment_8.json",
+      "license": "CC-BY-4.0 declared for dataset including raw telemetry",
+      "commercial_demo_eligible": true,
+      "commercial_demo_scope": "Aggregate factual outputs only; learner content and event-level records excluded",
+      "input_sha256": "09972201c16a9f6def7d1e25a9b9e6827994601d720a37696afb0927168befc8",
+      "native_unit": "One raw telemetry event with type CHAT_QUERY",
+      "mapping_basis": "The author README describes raw AI queries/responses and gives CHAT_QUERY as a chat query; the pinned author prepare_data.py includes CHAT_QUERY in QUERY_TYPES. Treat it as a submitted learner assistance query, not typing, generation or display.",
+      "request_rule": "type == 'CHAT_QUERY' in the events arrays of the pinned deployment-8 JSON object",
+      "identity_basis": "pinned file SHA-256 + top-level source record key + zero-based events ordinal; this is a private release-occurrence locator, not an authoritative learner/request ID",
+      "native_input_count": 30283,
+      "source_file_count": 1,
+      "native_event_label_counts": {
+        "CHAT_DELETE": 92,
+        "CHAT_PASTE": 10,
+        "CHAT_QUERY": 59,
+        "CHAT_RESPONSE": 59,
+        "CHAT_SELECT_INPUT": 1,
+        "CHAT_TYPE": 1218,
+        "CODE_COPY": 3,
+        "CODE_DELETE": 815,
+        "CODE_DELETE_SELECTION": 16,
+        "CODE_INDENT": 65,
+        "CODE_PASTE": 10,
+        "CODE_SELECT": 36,
+        "CODE_TYPE": 4635,
+        "CODE_UNDO": 6,
+        "MOUSE_CLICK": 1147,
+        "MOUSE_MOVE": 21195,
+        "PANEL_RESIZE": 14,
+        "SESSION_START": 42,
+        "TAB_STATE": 453,
+        "TASK_COPY": 36,
+        "TASK_SELECT": 29,
+        "TERMINAL_COPY": 1,
+        "TERMINAL_ERROR": 89,
+        "TERMINAL_OUTPUT": 3,
+        "TERMINAL_RUN": 136,
+        "TERMINAL_SELECT": 4,
+        "TEST_CASE_RESULT": 47,
+        "TEST_SELECT": 2,
+        "WINDOW_RESIZE": 60
+      },
+      "metadata_caveat": "Pinned Croissant declares CC-BY-4.0 for a dataset distribution including raw telemetry. Population descriptions conflict, so no verified learner-count claim is made. Commercial-demo eligibility is limited here to aggregate factual outputs. Research opt-in remains a data-access safeguard; no new ethics determination is implied.",
+      "assistance_request_observations": 59,
+      "help_request_subtypes": [
+        {
+          "label": "CHAT_QUERY",
+          "count": 59
+        }
+      ],
+      "capture_coverage": {
+        "state": "unknown",
+        "reason": "Released observations are countable; complete real-world capture is not established."
+      },
+      "model_version": {
+        "state": "unknown",
+        "reason": "This mapping does not establish exact AI model versions."
+      },
+      "metric_eligibility": [
+        {
+          "metric_id": "recorded_help_request_observations",
+          "eligible": true,
+          "reason": "Native row plus documented candidate mapping supports a recorded learner help-request observation within this release."
+        },
+        {
+          "metric_id": "actual_request_total",
+          "eligible": false,
+          "reason": "Unknown source capture completeness and release-selection mechanisms."
+        },
+        {
+          "metric_id": "request_rate",
+          "eligible": false,
+          "reason": "No comparable exposure denominator is established."
+        },
+        {
+          "metric_id": "request_to_display_rate",
+          "eligible": false,
+          "reason": "No authoritative cross-stage request-response links are established."
+        },
+        {
+          "metric_id": "learning_effect",
+          "eligible": false,
+          "reason": "A descriptive assistance-log count is not an educational outcome or causal estimate."
+        }
+      ]
+    }
+  ],
+  "aggregate": {
+    "source_count": 2,
+    "assistance_request_observations": 1109,
+    "actual_request_total": null,
+    "unique_cross_source_learners": null,
+    "request_rate": null,
+    "request_to_display_rate": null,
+    "learning_effect": null
+  },
+  "cumulative": [
+    {
+      "source_id": "zenodo.17551130",
+      "added_count": 1050,
+      "cumulative_count": 1050
+    },
+    {
+      "source_id": "tutortrace.deployment8",
+      "added_count": 59,
+      "cumulative_count": 1109
+    }
+  ],
+  "pipeline_verification": {
+    "capture_profile_records": 1109,
+    "contract_validations": 1109,
+    "xapi_roundtrips": 1109,
+    "caliper_roundtrips": 1109,
+    "direct_native_baseline_matches": true,
+    "native_filter_count": 1109,
+    "carrier_aggregates_identical": true,
+    "order_and_batch_invariant": true,
+    "replay_idempotent": true,
+    "conflicting_duplicate_rejected": true,
+    "unknown_coverage_preserved": true,
+    "independent_human_mapping_review": false,
+    "live_lrs_interoperability_test": false,
+    "caliper_certification_test": false,
+    "private_row_artifacts_in_public_output": false
+  },
+  "limitations": [
+    "Candidate mappings are agent-authored and agent-audited; independent human mapping review remains pending.",
+    "The numerator describes selected public-release records, not all real-world requests or distinct real actions.",
+    "Identical content at different release positions remains separate; replay of the same pinned release position is deduplicated.",
+    "Release-selection mechanisms and capture completeness are unknown. Native event-time extrema are not source capture windows.",
+    "Importer creation timestamps and actors describe software record creation; no learner action time or actor is fabricated.",
+    "No learner-row, prompt or source-code payload is included in this aggregate JSON.",
+    "No causal effect, cross-product efficacy, measurement superiority, unique cross-source learners or adoption by named vendors is shown."
+  ]
+}

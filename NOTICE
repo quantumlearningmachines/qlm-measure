@@ -10,3 +10,5 @@ operated by Quantum Learning Machines.
 
 The SDK itself (event schema, emitter, verifier, and dataset clients)
 is licensed under the Apache License, Version 2.0.
+
+The tools/qlm-transformer and integrations/airflow companion subtrees retain their MIT license notices. Source data and third-party specifications retain separate terms; see docs/transformer/LICENSING.md.

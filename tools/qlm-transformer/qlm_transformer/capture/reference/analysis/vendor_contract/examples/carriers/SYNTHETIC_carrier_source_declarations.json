@@ -1,0 +1,22 @@
+{
+  "status": "Explicitly synthetic declarations, not real product records",
+  "records": [
+    {
+      "source_id": "urn:learnlog:synthetic:requested",
+      "label": "hint",
+      "emitted_stage": "requested",
+      "timestamp": "2026-01-01T12:00:00Z"
+    },
+    {
+      "source_id": "urn:learnlog:synthetic:binding-source:generated:unknown-time",
+      "label": "hint",
+      "emitted_stage": "generated"
+    },
+    {
+      "source_id": "urn:learnlog:synthetic:displayed",
+      "label": "hint",
+      "emitted_stage": "displayed",
+      "timestamp": "2026-01-01T12:00:00Z"
+    }
+  ]
+}

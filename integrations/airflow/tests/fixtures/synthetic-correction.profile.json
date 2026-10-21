@@ -1,0 +1,50 @@
+{
+  "id": "explicit-assistance-events",
+  "name": "Assistance lifecycle \u00b7 SYNTHETIC",
+  "description": "Synthetic contract fixture only. Distinct requested, generated, transmitted, displayed and learner-response states; no real learner or product data.",
+  "mode": "assistance_events",
+  "status": "synthetic_contract_fixture_adapter",
+  "fields": {
+    "subject_id": "subject_id",
+    "activity_id": "activity_id"
+  },
+  "metrics": {},
+  "mapping": {
+    "platform": "explicit-assistance-events",
+    "version": "0.4.0",
+    "mode": "assistance_events",
+    "status": "explicit_input_contract_not_native_vendor_adapter",
+    "fields": {
+      "subject_id": "subject_id",
+      "activity_id": "activity_id"
+    },
+    "metrics": {},
+    "source_unit": "explicit_source_event",
+    "time_basis": "import_time_with_optional_source_timestamp",
+    "event_name": "qlm_import:assistance_lifecycle_observed",
+    "identifier_handling": "HMAC scope includes source_id; source event identifiers and selected content remain. This is not a general anonymizer.",
+    "excluded_observed_fields": [
+      "unknown_input_fields"
+    ]
+  },
+  "sampleName": "synthetic-correction.jsonl",
+  "subjectScope": "adapter + source_id + tenant + key",
+  "recordScope": "explicit_source_event",
+  "source": {
+    "kind": "synthetic_contract_fixture",
+    "url": "./schemas/assistance-lifecycle-v1.json",
+    "revision": "fixture-v1",
+    "license": "MIT (QLM-authored fixture)",
+    "licenseUrl": "https://opensource.org/license/mit",
+    "citation": "QLM-authored synthetic contract fixture; not a research publication or observed product log.",
+    "selectionNote": "QLM-authored SYNTHETIC cumulative-ingestion test batch; not research data.",
+    "limitations": [
+      "SYNTHETIC fixture; no real learner, product integration, cross-vendor validation or educational effect is demonstrated.",
+      "A matching input shape does not authenticate provenance, validate mapping semantics, or establish reading and learning."
+    ],
+    "fixtureSha256": "68cb011ec1dc44ac6dd336144503e648b786432a2c275f11ba4ffe0301472a28",
+    "summary": "5 SYNTHETIC contract-test assertions \u00b7 0 observed learners",
+    "sampleUrl": "./samples/explicit-assistance-SYNTHETIC.jsonl",
+    "downloadUrl": "./samples/explicit-assistance-SYNTHETIC.jsonl"
+  }
+}

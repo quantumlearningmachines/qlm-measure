@@ -1,0 +1,479 @@
+{
+  "condition_set_id": "https://example.org/learnlog/102026/ai-conditions/v0.1.0",
+  "condition_set_version": "0.1.0",
+  "status": "proposed_companion_crosswalk",
+  "learnlog_target": "draft-srivastava-learnlog-00",
+  "learnlog_source_uri": "https://www.ietf.org/archive/id/draft-srivastava-learnlog-00.html",
+  "condition_labels_basis": "Project-supplied AI_Conditions_20_Paper_Audit_v0.1.docx: 16-condition audit framework. The condition labels are not defined by the IETF draft.",
+  "disclaimer": "These are inspectable conditions, not validated indicators of learning effects, a score or a mandatory Learnlog extension. Proposed/external event requirements are not current IETF event types.",
+  "conditions": [
+    {
+      "condition_id": "C01",
+      "label": "Answer before retrieval",
+      "assertion": "occurrence",
+      "required_observations": [
+        "task requirement",
+        "all assistance content",
+        "first recorded learner response",
+        "event ordering"
+      ],
+      "existing_learnlog_paths": [
+        "Event.activity",
+        "Event.actor",
+        "assist:scaffold_provided.data.content",
+        "assist:scaffold_provided.data.reveals_answer",
+        "Entry.seq"
+      ],
+      "proposed_or_external_requirements": [
+        "example_learning:task_presented",
+        "example_learning:response_committed"
+      ],
+      "context_fields": [
+        "RecordHeader.ai_context.phase",
+        "RecordHeader.ai_context.policy",
+        "RecordHeader.ai_context.observation"
+      ],
+      "comparator_required_for_supported_difference": false,
+      "analysis_requirement": "Review task and assistance content and order. Never infer internal recall from the absence of a prior recorded response.",
+      "observation_limits": "Internal retrieval cannot be observed from event order. Answer supply before first recorded response is an explicitly limited proxy.",
+      "classification_status": "proposed_unvalidated_condition_set"
+    },
+    {
+      "condition_id": "C02",
+      "label": "Explanation or reflection supplied",
+      "assertion": "occurrence",
+      "required_observations": [
+        "task request for explanation/reflection",
+        "complete supplied explanation",
+        "learner response and order"
+      ],
+      "existing_learnlog_paths": [
+        "Event.actor",
+        "Event.activity",
+        "assist:scaffold_provided.data.type",
+        "assist:scaffold_provided.data.content",
+        "Entry.seq"
+      ],
+      "proposed_or_external_requirements": [
+        "example_learning:task_presented",
+        "example_learning:response_committed"
+      ],
+      "context_fields": [
+        "RecordHeader.ai_context.phase",
+        "RecordHeader.ai_context.policy",
+        "RecordHeader.ai_context.observation"
+      ],
+      "comparator_required_for_supported_difference": false,
+      "analysis_requirement": "Distinguish prompting an explanation from supplying an explanation. Content-level review is necessary for supported absence.",
+      "observation_limits": "Content may show what was supplied; it cannot establish that subsequent reasoning was independently generated.",
+      "classification_status": "proposed_unvalidated_condition_set"
+    },
+    {
+      "condition_id": "C03",
+      "label": "Feedback or scaffolding changed",
+      "assertion": "difference_from_comparator",
+      "required_observations": [
+        "scaffold content/type/timing",
+        "delivery logic",
+        "reference scaffold configuration"
+      ],
+      "existing_learnlog_paths": [
+        "assist:scaffold_provided.data",
+        "Event.instrument.model",
+        "Event.instrument.config_hash",
+        "Entry.seq"
+      ],
+      "proposed_or_external_requirements": [
+        "reference configuration artifact"
+      ],
+      "context_fields": [
+        "RecordHeader.ai_context.phase",
+        "RecordHeader.ai_context.policy",
+        "RecordHeader.ai_context.observation"
+      ],
+      "comparator_required_for_supported_difference": true,
+      "analysis_requirement": "Compare specified feedback/scaffold attributes with a defined comparator; do not infer learning effects.",
+      "observation_limits": "An observed scaffold does not by itself establish a change from an earlier intervention.",
+      "classification_status": "proposed_unvalidated_condition_set"
+    },
+    {
+      "condition_id": "C04",
+      "label": "Practice sequence or dose changed",
+      "assertion": "difference_from_comparator",
+      "required_observations": [
+        "practice task order",
+        "duration/dose definition",
+        "reference schedule"
+      ],
+      "existing_learnlog_paths": [
+        "Event.activity",
+        "Event.session",
+        "Entry.seq",
+        "Entry.time"
+      ],
+      "proposed_or_external_requirements": [
+        "practice_started",
+        "practice_completed",
+        "dose definition and reference schedule"
+      ],
+      "context_fields": [
+        "RecordHeader.ai_context.phase",
+        "RecordHeader.ai_context.policy",
+        "RecordHeader.ai_context.observation"
+      ],
+      "comparator_required_for_supported_difference": true,
+      "analysis_requirement": "Define dose before comparing it. A task sequence alone cannot establish exposure outside the product.",
+      "observation_limits": "Elapsed wall time is not automatically active practice time, and omitted tasks remain unknown.",
+      "classification_status": "proposed_unvalidated_condition_set"
+    },
+    {
+      "condition_id": "C05",
+      "label": "Extra exposure between sessions",
+      "assertion": "occurrence",
+      "required_observations": [
+        "session boundaries",
+        "intervening exposure where observed",
+        "source/coverage of exposure reports"
+      ],
+      "existing_learnlog_paths": [
+        "Event.session",
+        "Entry.time",
+        "Event.actor"
+      ],
+      "proposed_or_external_requirements": [
+        "intervening_exposure_reported"
+      ],
+      "context_fields": [
+        "RecordHeader.ai_context.phase",
+        "RecordHeader.ai_context.policy",
+        "RecordHeader.ai_context.observation"
+      ],
+      "comparator_required_for_supported_difference": false,
+      "analysis_requirement": "Review exposure evidence and its provenance; preserve gaps between sessions.",
+      "observation_limits": "Unobserved external exposure remains unknown. Self-reports must be attributed rather than treated as verified activity.",
+      "classification_status": "proposed_unvalidated_condition_set"
+    },
+    {
+      "condition_id": "C06",
+      "label": "AI permitted on assessment",
+      "assertion": "occurrence",
+      "required_observations": [
+        "assessment stage",
+        "policy version and scope",
+        "allowed assistance"
+      ],
+      "existing_learnlog_paths": [
+        "Event.activity",
+        "Event.actor",
+        "assist:scaffold_provided"
+      ],
+      "proposed_or_external_requirements": [
+        "RecordHeader.ai_context.phase",
+        "RecordHeader.ai_context.policy",
+        "Event.ai_context"
+      ],
+      "context_fields": [
+        "RecordHeader.ai_context.phase",
+        "RecordHeader.ai_context.policy",
+        "RecordHeader.ai_context.observation"
+      ],
+      "comparator_required_for_supported_difference": false,
+      "analysis_requirement": "Match permission to task, actor, stage and version; distinguish availability, permission and delivered help.",
+      "observation_limits": "Permission is a policy declaration, not evidence of actual use. Data-use consent is a different concept.",
+      "classification_status": "proposed_unvalidated_condition_set"
+    },
+    {
+      "condition_id": "C07",
+      "label": "Prohibited assessment assistance",
+      "assertion": "occurrence",
+      "required_observations": [
+        "assessment prohibition/restriction",
+        "observed assistance",
+        "actor/task/stage correspondence"
+      ],
+      "existing_learnlog_paths": [
+        "assist:scaffold_provided",
+        "Event.actor",
+        "Event.activity",
+        "Entry.seq"
+      ],
+      "proposed_or_external_requirements": [
+        "RecordHeader.ai_context.policy",
+        "Event.ai_context",
+        "outside-assistance evidence with source"
+      ],
+      "context_fields": [
+        "RecordHeader.ai_context.phase",
+        "RecordHeader.ai_context.policy",
+        "RecordHeader.ai_context.observation"
+      ],
+      "comparator_required_for_supported_difference": false,
+      "analysis_requirement": "A violation judgment requires an applicable policy and observed use within its scope, with uncertainty retained.",
+      "observation_limits": "A producer-only log cannot prove the absence of prohibited outside assistance.",
+      "classification_status": "proposed_unvalidated_condition_set"
+    },
+    {
+      "condition_id": "C08",
+      "label": "Comparison condition changed",
+      "assertion": "difference_from_comparator",
+      "required_observations": [
+        "study group",
+        "assigned and delivered support",
+        "specified reference comparison condition"
+      ],
+      "existing_learnlog_paths": [
+        "Event.activity",
+        "assist:scaffold_provided",
+        "Event.instrument"
+      ],
+      "proposed_or_external_requirements": [
+        "study assignment artifact",
+        "reference comparison-condition definition"
+      ],
+      "context_fields": [
+        "RecordHeader.ai_context.phase",
+        "RecordHeader.ai_context.policy",
+        "RecordHeader.ai_context.observation"
+      ],
+      "comparator_required_for_supported_difference": true,
+      "analysis_requirement": "Compare the actual documented control/comparison implementation with its defined reference; do not label a causal effect invalid solely from a condition difference.",
+      "observation_limits": "A product record alone may not reveal assignment, contamination or another group's exposure.",
+      "classification_status": "proposed_unvalidated_condition_set"
+    },
+    {
+      "condition_id": "C09",
+      "label": "Teacher or peer delivery changed",
+      "assertion": "difference_from_comparator",
+      "required_observations": [
+        "support provider",
+        "content/timing",
+        "reference teacher/peer delivery"
+      ],
+      "existing_learnlog_paths": [
+        "Event.actor.role",
+        "Event.actor.kind",
+        "assist:scaffold_provided.data.content",
+        "Entry.seq"
+      ],
+      "proposed_or_external_requirements": [
+        "reference delivery definition",
+        "offline support report where available"
+      ],
+      "context_fields": [
+        "RecordHeader.ai_context.phase",
+        "RecordHeader.ai_context.policy",
+        "RecordHeader.ai_context.observation"
+      ],
+      "comparator_required_for_supported_difference": true,
+      "analysis_requirement": "Specify which delivery properties differ and how they were observed; require a comparator.",
+      "observation_limits": "Identity and message content do not establish equivalence to teacher modeling or peer interaction.",
+      "classification_status": "proposed_unvalidated_condition_set"
+    },
+    {
+      "condition_id": "C10",
+      "label": "Baseline or preparation changed",
+      "assertion": "difference_from_comparator",
+      "required_observations": [
+        "preparation/baseline resources",
+        "timing",
+        "reference baseline protocol"
+      ],
+      "existing_learnlog_paths": [
+        "Event.activity",
+        "Event.session",
+        "Entry.time"
+      ],
+      "proposed_or_external_requirements": [
+        "RecordHeader.ai_context.phase",
+        "preparation activity events",
+        "reference baseline definition"
+      ],
+      "context_fields": [
+        "RecordHeader.ai_context.phase",
+        "RecordHeader.ai_context.policy",
+        "RecordHeader.ai_context.observation"
+      ],
+      "comparator_required_for_supported_difference": true,
+      "analysis_requirement": "Compare preparation protocols and actual documented exposure separately; record missing baseline information.",
+      "observation_limits": "Pre-study AI exposure often lies outside product coverage and cannot be inferred from later responses.",
+      "classification_status": "proposed_unvalidated_condition_set"
+    },
+    {
+      "condition_id": "C11",
+      "label": "Scoring or grading changed",
+      "assertion": "difference_from_comparator",
+      "required_observations": [
+        "rubric/version",
+        "grading actor/model",
+        "scoring action",
+        "reference scoring protocol"
+      ],
+      "existing_learnlog_paths": [
+        "Event.actor",
+        "Event.instrument",
+        "Event.activity.version"
+      ],
+      "proposed_or_external_requirements": [
+        "scoring_completed",
+        "rubric artifact/version",
+        "reference scoring protocol"
+      ],
+      "context_fields": [
+        "RecordHeader.ai_context.phase",
+        "RecordHeader.ai_context.policy",
+        "RecordHeader.ai_context.observation"
+      ],
+      "comparator_required_for_supported_difference": true,
+      "analysis_requirement": "Describe the changed scoring procedure relative to its comparator; score comparability needs separate evaluation.",
+      "observation_limits": "A new grading model identifier alone does not establish a changed construct or score comparability.",
+      "classification_status": "proposed_unvalidated_condition_set"
+    },
+    {
+      "condition_id": "C12",
+      "label": "Motivation or metacognitive signals",
+      "assertion": "occurrence",
+      "required_observations": [
+        "delivered motivational/metacognitive prompt",
+        "learner action or separately defined measure"
+      ],
+      "existing_learnlog_paths": [
+        "assist:scaffold_provided.data.type",
+        "assist:scaffold_provided.data.content",
+        "Event.actor",
+        "Event.instrument"
+      ],
+      "proposed_or_external_requirements": [
+        "measure event schema if an actual motivational/metacognitive measure is collected"
+      ],
+      "context_fields": [
+        "RecordHeader.ai_context.phase",
+        "RecordHeader.ai_context.policy",
+        "RecordHeader.ai_context.observation"
+      ],
+      "comparator_required_for_supported_difference": false,
+      "analysis_requirement": "State whether the assessment concerns delivered prompt content, learner behavior or a validated measure; do not collapse them.",
+      "observation_limits": "Delivered prompting is observable; motivation or metacognitive improvement cannot be inferred from prompt presence.",
+      "classification_status": "proposed_unvalidated_condition_set"
+    },
+    {
+      "condition_id": "C13",
+      "label": "Task novelty or difficulty changed",
+      "assertion": "difference_from_comparator",
+      "required_observations": [
+        "task/version/variant",
+        "prior exposure when observed",
+        "reference task requirements"
+      ],
+      "existing_learnlog_paths": [
+        "Event.activity.id",
+        "Event.activity.version",
+        "Event.activity.variant"
+      ],
+      "proposed_or_external_requirements": [
+        "task requirement artifact",
+        "reference task definition",
+        "prior-exposure source"
+      ],
+      "context_fields": [
+        "RecordHeader.ai_context.phase",
+        "RecordHeader.ai_context.policy",
+        "RecordHeader.ai_context.observation"
+      ],
+      "comparator_required_for_supported_difference": true,
+      "analysis_requirement": "Define task difference and novelty/difficulty criterion before making a comparison.",
+      "observation_limits": "Nominally identical tasks may differ in experienced novelty after external exposure; difficulty requires an operational definition.",
+      "classification_status": "proposed_unvalidated_condition_set"
+    },
+    {
+      "condition_id": "C14",
+      "label": "Model or policy version changed",
+      "assertion": "difference_from_comparator",
+      "required_observations": [
+        "model/configuration versions",
+        "retained configuration bytes",
+        "policy version",
+        "reference version"
+      ],
+      "existing_learnlog_paths": [
+        "Event.instrument.model",
+        "Event.instrument.config_hash",
+        "Event.instrument.parameters"
+      ],
+      "proposed_or_external_requirements": [
+        "RecordHeader.ai_context.policy.version",
+        "retained configuration artifact",
+        "reference version artifact"
+      ],
+      "context_fields": [
+        "RecordHeader.ai_context.phase",
+        "RecordHeader.ai_context.policy",
+        "RecordHeader.ai_context.observation"
+      ],
+      "comparator_required_for_supported_difference": true,
+      "analysis_requirement": "Compare specified versions/configurations/policies; document substantive differences and remaining uncertainty.",
+      "observation_limits": "A version change does not automatically imply changed instruction or outcomes. Config hashes are useful only if the chosen bytes are retained.",
+      "classification_status": "proposed_unvalidated_condition_set"
+    },
+    {
+      "condition_id": "C15",
+      "label": "Access and use differ",
+      "assertion": "difference_from_comparator",
+      "required_observations": [
+        "available access",
+        "delivered help",
+        "actual recorded use",
+        "population/group comparator"
+      ],
+      "existing_learnlog_paths": [
+        "assist:help_requested",
+        "assist:scaffold_provided",
+        "Event.actor",
+        "Event.activity"
+      ],
+      "proposed_or_external_requirements": [
+        "access eligibility/availability metadata",
+        "study/group definition",
+        "comparator"
+      ],
+      "context_fields": [
+        "RecordHeader.ai_context.phase",
+        "RecordHeader.ai_context.policy",
+        "RecordHeader.ai_context.observation"
+      ],
+      "comparator_required_for_supported_difference": true,
+      "analysis_requirement": "Define which access/use distributions differ, denominators and observation boundaries before comparing.",
+      "observation_limits": "No help request does not prove no use; access is not synonymous with use or exposure.",
+      "classification_status": "proposed_unvalidated_condition_set"
+    },
+    {
+      "condition_id": "C16",
+      "label": "Relevant exposure unobserved",
+      "assertion": "occurrence",
+      "required_observations": [
+        "planned recording coverage",
+        "claimed capture",
+        "explicit exclusions",
+        "unavailable evidence reasons"
+      ],
+      "existing_learnlog_paths": [
+        "Entry.seq",
+        "Entry.redacted",
+        "Record.truncated"
+      ],
+      "proposed_or_external_requirements": [
+        "RecordHeader.ai_context.observation",
+        "analytic review_coverage",
+        "unresolved_information"
+      ],
+      "context_fields": [
+        "RecordHeader.ai_context.phase",
+        "RecordHeader.ai_context.policy",
+        "RecordHeader.ai_context.observation"
+      ],
+      "comparator_required_for_supported_difference": false,
+      "analysis_requirement": "Distinguish unreviewed sources from reviewed but unreported facts, and producer capture declarations from verified completeness.",
+      "observation_limits": "An acknowledged observation gap is not evidence that external AI was actually used.",
+      "classification_status": "proposed_unvalidated_condition_set"
+    }
+  ]
+}

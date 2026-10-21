@@ -1,0 +1,22 @@
+[
+  {
+    "student_id": "demo-student-001",
+    "time": "2026-10-08T12:00:00Z",
+    "kind": "ask",
+    "task": "fractions"
+  },
+  {
+    "student_id": "demo-student-001",
+    "time": "2026-10-08T12:00:01Z",
+    "kind": "hint_shown",
+    "task": "fractions",
+    "support_type": "hint"
+  },
+  {
+    "student_id": "demo-student-001",
+    "time": "2026-10-08T12:00:02Z",
+    "kind": "answer",
+    "task": "fractions",
+    "answer": "1/2"
+  }
+]

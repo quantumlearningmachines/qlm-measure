@@ -1,0 +1,13 @@
+{
+  "platform": "dreambox",
+  "status": "synthetic_template_requires_real_export_mapping",
+  "mode": "summary",
+  "fields": {
+    "subject_id": "student_id",
+    "activity_id": "activity"
+  },
+  "metrics": {
+    "vendor_reported_score": "reported_score",
+    "vendor_reported_usage": "reported_usage"
+  }
+}

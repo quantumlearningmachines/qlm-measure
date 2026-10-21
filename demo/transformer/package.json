@@ -1,0 +1,10 @@
+{
+  "name": "qlm-transformer-demo",
+  "version": "0.6.0rc1",
+  "private": true,
+  "type": "module",
+  "description": "Draft assistance capture profile with xAPI and Caliper binding examples, plus conservative mappings over attributed research sources",
+  "scripts": {
+    "test": "node --test tests/*.test.mjs"
+  }
+}

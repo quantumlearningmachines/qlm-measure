@@ -1,0 +1,19 @@
+include README.md CHANGELOG.md LICENSE NOTICE THIRD_PARTY_NOTICES.md build_examples.py
+include CITATION.cff RELEASING.md
+recursive-include .github *.yml
+recursive-include examples *.json
+recursive-include profiles *.json
+recursive-include spec *.txt *.md
+recursive-include tests *.py
+recursive-include qlm_transformer/ai_profile *.json
+recursive-include qlm_transformer/resources/profiles *.json
+recursive-include qlm_transformer/resources/examples *.json
+global-exclude __pycache__ *.py[cod]
+prune build
+prune dist
+prune .pytest_cache
+prune _wheel_smoke
+
+recursive-include qlm_transformer/capture *.json *.sql *.md LICENSE
+recursive-include docs *.md
+recursive-include scripts *.py
