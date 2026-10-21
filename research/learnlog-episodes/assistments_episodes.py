@@ -1,4 +1,4 @@
-"""ASSISTments 2012-13 skill builder: assistance episodes under the Learnlog stage rules. Counts only; nothing identifying is output.
+"""ASSISTments 2012-13 School Data with Affect: assistance episodes under the Learnlog stage rules. Counts only; nothing identifying is output.
 Opportunity = one main-problem log (original == 1). Its scaffolding = original == 0 logs with the same user_id, assignment_id and assistment_id.
 Help requested = hint_count > 0 on the main problem, or first_action == 2 (student asked for the problem to be broken into steps).
 Answer revealed = bottom_hint == 1. Scaffolding after a wrong first attempt = scaffolding present and first_action == 0 and correct == 0

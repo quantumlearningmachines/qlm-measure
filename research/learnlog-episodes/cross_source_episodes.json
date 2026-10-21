@@ -55,7 +55,7 @@
   "zenodo_reports_with_text_banner": 2,
   "zenodo_shown_rated_only": 82,
   "zenodo_asked_again_where_next_request_is_retry": 0,
-  "zenodo_raw_pastes_without_copy_or_cut_in_prior_600s": 295,
+  "zenodo_raw_pastes_without_copy_or_cut_in_prior_600s": 291,
   "idetrace_passrate_types": {
    "int": 47
   }
