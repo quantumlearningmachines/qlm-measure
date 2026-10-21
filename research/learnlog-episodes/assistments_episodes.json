@@ -25,5 +25,13 @@
    "frustrated": 94671,
    "confused": 6259
   }
+ },
+ "checks": {
+  "rows": 6123270,
+  "rows_with_all_four_affect_values": 6123270,
+  "scaffolding_logs_with_hints": 54505,
+  "main_problems_with_both_hint_and_first_action_steps": 0,
+  "system_steps_problems_with_a_hint_inside_scaffolding": 21126,
+  "students_who_ever_requested_including_hints_inside_scaffolding": 32937
  }
 }
