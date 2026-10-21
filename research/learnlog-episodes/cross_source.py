@@ -1,4 +1,4 @@
-"""Cross-source assistance episodes for the Learnlog preprint v0.3 (labels and timestamps only; nothing identifying is output).
+"""Cross-source assistance episodes for the Learnlog preprint (v0.3; paste rule corrected in v0.6) (labels and timestamps only; nothing identifying is output).
 Episode = one help request (Zenodo: a scenario report starting with Get Hint or Retry; IDETrace: one CHAT_QUERY).
 Shown = Zenodo: the first 'Code banner shown', 'Text banner shown', 'Show code hint is clicked' or 'Code hint is accepted' Log row; IDETrace: a CHAT_RESPONSE before the next query.
 Asked again = the same learner record's next request within 300 s of the moment help was shown (denominator: all shown episodes).
@@ -53,17 +53,20 @@ for r in d.values():
             cpaste += 1; cpaste_nocopy += not any(ev[j]["type"] in ("CODE_COPY", "TERMINAL_COPY", "TASK_COPY") and e["timestamp"] - ev[j]["timestamp"] <= 600000 for j in range(i))
         chatpaste += e["type"] == "CHAT_PASTE"
 i_req = sum(ic.values()); i_shown = i_req - ic["not_shown"]
-rawp = 0; rawids = set(); pasteids = set(); rawp_nocopy = 0; lastcopy = {}; pr_types = Counter()
+rawp = 0; rawids = set(); pasteids = set(); rawp_nocopy = 0; pr_types = Counter()
 import csv, io
+# v0.6 fix: the activity file is not in time order within a research ID (1,938 rows are earlier than the row before them),
+# so copies and pastes are compared by timestamp, not by file order. A paste counts as having a copy when a copy or cut
+# by the same ID has a timestamp 0 to 600 seconds before (or equal to) the paste's.
+copies = defaultdict(list); pastes = []
 for row in csv.DictReader(io.TextIOWrapper(z.open("raw_dataset/activitydata.csv"), encoding="utf-8", errors="replace")):
     rawids.add(row["research_id"])
     if row["type"] == "Action" and row["info"] in ("EditorCopy", "$Copy", "EditorCut", "$Cut"):
-        lastcopy[row["research_id"]] = row["date"]
+        copies[row["research_id"]].append(datetime.fromisoformat(row["date"]).timestamp())
     if row["type"] == "Action" and row["info"] in ("EditorPaste", "$Paste"):
-        rawp += 1; pasteids.add(row["research_id"]); c = lastcopy.get(row["research_id"])
-        try: gap = datetime.fromisoformat(row["date"]).timestamp() - datetime.fromisoformat(c).timestamp() if c else None
-        except Exception: gap = None
-        rawp_nocopy += (gap is None or gap > 600)
+        rawp += 1; pasteids.add(row["research_id"]); pastes.append((row["research_id"], datetime.fromisoformat(row["date"]).timestamp()))
+for rid, t in pastes:
+    rawp_nocopy += not any(0 <= t - c <= 600 for c in copies[rid])
 hint_ids = set(by)
 pr_types = Counter(type(e["payload"].get("passrate")).__name__ for r in d.values() for e in r["events"] if e["type"] == "TEST_CASE_RESULT")
 out = {"inputs": {"zenodo_sha256": sha(ZIP), "idetrace_sha256": sha(IDE)},
