@@ -9,3 +9,15 @@ tmp/
 python/dist/
 build/
 .vercel
+
+# Local transformer and Airflow state
+**/__pycache__/
+**/.pytest_cache/
+**/.venv*/
+**/.airflow*/
+**/outputs/
+**/private-cache/
+**/private-records/
+**/*.private.*
+**/dist/*.whl
+**/dist/*.tar.gz

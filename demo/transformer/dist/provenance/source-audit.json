@@ -1,0 +1,69 @@
+{
+  "date": "2026-10-17",
+  "scope": "Sample authenticity, source identity and assistance semantics",
+  "correction": "Five branded synthetic examples were removed because they did not establish vendor export compatibility.",
+  "supplied_sources": [
+    {
+      "id": "tutormoments",
+      "sample": "samples/tutormoments-real-transcripts.jsonl",
+      "unit": "2 complete source sessions, 310 turns",
+      "status": "Real human tutoring; publisher machine transcription, no original recording independently verified",
+      "provenance": "provenance/tutormoments.json"
+    },
+    {
+      "id": "oatutor",
+      "sample": "samples/oatutor-real-participants.csv",
+      "unit": "12 participant summaries",
+      "status": "Assigned conditions, not delivered help events",
+      "provenance": "provenance/oatutor.json"
+    }
+  ],
+  "measurement_companion": {
+    "source": "TutorMoments-Preview pinned ground_truth.jsonl and annotations.jsonl",
+    "provenance": "provenance/scaffolding-evidence.json",
+    "unit": "10 distinct exact-span coded intervals from 60 annotation rows, two sessions, one provider",
+    "label_origin": "Published LLM-assisted labels over human situation/action/result commentary; no new QLM classifier",
+    "binding": "Exact checked transcript excerpt plus matching transformed turns and source provenance",
+    "exclusions": "OATutor summaries and unmatched inputs are unmeasured, not zero assistance",
+    "limits": "Overlapping descriptive audit intervals; no effectiveness score or validated comparison across products"
+  },
+  "evidence_boundary": [
+    "Exact bytes independently checked against fresh downloads of pinned original files.",
+    "Source identity to release is not independent verification of underlying research or transcription.",
+    "No vendor integration, pooled learning effect, efficacy ranking or unassisted-performance claim.",
+    "Tutor turns are not automatically classified as scaffolding or successful help.",
+    "Generated enrichments, annotations and simulated replay dialogue are not observed source events.",
+    "Entry timestamps are import times; source offsets remain relative.",
+    "Subject pseudonyms are scoped to dataset, tenant and key; record units are sessions or participant summaries, not distinct-person counts.",
+    "Public data retain CC BY 4.0 attribution; code licensing does not relicense data."
+  ],
+  "excluded": [
+    {
+      "source": "Khan Academy / Khanmigo CoMTA",
+      "reason": "Redistribution restrictions in source license."
+    },
+    {
+      "source": "MATHia / historical Cognitive Tutor DataShop",
+      "reason": "No authorized redistributable native rows verified; counts are not event timelines."
+    },
+    {
+      "source": "IXL, DreamBox Math, ALEKS",
+      "reason": "Authentic publicly redistributable native samples not verified."
+    },
+    {
+      "source": "ASSISTments 2009\u20132010",
+      "reason": "Real hint/scaffold summaries verified but explicit redistribution terms not established for bundling."
+    }
+  ],
+  "verification": {
+    "full_source_retrieval": "Fresh public HTTPS downloads matched all four recorded original-file SHA-256 hashes: transcripts, derived labels, raw human annotations and participant CSV.",
+    "extraction": "Exact documented source JSONL lines and original CSV header/data rows matched sample bytes.",
+    "provided_data_values_added_or_modified": false,
+    "source_count": 2,
+    "transcript_sessions": 2,
+    "transcript_turns": 310,
+    "participant_summaries": 12,
+    "source_licenses": "Both primary publishers identify CC BY 4.0.",
+    "reproduction_command": "python scripts/verify_public_sources.py --fetch"
+  }
+}

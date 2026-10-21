@@ -1,0 +1,31 @@
+{
+  "checked_at": "2026-10-17",
+  "browser_engine_tests": {
+    "pass": 56,
+    "fail": 0
+  },
+  "json_schema": {
+    "validator": "Python jsonschema Draft202012Validator with FormatChecker",
+    "schema_well_formed": true,
+    "browser_events_validated": 644,
+    "python_events_validated": 644
+  },
+  "python_browser_comparison": {
+    "result": "PASS",
+    "events_compared": 644,
+    "source_cases": {
+      "tutormoments:verified": 310,
+      "tutormoments:byte_changed_unverified": 310,
+      "oatutor:verified": 12,
+      "oatutor:byte_changed_unverified": 12
+    },
+    "scope": "Complete event objects excluding random salts; entry import timestamps, HMAC pseudonyms, subject scope, record scope, mapping/source hashes, source status, coverage limits and publication metadata matched for verified and byte-changed unverified inputs. Random record IDs, salts, writer-specific header metadata and resulting chain hashes are not asserted identical."
+  },
+  "sha256": {
+    "dist/engine.mjs": "9a0eae3690a4502922c590b8d4b6cb2f7b1443ee8315a9dba6e6eaa76a74797c",
+    "dist/profiles.mjs": "1eb66cfc3328f260c0e324a5ea3e1ecc36256b70ffa31db7e63163c0dc9a845a",
+    "dist/schemas/research-import-v1.json": "5838263b113ea370c5acdfe428a6a02926aa5f8a97489bb34d2660ce11ce4a56",
+    "tests/engine.test.mjs": "ebe2df210a7c077cc2b286a121625448f7189b189eabef877f578e9ba2a84db7",
+    "airflow/src/qlm_airflow/research_adapters.py": "e3b0ab5eea82c13ecdc0b21fae7b074c82061a81faf88142276942ad68ae46a1"
+  }
+}

@@ -1,0 +1,7 @@
+{
+  "schema": "qlm-capture-airflow-1",
+  "mode": "research",
+  "zenodo_archive": "inputs/zenodo17551130.private.zip",
+  "tutortrace_json": "inputs/tutortrace_deployment8.private.json",
+  "allow_tutortrace_research": true
+}

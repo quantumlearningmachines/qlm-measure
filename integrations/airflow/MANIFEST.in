@@ -1,0 +1,14 @@
+include README.md LICENSE DATA_LICENSES.md requirements.txt build_download.py
+recursive-include dags *.py
+recursive-include config *.json
+recursive-include profiles *.json
+recursive-include samples *.jsonl *.csv
+recursive-include provenance *.json *.jsonl
+recursive-include schemas *.json
+recursive-include tests *.py *.json *.jsonl
+global-exclude __pycache__ *.py[cod]
+prune outputs
+prune inputs
+prune .airflow
+prune build
+prune dist

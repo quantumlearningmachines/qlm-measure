@@ -1,0 +1,30 @@
+[
+  {
+    "student_id": "demo-student-001",
+    "time": "2026-10-08T12:00:00Z",
+    "kind": "ask",
+    "task": "fractions",
+    "task_version": "synthetic-1",
+    "session": "synthetic-session-001"
+  },
+  {
+    "student_id": "demo-student-001",
+    "time": "2026-10-08T12:00:01Z",
+    "kind": "hint_shown",
+    "task": "fractions",
+    "support_type": "hint",
+    "task_version": "synthetic-1",
+    "session": "synthetic-session-001",
+    "help_text": "Which quantities are given? Explain your plan before calculating.",
+    "reveals_answer": false
+  },
+  {
+    "student_id": "demo-student-001",
+    "time": "2026-10-08T12:00:02Z",
+    "kind": "answer",
+    "task": "fractions",
+    "answer": "1/2",
+    "task_version": "synthetic-1",
+    "session": "synthetic-session-001"
+  }
+]

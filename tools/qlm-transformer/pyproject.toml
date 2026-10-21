@@ -1,0 +1,42 @@
+[build-system]
+requires = ["setuptools>=77"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "qlm-transformer"
+version = "0.3.0rc1"
+description = "Assistance capture requirements, native research mappings, and optional xAPI and Caliper bindings"
+readme = "README.md"
+requires-python = ">=3.10"
+authors = [{name = "Kumar Srivastava (Quantum Learning Machines)"}]
+license = "MIT"
+license-files = ["LICENSE", "NOTICE", "THIRD_PARTY_NOTICES.md"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "Intended Audience :: Science/Research",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3 :: Only",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+]
+dependencies = ["rfc8785>=0.1.4,<0.2", "jsonschema>=4.23,<5"]
+
+[project.urls]
+Repository = "https://github.com/quantumlearningmachines/qlm-measure"
+
+[project.scripts]
+qlm-transformer = "qlm_transformer.cli:main"
+qlm-capture = "qlm_transformer.capture.cli:main"
+
+[tool.setuptools.packages.find]
+include = ["qlm_transformer*"]
+
+[tool.setuptools.package-data]
+"qlm_transformer.ai_profile" = ["conditions.json", "PROVENANCE.json", "schemas/*.json"]
+"qlm_transformer" = ["resources/profiles/*.json", "resources/examples/*.json"]
+
+"qlm_transformer.capture.reference.analysis.vendor_contract" = ["*.json", "LICENSE", "examples/*.json", "examples/carriers/*.json"]
+"qlm_transformer.capture.reference.sql_analysis" = ["*.sql"]

@@ -1,0 +1,28 @@
+{
+  "schema": "qlm-airflow-manifest-0.2",
+  "tenant": "public-research-demo",
+  "key_id": "local-demo-key-v1",
+  "imported_at": "2026-10-17T00:00:00Z",
+  "datasets": [
+    {
+      "id": "tutormoments_sample",
+      "platform": "tutormoments",
+      "input": "samples/tutormoments-real-transcripts.jsonl",
+      "profile": "profiles/tutormoments.json",
+      "metric_notes": {}
+    },
+    {
+      "id": "oatutor_sample",
+      "platform": "oatutor",
+      "input": "samples/oatutor-real-participants.csv",
+      "profile": "profiles/oatutor.json",
+      "metric_notes": {
+        "preTest": "Original reported pre-test fraction correct on 3 items; preserve stored rounding.",
+        "postTest": "Original reported post-test fraction correct on 3 items; preserve stored rounding.",
+        "sessionTime": "Original session duration in seconds; not a per-hint duration.",
+        "totalUniqueSteps": "Original question count; not a delivered-hint count.",
+        "learningGain": "Original stored post-minus-pre gain; retained as published, not recomputed from rounded fields."
+      }
+    }
+  ]
+}

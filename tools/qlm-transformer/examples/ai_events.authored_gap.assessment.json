@@ -1,0 +1,316 @@
+{
+  "profile_id": "https://example.org/learnlog/102026/ai-use/v0.1.0",
+  "profile_version": "0.1.0",
+  "condition_set_id": "https://example.org/learnlog/102026/ai-conditions/v0.1.0",
+  "condition_set_version": "0.1.0",
+  "report_id": "urn:example:synthetic-transformer-authored-gap-review",
+  "created": "2026-10-11T18:00:00Z",
+  "synthetic": true,
+  "disclaimer": "Proposed unvalidated condition set. Unreviewed information is not a finding of absence or non-reporting. Permission does not establish use or compliance; outside assistance and learning effects remain unknown.",
+  "assessments": [
+    {
+      "condition_id": "C01",
+      "review_status": "unreviewed",
+      "assertion": "occurrence",
+      "scope": {
+        "record_id": "8bfca5f6-5ec1-4e5e-846a-d2f041cfc3ed",
+        "record_hash": "a1ab09da941869a47f8a48c8172f875a27022321b4fa40df15785b4390f0c223",
+        "activity_id": "fractions",
+        "session": "qlm:4ad312051f0b875c659732a8119704baaeba699d9ce95a3d3cffb9a4dc9de6bd",
+        "first_seq": 1,
+        "last_seq": 3,
+        "domain": "producer_activity_only"
+      },
+      "operational_definition": "Review task and assistance content and order. Never infer internal recall from the absence of a prior recorded response.",
+      "pending_reason": "No condition judgment has been made. Review explicit evidence, observation limits and any required comparator."
+    },
+    {
+      "condition_id": "C02",
+      "review_status": "unreviewed",
+      "assertion": "occurrence",
+      "scope": {
+        "record_id": "8bfca5f6-5ec1-4e5e-846a-d2f041cfc3ed",
+        "record_hash": "a1ab09da941869a47f8a48c8172f875a27022321b4fa40df15785b4390f0c223",
+        "activity_id": "fractions",
+        "session": "qlm:4ad312051f0b875c659732a8119704baaeba699d9ce95a3d3cffb9a4dc9de6bd",
+        "first_seq": 1,
+        "last_seq": 3,
+        "domain": "producer_activity_only"
+      },
+      "operational_definition": "Distinguish prompting an explanation from supplying an explanation. Content-level review is necessary for supported absence.",
+      "pending_reason": "No condition judgment has been made. Review explicit evidence, observation limits and any required comparator."
+    },
+    {
+      "condition_id": "C03",
+      "review_status": "unreviewed",
+      "assertion": "difference_from_comparator",
+      "scope": {
+        "record_id": "8bfca5f6-5ec1-4e5e-846a-d2f041cfc3ed",
+        "record_hash": "a1ab09da941869a47f8a48c8172f875a27022321b4fa40df15785b4390f0c223",
+        "activity_id": "fractions",
+        "session": "qlm:4ad312051f0b875c659732a8119704baaeba699d9ce95a3d3cffb9a4dc9de6bd",
+        "first_seq": 1,
+        "last_seq": 3,
+        "domain": "producer_activity_only"
+      },
+      "operational_definition": "Compare specified feedback/scaffold attributes with a defined comparator; do not infer learning effects.",
+      "pending_reason": "No condition judgment has been made. Review explicit evidence, observation limits and any required comparator."
+    },
+    {
+      "condition_id": "C04",
+      "review_status": "unreviewed",
+      "assertion": "difference_from_comparator",
+      "scope": {
+        "record_id": "8bfca5f6-5ec1-4e5e-846a-d2f041cfc3ed",
+        "record_hash": "a1ab09da941869a47f8a48c8172f875a27022321b4fa40df15785b4390f0c223",
+        "activity_id": "fractions",
+        "session": "qlm:4ad312051f0b875c659732a8119704baaeba699d9ce95a3d3cffb9a4dc9de6bd",
+        "first_seq": 1,
+        "last_seq": 3,
+        "domain": "producer_activity_only"
+      },
+      "operational_definition": "Define dose before comparing it. A task sequence alone cannot establish exposure outside the product.",
+      "pending_reason": "No condition judgment has been made. Review explicit evidence, observation limits and any required comparator."
+    },
+    {
+      "condition_id": "C05",
+      "review_status": "unreviewed",
+      "assertion": "occurrence",
+      "scope": {
+        "record_id": "8bfca5f6-5ec1-4e5e-846a-d2f041cfc3ed",
+        "record_hash": "a1ab09da941869a47f8a48c8172f875a27022321b4fa40df15785b4390f0c223",
+        "activity_id": "fractions",
+        "session": "qlm:4ad312051f0b875c659732a8119704baaeba699d9ce95a3d3cffb9a4dc9de6bd",
+        "first_seq": 1,
+        "last_seq": 3,
+        "domain": "producer_activity_only"
+      },
+      "operational_definition": "Review exposure evidence and its provenance; preserve gaps between sessions.",
+      "pending_reason": "No condition judgment has been made. Review explicit evidence, observation limits and any required comparator."
+    },
+    {
+      "condition_id": "C06",
+      "review_status": "unreviewed",
+      "assertion": "occurrence",
+      "scope": {
+        "record_id": "8bfca5f6-5ec1-4e5e-846a-d2f041cfc3ed",
+        "record_hash": "a1ab09da941869a47f8a48c8172f875a27022321b4fa40df15785b4390f0c223",
+        "activity_id": "fractions",
+        "session": "qlm:4ad312051f0b875c659732a8119704baaeba699d9ce95a3d3cffb9a4dc9de6bd",
+        "first_seq": 1,
+        "last_seq": 3,
+        "domain": "producer_activity_only"
+      },
+      "operational_definition": "Match permission to task, actor, stage and version; distinguish availability, permission and delivered help.",
+      "pending_reason": "No condition judgment has been made. Review explicit evidence, observation limits and any required comparator."
+    },
+    {
+      "condition_id": "C07",
+      "review_status": "unreviewed",
+      "assertion": "occurrence",
+      "scope": {
+        "record_id": "8bfca5f6-5ec1-4e5e-846a-d2f041cfc3ed",
+        "record_hash": "a1ab09da941869a47f8a48c8172f875a27022321b4fa40df15785b4390f0c223",
+        "activity_id": "fractions",
+        "session": "qlm:4ad312051f0b875c659732a8119704baaeba699d9ce95a3d3cffb9a4dc9de6bd",
+        "first_seq": 1,
+        "last_seq": 3,
+        "domain": "producer_activity_only"
+      },
+      "operational_definition": "A violation judgment requires an applicable policy and observed use within its scope, with uncertainty retained.",
+      "pending_reason": "No condition judgment has been made. Review explicit evidence, observation limits and any required comparator."
+    },
+    {
+      "condition_id": "C08",
+      "review_status": "unreviewed",
+      "assertion": "difference_from_comparator",
+      "scope": {
+        "record_id": "8bfca5f6-5ec1-4e5e-846a-d2f041cfc3ed",
+        "record_hash": "a1ab09da941869a47f8a48c8172f875a27022321b4fa40df15785b4390f0c223",
+        "activity_id": "fractions",
+        "session": "qlm:4ad312051f0b875c659732a8119704baaeba699d9ce95a3d3cffb9a4dc9de6bd",
+        "first_seq": 1,
+        "last_seq": 3,
+        "domain": "producer_activity_only"
+      },
+      "operational_definition": "Compare the actual documented control/comparison implementation with its defined reference; do not label a causal effect invalid solely from a condition difference.",
+      "pending_reason": "No condition judgment has been made. Review explicit evidence, observation limits and any required comparator."
+    },
+    {
+      "condition_id": "C09",
+      "review_status": "unreviewed",
+      "assertion": "difference_from_comparator",
+      "scope": {
+        "record_id": "8bfca5f6-5ec1-4e5e-846a-d2f041cfc3ed",
+        "record_hash": "a1ab09da941869a47f8a48c8172f875a27022321b4fa40df15785b4390f0c223",
+        "activity_id": "fractions",
+        "session": "qlm:4ad312051f0b875c659732a8119704baaeba699d9ce95a3d3cffb9a4dc9de6bd",
+        "first_seq": 1,
+        "last_seq": 3,
+        "domain": "producer_activity_only"
+      },
+      "operational_definition": "Specify which delivery properties differ and how they were observed; require a comparator.",
+      "pending_reason": "No condition judgment has been made. Review explicit evidence, observation limits and any required comparator."
+    },
+    {
+      "condition_id": "C10",
+      "review_status": "unreviewed",
+      "assertion": "difference_from_comparator",
+      "scope": {
+        "record_id": "8bfca5f6-5ec1-4e5e-846a-d2f041cfc3ed",
+        "record_hash": "a1ab09da941869a47f8a48c8172f875a27022321b4fa40df15785b4390f0c223",
+        "activity_id": "fractions",
+        "session": "qlm:4ad312051f0b875c659732a8119704baaeba699d9ce95a3d3cffb9a4dc9de6bd",
+        "first_seq": 1,
+        "last_seq": 3,
+        "domain": "producer_activity_only"
+      },
+      "operational_definition": "Compare preparation protocols and actual documented exposure separately; record missing baseline information.",
+      "pending_reason": "No condition judgment has been made. Review explicit evidence, observation limits and any required comparator."
+    },
+    {
+      "condition_id": "C11",
+      "review_status": "unreviewed",
+      "assertion": "difference_from_comparator",
+      "scope": {
+        "record_id": "8bfca5f6-5ec1-4e5e-846a-d2f041cfc3ed",
+        "record_hash": "a1ab09da941869a47f8a48c8172f875a27022321b4fa40df15785b4390f0c223",
+        "activity_id": "fractions",
+        "session": "qlm:4ad312051f0b875c659732a8119704baaeba699d9ce95a3d3cffb9a4dc9de6bd",
+        "first_seq": 1,
+        "last_seq": 3,
+        "domain": "producer_activity_only"
+      },
+      "operational_definition": "Describe the changed scoring procedure relative to its comparator; score comparability needs separate evaluation.",
+      "pending_reason": "No condition judgment has been made. Review explicit evidence, observation limits and any required comparator."
+    },
+    {
+      "condition_id": "C12",
+      "review_status": "unreviewed",
+      "assertion": "occurrence",
+      "scope": {
+        "record_id": "8bfca5f6-5ec1-4e5e-846a-d2f041cfc3ed",
+        "record_hash": "a1ab09da941869a47f8a48c8172f875a27022321b4fa40df15785b4390f0c223",
+        "activity_id": "fractions",
+        "session": "qlm:4ad312051f0b875c659732a8119704baaeba699d9ce95a3d3cffb9a4dc9de6bd",
+        "first_seq": 1,
+        "last_seq": 3,
+        "domain": "producer_activity_only"
+      },
+      "operational_definition": "State whether the assessment concerns delivered prompt content, learner behavior or a validated measure; do not collapse them.",
+      "pending_reason": "No condition judgment has been made. Review explicit evidence, observation limits and any required comparator."
+    },
+    {
+      "condition_id": "C13",
+      "review_status": "unreviewed",
+      "assertion": "difference_from_comparator",
+      "scope": {
+        "record_id": "8bfca5f6-5ec1-4e5e-846a-d2f041cfc3ed",
+        "record_hash": "a1ab09da941869a47f8a48c8172f875a27022321b4fa40df15785b4390f0c223",
+        "activity_id": "fractions",
+        "session": "qlm:4ad312051f0b875c659732a8119704baaeba699d9ce95a3d3cffb9a4dc9de6bd",
+        "first_seq": 1,
+        "last_seq": 3,
+        "domain": "producer_activity_only"
+      },
+      "operational_definition": "Define task difference and novelty/difficulty criterion before making a comparison.",
+      "pending_reason": "No condition judgment has been made. Review explicit evidence, observation limits and any required comparator."
+    },
+    {
+      "condition_id": "C14",
+      "review_status": "unreviewed",
+      "assertion": "difference_from_comparator",
+      "scope": {
+        "record_id": "8bfca5f6-5ec1-4e5e-846a-d2f041cfc3ed",
+        "record_hash": "a1ab09da941869a47f8a48c8172f875a27022321b4fa40df15785b4390f0c223",
+        "activity_id": "fractions",
+        "session": "qlm:4ad312051f0b875c659732a8119704baaeba699d9ce95a3d3cffb9a4dc9de6bd",
+        "first_seq": 1,
+        "last_seq": 3,
+        "domain": "producer_activity_only"
+      },
+      "operational_definition": "Compare specified versions/configurations/policies; document substantive differences and remaining uncertainty.",
+      "pending_reason": "No condition judgment has been made. Review explicit evidence, observation limits and any required comparator."
+    },
+    {
+      "condition_id": "C15",
+      "review_status": "unreviewed",
+      "assertion": "difference_from_comparator",
+      "scope": {
+        "record_id": "8bfca5f6-5ec1-4e5e-846a-d2f041cfc3ed",
+        "record_hash": "a1ab09da941869a47f8a48c8172f875a27022321b4fa40df15785b4390f0c223",
+        "activity_id": "fractions",
+        "session": "qlm:4ad312051f0b875c659732a8119704baaeba699d9ce95a3d3cffb9a4dc9de6bd",
+        "first_seq": 1,
+        "last_seq": 3,
+        "domain": "producer_activity_only"
+      },
+      "operational_definition": "Define which access/use distributions differ, denominators and observation boundaries before comparing.",
+      "pending_reason": "No condition judgment has been made. Review explicit evidence, observation limits and any required comparator."
+    },
+    {
+      "condition_id": "C16",
+      "review_status": "reviewed",
+      "assertion": "occurrence",
+      "scope": {
+        "record_id": "8bfca5f6-5ec1-4e5e-846a-d2f041cfc3ed",
+        "record_hash": "a1ab09da941869a47f8a48c8172f875a27022321b4fa40df15785b4390f0c223",
+        "activity_id": "fractions",
+        "session": "qlm:4ad312051f0b875c659732a8119704baaeba699d9ce95a3d3cffb9a4dc9de6bd",
+        "first_seq": 1,
+        "last_seq": 3,
+        "domain": "producer_activity_only"
+      },
+      "operational_definition": "Distinguish unreviewed sources from reviewed but unreported facts, and producer capture declarations from verified completeness.",
+      "result": "supported_present",
+      "rationale": "Synthetic fixture author reviewed the declared observation boundary. External AI and other assistance are explicitly outside this constructed input. This is evidence of a stated coverage gap, not evidence that outside help was used.",
+      "assessor": {
+        "id": "synthetic_fixture_author",
+        "kind": "synthetic_fixture_author"
+      },
+      "method": {
+        "id": "synthetic-boundary-review",
+        "version": "1",
+        "description": "Illustrative manual interpretation of the constructed observation declaration, not a validated classifier.",
+        "validation_status": "unvalidated_example"
+      },
+      "review_coverage": {
+        "reviewed_seq": [],
+        "reviewed_content": "metadata_only",
+        "reviewed_components": [
+          "header.ai_context.observation"
+        ],
+        "coverage_evidence": [
+          {
+            "kind": "context",
+            "record_id": "8bfca5f6-5ec1-4e5e-846a-d2f041cfc3ed",
+            "record_hash": "a1ab09da941869a47f8a48c8172f875a27022321b4fa40df15785b4390f0c223",
+            "context_id": "synthetic-transformer-context-1",
+            "path": "/ai_context/observation/exclusions"
+          }
+        ],
+        "limitations": [
+          {
+            "reason": "outside_observation",
+            "detail": "Outside assistance remains unknown."
+          }
+        ]
+      },
+      "evidence": [
+        {
+          "kind": "context",
+          "record_id": "8bfca5f6-5ec1-4e5e-846a-d2f041cfc3ed",
+          "record_hash": "a1ab09da941869a47f8a48c8172f875a27022321b4fa40df15785b4390f0c223",
+          "context_id": "synthetic-transformer-context-1",
+          "path": "/ai_context/observation/exclusions"
+        }
+      ],
+      "unresolved_information": [
+        {
+          "reason": "outside_observation",
+          "detail": "Other products, devices and offline help are outside the producer observation boundary."
+        }
+      ]
+    }
+  ]
+}

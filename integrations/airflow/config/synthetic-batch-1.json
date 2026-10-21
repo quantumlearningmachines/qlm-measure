@@ -1,0 +1,19 @@
+{
+  "schema": "qlm-airflow-manifest-0.2",
+  "tenant": "SYNTHETIC-contract-test",
+  "key_id": "local-synthetic-test-key-v1",
+  "imported_at": "2026-10-17T00:00:00Z",
+  "cumulative": {
+    "ledger_id": "SYNTHETIC-lifecycle",
+    "batch_id": "synthetic-batch-1"
+  },
+  "datasets": [
+    {
+      "id": "synthetic_events",
+      "platform": "explicit-assistance-events",
+      "input": "tests/fixtures/synthetic-batch-1.jsonl",
+      "profile": "tests/fixtures/synthetic-batch-1.profile.json",
+      "metric_notes": {}
+    }
+  ]
+}

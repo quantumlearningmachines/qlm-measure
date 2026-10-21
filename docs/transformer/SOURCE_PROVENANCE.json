@@ -1,0 +1,13 @@
+{
+  "target_repository": "https://github.com/quantumlearningmachines/qlm-measure",
+  "target_base_commit": "41b41ba31be02ddfcde0b5be99b723d8749c6074",
+  "legacy_transformer_source_commit": "6c96e7a18363d098464af1ca22200a4e7770fd79",
+  "legacy_transformer_git_blobs": "verified before copying",
+  "capture_implementation": "corrected research package audited on 20 October 2026",
+  "airflow_source": "assistance-profile update package from 18 October 2026",
+  "demo_source": "cross-source demonstration package from 18 October 2026",
+  "prepared_only": true,
+  "published": false,
+  "deployed": false,
+  "data_boundary": "Selected CC-BY-4.0 transcript/participant demo excerpts retained with attribution; no raw Zenodo/IDETrace learner telemetry included."
+}

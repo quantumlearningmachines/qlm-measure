@@ -1,0 +1,91 @@
+{
+  "sample_name": "TutorMoments-Preview: two released human tutoring transcripts",
+  "retrieved_at": "2026-10-17",
+  "dataset_url": "https://huggingface.co/datasets/allenai/tutormoments-preview",
+  "project_url": "https://tutormoments.allen.ai/",
+  "paper_url": "https://tutormoments.allen.ai/static/paper/tutormoments-preview.pdf",
+  "revision": "3bb0c104d65e29facffca7ba864ef10fa22d0e78",
+  "license": "CC-BY-4.0",
+  "license_url": "https://creativecommons.org/licenses/by/4.0/",
+  "attribution": "TutorMoments-Preview, Albert Zhang and colleagues, Allen Institute for AI and collaborators (2026).",
+  "source_file": {
+    "name": "transcripts.jsonl",
+    "download_url": "https://huggingface.co/datasets/allenai/tutormoments-preview/resolve/3bb0c104d65e29facffca7ba864ef10fa22d0e78/transcripts.jsonl",
+    "size_bytes": 38117914,
+    "sha256": "34b5d4483302593043f3d9be3bf37f1cde6cba5b031fd2d20d75a15d5498f276"
+  },
+  "sample_file": {
+    "name": "tutormoments-real-transcripts.jsonl",
+    "size_bytes": 91515,
+    "sha256": "7df51fda0fff9c454ba14a33a0d2964d5e94b2556eff1d3897ec4f41373c8a66",
+    "changed_fields": [],
+    "selection": "Exact complete source JSONL lines 366 and 435, retained in source order including original newline bytes. No text, metadata, IDs, dates or events added or altered."
+  },
+  "records": [
+    {
+      "source_line_1_based": 366,
+      "line_sha256": "c1dbb8d05249c5aa65c2c6f4934915ae7be63a36cbe7e1960373f7db3f1b420e",
+      "transcript_id": "d21c3b8f-6333-5b8f-b632-7f6aed0ef517",
+      "turn_count": 149,
+      "transcription_by": "SUT (Gemini 2.5 Pro)"
+    },
+    {
+      "source_line_1_based": 435,
+      "line_sha256": "34819cbfd5fad811271ddabf74d1561355d2ea0cadc4f8241ba818ec678b098a",
+      "transcript_id": "ed71cb44-228f-5274-b576-519b2b73fd48",
+      "turn_count": 161,
+      "transcription_by": "SUT (Gemini 2.5 Pro)"
+    }
+  ],
+  "selection_rationale": "Manually inspected complete released turns for mathematical content, explicit learner help/confusion, tutor inquiry, explanation, feedback and scaffolded dialogue. This is a purposive demonstration sample, not representative evidence about tutor quality or learning effects.",
+  "interpretation_limits": [
+    "These are transcripts of real human tutoring sessions, not simulated student conversations and not native vendor clickstream exports.",
+    "Released text was transcribed by SUT (Gemini 2.5 Pro); preserve that provenance and do not call it verified verbatim audio or a perfect transcription.",
+    "Publisher deidentifies free text with fabricated surrogates or tags; apparent names in the selected text are not real per publisher documentation. UUIDv5 identifiers are publisher surrogates.",
+    "Absolute session dates are removed. start_seconds/end_seconds are relative source offsets; do not synthesize wall-clock event timestamps.",
+    "The source anonymizes the provider as tutoring_provider_a. Do not relabel it Khan Academy, MATHia, IXL, DreamBox or ALEKS.",
+    "Source enrichments are model-generated screen/pause narratives; do not convert them into observed assistance events.",
+    "Ground-truth annotations are LLM-assisted and action-taxonomy labels model-generated; this sample does not include either as observed learner events.",
+    "A question mark or Tutor role alone does not establish a hint request or help effectiveness. Preserve role/text conservatively; explicitly mark any semantic classification as derived.",
+    "No original recording is released (has_video false). Raw transcripts and their offsets cannot independently establish fidelity to underlying audio.",
+    "Data involves minors. No reidentification. Report residual PII and do not redistribute affected records per publisher guidance."
+  ],
+  "evidence_schema": {
+    "turn_path": "turns[]",
+    "source_turn_id": "turn_number",
+    "source_text": "text",
+    "actor_role": "role (Student/Tutor)",
+    "relative_offsets": [
+      "start_seconds",
+      "end_seconds"
+    ],
+    "session_metadata": "session",
+    "excluded_from_observed_events": "enrichments"
+  },
+  "demonstration_windows": [
+    {
+      "source_line_1_based": 366,
+      "turns": [
+        27,
+        39
+      ],
+      "reason": "Explicit help request; later confusion on algebra; tutor asks opposite-operation inquiry; learner answers and thanks tutor."
+    },
+    {
+      "source_line_1_based": 435,
+      "turns": [
+        31,
+        57
+      ],
+      "reason": "Learner explicitly says I need help; tutor narrows addition/subtraction problem, asks questions and supplies explanation/answer. Preserve pedagogical quality as unassessed."
+    }
+  ],
+  "primary_paper_verified": {
+    "title": "When Help is Unhelpful: Evaluating AI Tutors for Productive Struggle",
+    "url": "https://tutormoments.allen.ai/static/paper/tutormoments-preview.pdf",
+    "sha256": "4914924fa82ae85889dbe2d16bd5168a7964254623f3c335e2bed91b1bec7d1a",
+    "page": 5,
+    "section": "3.1 Sourcing Student-Tutor Transcripts",
+    "finding": "The paper describes remote one-on-one human tutoring of actual U.S.-based students at home, with human tutors who did not receive AI assistance, and publication under a research clause affirmatively agreed to by parents/guardians. It distinguishes audio transcripts generated using Gemini 2.5 Pro from visual-content enrichments also generated using Gemini 2.5 Pro. Sessions are almost exclusively math, not all math."
+  }
+}

@@ -1,0 +1,13 @@
+{
+  "source_package": "Learnlog_AI_Use_Profile_v0.1.0_Package.zip",
+  "source_profile_version": "0.1.0",
+  "files": {
+    "code/learnlog_ai.py": "8d24b4094cfe6161ee849c1442befe7ccd993ccf26b7d47859e5b32fc47d0ded",
+    "conditions.json": "fef5452601b82ed48d46449667a5e7e055ddcaa3ee7668e363539c8e8ac9b64f",
+    "schemas/ai-context-v0.1.0.schema.json": "f7d8a96f88a6ce9bbb2feed886ee99edd934e21d743b04d7229090a87fd9a285",
+    "schemas/condition-assessment-v0.1.0.schema.json": "5918d785470f63e84ae383dee364ad68b2117a39f57dbe7a5d7916f79a2b96a7",
+    "schemas/example-event-v0.1.0.schema.json": "b28e6bd52cf060259d0c4044e0f2e5d7a53b48cb4f7fcef907fc39e59217095d"
+  },
+  "adaptation": "Original copied bytes retained; transformer adapter uses context and condition validation, not fixture-specific verify_log. Draft-01 retains draft-00 wire format and hash formulas.",
+  "license_status": "QLM-authored companion AI Use profile licensed under the project MIT License; copyright (c) 2026 Quantum Learning Machines. Existing source hashes are retained. This licensing decision is not an independent provenance or legal rights audit; separately licensed material retains its original terms."
+}

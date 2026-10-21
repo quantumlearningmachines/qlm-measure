@@ -1,0 +1,160 @@
+{
+  "$id": "https://transformer.quantumlearningmachines.com/schemas/assistance-context-v0.1.0.json",
+  "profile_id": "qlm:assistance-context:0.1.0",
+  "version": "0.1.0",
+  "status": "proposed_application_profile_not_ietf_standard",
+  "context_fields": {
+    "phase": {
+      "values": [
+        "practice",
+        "assessment",
+        "other",
+        "unknown"
+      ],
+      "default": "unknown",
+      "definition": "Declared activity phase; not inferred from task content or scores."
+    },
+    "permission": {
+      "values": [
+        "permitted",
+        "prohibited",
+        "restricted",
+        "unknown"
+      ],
+      "default": "unknown",
+      "definition": "Declared assistance policy; permission is not observation of use."
+    },
+    "observed_use": {
+      "values": [
+        "recorded",
+        "not_recorded",
+        "unknown"
+      ],
+      "default": "unknown",
+      "definition": "Source assertion about recording assistance use within its capture boundary; not_recorded is not proof of absence."
+    },
+    "capture": {
+      "values": [
+        "complete_within_boundary",
+        "partial",
+        "unknown"
+      ],
+      "default": "unknown",
+      "definition": "Declared instrument coverage within an explicit boundary; outside help remains unobserved."
+    },
+    "capture_boundary": {
+      "type": "nullable_string",
+      "default": null,
+      "definition": "Source-declared system, event classes and period within which coverage is asserted.",
+      "max_length": 2000
+    },
+    "product_version": {
+      "type": "nullable_string",
+      "default": null,
+      "definition": "Version reported by source; absence remains unknown.",
+      "max_length": 2000
+    },
+    "model_version": {
+      "type": "nullable_string",
+      "default": null,
+      "definition": "AI model version reported by source; absence remains unknown.",
+      "max_length": 2000
+    }
+  },
+  "event_types": {
+    "help_requested": "Source explicitly records a request; no delivery is inferred.",
+    "help_generated": "Source explicitly records creation of assistance; transmission is not inferred.",
+    "help_transmitted": "Source explicitly records transmission; display is not inferred.",
+    "help_displayed": "Source explicitly records display; reading, understanding and learning are not inferred.",
+    "learner_response_observed": "Source explicitly records a subsequent learner action; causal benefit and understanding are not inferred."
+  },
+  "semantics": {
+    "tutormoments": {
+      "contract_version": "0.1.0",
+      "review": {
+        "status": "implementation_checked_not_independently_reviewed",
+        "scope": "Executable mapping checks do not establish semantic validity or educational effectiveness."
+      },
+      "original_event_time": "Preserve source timestamp or relative offsets separately. Import entry time is the importer observation time. Missing absolute source timestamps remain null.",
+      "source_unit": "transcript_session",
+      "target_unit": "dialogue_turn",
+      "measurement_profile": null,
+      "denominator": null,
+      "coverage": {
+        "status": "partial",
+        "boundary": "Selected released transcript text and offsets; no original recording or outside-help capture."
+      },
+      "coding_method": "source_speaker_and_text_only_no_help_classification",
+      "definition": "One released transcript turn is imported as one observed dialogue turn. Source Tutor role is not a help-delivery label.",
+      "transformations": [
+        "HMAC-scope known learner identifier",
+        "Preserve source turn order, speaker, text and relative offsets",
+        "Record importer actor and import time separately from historical speaker and unknown source clock"
+      ],
+      "information_loss": [
+        "Known original identity columns are excluded from event data",
+        "Model-generated enrichments are not imported as observations",
+        "Audio fidelity and external assistance cannot be checked from released text"
+      ],
+      "pooling_limit": "Dialogue-turn counts cannot be combined with participant summaries or assistance-event counts. Published companion interval coding is a separate measurement profile."
+    },
+    "oatutor": {
+      "contract_version": "0.1.0",
+      "review": {
+        "status": "implementation_checked_not_independently_reviewed",
+        "scope": "Executable mapping checks do not establish semantic validity or educational effectiveness."
+      },
+      "original_event_time": "Preserve source timestamp or relative offsets separately. Import entry time is the importer observation time. Missing absolute source timestamps remain null.",
+      "source_unit": "participant_summary",
+      "target_unit": "participant_summary",
+      "measurement_profile": null,
+      "denominator": null,
+      "coverage": {
+        "status": "unknown",
+        "boundary": "Participant summary table; no individual assistance timeline."
+      },
+      "coding_method": "source_assigned_condition_and_reported_metric_strings",
+      "definition": "One participant table row is imported as one observed summary. Assigned hint condition is not observed use.",
+      "transformations": [
+        "HMAC-scope known learner identifier",
+        "Retain original reported metric strings and missing values",
+        "Record importer observation time; original event clock is unknown"
+      ],
+      "information_loss": [
+        "Known participant identifier is excluded from event data",
+        "No help requests, generated hints, transmissions or displays are recoverable from summary rows"
+      ],
+      "pooling_limit": "Assigned conditions and reported outcomes do not enter assistance-event or coded-interval denominators."
+    },
+    "explicit-assistance-events": {
+      "contract_version": "0.1.0",
+      "review": {
+        "status": "implementation_checked_not_independently_reviewed",
+        "scope": "Executable mapping checks do not establish semantic validity or educational effectiveness."
+      },
+      "original_event_time": "Preserve source timestamp or relative offsets separately. Import entry time is the importer observation time. Missing absolute source timestamps remain null.",
+      "source_unit": "explicit_source_event",
+      "target_unit": "assistance_lifecycle_event",
+      "measurement_profile": "qlm:explicit-assistance-lifecycle-counts:0.1.0",
+      "denominator": "Distinct native event identities within one declared capture boundary and active source revision; counts stratified by event_type.",
+      "coverage": {
+        "status": "source_declared",
+        "boundary": null
+      },
+      "coding_method": "explicit_source_event_type_no_text_classifier",
+      "definition": "One explicit source lifecycle assertion is imported as one observation. Lifecycle states remain separate; no state implies a later one.",
+      "transformations": [
+        "Scope learner pseudonym to adapter, source_id, tenant and key",
+        "Preserve source event_id, revision, lifecycle type, assistance/request links and optional timestamp",
+        "Normalize declared context with unknown defaults; no text-based inference"
+      ],
+      "information_loss": [
+        "Known learner source identifier is not copied into event data",
+        "Unknown source fields are excluded",
+        "A matching input shape establishes neither source authenticity nor measurement validity"
+      ],
+      "pooling_limit": "Requires independently reviewed compatible source mappings, lifecycle definitions, units, denominators, coding and capture coverage. Synthetic fixtures cannot support empirical product claims."
+    }
+  },
+  "pooling": "Compatibility is a conservative descriptive screen, not a transportability proof, independence assumption or causal inference license."
+}

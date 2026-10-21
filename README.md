@@ -64,6 +64,15 @@ Both packages ship the same 10 checks, the same report schema, and produce byte-
 - Evidence event schemas are **v0.2** and may change in minor versions. Pin your dependency.
 - The estimation service requires the QLM API. The verifier does not.
 
+## Assistance capture and native exports
+
+The prepared [QLM Transformer](tools/qlm-transformer/README.md) and
+[Airflow workflows](integrations/airflow/README.md) add assistance definitions,
+capture declarations, explicit unknowns and native research-export mappings.
+See [the release plan](docs/transformer/RELEASE_PLAN.md) and
+[demo source](demo/transformer/README.md). These tools are separate from the
+measurement SDK and hosted estimation engine.
+
 ## License
 
-Apache-2.0. See [LICENSE](./LICENSE).
+The SDK is Apache-2.0. See [LICENSE](./LICENSE). Transformer and Airflow subtrees retain their MIT licenses; data and specifications retain separate terms. See [license scopes](docs/transformer/LICENSING.md).

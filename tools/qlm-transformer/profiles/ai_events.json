@@ -1,0 +1,31 @@
+{
+  "mode": "events",
+  "fields": {
+    "subject_id": "student_id",
+    "time": "time",
+    "event_type": "kind",
+    "activity_id": "task",
+    "activity_version": "task_version",
+    "session_id": "session",
+    "response": "answer",
+    "scaffold_type": "support_type",
+    "content": "help_text",
+    "reveals_answer": "reveals_answer"
+  },
+  "event_types": {
+    "answer": "response",
+    "ask": "help_requested",
+    "hint_shown": "scaffold_provided"
+  },
+  "scaffold_actor": {
+    "role": "instructor",
+    "kind": "software",
+    "id": "synthetic-ai-tutor"
+  },
+  "scaffold_instrument": {
+    "source": "model",
+    "model": "synthetic-model-no-live-call",
+    "config_hash": "22ce24c5810a57c28dfaf82bd49010e1ad4eaa56a8ce7fa4b01e2a9d19e9dcac",
+    "validated": false
+  }
+}

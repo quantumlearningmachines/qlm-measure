@@ -1,0 +1,70 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "properties": {
+    "binding_version": {
+      "const": "0.1.1-draft"
+    },
+    "mode": {
+      "const": "importer_created_observation"
+    },
+    "importer_id": {
+      "type": "string",
+      "format": "uri"
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "capture_sha256": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "importer_account": {
+      "type": "object",
+      "properties": {
+        "homePage": {
+          "type": "string",
+          "format": "uri",
+          "pattern": "^https?://[^/\\s]+"
+        },
+        "name": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "required": [
+        "homePage",
+        "name"
+      ],
+      "additionalProperties": false
+    },
+    "source_record_id": {
+      "type": "object",
+      "properties": {
+        "scope": {
+          "type": "string",
+          "format": "uri"
+        },
+        "local_id": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "required": [
+        "scope",
+        "local_id"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "required": [
+    "binding_version",
+    "mode",
+    "importer_id",
+    "created_at",
+    "capture_sha256",
+    "source_record_id"
+  ],
+  "additionalProperties": false
+}

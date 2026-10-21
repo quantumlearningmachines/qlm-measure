@@ -1,0 +1,296 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://transformer.quantumlearningmachines.com/schemas/research-import-v1.json",
+  "title": "QLM research-import event extension, version 1",
+  "description": "QLM-defined source-import events. This is not an IETF-standard event vocabulary. Import time is distinct from source relative offsets; assigned conditions are distinct from recorded assistance.",
+  "type": "object",
+  "required": [
+    "name",
+    "salt",
+    "data",
+    "activity"
+  ],
+  "properties": {
+    "name": {
+      "enum": [
+        "qlm_import:dialogue_turn_observed",
+        "qlm_import:participant_summary_observed"
+      ]
+    },
+    "salt": {
+      "type": "string",
+      "minLength": 1
+    },
+    "actor": {
+      "type": "object",
+      "required": [
+        "role",
+        "kind"
+      ],
+      "properties": {
+        "role": {
+          "type": "string",
+          "minLength": 1
+        },
+        "kind": {
+          "enum": [
+            "human",
+            "software"
+          ]
+        },
+        "id": {
+          "type": "string"
+        }
+      }
+    },
+    "activity": {
+      "type": "object",
+      "required": [
+        "id"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "data": {
+      "type": "object",
+      "required": [
+        "provenance",
+        "time_basis",
+        "raw_source_fields",
+        "reported_metrics",
+        "missing_metrics",
+        "assistance"
+      ],
+      "properties": {
+        "provenance": {
+          "type": "object",
+          "required": [
+            "platform",
+            "source_sha256",
+            "source_row",
+            "imported_at",
+            "mapping_sha256"
+          ],
+          "properties": {
+            "platform": {
+              "enum": [
+                "tutormoments",
+                "oatutor"
+              ]
+            },
+            "source_sha256": {
+              "$ref": "#/$defs/hash"
+            },
+            "mapping_sha256": {
+              "$ref": "#/$defs/hash"
+            },
+            "source_record_sha256": {
+              "$ref": "#/$defs/hash"
+            },
+            "source_file_sha256": {
+              "$ref": "#/$defs/hash"
+            },
+            "source_row": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "source_file_row": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "imported_at": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "source_field_path": {
+              "type": "string"
+            },
+            "source_kind": {
+              "enum": [
+                "verified_public_sample",
+                "unverified_user_input"
+              ]
+            }
+          }
+        },
+        "time_basis": {
+          "const": "import_time"
+        },
+        "source_time_basis": {
+          "const": "relative_offsets_seconds"
+        },
+        "raw_source_fields": {
+          "type": "object"
+        },
+        "reported_metrics": {
+          "type": "object"
+        },
+        "missing_metrics": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "uniqueItems": true
+        },
+        "assistance": {
+          "enum": [
+            "tutor_utterance_recorded",
+            "student_utterance_recorded",
+            "assigned_condition_only"
+          ]
+        },
+        "dialogue": {
+          "type": "object",
+          "required": [
+            "role",
+            "text",
+            "turn_number",
+            "start_seconds",
+            "end_seconds"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "role": {
+              "enum": [
+                "Student",
+                "Tutor"
+              ]
+            },
+            "text": {
+              "type": "string"
+            },
+            "turn_number": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "start_seconds": {
+              "type": "number",
+              "minimum": 0
+            },
+            "end_seconds": {
+              "type": "number",
+              "minimum": 0
+            }
+          }
+        },
+        "help_evidence": {
+          "type": "object",
+          "required": [
+            "condition",
+            "actual_help_use"
+          ],
+          "properties": {
+            "condition": {
+              "enum": [
+                "ChatGPT",
+                "Human tutor",
+                "No-hint control"
+              ]
+            },
+            "actual_help_use": {
+              "enum": [
+                "not_reported_in_participant_table",
+                "not_established_by_this_adapter"
+              ]
+            }
+          }
+        }
+      }
+    }
+  },
+  "$defs": {
+    "hash": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "name": {
+            "const": "qlm_import:dialogue_turn_observed"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "data": {
+            "required": [
+              "dialogue",
+              "source_time_basis"
+            ],
+            "properties": {
+              "assistance": {
+                "enum": [
+                  "tutor_utterance_recorded",
+                  "student_utterance_recorded"
+                ]
+              },
+              "reported_metrics": {
+                "maxProperties": 0
+              },
+              "missing_metrics": {
+                "maxItems": 0
+              }
+            }
+          },
+          "actor": {
+            "properties": {
+              "kind": {
+                "const": "human"
+              },
+              "role": {
+                "enum": [
+                  "tutor",
+                  "learner"
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "name": {
+            "const": "qlm_import:participant_summary_observed"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "data": {
+            "required": [
+              "help_evidence"
+            ],
+            "properties": {
+              "assistance": {
+                "enum": [
+                  "assigned_condition_only"
+                ]
+              }
+            }
+          },
+          "actor": {
+            "properties": {
+              "kind": {
+                "const": "software"
+              },
+              "role": {
+                "enum": [
+                  "system"
+                ]
+              }
+            }
+          }
+        }
+      }
+    }
+  ]
+}

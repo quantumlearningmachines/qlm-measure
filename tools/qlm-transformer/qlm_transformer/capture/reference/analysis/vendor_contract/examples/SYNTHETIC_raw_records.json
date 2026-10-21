@@ -1,0 +1,26 @@
+{
+  "status": "SYNTHETIC illustrative fixtures, not research data",
+  "records": [
+    {
+      "source": "requested",
+      "label": "hint",
+      "emitted_stage": "requested",
+      "event_id": "event-1",
+      "timestamp": "2026-01-01T12:00:00Z"
+    },
+    {
+      "source": "generated",
+      "label": "hint",
+      "emitted_stage": "generated",
+      "event_id": "event-1",
+      "timestamp": "2026-01-01T12:00:00Z"
+    },
+    {
+      "source": "displayed",
+      "label": "hint",
+      "emitted_stage": "displayed",
+      "event_id": "event-1",
+      "timestamp": "2026-01-01T12:00:00Z"
+    }
+  ]
+}

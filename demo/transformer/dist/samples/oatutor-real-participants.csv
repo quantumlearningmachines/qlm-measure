@@ -1,0 +1,13 @@
+anonUserID,lesson,condition,preTest,postTest,sessionTime,totalUniqueSteps,learningGain
+1,Independent and mutually exclusive events,ChatGPT,0.333,0.333,1318,11,0
+2,Solve linear equations using a general strategy,Human tutor,0.666,0.333,163,11,-0.333
+3,Solve Equations Using the Subtraction and Addition Properties of Equality,Human tutor,0.666,1,381,11,0.333
+4,Solve Equations Using the Subtraction and Addition Properties of Equality,ChatGPT,0.666,1,283,11,0.333
+5,Independent and mutually exclusive events,ChatGPT,0.333,0.666,796,11,0.333
+6,Solve linear equations using a general strategy,No-hint control,0.333,0.333,138,11,0
+7,Find a linear equation,No-hint control,0,0,1131,11,0
+8,Solve Equations Using the Subtraction and Addition Properties of Equality,Human tutor,0.333,0.666,1765,11,0.333
+9,Solve linear equations using a general strategy,Human tutor,0.333,1,664,11,0.667
+10,Solve linear equations using a general strategy,No-hint control,0.666,1,316,11,0.333
+11,Independent and mutually exclusive events,No-hint control,0.666,0,207,11,-0.666
+12,Independent and mutually exclusive events,ChatGPT,0.333,1,586,11,0.667

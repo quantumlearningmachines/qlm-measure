@@ -1,0 +1,14 @@
+{
+  "filename": "qlm-transformer-airflow.zip",
+  "bytes": 390670,
+  "sha256": "cbd6944bf02bfbf5aac7502385f1638cefec4490e75d93675c92c4ed1d34bc7d",
+  "files": 185,
+  "pipeline_version": "0.5.0rc1",
+  "transformer_version": "0.3.0rc1",
+  "contained_writer_version": "0.2.1",
+  "source_adapter_version": "0.4.0-research-adapters",
+  "capture_payload_version": "0.1.0-draft",
+  "capture_binding_version": "0.1.1-draft",
+  "release_status": "prepared",
+  "raw_zenodo_idetrace_telemetry_bundled": false
+}

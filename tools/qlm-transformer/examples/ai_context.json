@@ -1,0 +1,51 @@
+{
+  "profile_id": "https://example.org/learnlog/102026/ai-use/v0.1.0",
+  "profile_version": "0.1.0",
+  "context_id": "synthetic-transformer-context-1",
+  "phase": "learning",
+  "activity": {
+    "id": "fractions",
+    "version": "synthetic-1"
+  },
+  "policy": {
+    "id": "synthetic-policy-1",
+    "version": "1",
+    "phase": "learning",
+    "permission": "permitted",
+    "allowed_assistance": [
+      "metacognitive_prompt"
+    ],
+    "authority": "synthetic_fixture_author",
+    "statement": "Constructed policy permits model-generated prompts within this learning task. Permission is not observed use, compliance or data-use consent.",
+    "scope": {
+      "actor": "subject",
+      "activity_id": "fractions"
+    }
+  },
+  "observation": {
+    "domain": "producer_activity_only",
+    "declaration_kind": "producer_asserted",
+    "capture_status": "partial",
+    "scope": {
+      "session": "synthetic-session-001",
+      "first_seq": 1,
+      "last_seq": 3
+    },
+    "planned_channels": [
+      "in_product_help",
+      "responses"
+    ],
+    "claimed_channels": [
+      "imported_in_product_events"
+    ],
+    "exclusions": [
+      {
+        "source": "external_ai_or_other_help",
+        "status": "unknown",
+        "reason": "outside_observation",
+        "detail": "Other devices, products, offline help and internal cognition are outside this constructed input."
+      }
+    ],
+    "basis": "Synthetic import fixture with explicit event rows. No real logging completeness or observed chronology has been verified."
+  }
+}

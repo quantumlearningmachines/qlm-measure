@@ -1,0 +1,246 @@
+{
+  "sensor": "https://example.org/learnlog/unpublished-local-tools/build-bindings/sensor",
+  "sendTime": "2026-10-20T15:23:43.228Z",
+  "dataVersion": "http://purl.imsglobal.org/ctx/caliper/v1p2",
+  "data": [
+    {
+      "@context": "http://purl.imsglobal.org/ctx/caliper/v1p2",
+      "id": "urn:uuid:17000b8d-9156-5e95-a758-a42fffb1de03",
+      "type": "Event",
+      "profile": "GeneralProfile",
+      "actor": {
+        "id": "https://example.org/learnlog/unpublished-local-tools/build-bindings",
+        "type": "SoftwareApplication"
+      },
+      "action": "Created",
+      "object": {
+        "id": "urn:learnlog:assistance-capture:sha256:6025e3442e601eacbd7f59a120a5b69571f244e144c9f4ad12d471dcb925eed7",
+        "type": "DigitalResource"
+      },
+      "eventTime": "2026-10-20T15:23:43.228Z",
+      "extensions": {
+        "https://example.org/learnlog/proposal/assistance-capture/0.1.0": {
+          "schema_version": "0.1.0-draft",
+          "record_kind": "assistance_event_observation",
+          "record_id": {
+            "scope": "urn:learnlog:synthetic:displayed",
+            "local_id": "event-1"
+          },
+          "source": {
+            "source_id": "urn:learnlog:synthetic:displayed",
+            "product_version": {
+              "state": "observed",
+              "value": "synthetic-v1",
+              "reason": "Fixture declares this version.",
+              "evidence_refs": [
+                "native"
+              ]
+            },
+            "model_version": {
+              "state": "not_reported",
+              "reason": "Fixture does not specify an AI model.",
+              "evidence_refs": [
+                "native"
+              ],
+              "review_scope": {
+                "searched_evidence_refs": [
+                  "native"
+                ],
+                "search_description": "Entire synthetic fixture declaration examined; no claim about material outside this fixture."
+              }
+            },
+            "source_revision": {
+              "state": "observed",
+              "value": "1",
+              "reason": "Fixture revision.",
+              "evidence_refs": [
+                "native"
+              ]
+            }
+          },
+          "assistance": {
+            "label": "hint",
+            "lifecycle": {
+              "state": "observed",
+              "value": "displayed",
+              "reason": "Synthetic instrumentation explicitly emits displayed; label alone is insufficient.",
+              "evidence_refs": [
+                "native"
+              ]
+            },
+            "event_time": {
+              "original": {
+                "state": "observed",
+                "value": "2026-01-01T12:00:00Z",
+                "reason": "Synthetic source clock.",
+                "evidence_refs": [
+                  "native"
+                ]
+              },
+              "utc": {
+                "state": "observed",
+                "value": "2026-01-01T12:00:00Z",
+                "reason": "Fixture uses UTC.",
+                "evidence_refs": [
+                  "native"
+                ]
+              },
+              "clock_basis": {
+                "state": "observed",
+                "value": "declared_utc",
+                "reason": "Synthetic clock convention.",
+                "evidence_refs": [
+                  "native"
+                ]
+              }
+            }
+          },
+          "capture": {
+            "instrument_id": "urn:learnlog:synthetic:displayed:instrument",
+            "capabilities": {
+              "requested": {
+                "state": "not_collected",
+                "reason": "Fixture does not instrument this stage.",
+                "evidence_refs": [
+                  "native"
+                ],
+                "capture_basis": "Synthetic fixture definition explicitly omits this instrumentation hook."
+              },
+              "generated": {
+                "state": "not_collected",
+                "reason": "Fixture does not instrument this stage.",
+                "evidence_refs": [
+                  "native"
+                ],
+                "capture_basis": "Synthetic fixture definition explicitly omits this instrumentation hook."
+              },
+              "transmitted": {
+                "state": "not_collected",
+                "reason": "Fixture does not instrument this stage.",
+                "evidence_refs": [
+                  "native"
+                ],
+                "capture_basis": "Synthetic fixture definition explicitly omits this instrumentation hook."
+              },
+              "displayed": {
+                "state": "observed",
+                "value": true,
+                "reason": "Synthetic instrument test exercises this hook.",
+                "evidence_refs": [
+                  "native"
+                ]
+              },
+              "accepted": {
+                "state": "not_collected",
+                "reason": "Fixture does not instrument this stage.",
+                "evidence_refs": [
+                  "native"
+                ],
+                "capture_basis": "Synthetic fixture definition explicitly omits this instrumentation hook."
+              }
+            },
+            "boundary": {
+              "systems": [
+                "SYNTHETIC fixture only"
+              ],
+              "event_classes": [
+                "displayed"
+              ],
+              "exclusions": [
+                "Other lifecycle stages, external tools and learner cognition are outside capture."
+              ]
+            },
+            "window": {
+              "start": {
+                "state": "observed",
+                "value": "2026-01-01T12:00:00Z",
+                "reason": "Synthetic observation start.",
+                "evidence_refs": [
+                  "native"
+                ]
+              },
+              "end": {
+                "state": "observed",
+                "value": "2026-01-01T12:01:00Z",
+                "reason": "Synthetic observation end.",
+                "evidence_refs": [
+                  "native"
+                ]
+              }
+            },
+            "coverage": {
+              "state": "observed",
+              "value": "partial",
+              "reason": "Fixture does not establish complete capture.",
+              "evidence_refs": [
+                "native"
+              ]
+            }
+          },
+          "context": {
+            "activity_reference": {
+              "state": "not_reported",
+              "reason": "No task content is included.",
+              "evidence_refs": [
+                "native"
+              ],
+              "review_scope": {
+                "searched_evidence_refs": [
+                  "native"
+                ],
+                "search_description": "Entire synthetic fixture declaration examined; no claim about material outside this fixture."
+              }
+            },
+            "phase": {
+              "state": "not_reported",
+              "reason": "Fixture does not specify phase.",
+              "evidence_refs": [
+                "native"
+              ],
+              "review_scope": {
+                "searched_evidence_refs": [
+                  "native"
+                ],
+                "search_description": "Entire synthetic fixture declaration examined; no claim about material outside this fixture."
+              }
+            },
+            "permission": {
+              "state": "not_reviewed",
+              "reason": "Fixture includes no reviewed assistance policy.",
+              "evidence_refs": []
+            }
+          },
+          "provenance": {
+            "native_record_reference": "urn:learnlog:synthetic:displayed:raw",
+            "mapping_reference": "urn:learnlog:synthetic:literal-stage-mapping:v1",
+            "mapping_review": {
+              "state": "not_reviewed",
+              "reason": "Synthetic candidate mapping has no independent review.",
+              "evidence_refs": []
+            }
+          },
+          "evidence": [
+            {
+              "evidence_id": "native",
+              "kind": "synthetic_fixture",
+              "reference": "urn:learnlog:synthetic:displayed:raw",
+              "description": "SYNTHETIC raw record: label='hint', emitted_stage='displayed'; fixture assertions are not observations of a real product."
+            }
+          ],
+          "derived_labels": []
+        },
+        "https://example.org/learnlog/proposal/assistance-capture-profile/extensions/importer-observation": {
+          "binding_version": "0.1.1-draft",
+          "mode": "importer_created_observation",
+          "importer_id": "https://example.org/learnlog/unpublished-local-tools/build-bindings",
+          "created_at": "2026-10-20T15:23:43.228Z",
+          "capture_sha256": "6025e3442e601eacbd7f59a120a5b69571f244e144c9f4ad12d471dcb925eed7",
+          "source_record_id": {
+            "scope": "urn:learnlog:synthetic:displayed",
+            "local_id": "event-1"
+          }
+        }
+      }
+    }
+  ]
+}

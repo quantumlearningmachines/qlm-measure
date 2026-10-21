@@ -1,0 +1,128 @@
+{
+  "@context": "https://w3id.org/xapi/profiles/context",
+  "id": "https://example.org/learnlog/proposal/assistance-capture-profile",
+  "type": "Profile",
+  "conformsTo": "https://w3id.org/xapi/profiles#1.0",
+  "prefLabel": {
+    "en": "Learnlog assistance capture profile (unpublished draft)"
+  },
+  "definition": {
+    "en": "An unpublished draft assistance capture agreement carried in xAPI. This binding records importer software creating an assistance-observation record. The host statement is not a learner assistance event. Preserve the full contract, source uncertainty and importer metadata; apply the accompanying bounded consistency validator. No interoperability or certification claim."
+  },
+  "author": {
+    "type": "Organization",
+    "name": "Quantum Learning Machines",
+    "url": "https://quantumlearningmachines.com"
+  },
+  "versions": [
+    {
+      "id": "https://example.org/learnlog/proposal/assistance-capture-profile/v/0.1.1-draft",
+      "generatedAtTime": "2026-10-20T15:23:43.228Z"
+    }
+  ],
+  "concepts": [
+    {
+      "id": "https://example.org/learnlog/proposal/assistance-capture-profile/activity-types/assistance-capture-record",
+      "type": "ActivityType",
+      "inScheme": "https://example.org/learnlog/proposal/assistance-capture-profile/v/0.1.1-draft",
+      "prefLabel": {
+        "en": "Assistance capture observation record"
+      },
+      "definition": {
+        "en": "A digital record that preserves a source-bounded assistance lifecycle observation, capture declarations, typed unavailable information and mapping provenance. It is not the underlying hint, learner, task or observed learning event."
+      }
+    },
+    {
+      "id": "https://example.org/learnlog/proposal/assistance-capture/0.1.0",
+      "type": "ContextExtension",
+      "inScheme": "https://example.org/learnlog/proposal/assistance-capture-profile/v/0.1.1-draft",
+      "prefLabel": {
+        "en": "Assistance capture agreement"
+      },
+      "definition": {
+        "en": "The complete assistance-capture0.1.0-draft payload, without flattening unknown states. A syntactically valid assertion does not authenticate evidence or establish capture completeness. Additional consistency validation is required."
+      },
+      "inlineSchema": "{\"$schema\":\"http://json-schema.org/draft-07/schema#\",\"$id\":\"urn:learnlog:proposal:assistance-capture:0.1.0\",\"title\":\"Proposed Learnlog transport-neutral assistance capture contract\",\"description\":\"Experimental contract; syntactic validity is not evidence of truth, independent review, learning, or comparability.\",\"type\":\"object\",\"properties\":{\"schema_version\":{\"const\":\"0.1.0-draft\"},\"record_id\":{\"$ref\":\"#/definitions/scoped_id\"},\"record_kind\":{\"const\":\"assistance_event_observation\"},\"source\":{\"type\":\"object\",\"properties\":{\"source_id\":{\"type\":\"string\",\"minLength\":1,\"format\":\"uri\",\"pattern\":\"^[A-Za-z][A-Za-z0-9+.-]*:\\\\S+$\"},\"product_version\":{\"allOf\":[{\"$ref\":\"#/definitions/knowledge\"},{\"if\":{\"properties\":{\"state\":{\"const\":\"observed\"}}},\"then\":{\"properties\":{\"value\":{\"type\":\"string\",\"minLength\":1}}}}]},\"model_version\":{\"allOf\":[{\"$ref\":\"#/definitions/knowledge\"},{\"if\":{\"properties\":{\"state\":{\"const\":\"observed\"}}},\"then\":{\"properties\":{\"value\":{\"type\":\"string\",\"minLength\":1}}}}]},\"source_revision\":{\"allOf\":[{\"$ref\":\"#/definitions/knowledge\"},{\"if\":{\"properties\":{\"state\":{\"const\":\"observed\"}}},\"then\":{\"properties\":{\"value\":{\"type\":\"string\",\"minLength\":1}}}}]}},\"required\":[\"source_id\",\"product_version\",\"model_version\",\"source_revision\"],\"additionalProperties\":false},\"assistance\":{\"type\":\"object\",\"properties\":{\"label\":{\"type\":\"string\",\"minLength\":1},\"lifecycle\":{\"allOf\":[{\"$ref\":\"#/definitions/knowledge\"},{\"if\":{\"properties\":{\"state\":{\"const\":\"observed\"}}},\"then\":{\"properties\":{\"value\":{\"enum\":[\"requested\",\"generated\",\"transmitted\",\"displayed\",\"accepted\"]}}}}]},\"event_time\":{\"type\":\"object\",\"properties\":{\"original\":{\"allOf\":[{\"$ref\":\"#/definitions/knowledge\"},{\"if\":{\"properties\":{\"state\":{\"const\":\"observed\"}}},\"then\":{\"properties\":{\"value\":{\"type\":[\"string\",\"number\"]}}}}]},\"utc\":{\"allOf\":[{\"$ref\":\"#/definitions/knowledge\"},{\"if\":{\"properties\":{\"state\":{\"const\":\"observed\"}}},\"then\":{\"properties\":{\"value\":{\"type\":\"string\",\"format\":\"date-time\"}}}}]},\"clock_basis\":{\"allOf\":[{\"$ref\":\"#/definitions/knowledge\"},{\"if\":{\"properties\":{\"state\":{\"const\":\"observed\"}}},\"then\":{\"properties\":{\"value\":{\"type\":\"string\",\"minLength\":1}}}}]}},\"required\":[\"original\",\"utc\",\"clock_basis\"],\"additionalProperties\":false},\"assistance_id\":{\"$ref\":\"#/definitions/scoped_id\"}},\"required\":[\"label\",\"lifecycle\",\"event_time\"],\"additionalProperties\":false},\"subject\":{\"$ref\":\"#/definitions/scoped_id\"},\"capture\":{\"type\":\"object\",\"properties\":{\"instrument_id\":{\"type\":\"string\",\"minLength\":1,\"format\":\"uri\",\"pattern\":\"^[A-Za-z][A-Za-z0-9+.-]*:\\\\S+$\"},\"capabilities\":{\"type\":\"object\",\"properties\":{\"requested\":{\"allOf\":[{\"$ref\":\"#/definitions/knowledge\"},{\"if\":{\"properties\":{\"state\":{\"const\":\"observed\"}}},\"then\":{\"properties\":{\"value\":{\"type\":\"boolean\"}}}}]},\"generated\":{\"allOf\":[{\"$ref\":\"#/definitions/knowledge\"},{\"if\":{\"properties\":{\"state\":{\"const\":\"observed\"}}},\"then\":{\"properties\":{\"value\":{\"type\":\"boolean\"}}}}]},\"transmitted\":{\"allOf\":[{\"$ref\":\"#/definitions/knowledge\"},{\"if\":{\"properties\":{\"state\":{\"const\":\"observed\"}}},\"then\":{\"properties\":{\"value\":{\"type\":\"boolean\"}}}}]},\"displayed\":{\"allOf\":[{\"$ref\":\"#/definitions/knowledge\"},{\"if\":{\"properties\":{\"state\":{\"const\":\"observed\"}}},\"then\":{\"properties\":{\"value\":{\"type\":\"boolean\"}}}}]},\"accepted\":{\"allOf\":[{\"$ref\":\"#/definitions/knowledge\"},{\"if\":{\"properties\":{\"state\":{\"const\":\"observed\"}}},\"then\":{\"properties\":{\"value\":{\"type\":\"boolean\"}}}}]}},\"required\":[\"requested\",\"generated\",\"transmitted\",\"displayed\",\"accepted\"],\"additionalProperties\":false},\"boundary\":{\"type\":\"object\",\"properties\":{\"systems\":{\"type\":\"array\",\"minItems\":1,\"uniqueItems\":true,\"items\":{\"type\":\"string\",\"minLength\":1}},\"event_classes\":{\"type\":\"array\",\"minItems\":1,\"uniqueItems\":true,\"items\":{\"enum\":[\"requested\",\"generated\",\"transmitted\",\"displayed\",\"accepted\"]}},\"exclusions\":{\"type\":\"array\",\"minItems\":1,\"items\":{\"type\":\"string\",\"minLength\":1}}},\"required\":[\"systems\",\"event_classes\",\"exclusions\"],\"additionalProperties\":false},\"window\":{\"type\":\"object\",\"properties\":{\"start\":{\"allOf\":[{\"$ref\":\"#/definitions/knowledge\"},{\"if\":{\"properties\":{\"state\":{\"const\":\"observed\"}}},\"then\":{\"properties\":{\"value\":{\"type\":\"string\",\"format\":\"date-time\"}}}}]},\"end\":{\"allOf\":[{\"$ref\":\"#/definitions/knowledge\"},{\"if\":{\"properties\":{\"state\":{\"const\":\"observed\"}}},\"then\":{\"properties\":{\"value\":{\"type\":\"string\",\"format\":\"date-time\"}}}}]}},\"required\":[\"start\",\"end\"],\"additionalProperties\":false},\"coverage\":{\"allOf\":[{\"$ref\":\"#/definitions/knowledge\"},{\"if\":{\"properties\":{\"state\":{\"const\":\"observed\"}}},\"then\":{\"properties\":{\"value\":{\"enum\":[\"complete_within_boundary\",\"partial\"]}}}}]}},\"required\":[\"instrument_id\",\"capabilities\",\"boundary\",\"window\",\"coverage\"],\"additionalProperties\":false},\"context\":{\"type\":\"object\",\"properties\":{\"activity_reference\":{\"allOf\":[{\"$ref\":\"#/definitions/knowledge\"},{\"if\":{\"properties\":{\"state\":{\"const\":\"observed\"}}},\"then\":{\"properties\":{\"value\":{\"type\":\"string\",\"minLength\":1,\"format\":\"uri\",\"pattern\":\"^[A-Za-z][A-Za-z0-9+.-]*:\\\\S+$\"}}}}]},\"phase\":{\"allOf\":[{\"$ref\":\"#/definitions/knowledge\"},{\"if\":{\"properties\":{\"state\":{\"const\":\"observed\"}}},\"then\":{\"properties\":{\"value\":{\"enum\":[\"practice\",\"assessment\",\"other\"]}}}}]},\"permission\":{\"allOf\":[{\"$ref\":\"#/definitions/knowledge\"},{\"if\":{\"properties\":{\"state\":{\"const\":\"observed\"}}},\"then\":{\"properties\":{\"value\":{\"enum\":[\"permitted\",\"prohibited\",\"restricted\"]}}}}]}},\"required\":[\"activity_reference\",\"phase\",\"permission\"],\"additionalProperties\":false},\"provenance\":{\"type\":\"object\",\"properties\":{\"native_record_reference\":{\"type\":\"string\",\"minLength\":1,\"format\":\"uri\",\"pattern\":\"^[A-Za-z][A-Za-z0-9+.-]*:\\\\S+$\"},\"mapping_reference\":{\"type\":\"string\",\"minLength\":1,\"format\":\"uri\",\"pattern\":\"^[A-Za-z][A-Za-z0-9+.-]*:\\\\S+$\"},\"mapping_review\":{\"allOf\":[{\"$ref\":\"#/definitions/knowledge\"},{\"if\":{\"properties\":{\"state\":{\"const\":\"observed\"}}},\"then\":{\"properties\":{\"value\":{\"enum\":[\"author_reviewed\",\"independently_reviewed\",\"disputed\"]}}}}]}},\"required\":[\"native_record_reference\",\"mapping_reference\",\"mapping_review\"],\"additionalProperties\":false},\"evidence\":{\"type\":\"array\",\"minItems\":1,\"items\":{\"$ref\":\"#/definitions/evidence\"}},\"derived_labels\":{\"type\":\"array\",\"items\":{\"type\":\"object\",\"properties\":{\"label\":{\"type\":\"string\",\"minLength\":1},\"value\":{\"not\":{\"type\":\"null\"}},\"method_reference\":{\"type\":\"string\",\"minLength\":1,\"format\":\"uri\",\"pattern\":\"^[A-Za-z][A-Za-z0-9+.-]*:\\\\S+$\"},\"evidence_refs\":{\"type\":\"array\",\"items\":{\"type\":\"string\",\"minLength\":1},\"uniqueItems\":true,\"minItems\":1}},\"required\":[\"label\",\"value\",\"method_reference\",\"evidence_refs\"],\"additionalProperties\":false}}},\"required\":[\"schema_version\",\"record_id\",\"record_kind\",\"source\",\"assistance\",\"capture\",\"context\",\"provenance\",\"evidence\"],\"additionalProperties\":false,\"definitions\":{\"knowledge\":{\"type\":\"object\",\"properties\":{\"state\":{\"enum\":[\"observed\",\"not_collected\",\"not_reported\",\"not_reviewed\",\"unknown\",\"not_applicable\"]},\"reason\":{\"type\":\"string\",\"minLength\":1},\"value\":{\"not\":{\"type\":\"null\"}},\"evidence_refs\":{\"type\":\"array\",\"items\":{\"type\":\"string\",\"minLength\":1},\"uniqueItems\":true},\"review_scope\":{\"type\":\"object\",\"properties\":{\"searched_evidence_refs\":{\"type\":\"array\",\"items\":{\"type\":\"string\",\"minLength\":1},\"uniqueItems\":true,\"minItems\":1},\"search_description\":{\"type\":\"string\",\"minLength\":1}},\"required\":[\"searched_evidence_refs\",\"search_description\"],\"additionalProperties\":false},\"capture_basis\":{\"type\":\"string\",\"minLength\":1}},\"required\":[\"state\",\"reason\",\"evidence_refs\"],\"additionalProperties\":false,\"allOf\":[{\"if\":{\"properties\":{\"state\":{\"const\":\"observed\"}}},\"then\":{\"required\":[\"value\"],\"properties\":{\"evidence_refs\":{\"minItems\":1}}},\"else\":{\"not\":{\"required\":[\"value\"]}}},{\"if\":{\"properties\":{\"state\":{\"enum\":[\"not_collected\",\"not_reported\",\"not_applicable\"]}}},\"then\":{\"properties\":{\"evidence_refs\":{\"minItems\":1}}}},{\"if\":{\"properties\":{\"state\":{\"const\":\"not_reported\"}}},\"then\":{\"required\":[\"review_scope\"]}},{\"if\":{\"properties\":{\"state\":{\"const\":\"not_collected\"}}},\"then\":{\"required\":[\"capture_basis\"]}}]},\"scoped_id\":{\"type\":\"object\",\"properties\":{\"scope\":{\"type\":\"string\",\"minLength\":1,\"format\":\"uri\",\"pattern\":\"^[A-Za-z][A-Za-z0-9+.-]*:\\\\S+$\"},\"local_id\":{\"type\":\"string\",\"minLength\":1}},\"required\":[\"scope\",\"local_id\"],\"additionalProperties\":false},\"evidence\":{\"type\":\"object\",\"properties\":{\"evidence_id\":{\"type\":\"string\",\"minLength\":1},\"kind\":{\"enum\":[\"native_record\",\"source_documentation\",\"instrumentation_test\",\"synthetic_fixture\"]},\"reference\":{\"type\":\"string\",\"minLength\":1,\"format\":\"uri\",\"pattern\":\"^[A-Za-z][A-Za-z0-9+.-]*:\\\\S+$\"},\"description\":{\"type\":\"string\",\"minLength\":1}},\"required\":[\"evidence_id\",\"kind\",\"reference\",\"description\"],\"additionalProperties\":false}}}"
+    },
+    {
+      "id": "https://example.org/learnlog/proposal/assistance-capture-profile/extensions/importer-observation",
+      "type": "ContextExtension",
+      "inScheme": "https://example.org/learnlog/proposal/assistance-capture-profile/v/0.1.1-draft",
+      "prefLabel": {
+        "en": "Importer-created observation metadata"
+      },
+      "definition": {
+        "en": "Binding metadata that identifies the importer software and actual creation time of the new observation record, links its source scoped identity and checks payload agreement using an implementation-defined JSON digest. This is not source-event time or authenticated provenance."
+      },
+      "inlineSchema": "{\"$schema\":\"http://json-schema.org/draft-07/schema#\",\"type\":\"object\",\"properties\":{\"binding_version\":{\"const\":\"0.1.1-draft\"},\"mode\":{\"const\":\"importer_created_observation\"},\"importer_id\":{\"type\":\"string\",\"format\":\"uri\"},\"created_at\":{\"type\":\"string\",\"format\":\"date-time\"},\"capture_sha256\":{\"type\":\"string\",\"pattern\":\"^[a-f0-9]{64}$\"},\"importer_account\":{\"type\":\"object\",\"properties\":{\"homePage\":{\"type\":\"string\",\"format\":\"uri\",\"pattern\":\"^https?://[^/\\\\s]+\"},\"name\":{\"type\":\"string\",\"minLength\":1}},\"required\":[\"homePage\",\"name\"],\"additionalProperties\":false},\"source_record_id\":{\"type\":\"object\",\"properties\":{\"scope\":{\"type\":\"string\",\"format\":\"uri\"},\"local_id\":{\"type\":\"string\",\"minLength\":1}},\"required\":[\"scope\",\"local_id\"],\"additionalProperties\":false}},\"required\":[\"binding_version\",\"mode\",\"importer_id\",\"created_at\",\"capture_sha256\",\"source_record_id\"],\"additionalProperties\":false}"
+    }
+  ],
+  "templates": [
+    {
+      "id": "https://example.org/learnlog/proposal/assistance-capture-profile/v/0.1.1-draft/templates/importer-created-observation",
+      "type": "StatementTemplate",
+      "inScheme": "https://example.org/learnlog/proposal/assistance-capture-profile/v/0.1.1-draft",
+      "prefLabel": {
+        "en": "Importer created an assistance observation record"
+      },
+      "definition": {
+        "en": "The importer software account creates a digital observation record at the caller-supplied importer creation time. Neither actor nor timestamp asserts a learner action. Reuses ActivityStreams create, rather than minting a synonymous assistance verb. Available scoped subject information and source-time knowledge remain in the capture payload; absent source identity is not inferred. Full profile rules include inline schemas and bounded consistency checks."
+      },
+      "objectActivityType": "https://example.org/learnlog/proposal/assistance-capture-profile/activity-types/assistance-capture-record",
+      "rules": [
+        {
+          "location": "$.verb.id",
+          "presence": "included",
+          "any": [
+            "http://activitystrea.ms/schema/1.0/create"
+          ]
+        },
+        {
+          "location": "$.actor.objectType",
+          "presence": "included",
+          "any": [
+            "Agent"
+          ]
+        },
+        {
+          "location": "$.actor.account.homePage",
+          "presence": "included"
+        },
+        {
+          "location": "$.actor.account.name",
+          "presence": "included"
+        },
+        {
+          "location": "$.timestamp",
+          "presence": "included"
+        },
+        {
+          "location": "$.context.contextActivities.category[*].id",
+          "presence": "included",
+          "any": [
+            "https://example.org/learnlog/proposal/assistance-capture-profile/v/0.1.1-draft"
+          ]
+        },
+        {
+          "location": "$.context.extensions['https://example.org/learnlog/proposal/assistance-capture/0.1.0']",
+          "presence": "included"
+        },
+        {
+          "location": "$.context.extensions['https://example.org/learnlog/proposal/assistance-capture-profile/extensions/importer-observation']",
+          "presence": "included"
+        },
+        {
+          "location": "$.context.extensions['https://example.org/learnlog/proposal/assistance-capture-profile/extensions/importer-observation'].importer_account",
+          "presence": "included"
+        },
+        {
+          "location": "$.context.extensions['https://example.org/learnlog/proposal/assistance-capture-profile/extensions/importer-observation'].mode",
+          "presence": "included",
+          "any": [
+            "importer_created_observation"
+          ]
+        }
+      ]
+    }
+  ]
+}

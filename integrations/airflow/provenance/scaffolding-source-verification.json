@@ -1,0 +1,27 @@
+[
+  {
+    "source": "tutormoments",
+    "sample_sha256": "7df51fda0fff9c454ba14a33a0d2964d5e94b2556eff1d3897ec4f41373c8a66",
+    "exact_excerpt_records": 2,
+    "original_retrieved": true,
+    "original_sha256": "34b5d4483302593043f3d9be3bf37f1cde6cba5b031fd2d20d75a15d5498f276"
+  },
+  {
+    "source": "oatutor",
+    "sample_sha256": "26b98b6f5718f5c2f473d81ae1ad8e1817d18bada3ba7390d8e0ac445a8ad5a2",
+    "exact_excerpt_records": 12,
+    "original_retrieved": true,
+    "original_sha256": "e6801fb72e0642df548d63fa75ec3487e3b4b283df5759ba2b70d7e2e41289c4"
+  },
+  {
+    "source": "tutormoments_scaffolding_annotations",
+    "verification": {
+      "measurement_profile": "qlm.tutormoments.source-coded-intervals.v1",
+      "intervals": 10,
+      "annotation_rows": 60,
+      "sessions": 2,
+      "all_originals_verified": true,
+      "evidence_sha256": "5de6ad86ef9c44afb8eff772f878e18dba8704d5cacaaa7f73ff05c3a5d831da"
+    }
+  }
+]

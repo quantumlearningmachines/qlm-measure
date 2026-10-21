@@ -1,0 +1,16 @@
+{
+  "target_domain": "transformer.quantumlearningmachines.com",
+  "project_id": "prj_mzqznA27d4v3SK79RXxLQxNBceiq",
+  "team_id": "team_UoeCtnqdrONgbWwvjg11hw9N",
+  "project_name": "qlm-transformer",
+  "prepared_root": "demo/transformer",
+  "prepared_output": "dist",
+  "project_list_confirmed": true,
+  "project_detail_access": "403 missing Vercel team grant",
+  "current_git_linkage_verified": false,
+  "deployment_protection_verified": false,
+  "production_updated": false,
+  "preview_created": false,
+  "browser_qa_performed": false,
+  "browser_qa_reason": "No control-browser skill is exposed in the managed environment."
+}

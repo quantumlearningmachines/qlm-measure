@@ -1,0 +1,4 @@
+# Preserve exact publisher bytes, including original CSV CRLF line endings.
+demo/transformer/dist/samples/* -text whitespace=cr-at-eol
+integrations/airflow/samples/* -text whitespace=cr-at-eol
+integrations/airflow/provenance/*.jsonl -text

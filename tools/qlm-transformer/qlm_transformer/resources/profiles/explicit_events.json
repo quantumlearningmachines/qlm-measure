@@ -1,0 +1,21 @@
+{
+  "mode": "events",
+  "fields": {
+    "subject_id": "student_id",
+    "time": "time",
+    "event_type": "kind",
+    "activity_id": "task",
+    "response": "answer",
+    "scaffold_type": "support_type"
+  },
+  "event_types": {
+    "answer": "response",
+    "ask": "help_requested",
+    "hint_shown": "scaffold_provided"
+  },
+  "scaffold_actor": {
+    "role": "instructor",
+    "kind": "software",
+    "id": "demo-tutor"
+  }
+}

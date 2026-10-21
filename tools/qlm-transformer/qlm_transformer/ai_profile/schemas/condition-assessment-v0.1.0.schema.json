@@ -1,0 +1,816 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.org/learnlog/102026/ai-use/v0.1.0/condition-assessment.schema.json",
+  "title": "Proposed sidecar condition review v0.1.0",
+  "$comment": "Proposed v0.1.0 companion; example.org URIs are illustrative and unregistered.",
+  "type": "object",
+  "properties": {
+    "profile_id": {
+      "const": "https://example.org/learnlog/102026/ai-use/v0.1.0"
+    },
+    "profile_version": {
+      "const": "0.1.0"
+    },
+    "condition_set_id": {
+      "const": "https://example.org/learnlog/102026/ai-conditions/v0.1.0"
+    },
+    "condition_set_version": {
+      "const": "0.1.0"
+    },
+    "report_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "created": {
+      "type": "string",
+      "minLength": 1
+    },
+    "synthetic": {
+      "type": "boolean"
+    },
+    "disclaimer": {
+      "type": "string",
+      "minLength": 1
+    },
+    "assessments": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "condition_id": {
+            "enum": [
+              "C01",
+              "C02",
+              "C03",
+              "C04",
+              "C05",
+              "C06",
+              "C07",
+              "C08",
+              "C09",
+              "C10",
+              "C11",
+              "C12",
+              "C13",
+              "C14",
+              "C15",
+              "C16"
+            ]
+          },
+          "review_status": {
+            "enum": [
+              "unreviewed",
+              "reviewed"
+            ]
+          },
+          "assertion": {
+            "enum": [
+              "occurrence",
+              "difference_from_comparator"
+            ]
+          },
+          "scope": {
+            "type": "object",
+            "properties": {
+              "record_id": {
+                "type": "string",
+                "minLength": 1
+              },
+              "record_hash": {
+                "type": "string",
+                "pattern": "^[0-9a-f]{64}$"
+              },
+              "activity_id": {
+                "type": "string",
+                "minLength": 1
+              },
+              "session": {
+                "type": "string",
+                "minLength": 1
+              },
+              "first_seq": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 9007199254740991
+              },
+              "last_seq": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 9007199254740991
+              },
+              "domain": {
+                "enum": [
+                  "producer_activity_only",
+                  "observation_boundary",
+                  "external_assistance"
+                ]
+              }
+            },
+            "required": [
+              "record_id",
+              "record_hash",
+              "activity_id",
+              "session",
+              "first_seq",
+              "last_seq",
+              "domain"
+            ],
+            "additionalProperties": false
+          },
+          "operational_definition": {
+            "type": "string",
+            "minLength": 1
+          },
+          "pending_reason": {
+            "type": "string",
+            "minLength": 1
+          },
+          "result": {
+            "enum": [
+              "supported_present",
+              "supported_absent",
+              "indeterminate",
+              "not_applicable"
+            ]
+          },
+          "rationale": {
+            "type": "string",
+            "minLength": 1
+          },
+          "assessor": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string",
+                "minLength": 1
+              },
+              "kind": {
+                "enum": [
+                  "human",
+                  "software",
+                  "synthetic_fixture_author"
+                ]
+              }
+            },
+            "required": [
+              "id",
+              "kind"
+            ],
+            "additionalProperties": false
+          },
+          "method": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string",
+                "minLength": 1
+              },
+              "version": {
+                "type": "string",
+                "minLength": 1
+              },
+              "description": {
+                "type": "string",
+                "minLength": 1
+              },
+              "validation_status": {
+                "enum": [
+                  "unvalidated_example",
+                  "not_established"
+                ]
+              }
+            },
+            "required": [
+              "id",
+              "version",
+              "description",
+              "validation_status"
+            ],
+            "additionalProperties": false
+          },
+          "review_coverage": {
+            "type": "object",
+            "properties": {
+              "reviewed_seq": {
+                "type": "array",
+                "items": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "maximum": 9007199254740991
+                },
+                "minItems": 0,
+                "uniqueItems": true
+              },
+              "reviewed_content": {
+                "enum": [
+                  "full_available_events",
+                  "partial_events",
+                  "metadata_only"
+                ]
+              },
+              "reviewed_components": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "minItems": 1,
+                "uniqueItems": true
+              },
+              "coverage_evidence": {
+                "type": "array",
+                "items": {
+                  "oneOf": [
+                    {
+                      "type": "object",
+                      "properties": {
+                        "kind": {
+                          "const": "entry"
+                        },
+                        "record_id": {
+                          "type": "string",
+                          "minLength": 1
+                        },
+                        "record_hash": {
+                          "type": "string",
+                          "pattern": "^[0-9a-f]{64}$"
+                        },
+                        "seq": {
+                          "type": "integer",
+                          "minimum": 1,
+                          "maximum": 9007199254740991
+                        },
+                        "entry_hash": {
+                          "type": "string",
+                          "pattern": "^[0-9a-f]{64}$"
+                        }
+                      },
+                      "required": [
+                        "kind",
+                        "record_id",
+                        "record_hash",
+                        "seq",
+                        "entry_hash"
+                      ],
+                      "additionalProperties": false
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "kind": {
+                          "const": "context"
+                        },
+                        "record_id": {
+                          "type": "string",
+                          "minLength": 1
+                        },
+                        "record_hash": {
+                          "type": "string",
+                          "pattern": "^[0-9a-f]{64}$"
+                        },
+                        "context_id": {
+                          "type": "string",
+                          "minLength": 1
+                        },
+                        "path": {
+                          "type": "string",
+                          "pattern": "^/ai_context/"
+                        }
+                      },
+                      "required": [
+                        "kind",
+                        "record_id",
+                        "record_hash",
+                        "context_id",
+                        "path"
+                      ],
+                      "additionalProperties": false
+                    }
+                  ]
+                },
+                "minItems": 0
+              },
+              "limitations": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "reason": {
+                      "enum": [
+                        "conflicting_evidence",
+                        "missing_comparator",
+                        "not_collected",
+                        "not_reported_after_review",
+                        "outside_observation",
+                        "redacted",
+                        "truncated",
+                        "unavailable_source"
+                      ]
+                    },
+                    "detail": {
+                      "type": "string",
+                      "minLength": 1
+                    },
+                    "source_ref": {
+                      "type": "string",
+                      "minLength": 1
+                    },
+                    "reviewed_material": {
+                      "type": "string",
+                      "minLength": 1
+                    }
+                  },
+                  "required": [
+                    "reason",
+                    "detail"
+                  ],
+                  "additionalProperties": false,
+                  "allOf": [
+                    {
+                      "if": {
+                        "properties": {
+                          "reason": {
+                            "const": "not_reported_after_review"
+                          }
+                        },
+                        "required": [
+                          "reason"
+                        ]
+                      },
+                      "then": {
+                        "required": [
+                          "source_ref",
+                          "reviewed_material"
+                        ]
+                      }
+                    }
+                  ]
+                },
+                "minItems": 0
+              }
+            },
+            "required": [
+              "reviewed_seq",
+              "reviewed_content",
+              "reviewed_components",
+              "coverage_evidence",
+              "limitations"
+            ],
+            "additionalProperties": false
+          },
+          "evidence": {
+            "type": "array",
+            "items": {
+              "oneOf": [
+                {
+                  "type": "object",
+                  "properties": {
+                    "kind": {
+                      "const": "entry"
+                    },
+                    "record_id": {
+                      "type": "string",
+                      "minLength": 1
+                    },
+                    "record_hash": {
+                      "type": "string",
+                      "pattern": "^[0-9a-f]{64}$"
+                    },
+                    "seq": {
+                      "type": "integer",
+                      "minimum": 1,
+                      "maximum": 9007199254740991
+                    },
+                    "entry_hash": {
+                      "type": "string",
+                      "pattern": "^[0-9a-f]{64}$"
+                    }
+                  },
+                  "required": [
+                    "kind",
+                    "record_id",
+                    "record_hash",
+                    "seq",
+                    "entry_hash"
+                  ],
+                  "additionalProperties": false
+                },
+                {
+                  "type": "object",
+                  "properties": {
+                    "kind": {
+                      "const": "context"
+                    },
+                    "record_id": {
+                      "type": "string",
+                      "minLength": 1
+                    },
+                    "record_hash": {
+                      "type": "string",
+                      "pattern": "^[0-9a-f]{64}$"
+                    },
+                    "context_id": {
+                      "type": "string",
+                      "minLength": 1
+                    },
+                    "path": {
+                      "type": "string",
+                      "pattern": "^/ai_context/"
+                    }
+                  },
+                  "required": [
+                    "kind",
+                    "record_id",
+                    "record_hash",
+                    "context_id",
+                    "path"
+                  ],
+                  "additionalProperties": false
+                }
+              ]
+            },
+            "minItems": 0
+          },
+          "unresolved_information": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "reason": {
+                  "enum": [
+                    "conflicting_evidence",
+                    "missing_comparator",
+                    "not_collected",
+                    "not_reported_after_review",
+                    "outside_observation",
+                    "redacted",
+                    "truncated",
+                    "unavailable_source"
+                  ]
+                },
+                "detail": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "source_ref": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "reviewed_material": {
+                  "type": "string",
+                  "minLength": 1
+                }
+              },
+              "required": [
+                "reason",
+                "detail"
+              ],
+              "additionalProperties": false,
+              "allOf": [
+                {
+                  "if": {
+                    "properties": {
+                      "reason": {
+                        "const": "not_reported_after_review"
+                      }
+                    },
+                    "required": [
+                      "reason"
+                    ]
+                  },
+                  "then": {
+                    "required": [
+                      "source_ref",
+                      "reviewed_material"
+                    ]
+                  }
+                }
+              ]
+            },
+            "minItems": 0
+          },
+          "absence_basis": {
+            "type": "object",
+            "properties": {
+              "criterion": {
+                "type": "string",
+                "minLength": 1
+              },
+              "coverage_reasoning": {
+                "type": "string",
+                "minLength": 1
+              },
+              "checked_event_names": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "minItems": 1,
+                "uniqueItems": true
+              }
+            },
+            "required": [
+              "criterion",
+              "coverage_reasoning",
+              "checked_event_names"
+            ],
+            "additionalProperties": false
+          },
+          "comparator": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string",
+                "minLength": 1
+              },
+              "version": {
+                "type": "string",
+                "minLength": 1
+              },
+              "definition": {
+                "type": "string",
+                "minLength": 1
+              },
+              "source": {
+                "type": "string",
+                "minLength": 1
+              }
+            },
+            "required": [
+              "id",
+              "version",
+              "definition",
+              "source"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "required": [
+          "condition_id",
+          "review_status",
+          "assertion",
+          "scope",
+          "operational_definition"
+        ],
+        "additionalProperties": false,
+        "allOf": [
+          {
+            "if": {
+              "properties": {
+                "review_status": {
+                  "const": "unreviewed"
+                }
+              },
+              "required": [
+                "review_status"
+              ]
+            },
+            "then": {
+              "required": [
+                "pending_reason"
+              ],
+              "not": {
+                "anyOf": [
+                  {
+                    "required": [
+                      "result"
+                    ]
+                  },
+                  {
+                    "required": [
+                      "rationale"
+                    ]
+                  },
+                  {
+                    "required": [
+                      "assessor"
+                    ]
+                  },
+                  {
+                    "required": [
+                      "method"
+                    ]
+                  },
+                  {
+                    "required": [
+                      "review_coverage"
+                    ]
+                  },
+                  {
+                    "required": [
+                      "evidence"
+                    ]
+                  },
+                  {
+                    "required": [
+                      "unresolved_information"
+                    ]
+                  },
+                  {
+                    "required": [
+                      "absence_basis"
+                    ]
+                  },
+                  {
+                    "required": [
+                      "comparator"
+                    ]
+                  }
+                ]
+              }
+            },
+            "else": {
+              "required": [
+                "result",
+                "rationale",
+                "assessor",
+                "method",
+                "review_coverage",
+                "evidence",
+                "unresolved_information"
+              ],
+              "not": {
+                "required": [
+                  "pending_reason"
+                ]
+              }
+            }
+          },
+          {
+            "if": {
+              "properties": {
+                "result": {
+                  "const": "supported_absent"
+                }
+              },
+              "required": [
+                "result"
+              ]
+            },
+            "then": {
+              "required": [
+                "absence_basis"
+              ]
+            },
+            "else": {
+              "not": {
+                "required": [
+                  "absence_basis"
+                ]
+              }
+            }
+          },
+          {
+            "if": {
+              "properties": {
+                "result": {
+                  "const": "indeterminate"
+                }
+              },
+              "required": [
+                "result"
+              ]
+            },
+            "then": {
+              "properties": {
+                "unresolved_information": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "reason": {
+                        "enum": [
+                          "conflicting_evidence",
+                          "missing_comparator",
+                          "not_collected",
+                          "not_reported_after_review",
+                          "outside_observation",
+                          "redacted",
+                          "truncated",
+                          "unavailable_source"
+                        ]
+                      },
+                      "detail": {
+                        "type": "string",
+                        "minLength": 1
+                      },
+                      "source_ref": {
+                        "type": "string",
+                        "minLength": 1
+                      },
+                      "reviewed_material": {
+                        "type": "string",
+                        "minLength": 1
+                      }
+                    },
+                    "required": [
+                      "reason",
+                      "detail"
+                    ],
+                    "additionalProperties": false,
+                    "allOf": [
+                      {
+                        "if": {
+                          "properties": {
+                            "reason": {
+                              "const": "not_reported_after_review"
+                            }
+                          },
+                          "required": [
+                            "reason"
+                          ]
+                        },
+                        "then": {
+                          "required": [
+                            "source_ref",
+                            "reviewed_material"
+                          ]
+                        }
+                      }
+                    ]
+                  },
+                  "minItems": 1
+                }
+              }
+            }
+          },
+          {
+            "if": {
+              "properties": {
+                "assertion": {
+                  "const": "difference_from_comparator"
+                },
+                "result": {
+                  "enum": [
+                    "supported_present",
+                    "supported_absent"
+                  ]
+                }
+              },
+              "required": [
+                "assertion",
+                "result"
+              ]
+            },
+            "then": {
+              "required": [
+                "comparator"
+              ]
+            }
+          },
+          {
+            "if": {
+              "properties": {
+                "condition_id": {
+                  "enum": [
+                    "C03",
+                    "C04",
+                    "C08",
+                    "C09",
+                    "C10",
+                    "C11",
+                    "C13",
+                    "C14",
+                    "C15"
+                  ]
+                }
+              },
+              "required": [
+                "condition_id"
+              ]
+            },
+            "then": {
+              "properties": {
+                "assertion": {
+                  "const": "difference_from_comparator"
+                }
+              }
+            },
+            "else": {
+              "properties": {
+                "assertion": {
+                  "const": "occurrence"
+                }
+              }
+            }
+          }
+        ]
+      },
+      "minItems": 16,
+      "maxItems": 16
+    }
+  },
+  "required": [
+    "profile_id",
+    "profile_version",
+    "condition_set_id",
+    "condition_set_version",
+    "report_id",
+    "created",
+    "synthetic",
+    "disclaimer",
+    "assessments"
+  ],
+  "additionalProperties": false
+}

@@ -1,0 +1,278 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://transformer.quantumlearningmachines.com/schemas/assistance-lifecycle-v1.json",
+  "title": "Explicit assistance lifecycle import, version 1",
+  "description": "Importer observation of an explicit source lifecycle assertion. Display is not reading or learning. Fixtures are not research data.",
+  "type": "object",
+  "required": [
+    "name",
+    "salt",
+    "actor",
+    "activity",
+    "data"
+  ],
+  "properties": {
+    "name": {
+      "const": "qlm_import:assistance_lifecycle_observed"
+    },
+    "salt": {
+      "type": "string",
+      "minLength": 1
+    },
+    "actor": {
+      "type": "object",
+      "required": [
+        "role",
+        "kind",
+        "id"
+      ],
+      "properties": {
+        "role": {
+          "const": "system"
+        },
+        "kind": {
+          "const": "software"
+        },
+        "id": {
+          "const": "QLM-transformer"
+        }
+      },
+      "additionalProperties": false
+    },
+    "activity": {
+      "type": "object",
+      "required": [
+        "id"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "data": {
+      "type": "object",
+      "required": [
+        "provenance",
+        "time_basis",
+        "original_source_timestamp",
+        "raw_source_fields",
+        "reported_metrics",
+        "missing_metrics",
+        "assistance",
+        "lifecycle",
+        "assistance_context"
+      ],
+      "properties": {
+        "time_basis": {
+          "const": "import_time"
+        },
+        "original_source_timestamp": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "format": "date-time"
+        },
+        "assistance": {
+          "enum": [
+            "help_requested",
+            "help_generated",
+            "help_transmitted",
+            "help_displayed",
+            "learner_response_observed"
+          ]
+        },
+        "lifecycle": {
+          "type": "object",
+          "required": [
+            "source_id",
+            "event_id",
+            "source_revision",
+            "event_type",
+            "source_timestamp",
+            "assistance_id",
+            "request_event_id",
+            "request_origin",
+            "native_hint_depth",
+            "delivery_order"
+          ],
+          "properties": {
+            "source_id": {
+              "type": "string",
+              "minLength": 1
+            },
+            "event_id": {
+              "type": "string",
+              "minLength": 1
+            },
+            "source_revision": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "event_type": {
+              "enum": [
+                "help_requested",
+                "help_generated",
+                "help_transmitted",
+                "help_displayed",
+                "learner_response_observed"
+              ]
+            },
+            "source_timestamp": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "format": "date-time"
+            },
+            "assistance_id": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "request_event_id": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "content": {
+              "type": "string"
+            },
+            "request_origin": {
+              "enum": [
+                "requested",
+                "unsolicited",
+                "unknown"
+              ],
+              "description": "Explicit declared origin; absent request link does not establish unsolicited help."
+            },
+            "native_hint_depth": {
+              "type": [
+                "string",
+                "integer",
+                "null"
+              ],
+              "minimum": 0,
+              "description": "Source depth or label; never mapped to Learnlog delivery order."
+            },
+            "delivery_order": {
+              "type": [
+                "integer",
+                "null"
+              ],
+              "minimum": 1,
+              "description": "Source-declared delivery sequence; not inferred from native hint depth."
+            }
+          },
+          "additionalProperties": false
+        },
+        "assistance_context": {
+          "type": "object",
+          "required": [
+            "phase",
+            "permission",
+            "observed_use",
+            "capture",
+            "capture_boundary",
+            "product_version",
+            "model_version"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "phase": {
+              "enum": [
+                "practice",
+                "assessment",
+                "other",
+                "unknown"
+              ]
+            },
+            "permission": {
+              "enum": [
+                "permitted",
+                "prohibited",
+                "restricted",
+                "unknown"
+              ]
+            },
+            "observed_use": {
+              "enum": [
+                "recorded",
+                "not_recorded",
+                "unknown"
+              ]
+            },
+            "capture": {
+              "enum": [
+                "complete_within_boundary",
+                "partial",
+                "unknown"
+              ]
+            },
+            "capture_boundary": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "minLength": 1,
+              "maxLength": 2000
+            },
+            "product_version": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "minLength": 1,
+              "maxLength": 2000
+            },
+            "model_version": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "minLength": 1,
+              "maxLength": 2000
+            }
+          },
+          "allOf": [
+            {
+              "if": {
+                "properties": {
+                  "capture": {
+                    "const": "complete_within_boundary"
+                  }
+                }
+              },
+              "then": {
+                "properties": {
+                  "capture_boundary": {
+                    "type": "string",
+                    "minLength": 1
+                  }
+                }
+              }
+            }
+          ]
+        },
+        "provenance": {
+          "type": "object"
+        },
+        "reported_metrics": {
+          "type": "object",
+          "maxProperties": 0
+        },
+        "missing_metrics": {
+          "type": "array",
+          "maxItems": 0
+        },
+        "raw_source_fields": {
+          "type": "object"
+        }
+      }
+    }
+  }
+}

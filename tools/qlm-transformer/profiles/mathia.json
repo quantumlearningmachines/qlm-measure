@@ -1,0 +1,13 @@
+{
+  "platform": "mathia",
+  "status": "synthetic_template_requires_real_export_mapping",
+  "mode": "summary",
+  "fields": {
+    "subject_id": "Student Number",
+    "activity_id": "Current Workspace"
+  },
+  "metrics": {
+    "vendor_average_performance_score": "Average Performance Score",
+    "workspace_time_hms": "Total Workspace Time (HH:MM:SS)"
+  }
+}
