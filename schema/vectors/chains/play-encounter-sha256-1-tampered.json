@@ -1,0 +1,94 @@
+{
+  "scheme": "play/encounter-sha256-1",
+  "family": "play/encounter",
+  "source": "SHA-256 encounter vector with payload.finding.value edited on event 1",
+  "expect": {
+    "clean": false,
+    "hash_scheme": "play/encounter-sha256-1",
+    "tampered": 1,
+    "tampered_index": 1
+  },
+  "events": [
+    {
+      "eventId": "evt-0",
+      "ts": "2026-10-21T18:00:00.000Z",
+      "encounterId": "enc-optometry-10",
+      "actor": "student",
+      "source": {
+        "system": "qlm-credentials",
+        "adapter": "native"
+      },
+      "type": "encounter_start",
+      "payload": {
+        "caseId": "OD-CAP-02"
+      },
+      "consentRef": "consent-42",
+      "schemaVersion": "clin-1.0",
+      "prevHash": "",
+      "eventHash": "f30bc2a6067b691d7d29d74e4cfcb7679c4529b07996495105ccbb4d656fb9d8"
+    },
+    {
+      "eventId": "evt-1",
+      "ts": "2026-10-21T18:00:01.000Z",
+      "encounterId": "enc-optometry-10",
+      "actor": "student",
+      "source": {
+        "system": "qlm-credentials",
+        "adapter": "native"
+      },
+      "type": "finding_recorded",
+      "payload": {
+        "finding": {
+          "site": "right eye",
+          "value": 22,
+          "unit": "mmHg"
+        }
+      },
+      "consentRef": "consent-42",
+      "schemaVersion": "clin-1.0",
+      "prevHash": "f30bc2a6067b691d7d29d74e4cfcb7679c4529b07996495105ccbb4d656fb9d8",
+      "eventHash": "86213c10ff0e8efb7eeb7576305cdff45f66a30629ebc80a86f7df66921626e4"
+    },
+    {
+      "eventId": "evt-2",
+      "ts": "2026-10-21T18:00:02.000Z",
+      "encounterId": "enc-optometry-10",
+      "actor": "student",
+      "source": {
+        "system": "qlm-credentials",
+        "adapter": "native"
+      },
+      "type": "hypothesis_stated",
+      "payload": {
+        "hypothesis": "ocular hypertension",
+        "confidence": 0.6
+      },
+      "consentRef": "consent-42",
+      "schemaVersion": "clin-1.0",
+      "prevHash": "86213c10ff0e8efb7eeb7576305cdff45f66a30629ebc80a86f7df66921626e4",
+      "eventHash": "9c8de50a162cf09fc2470578b4fb9ddcfb664fdcb9ca68cb1f1bc0caa0260da0"
+    },
+    {
+      "eventId": "evt-3",
+      "ts": "2026-10-21T18:00:03.000Z",
+      "encounterId": "enc-optometry-10",
+      "actor": "system",
+      "source": {
+        "system": "qlm-credentials",
+        "adapter": "native"
+      },
+      "type": "plan_proposed",
+      "payload": {
+        "plan": [
+          "repeat IOP",
+          "pachymetry"
+        ],
+        "note": "borderline — confirm é"
+      },
+      "consentRef": "consent-42",
+      "schemaVersion": "clin-1.0",
+      "prevHash": "9c8de50a162cf09fc2470578b4fb9ddcfb664fdcb9ca68cb1f1bc0caa0260da0",
+      "eventHash": "272aec009edf3453fe4d175f2d4ea99bef9c9720a67c135ba2a9e3178538d828"
+    }
+  ]
+}

@@ -1,11 +1,13 @@
 """Chain schemes: Python must verify and re-seal the same vectors as TypeScript."""
+import hashlib
 import json
 from pathlib import Path
 
 import pytest
 
 from qlm_measure.schemes import (
-    compute_event_hash, detect_scheme, get_scheme, js_json_dumps, list_schemes, seal_event, verify_chain,
+    compute_event_hash, detect_scheme, family_schemes, fnv1a64_hex, get_scheme, js_json_dumps, list_schemes, proto_key_path, seal_event,
+    verify_chain,
 )
 
 VEC = Path(__file__).resolve().parents[2] / "schema" / "vectors" / "chains"
@@ -42,13 +44,13 @@ def test_vector_reseals_byte_for_byte(path):
 def test_registry_order_matches_typescript():
     ids = [s["id"] for s in list_schemes()]
     assert ids[:5] == ["tpc/clinical-v4", "tpc/clinical-v3", "tpc/clinical-v2", "tpc/clinical-v1", "play/clinical-clin-1.0"]
-    assert ids[5:] == ["play/emit-1", "play/measure-session-1", "play/encounter-fnv64-1", "play/research-provenance-1",
+    assert ids[5:] == ["play/emit-1", "play/measure-session-1", "play/encounter-sha256-1", "play/encounter-fnv64-1", "play/research-provenance-1",
                        "qcore/qinverse-djb2-1", "studio/loop-1", "dp/ledger-v3", "tpc/dse-journal-1", "yardstick/spine-1",
                        "labpath/learning-evidence-v1", "tpc/transcript-1", "tpc/differential-commit-2", "tpc/differential-commit-1",
                        "tpc/rct-input-1", "play/world-trace-identity-1", "play/world-trace-tsim-1", "play/world-trace-1",
                        "tpc/yardstick-record-2", "tpc/yardstick-record-1", "tpc/intervention-1", "tpc/rehearsal-stage-1", "yardstick/activity-1",
                        "yardstick/depth-1"]
-    assert len(ids) == 28 and len({s["family"] for s in list_schemes()}) == 20
+    assert len(ids) == 29 and len({s["family"] for s in list_schemes()}) == 20
 
 
 # yardstick/depth-1 (YardStick's evidence ledger, Star Map E6): the same canonical string and errors as TypeScript.
@@ -202,7 +204,9 @@ def test_commit_2_takes_only_named_keys():
     assert _commit_errs({**_COMMIT_GOOD, "planLinks": [{"ref": "p", "rank": 1, "10": 1}]}) == ["[0] invalid planLinks[0]"]
     assert _commit_errs({**_COMMIT_GOOD, "discriminator": {"kind": "time", "ref": None, "text": "t", "why": "w"}}) == ["[0] invalid discriminator"]
     proto = json.loads('{"ref":"x","direction":"for","rank":1,"__proto__":{"a":1}}')
-    assert _commit_errs({**_COMMIT_GOOD, "evidenceLinks": [proto]}) == ["[0] invalid evidenceLinks[0]"]
+    # 0.9.0: an event holding a "__proto__" key is refused for that too.
+    assert _commit_errs({**_COMMIT_GOOD, "evidenceLinks": [proto]}) == [
+        "[0] invalid evidenceLinks[0]", '[0] holds a "__proto__" key at evidenceLinks[0].__proto__, which the hash does not cover']
 
 
 def test_commit_1_says_why_a_commit_fits_neither_version():
@@ -355,3 +359,42 @@ def test_unknown_scheme_or_family():
 def test_labpath_locale_key_order():
     e = {"event_id": "x", "hash": "junk", "prev_hash": None, "action": {"zeta": 1, "Alpha": 2, "_meta": 3}}
     assert get_scheme("labpath/learning-evidence-v1").canonical(e, None) == '{"action":{"_meta":3,"Alpha":2,"zeta":1},"event_id":"x","prev_hash":null}'
+
+
+# ── 0.9.0: play/encounter-sha256-1, and events holding a "__proto__" key ──────
+
+def _vec(name):
+    return json.loads((VEC / name).read_text())
+
+
+def test_encounter_sha256_hashes_the_fnv_schemes_nine_fields_with_sha256():
+    s = get_scheme("play/encounter-sha256-1")
+    assert (s.family, s.hash_field, s.prev_field, s.genesis) == ("play/encounter", "eventHash", "prevHash", "")
+    e = _vec("play-encounter-sha256-1.json")["events"][0]
+    text = get_scheme("play/encounter-fnv64-1").canonical(e)
+    assert s.canonical(e) == text
+    assert e["eventHash"] == hashlib.sha256(text.encode("utf-8")).hexdigest()
+    assert [x.id for x in family_schemes("play/encounter")] == ["play/encounter-sha256-1", "play/encounter-fnv64-1"]
+
+
+def test_encounter_sha256_vectors_and_mixed_chains():
+    r = verify_chain(_vec("play-encounter-sha256-1.json")["events"], family="play/encounter")
+    assert r.clean and r.stats["hash_scheme"] == "play/encounter-sha256-1"
+    assert "[1] hash mismatch (tampered)" in verify_chain(_vec("play-encounter-sha256-1-tampered.json")["events"], family="play/encounter").errors
+    events = _vec("play-encounter-sha256-1.json")["events"]
+    tail = dict(events[1], prevHash=events[0]["eventHash"], eventHash="")
+    tail["eventHash"] = fnv1a64_hex(get_scheme("play/encounter-fnv64-1").canonical(tail))
+    mixed = verify_chain([events[0], tail], family="play/encounter")
+    assert not mixed.clean and any(x.startswith("mixed hash schemes:") for x in mixed.errors)
+
+
+def test_an_event_holding_a_proto_key_is_refused():
+    v = _vec("play-clinical-clin-1.0.json")
+    forged = json.loads(json.dumps(v["events"][0]).replace('"payload": {', '"payload": {"__proto__": {"score": "forged"}, ', 1))
+    assert "__proto__" in forged["payload"]
+    r = verify_chain([forged] + v["events"][1:], family="play/clinical")
+    assert not r.clean
+    assert '[0] holds a "__proto__" key at payload.__proto__, which the hash does not cover' in r.errors
+    nested = {"a": [{"b": 1}, {"__proto__": {}}]}
+    assert proto_key_path(nested) == ".a[1].__proto__"
+    assert proto_key_path({"a": [1, {"b": None}]}) is None

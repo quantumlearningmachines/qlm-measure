@@ -10,6 +10,7 @@
 import type { ChainScheme } from "./index.js";
 export declare const PLAY_EMIT_1: ChainScheme;
 export declare const PLAY_MEASURE_SESSION_1: ChainScheme;
+export declare const PLAY_ENCOUNTER_SHA256_1: ChainScheme;
 export declare const PLAY_ENCOUNTER_FNV64_1: ChainScheme;
 export declare const PLAY_RESEARCH_PROVENANCE_1: ChainScheme;
 export declare const QCORE_QINVERSE_DJB2_1: ChainScheme;

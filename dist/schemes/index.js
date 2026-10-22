@@ -234,6 +234,30 @@ export function detectSchemeWith(hash, event, family, prev) {
     return null;
 }
 const isAbsent = (v) => v === undefined || v === null;
+/**
+ * The path of the first own "__proto__" key at any depth (".payload.__proto__"), or null.
+ * sortKeysDeep drops such a key, as the products' original code did, so no hash covers it;
+ * verifyChain refuses an event that holds one rather than verify content the hash does not cover.
+ */
+export function protoKeyPath(value, path = "") {
+    if (Array.isArray(value)) {
+        for (let i = 0; i < value.length; i++) {
+            const p = protoKeyPath(value[i], `${path}[${i}]`);
+            if (p)
+                return p;
+        }
+    }
+    else if (value !== null && typeof value === "object") {
+        for (const k of Object.keys(value)) {
+            if (k === "__proto__")
+                return `${path}.__proto__`;
+            const p = protoKeyPath(value[k], `${path}.${k}`);
+            if (p)
+                return p;
+        }
+    }
+    return null;
+}
 export function verifyChainWith(hash, events, opts) {
     if (!opts.scheme && !opts.family)
         throw new Error("verifyChain: pass { family } or { scheme }");
@@ -261,6 +285,11 @@ export function verifyChainWith(hash, events, opts) {
         const schemeForSchema = matched ?? candidates.find((s) => s.applies(e)) ?? candidates[candidates.length - 1];
         for (const err of schemeForSchema.validate(e)) {
             errors.push(`[${i}] ${err}`);
+            schemaErrors++;
+        }
+        const proto = protoKeyPath(e);
+        if (proto) {
+            errors.push(`[${i}] holds a "__proto__" key at ${proto.slice(1)}, which the hash does not cover`);
             schemaErrors++;
         }
         if (matched)

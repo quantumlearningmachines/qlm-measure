@@ -144,6 +144,13 @@ function platformComputeEventHash(event) {
   return hashSnapshotSync(JSON.stringify({ eventId: event.eventId, ts: event.ts, encounterId: event.encounterId, actor: event.actor, source: event.source,
     type: event.type, payload: event.payload, consentRef: event.consentRef, prevHash: event.prevHash }));
 }
+// qlm-games src/lib/credentials/platform/evidence-schema.ts computeEventHash @ 2026-10-21 (M1): the same
+// nine-field text as above, SHA-256 hex (the product reads the text from this SDK's play/encounter-fnv64-1
+// canonical, which is this JSON.stringify of the nine fields in this order).
+function platformSha256ComputeEventHash(event) {
+  return sha(JSON.stringify({ eventId: event.eventId, ts: event.ts, encounterId: event.encounterId, actor: event.actor, source: event.source,
+    type: event.type, payload: event.payload, consentRef: event.consentRef, prevHash: event.prevHash }));
+}
 // qlm-games src/lib/research/evidence-provenance-chain.ts — computeChainHash
 function provenanceChainHash(chain) {
   const parts = [];
@@ -209,6 +216,18 @@ function journalComputeEntryHash(prevHash, entry) {
     e.eventHash = platformComputeEventHash(e); events.push(e); prev = e.eventHash;
   }
   write("play-encounter-fnv64-1", { scheme: "play/encounter-fnv64-1", family: "play/encounter", source: "qlm-games src/lib/credentials/platform/evidence-schema.ts computeEventHash via snapshot-commit hashSnapshotSync (FNV-1a 64)", expect: { clean: true, hash_scheme: "play/encounter-fnv64-1" }, events });
+}
+{ // play/encounter-sha256-1 (0.9.0): the same encounter as play/encounter-fnv64-1, sealed with SHA-256
+  const events = []; let prev = "";
+  const types = ["encounter_start", "finding_recorded", "hypothesis_stated", "plan_proposed"];
+  const payloads = [{ caseId: "OD-CAP-02" }, { finding: { site: "right eye", value: 21.5, unit: "mmHg" } }, { hypothesis: "ocular hypertension", confidence: 0.6 }, { plan: ["repeat IOP", "pachymetry"], note: "borderline — confirm é" }];
+  for (let i = 0; i < 4; i++) {
+    const e = { eventId: `evt-${i}`, ts: `2026-10-21T18:00:0${i}.000Z`, encounterId: "enc-optometry-10", actor: i === 3 ? "system" : "student", source: { system: "qlm-credentials", adapter: "native" }, type: types[i], payload: payloads[i], consentRef: "consent-42", schemaVersion: "clin-1.0", prevHash: prev };
+    e.eventHash = platformSha256ComputeEventHash(e); events.push(e); prev = e.eventHash;
+  }
+  write("play-encounter-sha256-1", { scheme: "play/encounter-sha256-1", family: "play/encounter", source: "qlm-games src/lib/credentials/platform/evidence-schema.ts computeEventHash (SHA-256, from 2026-10-21)", expect: { clean: true, hash_scheme: "play/encounter-sha256-1" }, events });
+  const t = JSON.parse(JSON.stringify(events)); t[1].payload.finding.value = 22;
+  write("play-encounter-sha256-1-tampered", { scheme: "play/encounter-sha256-1", family: "play/encounter", source: "SHA-256 encounter vector with payload.finding.value edited on event 1", expect: { clean: false, hash_scheme: "play/encounter-sha256-1", tampered: 1, tampered_index: 1 }, events: t });
 }
 { // play/research-provenance-1 (one record, no link)
   const chain = { designLayer: { blueprintId: "bp-fractions-3", auditResult: { scores: { alignment: 0.92, coverage: 1, rigor: 0.875 } } }, runtimeLayer: { worldId: "fraction-forge", eventCount: 143, evidenceChainIntegrity: true }, proofLayer: { protocolCommitmentHash: "a1b2", bridgeCertificateHash: "c3d4" }, lineageLayer: { closureRate: 0.75, allLineagesClosed: false } };

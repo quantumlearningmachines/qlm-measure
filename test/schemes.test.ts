@@ -38,10 +38,10 @@ describe("chain schemes: vectors sealed by the original product code", () => {
 });
 
 describe("chain schemes: behaviour", () => {
-  it("lists twenty-eight schemes across twenty families, clinical newest first", () => {
+  it("lists twenty-nine schemes across twenty families, clinical newest first", () => {
     const ids = listSchemes().map((s) => s.id);
     expect(ids.slice(0, 5)).toEqual(["tpc/clinical-v4", "tpc/clinical-v3", "tpc/clinical-v2", "tpc/clinical-v1", "play/clinical-clin-1.0"]);
-    expect(ids.slice(5)).toEqual(["play/emit-1", "play/measure-session-1", "play/encounter-fnv64-1", "play/research-provenance-1", "qcore/qinverse-djb2-1", "studio/loop-1", "dp/ledger-v3", "tpc/dse-journal-1", "yardstick/spine-1", "labpath/learning-evidence-v1", "tpc/transcript-1", "tpc/differential-commit-2", "tpc/differential-commit-1", "tpc/rct-input-1",
+    expect(ids.slice(5)).toEqual(["play/emit-1", "play/measure-session-1", "play/encounter-sha256-1", "play/encounter-fnv64-1", "play/research-provenance-1", "qcore/qinverse-djb2-1", "studio/loop-1", "dp/ledger-v3", "tpc/dse-journal-1", "yardstick/spine-1", "labpath/learning-evidence-v1", "tpc/transcript-1", "tpc/differential-commit-2", "tpc/differential-commit-1", "tpc/rct-input-1",
       "play/world-trace-identity-1", "play/world-trace-tsim-1", "play/world-trace-1", "tpc/yardstick-record-2", "tpc/yardstick-record-1", "tpc/intervention-1", "tpc/rehearsal-stage-1", "yardstick/activity-1", "yardstick/depth-1"]);
     expect(new Set(listSchemes().map((s) => s.family)).size).toBe(20);
   });
@@ -243,7 +243,8 @@ describe("chain schemes: behaviour", () => {
       expect(errs({ ...good, planLinks: [{ ref: "p", rank: 1, 10: 1 }] })).toEqual(["[0] invalid planLinks[0]"]);
       expect(errs({ ...good, discriminator: { kind: "time", ref: null, text: "t", why: "w" } })).toEqual(["[0] invalid discriminator"]);
       const proto = JSON.parse('{"ref":"x","direction":"for","rank":1,"__proto__":{"a":1}}');
-      expect(errs({ ...good, evidenceLinks: [proto] })).toEqual(["[0] invalid evidenceLinks[0]"]);
+      // 0.9.0: an event holding a "__proto__" key is refused for that too.
+      expect(errs({ ...good, evidenceLinks: [proto] })).toEqual(["[0] invalid evidenceLinks[0]", '[0] holds a "__proto__" key at evidenceLinks[0].__proto__, which the hash does not cover']);
     });
     it("version 1 says why a commit fits neither version, instead of only \"tampered\"", () => {
       const r = verifyChain([sealEvent(without("commit_schema"), "tpc/differential-commit-1")], { family: "tpc/clinical" });
