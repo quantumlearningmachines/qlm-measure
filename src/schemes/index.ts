@@ -321,6 +321,24 @@ export interface VerifyChainOptions {
 
 const isAbsent = (v: unknown): boolean => v === undefined || v === null;
 
+/**
+ * The path of the first own "__proto__" key at any depth (".payload.__proto__"), or null.
+ * sortKeysDeep drops such a key, as the products' original code did, so no hash covers it;
+ * verifyChain refuses an event that holds one rather than verify content the hash does not cover.
+ */
+export function protoKeyPath(value: unknown, path = ""): string | null {
+  if (Array.isArray(value)) {
+    for (let i = 0; i < value.length; i++) { const p = protoKeyPath(value[i], `${path}[${i}]`); if (p) return p; }
+  } else if (value !== null && typeof value === "object") {
+    for (const k of Object.keys(value)) {
+      if (k === "__proto__") return `${path}.__proto__`;
+      const p = protoKeyPath((value as Record<string, unknown>)[k], `${path}.${k}`);
+      if (p) return p;
+    }
+  }
+  return null;
+}
+
 export function verifyChainWith(hash: HashFn, events: ChainEvent[], opts: VerifyChainOptions): ChainVerification {
   if (!opts.scheme && !opts.family) throw new Error("verifyChain: pass { family } or { scheme }");
   const candidates = opts.scheme ? [getScheme(opts.scheme)] : familySchemes(opts.family!);
@@ -344,6 +362,8 @@ export function verifyChainWith(hash: HashFn, events: ChainEvent[], opts: Verify
     // Schema errors are reported under the matched scheme, or the family's newest applicable one.
     const schemeForSchema = matched ?? candidates.find((s) => s.applies(e)) ?? candidates[candidates.length - 1];
     for (const err of schemeForSchema.validate(e)) { errors.push(`[${i}] ${err}`); schemaErrors++; }
+    const proto = protoKeyPath(e);
+    if (proto) { errors.push(`[${i}] holds a "__proto__" key at ${proto.slice(1)}, which the hash does not cover`); schemaErrors++; }
 
     if (matched) perScheme[matched.id] = (perScheme[matched.id] ?? 0) + 1;
     else { errors.push(`[${i}] hash mismatch (tampered)`); tampered++; }

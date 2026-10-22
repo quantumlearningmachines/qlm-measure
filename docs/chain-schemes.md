@@ -1,4 +1,4 @@
-# Chain schemes (0.8.0)
+# Chain schemes (0.9.0)
 
 QLM products store one row per evidence event, each carrying its own hash and
 a link to the previous event's hash. Before 0.4.0 every product computed that
@@ -145,6 +145,28 @@ The Python sealer in YardStick is the reference, and the vectors
 (`yardstick-depth-1`, and `-tampered`, a pass rewritten as a fail) were sealed
 by it. YardStick keeps its own copy of the hash, pinned to the same two files,
 because its engine does not depend on this SDK.
+
+## Encounter chains in SHA-256, and events holding "__proto__" (0.9.0)
+
+| Scheme | Product source | Digest | Link |
+|---|---|---|---|
+| `play/encounter-sha256-1` | qlm-games `src/lib/credentials/platform/evidence-schema.ts` `computeEventHash` from 2026-10-21: the same nine fields, in the same order, as `play/encounter-fnv64-1` | sha256 | `eventHash` / `prevHash`, genesis `""` |
+
+`play/encounter-fnv64-1` is FNV-1a 64: it shows an edit only to someone who
+does not recompute the hash, so it guards nothing a credential relies on.
+qlm-games now seals encounter chains with `play/encounter-sha256-1`, the same
+text with SHA-256. Both schemes stay in the `play/encounter` family, the new
+one first; chains sealed with FNV-1a 64 keep verifying, and a chain that mixes
+the two is reported as mixed. Vectors: `play-encounter-sha256-1` and
+`-tampered`.
+
+`verifyChain` (and `verify_chain` in Python) now refuses an event that holds
+a `"__proto__"` key anywhere in it: `[i] holds a "__proto__" key at <path>,
+which the hash does not cover`, counted as a schema error. The canonical forms
+drop such a key on purpose, as the products' JavaScript did, so the hash does
+not cover it, and two events that differ only by it would otherwise both
+verify. Hashes do not change, and no existing vector changes. `protoKeyPath`
+(`proto_key_path` in Python) names the first such key.
 
 ## Adding a scheme
 

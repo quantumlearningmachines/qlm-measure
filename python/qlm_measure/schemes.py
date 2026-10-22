@@ -249,21 +249,21 @@ def _is_num(v: Any) -> bool:
 def _tpc_validate(e: dict) -> list[str]:
     errors: list[str] = []
     if e.get("type") != "clinical_evidence":
-        errors.append(f"invalid type: {e.get('type')}")
+        errors.append(f"invalid type: {_js_display(e.get('type', _MISSING))}")
     if not e.get("learner"):
         errors.append("missing learner")
     if not e.get("encounter"):
         errors.append("missing encounter")
     if not _is_num(e.get("turn")) or e["turn"] < 0:
-        errors.append(f"invalid turn: {e.get('turn')}")
+        errors.append(f"invalid turn: {_js_display(e.get('turn', _MISSING))}")
     if not e.get("construct"):
         errors.append("missing construct")
     if e.get("signal") not in TPC_SIGNALS:
-        errors.append(f"invalid signal: {e.get('signal')}")
+        errors.append(f"invalid signal: {_js_display(e.get('signal', _MISSING))}")
     if not _is_num(e.get("scaffold")) or not (0 <= e["scaffold"] <= 3):
-        errors.append(f"invalid scaffold: {e.get('scaffold')}")
+        errors.append(f"invalid scaffold: {_js_display(e.get('scaffold', _MISSING))}")
     if not _is_num(e.get("confidence")) or not (0 <= e["confidence"] <= 1):
-        errors.append(f"invalid confidence: {e.get('confidence')}")
+        errors.append(f"invalid confidence: {_js_display(e.get('confidence', _MISSING))}")
     return errors
 
 
@@ -285,7 +285,7 @@ _TPC_EVENT_KIND = re.compile(r"^[a-z]+\.[a-z_]+$")
 def _tpc4_validate(e: dict) -> list[str]:
     errors = _tpc_validate(e)
     if not isinstance(e.get("event_kind"), str) or not _TPC_EVENT_KIND.match(e["event_kind"]):
-        errors.append(f"invalid event_kind: {e.get('event_kind')}")
+        errors.append(f"invalid event_kind: {_js_display(e.get('event_kind', _MISSING))}")
     if not isinstance(e.get("payload"), dict):
         errors.append("payload must be an object")
     return errors
@@ -311,7 +311,7 @@ def _play_canonical(e: dict, prev: str | None = None) -> str:
 def _play_validate(e: dict) -> list[str]:
     errors: list[str] = []
     if e.get("schemaVersion") != "clin-1.0":
-        errors.append(f"invalid schemaVersion: {e.get('schemaVersion')}")
+        errors.append(f"invalid schemaVersion: {_js_display(e.get('schemaVersion', _MISSING))}")
     for f in ("eventId", "ts", "encounterId", "type"):
         if not isinstance(e.get(f), str) or not e.get(f):
             errors.append(f"missing {f}")
@@ -358,10 +358,21 @@ PLAY_MEASURE_SESSION_1 = ChainScheme(
         "responseTimeMs": _first(e, "responseTimeMs", "response_time_ms"), "sequenceNumber": _first(e, "sequenceNumber", "sequence_number")}),
     validate=lambda e: ([] if _first(e, "studyId", "study_id") else ["missing studyId"]) + ([] if _first(e, "sessionId", "session_id") else ["missing sessionId"]))
 
+def _encounter_canonical(e: dict, prev: str | None = None) -> str:
+    return js_json_dumps({k: e.get(k) for k in ("eventId", "ts", "encounterId", "actor", "source", "type", "payload", "consentRef", "prevHash") if k in e})
+
+
+# play/encounter-sha256-1 (0.9.0): the SHA-256 successor of play/encounter-fnv64-1, same nine fields.
+PLAY_ENCOUNTER_SHA256_1 = ChainScheme(
+    id="play/encounter-sha256-1", family="play/encounter", since="2026-10-21", hash_field="eventHash", prev_field="prevHash", genesis="",
+    applies=lambda e: "eventHash" in e or e.get("schemaVersion") == "clin-1.0",
+    canonical=_encounter_canonical,
+    validate=lambda e: _missing_str(e, ("eventId", "ts", "encounterId", "type")))
+
 PLAY_ENCOUNTER_FNV64_1 = ChainScheme(
     id="play/encounter-fnv64-1", family="play/encounter", since="2026-08-16", hash_field="eventHash", prev_field="prevHash", genesis="",
     digest="fnv1a64", applies=lambda e: "eventHash" in e or e.get("schemaVersion") == "clin-1.0",
-    canonical=lambda e, prev=None: js_json_dumps({k: e.get(k) for k in ("eventId", "ts", "encounterId", "actor", "source", "type", "payload", "consentRef", "prevHash") if k in e}),
+    canonical=_encounter_canonical,
     validate=lambda e: _missing_str(e, ("eventId", "ts", "encounterId", "type")))
 
 
@@ -776,7 +787,7 @@ TPC_REHEARSAL_STAGE_1 = ChainScheme(
     id="tpc/rehearsal-stage-1", family="tpc/rehearsal-stage", since="2026-09-21", hash_field="hash", prev_field=None, genesis="genesis", link="implicit",
     applies=lambda e: True,
     canonical=lambda e, prev=None: js_json_dumps([e.get("stage"), e.get("passed"), e.get("timestamp"), prev if prev is not None else "genesis"]),
-    validate=lambda e: _missing_str(e, ("stage", "timestamp")) + ([] if isinstance(e.get("passed"), bool) else ["missing passed"]))
+    validate=lambda e: _missing_str(e, ("stage",)) + ([] if isinstance(e.get("passed"), bool) else ["missing passed"]) + _missing_str(e, ("timestamp",)))
 
 
 def _activity_canonical(e: dict, prev: str | None = None) -> str:
@@ -881,7 +892,7 @@ YARDSTICK_DEPTH_1 = ChainScheme(
     canonical=_depth_canonical, validate=_depth_validate)
 
 
-PRODUCT_SCHEMES: tuple[ChainScheme, ...] = (PLAY_EMIT_1, PLAY_MEASURE_SESSION_1, PLAY_ENCOUNTER_FNV64_1, PLAY_RESEARCH_PROVENANCE_1,
+PRODUCT_SCHEMES: tuple[ChainScheme, ...] = (PLAY_EMIT_1, PLAY_MEASURE_SESSION_1, PLAY_ENCOUNTER_SHA256_1, PLAY_ENCOUNTER_FNV64_1, PLAY_RESEARCH_PROVENANCE_1,
                                             QCORE_QINVERSE_DJB2_1, STUDIO_LOOP_1, DP_LEDGER_V3, TPC_DSE_JOURNAL_1, YARDSTICK_SPINE_1,
                                             LABPATH_LEARNING_EVIDENCE_V1, TPC_TRANSCRIPT_1, TPC_DIFFERENTIAL_COMMIT_2, TPC_DIFFERENTIAL_COMMIT_1,
                                             TPC_RCT_INPUT_1,
@@ -945,6 +956,25 @@ class ChainVerification:
     stats: dict = field(default_factory=dict)
 
 
+def proto_key_path(value: Any, path: str = "") -> str | None:
+    """The path of the first "__proto__" key at any depth (".payload.__proto__"), or None.
+    sort_keys_deep drops such a key, as JavaScript does, so no hash covers it; verify_chain refuses
+    an event that holds one rather than verify content the hash does not cover."""
+    if isinstance(value, list):
+        for i, item in enumerate(value):
+            found = proto_key_path(item, f"{path}[{i}]")
+            if found:
+                return found
+    elif isinstance(value, dict):
+        for k, v in value.items():
+            if k == "__proto__":
+                return f"{path}.__proto__"
+            found = proto_key_path(v, f"{path}.{k}")
+            if found:
+                return found
+    return None
+
+
 def verify_chain(events: Iterable[dict], *, family: str | None = None, scheme: str | None = None,
                  reject_mixed: bool = True, hash_fn: HashFn = sha256_hex) -> ChainVerification:
     if not family and not scheme:
@@ -967,6 +997,10 @@ def verify_chain(events: Iterable[dict], *, family: str | None = None, scheme: s
         scheme_for_schema = matched or next((s for s in candidates if s.applies(e)), candidates[-1])
         for err in scheme_for_schema.validate(e):
             errors.append(f"[{i}] {err}")
+            schema_errors += 1
+        proto = proto_key_path(e)
+        if proto:
+            errors.append(f'[{i}] holds a "__proto__" key at {proto[1:]}, which the hash does not cover')
             schema_errors += 1
         if matched:
             per_scheme[matched.id] = per_scheme.get(matched.id, 0) + 1

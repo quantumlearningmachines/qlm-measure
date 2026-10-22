@@ -58,6 +58,29 @@ export const PLAY_MEASURE_SESSION_1 = {
         return errors;
     },
 };
+// ── play/encounter-sha256-1 — qlm-games src/lib/credentials/platform/evidence-schema.ts (0.9.0)
+// computeEventHash from 2026-10-21: SHA-256 hex (64) of the same nine-field text
+// play/encounter-fnv64-1 hashes. The successor of that FNV scheme: FNV-1a 64 can be
+// recomputed by anyone after an edit, so it is order-evident, not tamper-evident.
+// A chain keeps the scheme it started with; both stay in the family, newest first.
+const ENCOUNTER_FIELDS = (e) => JSON.stringify({
+    eventId: e.eventId, ts: e.ts, encounterId: e.encounterId, actor: e.actor, source: e.source,
+    type: e.type, payload: e.payload, consentRef: e.consentRef, prevHash: e.prevHash,
+});
+const encounterValidate = (e) => {
+    const errors = [];
+    for (const f of ["eventId", "ts", "encounterId", "type"])
+        if (typeof e[f] !== "string" || !e[f])
+            errors.push(`missing ${f}`);
+    return errors;
+};
+export const PLAY_ENCOUNTER_SHA256_1 = {
+    id: "play/encounter-sha256-1", family: "play/encounter", since: "2026-10-21",
+    hashField: "eventHash", prevField: "prevHash", genesis: "",
+    applies: (e) => e.eventHash !== undefined || e.schemaVersion === "clin-1.0",
+    canonical: ENCOUNTER_FIELDS,
+    validate: encounterValidate,
+};
 // ── play/encounter-fnv64-1 — qlm-games src/lib/credentials/platform/evidence-schema.ts
 // computeEventHash: hashSnapshotSync (FNV-1a 64 over UTF-16 units) of
 // JSON.stringify({eventId, ts, encounterId, actor, source, type, payload,
@@ -68,17 +91,8 @@ export const PLAY_ENCOUNTER_FNV64_1 = {
     id: "play/encounter-fnv64-1", family: "play/encounter", since: "2026-08-16",
     hashField: "eventHash", prevField: "prevHash", genesis: "", digest: "fnv1a64",
     applies: (e) => e.eventHash !== undefined || e.schemaVersion === "clin-1.0",
-    canonical: (e) => JSON.stringify({
-        eventId: e.eventId, ts: e.ts, encounterId: e.encounterId, actor: e.actor, source: e.source,
-        type: e.type, payload: e.payload, consentRef: e.consentRef, prevHash: e.prevHash,
-    }),
-    validate: (e) => {
-        const errors = [];
-        for (const f of ["eventId", "ts", "encounterId", "type"])
-            if (typeof e[f] !== "string" || !e[f])
-                errors.push(`missing ${f}`);
-        return errors;
-    },
+    canonical: ENCOUNTER_FIELDS,
+    validate: encounterValidate,
 };
 // ── play/research-provenance-1 — qlm-games src/lib/research/evidence-provenance-chain.ts
 // computeChainHash(chain): sha256 of the concatenation (no separators) of
@@ -701,7 +715,7 @@ export const YARDSTICK_DEPTH_1 = {
     },
 };
 export const PRODUCT_SCHEMES = [
-    PLAY_EMIT_1, PLAY_MEASURE_SESSION_1, PLAY_ENCOUNTER_FNV64_1, PLAY_RESEARCH_PROVENANCE_1,
+    PLAY_EMIT_1, PLAY_MEASURE_SESSION_1, PLAY_ENCOUNTER_SHA256_1, PLAY_ENCOUNTER_FNV64_1, PLAY_RESEARCH_PROVENANCE_1,
     QCORE_QINVERSE_DJB2_1, STUDIO_LOOP_1, DP_LEDGER_V3, TPC_DSE_JOURNAL_1, YARDSTICK_SPINE_1, LABPATH_LEARNING_EVIDENCE_V1,
     TPC_TRANSCRIPT_1, TPC_DIFFERENTIAL_COMMIT_2, TPC_DIFFERENTIAL_COMMIT_1, TPC_RCT_INPUT_1,
     PLAY_WORLD_TRACE_IDENTITY_1, PLAY_WORLD_TRACE_TSIM_1, PLAY_WORLD_TRACE_1,

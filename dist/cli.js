@@ -3,26 +3,41 @@
  * qlm-measure CLI — verify evidence records from the command line.
  * verify makes no network calls. Records never leave your machine.
  */
-import { readFileSync, writeFileSync, existsSync } from "fs";
+import { readFileSync, writeFileSync, existsSync, realpathSync } from "fs";
 import { createHash } from "crypto";
+import { fileURLToPath } from "url";
 import { verifyRecord } from "./verifier/verify-record.js";
 import { verifyRecordV03 } from "./verifier-v03.js";
 import { verifyChain, listSchemes } from "./schemes/node.js";
 import { CATALOG, SHIPPED_CHECKS, SHIPPED_CHECKS_V03, PLANNED_CHECKS, CATALOG_BY_ID, CATEGORIES, CATEGORIES_V03 } from "./checks.js";
-const VERSION = "0.8.0";
-function loadRecords(path) {
+const VERSION = "0.9.0";
+export const processIO = {
+    out: (text) => { process.stdout.write(text); },
+    err: (text) => { process.stderr.write(text); },
+    readStdin: () => readFileSync(0, "utf-8"),
+};
+/** The value when it is an array, else an empty list, so a malformed record is reported rather than crashing the report. */
+function listOf(value) {
+    return Array.isArray(value) ? value : [];
+}
+function baseName(path) {
+    return path.slice(path.lastIndexOf("/") + 1);
+}
+/** True for a record the 0.3 verifier handles: schemaVersion "0.3", or an evidence block. */
+function isV03Record(rec) {
+    return rec.schemaVersion === "0.3" || !!rec.evidence;
+}
+function hasPosteriorEntries(entries) {
+    return entries.some((e) => typeof e?.updatedPosterior === "number");
+}
+function hasRecordBody(item) {
+    const o = item;
+    return typeof o === "object" && o !== null && (!!o.entries || !!o.evidence);
+}
+function loadRecords(path, io) {
     let raw;
     if (path === "-") {
-        const chunks = [];
-        const fd = 0; // stdin
-        const buf = Buffer.alloc(65536);
-        let n;
-        try {
-            while ((n = require("fs").readSync(fd, buf)) > 0)
-                chunks.push(buf.subarray(0, n));
-        }
-        catch { /* EOF */ }
-        raw = Buffer.concat(chunks).toString("utf-8");
+        raw = io.readStdin();
     }
     else {
         if (!existsSync(path))
@@ -37,10 +52,8 @@ function loadRecords(path) {
         throw new Error(`${path}: empty input`);
     if (raw[0] === "[") {
         const arr = JSON.parse(raw);
-        if (!Array.isArray(arr))
-            throw new Error(`${path}: expected array`);
         for (const item of arr) {
-            if (!item.entries && !item.evidence)
+            if (!hasRecordBody(item))
                 throw new Error(`${path}: element missing entries`);
         }
         return arr;
@@ -49,7 +62,7 @@ function loadRecords(path) {
         // Try as single JSON object first
         try {
             const obj = JSON.parse(raw);
-            if (obj.entries || obj.evidence)
+            if (hasRecordBody(obj))
                 return [obj];
         }
         catch { /* not a single object, try JSONL */ }
@@ -58,7 +71,7 @@ function loadRecords(path) {
         if (lines.length > 1 && lines.every(l => l.trim().startsWith("{"))) {
             return lines.map((line, i) => {
                 const obj = JSON.parse(line);
-                if (!obj.entries && !obj.evidence)
+                if (!hasRecordBody(obj))
                     throw new Error(`${path}: line ${i + 1} missing entries`);
                 return obj;
             });
@@ -68,28 +81,19 @@ function loadRecords(path) {
     throw new Error(`${path}: unrecognized format`);
 }
 // ── Report ──────────────────────────────────────────────────
-function inferCheckId(category) {
-    const map = {
-        schema: "SCHEMA.REQUIRED", version: "VERSION.MONOTONIC",
-        timestamp: "TIMESTAMP.MONOTONIC", enum: "ENUM.VALID",
-        hash: "HASH.ENTRY_RECOMPUTE", posterior: "POSTERIOR.CHAIN",
-        compaction: "COMPACTION.BOUNDARY",
-    };
-    return map[category] || `UNKNOWN.${category.toUpperCase()}`;
-}
 function buildReport(path, records, results) {
     const sha = path !== "-" && existsSync(path)
         ? createHash("sha256").update(readFileSync(path)).digest("hex") : "";
     const recordReports = records.map((rec, i) => {
         const result = results[i];
-        const isV03 = rec.schemaVersion === "0.3" || !!rec.evidence;
+        const isV03 = isV03Record(rec);
         const checksList = isV03 ? SHIPPED_CHECKS_V03 : SHIPPED_CHECKS;
-        const entries03 = isV03 ? (rec.evidence?.entries || []) : (rec.entries || []);
-        const hasCompaction = !!rec.compactedBefore || !!(rec.evidence?.compactedBefore);
-        const hasPosteriors = entries03.some((e) => typeof e.updatedPosterior === "number");
+        const entries03 = isV03 ? listOf(rec.evidence?.entries) : listOf(rec.entries);
+        const hasCompaction = !!rec.compactedBefore || !!rec.evidence?.compactedBefore;
+        const hasPosteriors = hasPosteriorEntries(entries03);
         const violsByCheck = {};
         for (const v of result.violations) {
-            const cid = v.checkId || inferCheckId(v.category);
+            const cid = v.checkId;
             (violsByCheck[cid] ??= []).push(v);
         }
         const checks = checksList.map(def => {
@@ -115,7 +119,7 @@ function buildReport(path, records, results) {
             valid: result.valid,
             checks,
             violations: result.violations.map(v => ({
-                version: v.version, check_id: v.checkId || inferCheckId(v.category),
+                version: v.version, check_id: v.checkId,
                 category: v.category, message: v.message,
             })),
         };
@@ -141,7 +145,7 @@ function buildReport(path, records, results) {
     }
     return {
         tool: { name: "qlm-measure", version: VERSION, language: "javascript", catalog_version: "1" },
-        input: { path: path.split("/").pop() || path, sha256: sha, records: records.length },
+        input: { path: baseName(path), sha256: sha, records: records.length },
         generated_at: new Date().toISOString().replace(/\.\d+Z$/, "Z"),
         records: recordReports,
         summary,
@@ -149,26 +153,25 @@ function buildReport(path, records, results) {
 }
 function formatText(path, records, results) {
     const lines = [];
-    const filename = path.split("/").pop() || path;
+    const filename = baseName(path);
     lines.push(`qlm-measure verify ${filename}`);
     lines.push(`records: ${records.length}`);
-    let totalValid = 0, totalInvalid = 0;
     for (let i = 0; i < records.length; i++) {
         const rec = records[i];
         const result = results[i];
-        const isV03_t = rec.schemaVersion === "0.3" || !!rec.evidence;
+        const isV03_t = isV03Record(rec);
         const checksList_t = isV03_t ? SHIPPED_CHECKS_V03 : SHIPPED_CHECKS;
         const categories_t = isV03_t ? CATEGORIES_V03 : CATEGORIES;
-        const entries_t = isV03_t ? (rec.evidence?.entries || []) : (rec.entries || []);
-        const hasCompaction = !!rec.compactedBefore || !!(rec.evidence?.compactedBefore);
-        const hasPosteriors_t = entries_t.some((e) => typeof e.updatedPosterior === "number");
+        const entries_t = isV03_t ? listOf(rec.evidence?.entries) : listOf(rec.entries);
+        const hasCompaction = !!rec.compactedBefore || !!rec.evidence?.compactedBefore;
+        const hasPosteriors_t = hasPosteriorEntries(entries_t);
         const violsByCheck = {};
         for (const v of result.violations) {
-            const cid = v.checkId || inferCheckId(v.category);
+            const cid = v.checkId;
             (violsByCheck[cid] ??= []).push(v);
         }
         lines.push("");
-        lines.push(`record ${rec.studentScopeId || "?"}  (schema ${rec.schemaVersion || "0.2"}, ${(rec.entries || rec.evidence?.entries || []).length} entries)`);
+        lines.push(`record ${rec.studentScopeId || "?"}  (schema ${rec.schemaVersion || "0.2"}, ${listOf(rec.entries || rec.evidence?.entries).length} entries)`);
         for (const cat of categories_t) {
             lines.push(`  ${cat}`);
             for (const def of checksList_t.filter(c => c.category === cat)) {
@@ -191,14 +194,10 @@ function formatText(path, records, results) {
         }
         const nv = result.violations.length;
         lines.push(`  violations: ${nv}`);
-        if (result.valid) {
+        if (result.valid)
             lines.push("  VERDICT: CLEAN \u2014 record is verifiable");
-            totalValid++;
-        }
-        else {
+        else
             lines.push(`  VERDICT: NOT CLEAN \u2014 ${nv} violation(s); see report`);
-            totalInvalid++;
-        }
     }
     const report = buildReport(path, records, results);
     const s = report.summary;
@@ -207,43 +206,63 @@ function formatText(path, records, results) {
     return lines.join("\n") + "\n";
 }
 // ── Commands ────────────────────────────────────────────────
-function cmdVerify(args) {
+/**
+ * Options the Python CLI has and this CLI does not implement. They stop with an
+ * error rather than being accepted and silently ignored.
+ */
+const UNSUPPORTED_VERIFY_OPTIONS = new Set(["--redact", "--tolerance-ms"]);
+class UsageError extends Error {
+}
+function cmdVerify(args, io) {
     let format = "text";
     let reportFile = null;
     let quiet = false;
     const paths = [];
-    for (let i = 0; i < args.length; i++) {
-        if (args[i] === "--format" && args[i + 1]) {
-            format = args[++i];
-        }
-        else if (args[i] === "--report" && args[i + 1]) {
-            reportFile = args[++i];
-        }
-        else if (args[i] === "--quiet") {
-            quiet = true;
-        }
-        else if (args[i] === "--tolerance-ms") {
-            i++; /* skip value, use default for now */
-        }
-        else if (args[i] === "--redact") { /* TODO */ }
-        else {
-            paths.push(args[i]);
+    try {
+        for (let i = 0; i < args.length; i++) {
+            const a = args[i];
+            if (a === "--format") {
+                format = args[++i];
+                if (format !== "text" && format !== "json")
+                    throw new UsageError("--format must be text or json");
+            }
+            else if (a === "--report") {
+                const next = args[++i];
+                if (next === undefined)
+                    throw new UsageError("--report needs a file name");
+                reportFile = next;
+            }
+            else if (a === "--quiet") {
+                quiet = true;
+            }
+            else if (UNSUPPORTED_VERIFY_OPTIONS.has(a)) {
+                throw new UsageError(`${a} is not supported by the JavaScript CLI; the Python CLI (python/qlm_measure) supports it`);
+            }
+            else if (a.startsWith("--")) {
+                throw new UsageError(`unknown option: ${a}`);
+            }
+            else {
+                paths.push(a);
+            }
         }
     }
-    if (paths.length === 0) {
-        console.error("error: no files specified");
+    catch (e) {
+        io.err(`error: ${e.message}\n`);
         return 2;
     }
-    let allRecords = [];
-    let allResults = [];
+    if (paths.length === 0) {
+        io.err("error: no files specified\n");
+        return 2;
+    }
+    const allRecords = [];
+    const allResults = [];
     for (const p of paths) {
         try {
-            const records = loadRecords(p);
+            const records = loadRecords(p, io);
             for (const r of records) {
                 allRecords.push(r);
                 // Dispatch by schema version
-                const sv = r.schemaVersion || "0.2";
-                if (sv === "0.3" || r.evidence) {
+                if (isV03Record(r)) {
                     const r03 = verifyRecordV03(r);
                     allResults.push({ valid: r03.valid, violations: r03.violations.map(v => ({
                             version: v.version, category: v.category, message: v.message, checkId: v.checkId,
@@ -255,9 +274,13 @@ function cmdVerify(args) {
             }
         }
         catch (e) {
-            console.error(`error: ${e.message}`);
+            io.err(`error: ${e.message}\n`);
             return 2;
         }
+    }
+    if (allRecords.length === 0) {
+        io.err("error: no records loaded\n");
+        return 2;
     }
     const label = paths.length === 1 ? paths[0] : `${paths.length} files`;
     if (format === "json" || reportFile) {
@@ -266,158 +289,173 @@ function cmdVerify(args) {
         if (reportFile)
             writeFileSync(reportFile, json + "\n");
         if (format === "json")
-            console.log(json);
+            io.out(json + "\n");
         else if (!quiet)
-            process.stdout.write(formatText(label, allRecords, allResults));
+            io.out(formatText(label, allRecords, allResults));
     }
     else if (!quiet) {
-        process.stdout.write(formatText(label, allRecords, allResults));
+        io.out(formatText(label, allRecords, allResults));
     }
     return allResults.some(r => !r.valid) ? 1 : 0;
 }
-function cmdExplain(args) {
+function cmdExplain(args, io) {
+    const say = (line = "") => io.out(line + "\n");
     const checkId = args[0];
     if (checkId) {
         const def = CATALOG_BY_ID[checkId];
         if (!def) {
-            console.error(`error: unknown check ID: ${checkId}`);
-            console.error(`Available: ${CATALOG.map(c => c.id).join(", ")}`);
+            io.err(`error: unknown check ID: ${checkId}\n`);
+            io.err(`Available: ${CATALOG.map(c => c.id).join(", ")}\n`);
             return 2;
         }
-        console.log(`${def.id} — ${def.label}`);
-        console.log(`  Status:    ${def.status}`);
-        console.log(`  Category:  ${def.category}`);
-        console.log(`  Scope:     ${def.scope}`);
-        console.log(`  Since:     ${def.introducedIn}`);
-        console.log();
-        console.log(`  ${def.description}`);
-        console.log();
-        console.log(`  How to pass: ${def.howToPass}`);
+        say(`${def.id} — ${def.label}`);
+        say(`  Status:    ${def.status}`);
+        say(`  Category:  ${def.category}`);
+        say(`  Scope:     ${def.scope}`);
+        say(`  Since:     ${def.introducedIn}`);
+        say();
+        say(`  ${def.description}`);
+        say();
+        say(`  How to pass: ${def.howToPass}`);
     }
     else {
-        console.log("qlm-measure check catalog (v1)");
-        console.log();
-        console.log("Shipped checks (run by verify):");
+        say("qlm-measure check catalog (v1)");
+        say();
+        say("Shipped checks (run by verify):");
         for (const c of SHIPPED_CHECKS)
-            console.log(`  ${c.id.padEnd(28)} ${c.label}`);
-        console.log();
-        console.log("Planned checks (listed, not run):");
+            say(`  ${c.id.padEnd(28)} ${c.label}`);
+        say();
+        say("Planned checks (listed, not run):");
         for (const c of PLANNED_CHECKS)
-            console.log(`  ${c.id.padEnd(28)} ${c.label}`);
-        console.log();
-        console.log("Use 'qlm-measure explain CHECK_ID' for details.");
+            say(`  ${c.id.padEnd(28)} ${c.label}`);
+        say();
+        say("Use 'qlm-measure explain CHECK_ID' for details.");
     }
     return 0;
 }
-function cmdVersion() {
-    console.log(`qlm-measure ${VERSION}`);
-    console.log("schema version: 0.2");
-    console.log("catalog version: 1");
+function cmdVersion(io) {
+    io.out(`qlm-measure ${VERSION}\n`);
+    io.out("schema version: 0.2\n");
+    io.out("catalog version: 1\n");
     return 0;
 }
-// ── Main ────────────────────────────────────────────────────
 // ── verify-chain: per-event hash chains sealed by QLM products ─────────────
-function cmdVerifyChain(argv) {
-    const opts = {};
+function cmdVerifyChain(argv, io) {
+    const say = (line) => io.out(line + "\n");
+    const fail = (line) => { io.err(line + "\n"); return 2; };
+    const opts = { format: "text", allowMixed: false, list: false };
     const positional = [];
     for (let i = 0; i < argv.length; i++) {
         const a = argv[i];
-        if (a === "--family" || a === "--scheme" || a === "--format") {
-            opts[a.slice(2)] = argv[++i];
+        if (a === "--family" || a === "--scheme") {
+            const v = argv[++i];
+            if (v === undefined)
+                return fail(`ERROR: ${a} needs a value`);
+            opts[a === "--family" ? "family" : "scheme"] = v;
+        }
+        else if (a === "--format") {
+            opts.format = argv[++i];
+            if (opts.format !== "text" && opts.format !== "json")
+                return fail("ERROR: --format must be text or json");
         }
         else if (a === "--allow-mixed") {
-            opts.allowMixed = "1";
+            opts.allowMixed = true;
         }
         else if (a === "--list") {
-            opts.list = "1";
+            opts.list = true;
+        }
+        else if (a.startsWith("--")) {
+            return fail(`ERROR: unknown option: ${a}`);
         }
         else
             positional.push(a);
     }
     if (opts.list) {
         for (const s of listSchemes())
-            console.log(`${s.id}\t${s.family}\tsince ${s.since}\t${s.hashField}/${s.prevField}`);
+            say(`${s.id}\t${s.family}\tsince ${s.since}\t${s.hashField}/${s.prevField}`);
         return 0;
     }
     const file = positional[0];
-    if (!file) {
-        console.error("Usage: qlm-measure verify-chain <events.json> (--family F | --scheme S) [--allow-mixed] [--format text|json] | --list");
-        return 2;
-    }
-    if (!opts.family && !opts.scheme) {
-        console.error("ERROR: pass --family (e.g. tpc/clinical) or --scheme (e.g. tpc/clinical-v2)");
-        return 2;
-    }
-    if (!existsSync(file)) {
-        console.error(`ERROR: ${file} not found`);
-        return 2;
-    }
+    if (!file)
+        return fail("Usage: qlm-measure verify-chain <events.json> (--family F | --scheme S) [--allow-mixed] [--format text|json] | --list");
+    if (!opts.family && !opts.scheme)
+        return fail("ERROR: pass --family (e.g. tpc/clinical) or --scheme (e.g. tpc/clinical-v2)");
+    if (!existsSync(file))
+        return fail(`ERROR: ${file} not found`);
     let events;
     try {
         events = JSON.parse(readFileSync(file, "utf-8"));
     }
     catch (e) {
-        console.error(`ERROR: parse failed: ${e}`);
-        return 2;
+        return fail(`ERROR: parse failed: ${e}`);
     }
     if (!Array.isArray(events) && events && typeof events === "object" && Array.isArray(events.events)) {
         events = events.events; // { events: [...] } wrapper (vectors, exports with metadata)
     }
-    if (!Array.isArray(events)) {
-        console.error("ERROR: not an array of events (or an object with an events array)");
-        return 2;
-    }
+    if (!Array.isArray(events))
+        return fail("ERROR: not an array of events (or an object with an events array)");
     let r;
     try {
         r = verifyChain(events, { family: opts.family, scheme: opts.scheme, rejectMixed: !opts.allowMixed });
     }
     catch (e) {
-        console.error(`ERROR: ${e.message}`);
-        return 2;
+        return fail(`ERROR: ${e.message}`);
     }
     if (opts.format === "json") {
-        console.log(JSON.stringify({ verifier: `qlm-measure ${VERSION}`, file, ...r }, null, 2));
+        say(JSON.stringify({ verifier: `qlm-measure ${VERSION}`, file, ...r }, null, 2));
         return r.clean ? 0 : 1;
     }
-    console.log(`qlm-measure verify-chain ${VERSION}`);
-    console.log(`file: ${file}`);
-    console.log(`timestamp: ${new Date().toISOString()}`);
-    console.log(`result: ${r.clean ? "CLEAN" : "FAIL"}`);
-    console.log(`events: ${r.stats.total}`);
-    console.log(`gaps: ${r.stats.gaps}`);
-    console.log(`duplicates: ${r.stats.duplicates}`);
-    console.log(`tampered: ${r.stats.tampered}`);
-    console.log(`schema_errors: ${r.stats.schema_errors}`);
-    console.log(`hash_scheme: ${r.stats.hash_scheme}`);
-    console.log(`schemes: ${JSON.stringify(r.stats.schemes)}`);
+    say(`qlm-measure verify-chain ${VERSION}`);
+    say(`file: ${file}`);
+    say(`timestamp: ${new Date().toISOString()}`);
+    say(`result: ${r.clean ? "CLEAN" : "FAIL"}`);
+    say(`events: ${r.stats.total}`);
+    say(`gaps: ${r.stats.gaps}`);
+    say(`duplicates: ${r.stats.duplicates}`);
+    say(`tampered: ${r.stats.tampered}`);
+    say(`schema_errors: ${r.stats.schema_errors}`);
+    say(`hash_scheme: ${r.stats.hash_scheme}`);
+    say(`schemes: ${JSON.stringify(r.stats.schemes)}`);
     if (!r.clean) {
-        console.log("\nerrors:");
-        r.errors.forEach((e) => console.log(`  ${e}`));
+        say("\nerrors:");
+        r.errors.forEach((e) => say(`  ${e}`));
     }
     return r.clean ? 0 : 1;
 }
-const args = process.argv.slice(2);
-const cmd = args[0];
-let exitCode;
-switch (cmd) {
-    case "verify":
-        exitCode = cmdVerify(args.slice(1));
-        break;
-    case "verify-chain":
-        exitCode = cmdVerifyChain(args.slice(1));
-        break;
-    case "explain":
-        exitCode = cmdExplain(args.slice(1));
-        break;
-    case "version":
-        exitCode = cmdVersion();
-        break;
-    default:
-        console.log("Usage: qlm-measure <verify|verify-chain|explain|version> [options]");
-        console.log("  verify PATH [--format text|json] [--report FILE] [--quiet]");
-        console.log("  explain [CHECK_ID]");
-        console.log("  version");
-        exitCode = cmd ? 2 : 2;
+// ── Main ────────────────────────────────────────────────────
+const USAGE = [
+    "Usage: qlm-measure <verify|verify-chain|explain|version> [options]",
+    "  verify PATH... [--format text|json] [--report FILE] [--quiet]",
+    "  verify-chain EVENTS_JSON (--family F | --scheme S) [--allow-mixed] [--format text|json]",
+    "  verify-chain --list",
+    "  explain [CHECK_ID]",
+    "  version",
+    "",
+].join("\n");
+/** Runs one CLI invocation and returns its exit code: 0 clean, 1 not clean, 2 usage or input error. */
+export function main(argv, io = processIO) {
+    const [cmd, ...rest] = argv;
+    switch (cmd) {
+        case "verify": return cmdVerify(rest, io);
+        case "verify-chain": return cmdVerifyChain(rest, io);
+        case "explain": return cmdExplain(rest, io);
+        case "version": return cmdVersion(io);
+        default:
+            io.out(USAGE);
+            return 2;
+    }
 }
-process.exit(exitCode);
+/** True when this module is the script node was started with, including through npm's bin symlink. */
+export function isDirectRun(scriptPath, moduleUrl) {
+    if (!scriptPath)
+        return false;
+    try {
+        return realpathSync(scriptPath) === realpathSync(fileURLToPath(moduleUrl));
+    }
+    catch {
+        return false;
+    }
+}
+if (isDirectRun(process.argv[1], import.meta.url))
+    process.exit(main(process.argv.slice(2)));
 //# sourceMappingURL=cli.js.map

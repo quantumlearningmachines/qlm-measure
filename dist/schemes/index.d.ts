@@ -123,5 +123,11 @@ export interface VerifyChainOptions {
     /** Treat a chain that mixes schemes as an error (default true). */
     rejectMixed?: boolean;
 }
+/**
+ * The path of the first own "__proto__" key at any depth (".payload.__proto__"), or null.
+ * sortKeysDeep drops such a key, as the products' original code did, so no hash covers it;
+ * verifyChain refuses an event that holds one rather than verify content the hash does not cover.
+ */
+export declare function protoKeyPath(value: unknown, path?: string): string | null;
 export declare function verifyChainWith(hash: HashFn, events: ChainEvent[], opts: VerifyChainOptions): ChainVerification;
 //# sourceMappingURL=index.d.ts.map
