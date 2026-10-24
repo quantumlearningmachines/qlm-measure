@@ -13,7 +13,7 @@ describe("verify_evidence: qlm-measure's own verifier, replaying the chain", () 
     expect(r.verdict).toBe("pass");
     expect(r.records_checked).toBe(1);
     expect(r.failed_checks).toEqual([]);
-    expect(r.verifier).toBe("qlm-measure 0.9.0 (vendored from qlm-measure@2441968)");
+    expect(r.verifier).toBe("qlm-measure 0.9.0 (vendored from qlm-measure@68404b5)");
     expect(r.report.summary).toEqual(expect.objectContaining({ records: 1, valid: 1, invalid: 0 }));
     expect(r.does_not_show.length).toBeGreaterThan(0);
   });

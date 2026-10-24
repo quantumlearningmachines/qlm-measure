@@ -19,10 +19,10 @@ export function withholdSealed(value: unknown): { value: unknown; withheld: stri
     if (v === null || typeof v !== "object") return v;
     const out: Record<string, unknown> = {};
     for (const [k, x] of Object.entries(v)) {
-      if (isSealed(k)) {
-        withheld.push(member(path, k));
-        out[k] = WITHHELD;
-      } else out[k] = walk(x, member(path, k));
+      // defineProperty keeps a member named "__proto__" (source text can use any name) as data.
+      const sealed = isSealed(k);
+      if (sealed) withheld.push(member(path, k));
+      Object.defineProperty(out, k, { value: sealed ? WITHHELD : walk(x, member(path, k)), enumerable: true, writable: true, configurable: true });
     }
     return out;
   };

@@ -21,8 +21,8 @@ describe("the six assistance stages of draft-srivastava-learnlog-03, Section 2.2
 
 describe("learnlog_formats", () => {
   const f = learnlogFormats() as Obj;
-  it("lists the three transformer formats with what each records, stage by stage", () => {
-    expect(f.formats.map((x: Obj) => x.id)).toEqual(["tutormoments", "oatutor", "explicit-assistance-events"]);
+  it("lists the transformer formats with what each records, stage by stage", () => {
+    expect(f.formats.map((x: Obj) => x.id)).toEqual(["tutormoments", "oatutor", "explicit-assistance-events", "sandpiper"]);
     const [tm, oa, ex] = f.formats as Obj[];
     expect(Object.keys(tm!.help_stages)).toEqual(SIX);
     expect(Object.values(tm!.help_stages).every((v) => String(v).startsWith("not recorded"))).toBe(true);
@@ -40,7 +40,7 @@ describe("learnlog_formats", () => {
   });
   it("says what it doesn't show and where the transformer came from", () => {
     expect(f.does_not_show.length).toBeGreaterThan(0);
-    expect(f.transformer.vendored_from).toMatch(/qlm-measure@2441968/);
+    expect(f.transformer.vendored_from).toMatch(/qlm-measure@68404b5/);
   });
 });
 

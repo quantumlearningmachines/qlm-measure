@@ -7,10 +7,11 @@ import { NOT_RECORDED, byStage, type Stage } from "./stages.js";
 export { engine };
 export type { LearnlogRecord, Profile, TransformRun };
 
-export const FORMAT_IDS = engine.ALL_PROFILES.map((p) => p.id) as [string, ...string[]];
+/** Every adapter the engine accepts, including sandpiper, which the transformer's demo page doesn't list. */
+export const FORMAT_IDS = engine.ADAPTER_PROFILES.map((p) => p.id) as [string, ...string[]];
 
 export function profileOf(id: string): Profile {
-  const p = engine.ALL_PROFILES.find((x) => x.id === id);
+  const p = engine.ADAPTER_PROFILES.find((x) => x.id === id);
   if (!p) throw new Refusal(`Unknown format "${id}". Use one of: ${FORMAT_IDS.join(", ")}.`);
   return p;
 }
@@ -22,6 +23,7 @@ export function formatStages(p: Profile): Record<Stage, string> {
   return byStage((stage) => {
     if (p.mode === "dialogue") return `${NOT_RECORDED}: the adapter keeps who spoke and what they said; it doesn't classify any turn as help`;
     if (p.mode === "summary") return `${NOT_RECORDED}: the table gives each participant's assigned help condition, not help events`;
+    if (p.mode === "annotated_dialogue") return `${NOT_RECORDED}: the export keeps who spoke and what they said; annotation codes are kept as an annotator's inferred assertions and never set a help stage`;
     const type = LIFECYCLE_TYPE[stage];
     return type ? `recorded when the export asserts it (${type})` : `${NOT_RECORDED}: the transformer's lifecycle input has no event type for this stage`;
   });
@@ -52,6 +54,9 @@ export function unknownsOf(records: unknown[]): string[] {
       if (!data) continue;
       entries++;
       if (data.original_source_timestamp === null) count("Source event time not recorded");
+      const utterance = isObj(data.utterance) ? data.utterance : {};
+      if (utterance.start_time === null) count("Utterance start time not recorded");
+      if (utterance.end_time === null) count("Utterance end time not recorded");
       const ctx = isObj(data.assistance_context) ? data.assistance_context : {};
       for (const [k, label] of Object.entries(CONTEXT_LABEL)) {
         if (ctx[k] === "unknown") count(`${label} not recorded (unknown)`);

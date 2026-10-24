@@ -1,24 +1,24 @@
 {
   "repository": "https://github.com/quantumlearningmachines/qlm-measure",
-  "commit": "24419687cddf238030a918834fbb9ef079f2fc57",
+  "commit": "68404b53d0584c9817346b83ee499a38b692adcd",
   "note": "Byte-for-byte copies of files at this commit of qlm-measure. The transformer files are the built browser engine the transformer demo ships (demo/transformer/dist), whose Python/JavaScript serialization parity the repository checks with demo/transformer/scripts/verify_semantic_parity.py. The qlm-measure files are the committed 0.9.0 build of src/ (dist/).",
   "files": [
     {
       "path": "vendor/transformer/engine.mjs",
       "source": "demo/transformer/dist/engine.mjs",
-      "sha256": "1fd8124f04d7bb68d4078e30925a448e330a710b0e72e757e945e7f9136e7c25",
+      "sha256": "18f56b309bb5f2f9e1269f9f7ba209cb29decf1ab9a46a35d7ff3a09017b7191",
       "license": "MIT"
     },
     {
       "path": "vendor/transformer/profiles.mjs",
       "source": "demo/transformer/dist/profiles.mjs",
-      "sha256": "7e5ecef4fd03a7358c0eff83050ba25f0bebe1556acd5fe2d41e4551f52d2d44",
+      "sha256": "b73e021e580d0a33a47ef3c9acec72ca9cf841796a42b0f23c44beb17caa22e9",
       "license": "MIT (code); embedded samples CC-BY-4.0"
     },
     {
       "path": "vendor/transformer/research-semantics.mjs",
       "source": "demo/transformer/dist/research-semantics.mjs",
-      "sha256": "e3aec052af02e2d160a2b9d65aa7d6863fadd2c7101cf1ca65fb6b04ce297cf2",
+      "sha256": "72ff379f82c2e96aa7baedd6afc4d921d34c1795619814c96fcefcfe0551ada7",
       "license": "MIT"
     },
     {
@@ -160,6 +160,12 @@
       "license": "MIT (QLM-authored synthetic fixture)"
     },
     {
+      "path": "data/samples/sandpiper-SYNTHETIC.csv",
+      "source": "demo/transformer/dist/samples/sandpiper-SYNTHETIC.csv",
+      "sha256": "d7b1a265f2e8abf37b0e070becc2e7c8a446576375de607322481c5015515ec0",
+      "license": "MIT (SYNTHETIC fixture of Sandpiper documentation examples, (c) 2025 National Tutoring Observatory)"
+    },
+    {
       "path": "data/provenance/tutormoments.json",
       "source": "demo/transformer/dist/provenance/tutormoments.json",
       "sha256": "5e1188950252542219772fb93a080e789ed72a2eef3e5f795c73b0b8ef68dde4",
@@ -180,7 +186,7 @@
     {
       "path": "data/THIRD_PARTY_DATA.md",
       "source": "demo/transformer/THIRD_PARTY_DATA.md",
-      "sha256": "35b52e81a8585e9cc18d9c52a0e9cddcffc76987a99e3175ed8afc5c4751fa98",
+      "sha256": "533714e946f97ed1340b637fe78a1a22e9795d1ebd222798f7d34e2f132f40c8",
       "license": "MIT"
     },
     {

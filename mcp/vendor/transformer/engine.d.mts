@@ -4,7 +4,7 @@ export interface Profile {
   id: string;
   name: string;
   description: string;
-  mode: "dialogue" | "summary" | "assistance_events";
+  mode: "dialogue" | "summary" | "assistance_events" | "annotated_dialogue";
   status: string;
   sampleName: string;
   metrics: Record<string, string>;
@@ -51,6 +51,8 @@ export interface LearnlogRecord {
   entries: { seq: number; time: string; event_hash: string; prev_hash: string; entry_hash: string; event: { name: string; data: Record<string, unknown>; activity?: { id: string } } }[];
 }
 export const ALL_PROFILES: readonly Profile[];
+/** ALL_PROFILES plus the engine-only adapters (sandpiper). */
+export const ADAPTER_PROFILES: readonly Profile[];
 export const ENGINE_VERSION: string;
 export function getSample(id: string): string;
 export function getSemanticContract(id: string): Record<string, unknown>;

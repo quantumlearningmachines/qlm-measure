@@ -42,7 +42,11 @@ describe("the MCP server", () => {
     }) as unknown as typeof fetch;
     const client = await connect(fakeFetch);
     const formats = body(await client.callTool({ name: "learnlog_formats", arguments: {} }));
-    expect(formats.formats).toHaveLength(3);
+    expect(formats.formats).toHaveLength(4);
+    const sp = body(await client.callTool({ name: "learnlog_transform", arguments: { format: "sandpiper", use_sample: true } }));
+    expect(sp.summary.unit).toBe("transcript_utterances");
+    const spInv = body(await client.callTool({ name: "assistance_inventory", arguments: { format: "sandpiper", use_sample: true } }));
+    expect(spInv.sources[0].stages.accepted.status).toBe("not recorded");
     const t = body(await client.callTool({ name: "learnlog_transform", arguments: { format: "oatutor", use_sample: true } }));
     expect(t.summary.entries).toBe(12);
     const inv = body(await client.callTool({ name: "assistance_inventory", arguments: { format: "tutormoments", use_sample: true } }));

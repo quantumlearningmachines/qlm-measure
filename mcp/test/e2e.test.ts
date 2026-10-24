@@ -31,7 +31,7 @@ describe("the built server over stdio", () => {
     expect(tools.map((t) => t.name).sort()).toEqual(["assistance_inventory", "learnlog_formats", "learnlog_transform", "learnlog_validate", "qlm_learning_graph", "qlm_misconceptions", "verify_credential", "verify_evidence"]);
   });
   it("calls each one", async () => {
-    expect(body(await client.callTool({ name: "learnlog_formats", arguments: {} })).formats).toHaveLength(3);
+    expect(body(await client.callTool({ name: "learnlog_formats", arguments: {} })).formats).toHaveLength(4);
     const t = body(await client.callTool({ name: "learnlog_transform", arguments: { format: "tutormoments", use_sample: true } }));
     expect(t.summary.entries).toBe(310);
     expect(t.source.verified_public_sample).toBe(true);

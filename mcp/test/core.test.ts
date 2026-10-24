@@ -49,6 +49,9 @@ describe("sealed content never appears in output", () => {
   it("leaves ordinary values alone", () => {
     expect(withholdSealed([1, "answer_key", null, { answers: 2, sealedAt: "2026-01-01", sealed_items: [] }])).toEqual({ value: [1, "answer_key", null, { answers: 2, sealedAt: "2026-01-01", sealed_items: "[withheld: sealed content]" }], withheld: ["$[3].sealed_items"] });
     expect(withholdSealed("x")).toEqual({ value: "x", withheld: [] });
+    const kept = withholdSealed(JSON.parse('{"__proto__": {"answerKey": 1, "n": 2}}')).value as object;
+    expect(Object.getOwnPropertyDescriptor(kept, "__proto__")?.value).toEqual({ answerKey: "[withheld: sealed content]", n: 2 });
+    expect(Object.getPrototypeOf(kept)).toBe(Object.prototype);
   });
 });
 

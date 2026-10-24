@@ -49,6 +49,8 @@ All eight are read-only. Paths are full paths on your computer (or start with `~
 **`learnlog_formats`** lists the exports the transformer converts and what each one records at each stage.
 > "Which exports can Learnlog MCP convert, and what does each one record about help?"
 
+There are four formats: `tutormoments` (TutorMoments transcripts), `oatutor` (OATutor participant summaries), `explicit-assistance-events` (an explicit help-lifecycle contract) and `sandpiper` (the utterances CSV that Sandpiper, the National Tutoring Observatory's annotation app, exports for a per-utterance run). For Sandpiper, each utterance is a dialogue turn, and each annotation code is kept as an annotator's inferred assertion. No code counts as help, so every stage is not recorded. The lifecycle and Sandpiper samples are SYNTHETIC; the Sandpiper one is built from Sandpiper's documented examples, not NTO data.
+
 **`learnlog_transform`** turns an export into Learnlog records, keeping source and capture details. Use your own file, or `use_sample: true` for a bundled public sample.
 > "Turn the TutorMoments sample into Learnlog and tell me what it keeps and what it leaves unknown."
 
@@ -104,6 +106,6 @@ The transformer engine and the qlm-measure 0.9.0 verifier are copied unchanged f
 
 ## License
 
-Apache-2.0. See `LICENSE` and `NOTICE`. The vendored transformer files keep their MIT license (`vendor/transformer/LICENSE.txt`). The TutorMoments and OATutor sample excerpts are CC BY 4.0; their attribution and limits are in `data/THIRD_PARTY_DATA.md`. The LabPath misconception, learning-graph and standards data are CC BY 4.0 from Quantum Learning Machines; they're read from QLM's service, not bundled. Cite them as: QLM LabPath Dataset v1.0, Quantum Learning Machines, 2026, https://doi.org/10.5281/zenodo.21800324.
+Apache-2.0. See `LICENSE` and `NOTICE`. The vendored transformer files keep their MIT license (`vendor/transformer/LICENSE.txt`). The TutorMoments and OATutor sample excerpts are CC BY 4.0; their attribution and limits are in `data/THIRD_PARTY_DATA.md`. The SYNTHETIC Sandpiper sample uses Sandpiper's documentation examples, MIT, Copyright (c) 2025 National Tutoring Observatory; the notice is in `data/THIRD_PARTY_DATA.md`. The LabPath misconception, learning-graph and standards data are CC BY 4.0 from Quantum Learning Machines; they're read from QLM's service, not bundled. Cite them as: QLM LabPath Dataset v1.0, Quantum Learning Machines, 2026, https://doi.org/10.5281/zenodo.21800324.
 
 Made by Kumar Srivastava at [Quantum Learning Machines](https://quantumlearningmachines.com).

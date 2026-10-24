@@ -42,6 +42,7 @@ export const FILES = [
   ["data/samples/tutormoments-real-transcripts.jsonl", "demo/transformer/dist/samples/tutormoments-real-transcripts.jsonl", "CC-BY-4.0 (Ai2 TutorMoments-Preview)"],
   ["data/samples/oatutor-real-participants.csv", "demo/transformer/dist/samples/oatutor-real-participants.csv", "CC-BY-4.0 (Pardos and Bhandari, figshare)"],
   ["data/samples/explicit-assistance-SYNTHETIC.jsonl", "demo/transformer/dist/samples/explicit-assistance-SYNTHETIC.jsonl", "MIT (QLM-authored synthetic fixture)"],
+  ["data/samples/sandpiper-SYNTHETIC.csv", "demo/transformer/dist/samples/sandpiper-SYNTHETIC.csv", "MIT (SYNTHETIC fixture of Sandpiper documentation examples, (c) 2025 National Tutoring Observatory)"],
   ["data/provenance/tutormoments.json", "demo/transformer/dist/provenance/tutormoments.json", "MIT"],
   ["data/provenance/oatutor.json", "demo/transformer/dist/provenance/oatutor.json", "MIT"],
   ["data/provenance/source-audit.json", "demo/transformer/dist/provenance/source-audit.json", "MIT"],

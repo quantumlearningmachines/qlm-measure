@@ -4,6 +4,14 @@
 
 Published as `@qlm/learnlog-mcp`, under QLM's npm account (it was `@quantumkumar/learnlog-mcp` before release).
 
+A fourth format, `sandpiper`: the utterances CSV that Sandpiper, the National Tutoring Observatory's open-source annotation app, exports for a per-utterance run. `learnlog_formats` lists it stage by stage, and `learnlog_transform` and `assistance_inventory` accept it.
+
+- One record per session, entries in `sequence_id` order. Each utterance is a dialogue turn; role and text are kept as the export has them, and start/end times stay unparsed strings.
+- Annotation codes are kept as an annotator's inferred assertions. The inventory reports turns by role and counts codes by annotator and field, never as help. Every stage is not recorded.
+- The bundled sample is SYNTHETIC, built from Sandpiper's documented example rows (MIT). There is no public NTO dataset in this package.
+- Re-vendored the transformer from qlm-measure commit 68404b53d0584c9817346b83ee499a38b692adcd. Documents made by the previous engine still validate (tested with saved outputs), because existing formats keep their profile version, `qlm:assistance-context:0.1.0`; Sandpiper records bind `0.2.0`.
+- Answers keep a member named `__proto__` as data instead of dropping it, since exported role and annotator names can be any text.
+
 Two new read-only tools, which read QLM's public LabPath datasets (CC BY 4.0) from `https://play.quantumlearningmachines.com/api/labpath/dataset-export` with GET only, a timeout, no redirects and one request per dataset per session:
 
 - `qlm_misconceptions`: searches the misconception dataset by words, domain, grade band or id. Evaluation-tier trigger patterns and diagnostic questions are never returned.

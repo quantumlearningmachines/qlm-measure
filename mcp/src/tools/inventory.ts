@@ -53,6 +53,52 @@ function sourceInventory(records: LearnlogRecord[]): Obj {
       coverage,
     };
   }
+  if (mode === "annotated_dialogue") {
+    // Roles, annotator names and fields are any text the export uses, so the tallies have no prototype.
+    const tally = <T>(): Record<string, T> => Object.create(null) as Record<string, T>;
+    const byRole = tally<number>();
+    const byAnnotator = tally<number>();
+    const byField = tally<number>();
+    const byAnnotatorAndField = tally<Record<string, number>>();
+    const identifiedBy = tally<number>();
+    let codes = 0;
+    let coded = 0;
+    for (const d of data) {
+      inc(byRole, (d.utterance as Obj).role as string);
+      const annotations = d.inferred_annotations as { annotator: string; fields: Record<string, string>; identifiedBy?: string }[];
+      if (annotations.length) coded++;
+      for (const a of annotations) {
+        if (a.identifiedBy !== undefined) inc(identifiedBy, a.identifiedBy);
+        for (const field of Object.keys(a.fields)) {
+          codes++;
+          inc(byAnnotator, a.annotator);
+          inc(byField, field);
+          inc((byAnnotatorAndField[a.annotator] ??= tally<number>()), field);
+        }
+      }
+    }
+    return {
+      ...base,
+      what_is_recorded: {
+        unit: "utterances",
+        sessions: records.length,
+        utterances: entries.length,
+        turns_by_role: byRole,
+        inferred_codes: {
+          basis: "inferred",
+          note: "Annotation codes are an annotator's inferred assertions about utterances, not help events. They aren't counted at any stage, and identifiedBy is counted only where the export carries it.",
+          codes,
+          utterances_with_codes: coded,
+          by_annotator: byAnnotator,
+          by_field: byField,
+          by_annotator_and_field: byAnnotatorAndField,
+          identified_by: identifiedBy,
+        },
+      },
+      stages: byStage(() => ({ status: NOT_RECORDED, note: "This export keeps who spoke and what they said. Its annotation codes are inferred assertions by an annotator, so none of them records help being asked for, offered, generated, sent, shown or accepted." })),
+      coverage,
+    };
+  }
   if (mode === "summary") {
     const conditions: Record<string, number> = {};
     const use: Record<string, number> = {};
