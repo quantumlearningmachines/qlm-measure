@@ -2,6 +2,8 @@
 
 ## 0.2.0 (not yet published)
 
+Published as `@qlm/learnlog-mcp`, under QLM's npm account (it was `@quantumkumar/learnlog-mcp` before release).
+
 Two new read-only tools, which read QLM's public LabPath datasets (CC BY 4.0) from `https://play.quantumlearningmachines.com/api/labpath/dataset-export` with GET only, a timeout, no redirects and one request per dataset per session:
 
 - `qlm_misconceptions`: searches the misconception dataset by words, domain, grade band or id. Evaluation-tier trigger patterns and diagnostic questions are never returned.

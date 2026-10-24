@@ -22,7 +22,7 @@ Each stage is its own observation. A request doesn't mean help was shown, and a 
 You need Node.js 22.12 or later.
 
 ```
-npx -y @quantumkumar/learnlog-mcp
+npx -y @qlm/learnlog-mcp
 ```
 
 ### Claude Desktop
@@ -34,7 +34,7 @@ Add this to `claude_desktop_config.json` (Settings, Developer, Edit Config), the
   "mcpServers": {
     "learnlog": {
       "command": "npx",
-      "args": ["-y", "@quantumkumar/learnlog-mcp"]
+      "args": ["-y", "@qlm/learnlog-mcp"]
     }
   }
 }

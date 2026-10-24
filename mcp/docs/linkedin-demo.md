@@ -15,7 +15,7 @@ The assistant's own words aren't recorded here, because they vary from run to ru
 ```json
 {
   "mcpServers": {
-    "learnlog": { "command": "npx", "args": ["-y", "@quantumkumar/learnlog-mcp"] }
+    "learnlog": { "command": "npx", "args": ["-y", "@qlm/learnlog-mcp"] }
   }
 }
 ```
