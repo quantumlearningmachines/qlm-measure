@@ -472,3 +472,28 @@ export async function analyzeAssistments(path: string): Promise<Obj> {
     },
   };
 }
+
+/**
+ * Help requests on main problems, counted by the problem's own skill label (the file's `skill` column).
+ * Counts only: no row, learner or answer leaves the file. The 15 most requested skills are kept.
+ */
+export async function assistmentsBySkill(path: string): Promise<{ skills: Obj[]; skills_in_file: number; note: string }> {
+  const by = new Map<string, { skill: string; main_problems: number; requested: number; hints_to_the_answer: number; asked_for_steps: number }>();
+  let col: { skill: number; original: number; hint: number; bottom: number; first: number } | null = null;
+  await streamCsv(path, (row, header) => {
+    col ??= { skill: header.indexOf("skill"), original: header.indexOf("original"), hint: header.indexOf("hint_count"), bottom: header.indexOf("bottom_hint"), first: header.indexOf("first_action") };
+    if (col.skill < 0 || cell(row, col.original) === "0") return;
+    const name = cell(row, col.skill) || "(no skill label)";
+    const s = by.get(name) ?? { skill: name, main_problems: 0, requested: 0, hints_to_the_answer: 0, asked_for_steps: 0 };
+    const hints = pyIntOfFloat(cell(row, col.hint) || "0") > 0, steps = cell(row, col.first) === "2";
+    s.main_problems++;
+    if (hints || steps) s.requested++;
+    if (hints && cell(row, col.bottom) === "1") s.hints_to_the_answer++;
+    if (steps) s.asked_for_steps++;
+    by.set(name, s);
+  });
+  if (col!.skill < 0) return { skills: [], skills_in_file: 0, note: "The file has no skill column, so requests can't be split by skill." };
+  const unlabeled = (x: { skill: string }) => (x.skill === "(no skill label)" ? 1 : 0);
+  const all = [...by.values()].sort((a, b) => unlabeled(a) - unlabeled(b) || b.requested - a.requested || b.main_problems - a.main_problems || a.skill.localeCompare(b.skill));
+  return { skills: all.slice(0, 15), skills_in_file: all.length, note: "Counts only, on main problems. A skill is the problem's own label in the file; asking for help on it isn't evidence of a misconception." };
+}

@@ -2,6 +2,7 @@
 import { Refusal } from "../files.js";
 import { ANSWER_BUDGET, answerSize } from "../respond.js";
 import { DatasetClient, datasetInfo } from "./qlm-datasets.js";
+import { worldLink } from "./worlds.js";
 
 type Obj = Record<string, unknown>;
 export const EDGE_KINDS = ["prerequisite", "labpath-sequence", "reinforcement", "transfer", "extension"] as const;
@@ -79,6 +80,10 @@ export async function qlmLearningGraph(input: LearningGraphInput, client: Datase
     if (![out.before, out.after].some((l) => Array.isArray(l) && l.length)) out.note = `${modes.join(", ")} has no edges of the kinds asked for in this direction.`;
     out.standards = Object.fromEntries(modes.map((m) => [m, rows.filter((s) => s.modeId === m).map((s) => ({ code: s.code, description: s.description, gradeBand: s.gradeBand, disciplinaryCore: s.disciplinaryCore, discipline: s.discipline }))]));
     out.linked_mode_standards = Object.fromEntries([...linked].map((m) => [m, rows.filter((s) => s.modeId === m).map((s) => s.code)]));
+    const links = [...modes, ...linked].map(worldLink);
+    out.worlds = Object.fromEntries(links.filter((w) => w.url !== null).map((w) => [w.id, w]));
+    const unknown = links.filter((w) => w.url === null).map((w) => w.id);
+    if (unknown.length) out.worlds_without_a_known_page = unknown;
     return out;
   };
   // Fit the answer: lower the per-direction limit until it does, and say so.

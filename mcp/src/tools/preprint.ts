@@ -6,7 +6,7 @@
  * aggregate outputs bundled in data/preprint and vendor/transformer.
  */
 import tableTwo from "../../vendor/transformer/cross-source-analysis-data.mjs";
-import { analyzeAssistments, analyzeIdetrace, analyzeZenodo, crossSourceEpisodes, type IdetraceAnalysis, type ZenodoAnalysis } from "../episodes.js";
+import { analyzeAssistments, assistmentsBySkill, analyzeIdetrace, analyzeZenodo, crossSourceEpisodes, type IdetraceAnalysis, type ZenodoAnalysis } from "../episodes.js";
 import { Refusal, localFile, readLocalBytes } from "../files.js";
 import { VENDORED_FROM, readJsonFile } from "../package.js";
 import { LEARNLOG_DRAFT, NOT_RECORDED } from "../stages.js";
@@ -143,15 +143,29 @@ export function assistmentsStages(a: Obj): View {
   };
 }
 
-export const PREPRINT_LIMITS = [
-  "1,109 is an inventory of selected released request records. It isn't a request rate, a dose of help or a learning effect.",
-  "There is no shared denominator of opportunities, time or learners, so rates can't be compared across the releases.",
-  "Links between stages come from the scripts' rules (Supplement S1); the sources declare none. Display shares are provisional.",
-  "A missing record isn't proof that no help was given. Not recorded is never the same as none.",
-  "Pooling the two programming releases hides that IDETrace has no separate display record.",
-  "ASSISTments is counted by problem and is set beside the other two, never pooled with them.",
-  "The mappings were written and audited by software agents; independent human review of them is still pending.",
-];
+const LIMIT = {
+  inventory: "1,109 is an inventory of selected released request records. It isn't a request rate, a dose of help or a learning effect.",
+  denominator: "There is no shared denominator of opportunities, time or learners, so rates can't be compared across the releases.",
+  rules: "Links between stages come from the scripts' rules (Supplement S1); the sources declare none. Display shares are provisional.",
+  missing: "A missing record isn't proof that no help was given. Not recorded is never the same as none.",
+  pooling: "Pooling the two programming releases hides that IDETrace has no separate display record.",
+  assistmentsBeside: "ASSISTments is counted by problem and is set beside the other two, never pooled with them.",
+  assistmentsAlone: "ASSISTments is counted by problem: a main problem is one opportunity, not one request event.",
+  review: "The mappings were written and audited by software agents; independent human review of them is still pending.",
+};
+export const PREPRINT_LIMITS = [LIMIT.inventory, LIMIT.denominator, LIMIT.rules, LIMIT.missing, LIMIT.pooling, LIMIT.assistmentsBeside, LIMIT.review];
+
+/** The cautions that apply to the files actually given. */
+function limitsFor(programming: boolean, assistments: boolean): string[] {
+  return [
+    ...(programming ? [LIMIT.inventory, LIMIT.denominator] : []),
+    LIMIT.rules,
+    LIMIT.missing,
+    ...(programming ? [LIMIT.pooling] : []),
+    ...(assistments ? [programming ? LIMIT.assistmentsBeside : LIMIT.assistmentsAlone] : []),
+    LIMIT.review,
+  ];
+}
 
 const NOT_ESTABLISHED = {
   actual_request_total: "not established: release selection and capture completeness are unknown",
@@ -183,7 +197,8 @@ export async function preprintInventory(input: PreprintInput, pins = PINNED, pub
   }
   const z: ZenodoAnalysis | undefined = input.zenodo_zip === undefined ? undefined : analyzeZenodo(readLocalBytes(input.zenodo_zip, "zenodo_zip", 2 * GB));
   const i: IdetraceAnalysis | undefined = input.idetrace_json === undefined ? undefined : analyzeIdetrace(readLocalBytes(input.idetrace_json, "idetrace_json", GB).toString("utf8"));
-  const a = input.assistments_csv === undefined ? undefined : await analyzeAssistments(localFile(input.assistments_csv, "assistments_csv", 100 * GB).path);
+  const aPath = input.assistments_csv === undefined ? undefined : localFile(input.assistments_csv, "assistments_csv", 100 * GB).path;
+  const a = aPath === undefined ? undefined : await analyzeAssistments(aPath);
 
   const inputs: Obj = {};
   const inventory: Obj = {};
@@ -228,11 +243,11 @@ export async function preprintInventory(input: PreprintInput, pins = PINNED, pub
     learnlog: LEARNLOG_DRAFT,
     inputs,
     ...(z || i ? { inventory_table_2: { ...inventory, ...NOT_ESTABLISHED }, episodes_table_4: episodes } : {}),
-    ...(a ? { assistments_table_4: a } : {}),
+    ...(a ? { assistments_table_4: a, assistments_requests_by_skill: await assistmentsBySkill(aPath!) } : {}),
     stages,
     comparison_with_preprint: comparison,
     rules: RULES,
-    cannot_conclude: PREPRINT_LIMITS,
+    cannot_conclude: limitsFor(Boolean(z || i), Boolean(a)),
     does_not_show: DOES_NOT_SHOW,
   };
 }

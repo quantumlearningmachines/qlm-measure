@@ -78,17 +78,28 @@ These datasets aren't bundled. Their learner records stay with their owners, and
 
 It returns whether the credential verified, each check with its result, the issuer, the achievement, the date and the AI-help summary by stage. The service's report has no personal data, and the tool shows only the fields it knows.
 
-**`qlm_misconceptions`** searches QLM's public misconception dataset by words, domain, grade band or id. Each result gives the student's belief, the scientific reality, a counterexample, a teacher intervention, the research source, severity, grade bands and the LabPath activities (modes) that address it.
+**`qlm_misconceptions`** searches QLM's public misconception dataset by words, domain, grade band or id. Each result gives the student's belief, the scientific reality, a counterexample, a teacher intervention, the research source, severity, grade bands and the LabPath worlds that work on it, each with its name and public page.
 > "Which misconception might explain students passing force problems only with hints, and what should the teacher try?"
 
 Evaluation-tier records never include their trigger patterns or diagnostic question; they're kept back for benchmark integrity. Held-out records aren't in the dataset at all.
 
-**`qlm_learning_graph`** says what comes before or after a LabPath activity, from a mode id or a standard code. It returns each link's kind (prerequisite, labpath-sequence, reinforcement, transfer, extension), the teacher-facing reason, its first 8 concepts, the misconception ids it carries, the full standards for the activity you asked about, and the standard codes of each linked activity. It shows 10 links per direction unless you ask for more.
+**`qlm_learning_graph`** says what comes before or after a LabPath activity, from a mode id or a standard code. It returns each link's kind (prerequisite, labpath-sequence, reinforcement, transfer, extension), the teacher-facing reason, its first 8 concepts, the misconception ids it carries, the full standards for the activity you asked about, and the standard codes of each linked activity. It shows 10 links per direction unless you ask for more, and names every world in the answer with its public page.
 > "What should students do before the forces activity, and which standards does it cover?"
 
 The graph is LabPath's designed sequence, not evidence that a student needs a step. The standards are LabPath's own mapping to NGSS-style codes.
 
 Both read [QLM's LabPath dataset export](https://play.quantumlearningmachines.com/api/labpath/dataset-export?dataset=misconceptions), CC BY 4.0, once per session. The archived v1.0 is [QLM LabPath Dataset v1.0 on Zenodo](https://doi.org/10.5281/zenodo.21800324).
+
+## Skills
+
+The package ships four Claude skills in `skills/`. Each walks an assistant through one workflow and ends the same way: the likely QLM misconceptions, one way to check for each, its teacher move, and the LabPath worlds that work on it, with their links.
+
+- **`learnlog-export-to-action`**: any supported export to Learnlog, what it records about help stage by stage, and what it can't show.
+- **`learnlog-assistments`**: your own copy of ASSISTments 2012-13 School Data with Affect, counted stage by stage and by the file's skill labels. Counts only.
+- **`learnlog-nto-sandpiper`**: a National Tutoring Observatory Sandpiper run export. Turns stay observed; every code stays inferred, with who coded it.
+- **`learnlog-learning-commons`**: with the Learning Commons Knowledge Graph MCP beside this one, a standard's official statement, learning components and earlier standards.
+
+In Claude Code, copy a skill's folder into `.claude/skills/`.
 
 ## What it never does
 

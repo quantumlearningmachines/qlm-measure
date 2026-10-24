@@ -1,5 +1,6 @@
 /** qlm_misconceptions: search QLM's public misconception dataset (CC BY 4.0). */
 import { DatasetClient, datasetInfo } from "./qlm-datasets.js";
+import { worldLinks } from "./worlds.js";
 
 type Obj = Record<string, unknown>;
 
@@ -20,6 +21,7 @@ const bands = (r: Obj) => (Array.isArray(r.gradeBands) ? (r.gradeBands as string
 /** A record as returned: never an evaluation-tier record's trigger patterns or diagnostic question. */
 function shown(r: Obj): Obj {
   const out: Obj = Object.fromEntries(KEEP.map((k) => [k, r[k]]));
+  out.worlds = worldLinks(r.modes);
   if (r.tier === "evaluation") {
     out.withheld = "triggerPatterns and diagnosticQuestion are withheld for evaluation-tier records, for benchmark integrity.";
     return out;
@@ -53,6 +55,7 @@ export async function qlmMisconceptions(input: MisconceptionsInput, client: Data
     total_matching: matches.length,
     returned: Math.min(limit, matches.length),
     misconceptions: matches.slice(0, limit).map(shown),
+    worlds_note: "Each misconception's worlds are the LabPath worlds that work on it, with their public pages. Suggest them by name and link.",
     ...(matches.length === 0 ? { note: "No misconception in the export matches. Try fewer words, or see the domains and grade bands listed under available." } : {}),
     available: { domains: tally(all.map((r) => String(r.domain))), grade_bands: tally(all.flatMap(bands)) },
     does_not_show: [

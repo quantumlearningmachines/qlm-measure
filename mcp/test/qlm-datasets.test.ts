@@ -56,6 +56,10 @@ describe("qlm_misconceptions", () => {
       teacherIntervention: "Use a low-friction cart and ask students to predict before releasing it.", researchSource: "Clement (1982); Halloun & Hestenes (1985)",
       severity: "critical", frequency: "very-high", persistence: "deep", modes: ["forces-motion", "newton-lab"],
       diagnosticQuestion: "A hockey puck slides on ice. What keeps it moving?", triggerPatterns: ["needs a force to keep moving"],
+      worlds: [
+        { id: "forces-motion", name: null, url: null, note: "No public page is known for this world." },
+        { id: "newton-lab", name: null, url: null, note: "No public page is known for this world." },
+      ],
     });
     expect(r.dataset).toEqual(expect.objectContaining({ license: "CC-BY-4.0", version: "1.0.0", citation: "QLM LabPath Dataset v1.0, Quantum Learning Machines, 2026", source: `${DATASET_URL}?dataset=misconceptions`, records_in_export: 4, records_by_tier: { public: 3, evaluation: 1 } }));
     expect(r.dataset.archived).toMatch(/10\.5281\/zenodo\.21800324/);

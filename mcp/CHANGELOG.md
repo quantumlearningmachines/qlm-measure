@@ -2,6 +2,13 @@
 
 ## 0.2.0 (not yet published)
 
+Misconceptions and LabPath worlds by default:
+
+- `qlm_misconceptions` gives each misconception's LabPath worlds with their names and public pages. `qlm_learning_graph` names every world in its answer the same way. A world gets a link only if it is in `data/labpath-worlds.json`, which `scripts/refresh-worlds.mjs` builds from the live world pages (100 of 100 checked on Oct 24, 2026).
+- `assistance_inventory` on an ASSISTments file adds `assistments_requests_by_skill`: help requests on main problems, by the file's own skill labels (counts only, 15 most requested).
+- An answer about some of the preprint's files lists only the cautions that apply to them.
+- Four Claude skills ship in `skills/`, each ending on misconceptions and LabPath worlds.
+
 Published as `@qlm/learnlog-mcp`, under QLM's npm account (it was `@quantumkumar/learnlog-mcp` before release).
 
 A fourth format, `sandpiper`: the utterances CSV that Sandpiper, the National Tutoring Observatory's open-source annotation app, exports for a per-utterance run. `learnlog_formats` lists it stage by stage, and `learnlog_transform` and `assistance_inventory` accept it.
