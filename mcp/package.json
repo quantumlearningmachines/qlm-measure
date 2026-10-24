@@ -1,0 +1,65 @@
+{
+  "name": "@quantumkumar/learnlog-mcp",
+  "version": "0.1.0",
+  "description": "Learnlog MCP: ask your AI assistant what learning records actually show about help. Local, read-only tools for Learnlog records, plus QLM credential verification.",
+  "license": "Apache-2.0",
+  "author": "Kumar Srivastava <kumar@quantumlearningmachines.com> (https://quantumlearningmachines.com)",
+  "type": "module",
+  "bin": {
+    "learnlog-mcp": "dist/bin.js"
+  },
+  "files": [
+    "dist",
+    "vendor",
+    "data",
+    "README.md",
+    "CHANGELOG.md",
+    "LICENSE",
+    "NOTICE"
+  ],
+  "engines": {
+    "node": ">=22.12"
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.build.json && node -e \"require('fs').chmodSync('dist/bin.js', 0o755)\"",
+    "typecheck": "tsc -p tsconfig.json",
+    "lint": "eslint .",
+    "test": "npm run build && vitest run --coverage",
+    "vendor:check": "node scripts/vendor.mjs --check ..",
+    "smoke:live": "node scripts/live-smoke.mjs",
+    "prepublishOnly": "npm run typecheck && npm run lint && npm test && npm run vendor:check",
+    "prepack": "npm run build",
+    "parity:real": "node scripts/parity-real.mjs"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "1.32.1",
+    "zod": "4.6.7"
+  },
+  "devDependencies": {
+    "@eslint/js": "10.0.1",
+    "@types/node": "22.20.5",
+    "@vitest/coverage-v8": "5.0.3",
+    "eslint": "10.12.0",
+    "typescript": "6.0.3",
+    "typescript-eslint": "8.71.1",
+    "vitest": "5.0.3"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/quantumlearningmachines/qlm-measure.git",
+    "directory": "mcp"
+  },
+  "homepage": "https://github.com/quantumlearningmachines/qlm-measure/tree/main/mcp#readme",
+  "keywords": [
+    "mcp",
+    "model-context-protocol",
+    "learnlog",
+    "learning-analytics",
+    "education",
+    "assistance",
+    "evidence"
+  ],
+  "publishConfig": {
+    "access": "public"
+  }
+}

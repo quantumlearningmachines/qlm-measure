@@ -1,0 +1,63 @@
+{
+ "inputs": {
+  "zenodo_sha256": "5527127f0a3c939601b17ef207ef8b34df7cad9159c9617f879efbf4e989d499",
+  "idetrace_sha256": "09972201c16a9f6def7d1e25a9b9e6827994601d720a37696afb0927168befc8"
+ },
+ "zenodo": {
+  "requests": 1050,
+  "outcomes": {
+   "shown_no_further_action_or_rating_only": 309,
+   "shown_acted_accepted": 300,
+   "shown_acted_revealed_not_accepted": 129,
+   "not_shown_error": 266,
+   "not_shown_silent": 46
+  },
+  "shown": 738,
+  "not_shown": 312,
+  "asked_again_within_300s_of_shown": 524,
+  "hint_learner_folders": 22,
+  "raw_activity_ids": 151,
+  "raw_ids_linked_to_hint_folders": 0,
+  "raw_paste_actions": 1826,
+  "raw_ids_with_paste": 85
+ },
+ "idetrace": {
+  "records": 35,
+  "records_asked": 18,
+  "records_never_asked": 17,
+  "never_asked_and_passed_all_tests": 13,
+  "requests": 59,
+  "outcomes": {
+   "shown_no_code_edit_within_120s": 11,
+   "shown_code_edit_within_120s": 48
+  },
+  "shown": 59,
+  "not_shown": 0,
+  "asked_again_within_300s_of_shown": 41,
+  "code_pastes": 10,
+  "code_pastes_without_in_tool_copy_600s": 1,
+  "chat_pastes": 10
+ },
+ "pooled": {
+  "naive_requests": 1109,
+  "shown": 797,
+  "overstatement_pct": 39.1,
+  "pooled_not_shown_pct": 28.1,
+  "zenodo_not_shown_pct": 29.7,
+  "zenodo_asked_again_pct": 71.0,
+  "idetrace_asked_again_pct": 69.5
+ },
+ "checks": {
+  "zenodo_reports_whose_first_log_row_is_a_click": 1050,
+  "zenodo_clicks_per_report": {
+   "1": 1050
+  },
+  "zenodo_reports_with_text_banner": 2,
+  "zenodo_shown_rated_only": 82,
+  "zenodo_asked_again_where_next_request_is_retry": 0,
+  "zenodo_raw_pastes_without_copy_or_cut_in_prior_600s": 291,
+  "idetrace_passrate_types": {
+   "int": 47
+  }
+ }
+}

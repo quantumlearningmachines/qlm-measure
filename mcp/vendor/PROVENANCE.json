@@ -1,0 +1,253 @@
+{
+  "repository": "https://github.com/quantumlearningmachines/qlm-measure",
+  "commit": "24419687cddf238030a918834fbb9ef079f2fc57",
+  "note": "Byte-for-byte copies of files at this commit of qlm-measure. The transformer files are the built browser engine the transformer demo ships (demo/transformer/dist), whose Python/JavaScript serialization parity the repository checks with demo/transformer/scripts/verify_semantic_parity.py. The qlm-measure files are the committed 0.9.0 build of src/ (dist/).",
+  "files": [
+    {
+      "path": "vendor/transformer/engine.mjs",
+      "source": "demo/transformer/dist/engine.mjs",
+      "sha256": "1fd8124f04d7bb68d4078e30925a448e330a710b0e72e757e945e7f9136e7c25",
+      "license": "MIT"
+    },
+    {
+      "path": "vendor/transformer/profiles.mjs",
+      "source": "demo/transformer/dist/profiles.mjs",
+      "sha256": "7e5ecef4fd03a7358c0eff83050ba25f0bebe1556acd5fe2d41e4551f52d2d44",
+      "license": "MIT (code); embedded samples CC-BY-4.0"
+    },
+    {
+      "path": "vendor/transformer/research-semantics.mjs",
+      "source": "demo/transformer/dist/research-semantics.mjs",
+      "sha256": "e3aec052af02e2d160a2b9d65aa7d6863fadd2c7101cf1ca65fb6b04ce297cf2",
+      "license": "MIT"
+    },
+    {
+      "path": "vendor/transformer/cross-source-analysis-data.mjs",
+      "source": "demo/transformer/dist/cross-source-analysis-data.mjs",
+      "sha256": "8083afcf0c50411f4816add91568f9696cc294fefafb6e32a31ac53ccc733539",
+      "license": "MIT (aggregate facts only)"
+    },
+    {
+      "path": "vendor/transformer/LICENSE.txt",
+      "source": "demo/transformer/dist/LICENSE.txt",
+      "sha256": "eb04d70b0b0e6630f271e9f4beae1035d6440d5de3e2f3c7c98633866196f1db",
+      "license": "MIT"
+    },
+    {
+      "path": "vendor/qlm-measure/cli.js",
+      "source": "dist/cli.js",
+      "sha256": "84823766271fb381ce5ab0a035258c63b38a6cce039b4d5b85c00b309692ba3c",
+      "license": "Apache-2.0"
+    },
+    {
+      "path": "vendor/qlm-measure/cli.d.ts",
+      "source": "dist/cli.d.ts",
+      "sha256": "84c201474e7fc579277cfc268ff98c139432339e916afe75cef6ffd96e9c2454",
+      "license": "Apache-2.0"
+    },
+    {
+      "path": "vendor/qlm-measure/checks.js",
+      "source": "dist/checks.js",
+      "sha256": "ba4b3400a6d8d1d4c8bbc4759a5da210fc0c6bdeb650a1b345ea15492fb031fa",
+      "license": "Apache-2.0"
+    },
+    {
+      "path": "vendor/qlm-measure/checks.d.ts",
+      "source": "dist/checks.d.ts",
+      "sha256": "89d5c609d6bfb2a04a3dd800e6d96bba25c084a39158b883c449091bb0bbc847",
+      "license": "Apache-2.0"
+    },
+    {
+      "path": "vendor/qlm-measure/rules.js",
+      "source": "dist/rules.js",
+      "sha256": "a12a0fba140138c289070364159e34b578aceef27eed07c42c2f4a62e86c5de5",
+      "license": "Apache-2.0"
+    },
+    {
+      "path": "vendor/qlm-measure/rules.d.ts",
+      "source": "dist/rules.d.ts",
+      "sha256": "f62529a6c584ae3bc6a170976fc1d577a1aa04fa0c49966ecedb18e7e83767c9",
+      "license": "Apache-2.0"
+    },
+    {
+      "path": "vendor/qlm-measure/verifier-v03.js",
+      "source": "dist/verifier-v03.js",
+      "sha256": "59317c4b1c87e5065db30baa4b485defc75b4f3c3bf74f0a59d537c60c2bf09e",
+      "license": "Apache-2.0"
+    },
+    {
+      "path": "vendor/qlm-measure/verifier-v03.d.ts",
+      "source": "dist/verifier-v03.d.ts",
+      "sha256": "47246e4617704edde541927b400e54f0d0e203fdc0b024b3a2d188a399434a83",
+      "license": "Apache-2.0"
+    },
+    {
+      "path": "vendor/qlm-measure/verifier/hash.js",
+      "source": "dist/verifier/hash.js",
+      "sha256": "ce54e3af896c392a62390f6629b2dd877b5118f7c59874495cf038bad7517ec6",
+      "license": "Apache-2.0"
+    },
+    {
+      "path": "vendor/qlm-measure/verifier/hash.d.ts",
+      "source": "dist/verifier/hash.d.ts",
+      "sha256": "85fa878027b294ac0b715f65f0b1df3667af5fa6977ab97e50d43d46e91bd239",
+      "license": "Apache-2.0"
+    },
+    {
+      "path": "vendor/qlm-measure/verifier/verify-record.js",
+      "source": "dist/verifier/verify-record.js",
+      "sha256": "5a6b61901a196ee563a8dc10849ad54ad1a43e1d810c0491891048b5c5015f8a",
+      "license": "Apache-2.0"
+    },
+    {
+      "path": "vendor/qlm-measure/verifier/verify-record.d.ts",
+      "source": "dist/verifier/verify-record.d.ts",
+      "sha256": "cebe3153ff0017a5ed49861e93cf75331ad64b5775baaf37688de21fc13ac373",
+      "license": "Apache-2.0"
+    },
+    {
+      "path": "vendor/qlm-measure/schemes/index.js",
+      "source": "dist/schemes/index.js",
+      "sha256": "eef60aaf1095b97ea4e876c7bd79917bb8a41757ac534da3ea5eb6dfde6a47b3",
+      "license": "Apache-2.0"
+    },
+    {
+      "path": "vendor/qlm-measure/schemes/index.d.ts",
+      "source": "dist/schemes/index.d.ts",
+      "sha256": "cde96b777dad761b8c1d83a501a8907809c63a647e6567423d320b550689667b",
+      "license": "Apache-2.0"
+    },
+    {
+      "path": "vendor/qlm-measure/schemes/node.js",
+      "source": "dist/schemes/node.js",
+      "sha256": "083a5331a344ff3ef861ce2cb533f8ead51e66281881a01e8e6485104b97000c",
+      "license": "Apache-2.0"
+    },
+    {
+      "path": "vendor/qlm-measure/schemes/node.d.ts",
+      "source": "dist/schemes/node.d.ts",
+      "sha256": "17ac8af648dd14faa152acdb024a5cdcd3b1e9014afa255939dddd29132fe229",
+      "license": "Apache-2.0"
+    },
+    {
+      "path": "vendor/qlm-measure/schemes/products.js",
+      "source": "dist/schemes/products.js",
+      "sha256": "8b53f34e178f68119673e540c8748ce0242553b53d07599cfb7a05aac89133fb",
+      "license": "Apache-2.0"
+    },
+    {
+      "path": "vendor/qlm-measure/schemes/products.d.ts",
+      "source": "dist/schemes/products.d.ts",
+      "sha256": "cd1b97966f23a8ad733dcc79b4a77f49a3eba3d9f101185404d5904e1d383644",
+      "license": "Apache-2.0"
+    },
+    {
+      "path": "data/samples/tutormoments-real-transcripts.jsonl",
+      "source": "demo/transformer/dist/samples/tutormoments-real-transcripts.jsonl",
+      "sha256": "7df51fda0fff9c454ba14a33a0d2964d5e94b2556eff1d3897ec4f41373c8a66",
+      "license": "CC-BY-4.0 (Ai2 TutorMoments-Preview)"
+    },
+    {
+      "path": "data/samples/oatutor-real-participants.csv",
+      "source": "demo/transformer/dist/samples/oatutor-real-participants.csv",
+      "sha256": "26b98b6f5718f5c2f473d81ae1ad8e1817d18bada3ba7390d8e0ac445a8ad5a2",
+      "license": "CC-BY-4.0 (Pardos and Bhandari, figshare)"
+    },
+    {
+      "path": "data/samples/explicit-assistance-SYNTHETIC.jsonl",
+      "source": "demo/transformer/dist/samples/explicit-assistance-SYNTHETIC.jsonl",
+      "sha256": "52b4dd376849357e0ceb5bee5736e4809da77938fa29c5faf97a5d4c8afcc035",
+      "license": "MIT (QLM-authored synthetic fixture)"
+    },
+    {
+      "path": "data/provenance/tutormoments.json",
+      "source": "demo/transformer/dist/provenance/tutormoments.json",
+      "sha256": "5e1188950252542219772fb93a080e789ed72a2eef3e5f795c73b0b8ef68dde4",
+      "license": "MIT"
+    },
+    {
+      "path": "data/provenance/oatutor.json",
+      "source": "demo/transformer/dist/provenance/oatutor.json",
+      "sha256": "b217bae620b9fe36b22739ff8fa6fc29c6edd961477cb4deba76f6ea5d560b39",
+      "license": "MIT"
+    },
+    {
+      "path": "data/provenance/source-audit.json",
+      "source": "demo/transformer/dist/provenance/source-audit.json",
+      "sha256": "4a26a455cfb30e1ef8917776bfc442d3b1dc76d977b0fdd8b6ac7ecf5d7c8b35",
+      "license": "MIT"
+    },
+    {
+      "path": "data/THIRD_PARTY_DATA.md",
+      "source": "demo/transformer/THIRD_PARTY_DATA.md",
+      "sha256": "35b52e81a8585e9cc18d9c52a0e9cddcffc76987a99e3175ed8afc5c4751fa98",
+      "license": "MIT"
+    },
+    {
+      "path": "data/SOURCE_CORRECTION.md",
+      "source": "demo/transformer/SOURCE_CORRECTION.md",
+      "sha256": "730efb9db6399a9ae59a78231ece5a60a7f94d74a73acf7904dc9f72a202b6f9",
+      "license": "MIT"
+    },
+    {
+      "path": "data/examples/evidence-record-clean.json",
+      "source": "samples/clean.json",
+      "sha256": "52a455a5e9f2e3ec223bd2d726b4ceabcab3b7fbc672daaaf4febcbd06dd466c",
+      "license": "Apache-2.0 (synthetic sample, no learner data)"
+    },
+    {
+      "path": "data/examples/evidence-record-tampered.json",
+      "source": "samples/tampered_value.json",
+      "sha256": "9a87fdc52df3a79d1e69296ca1b801ecbaf6e8f77a4ec42118de649a9d61fc77",
+      "license": "Apache-2.0 (synthetic sample, no learner data)"
+    },
+    {
+      "path": "data/examples/chain-tpc-clinical-v2.json",
+      "source": "schema/vectors/chains/tpc-clinical-v2.json",
+      "sha256": "0671a71926d469bbf5d081d54c11ea9af42bfe45d0077a71ec4475ed131b9324",
+      "license": "Apache-2.0 (synthetic test vector)"
+    },
+    {
+      "path": "data/examples/chain-tpc-clinical-v2-tampered.json",
+      "source": "schema/vectors/chains/tpc-clinical-v2-tampered.json",
+      "sha256": "ff8ee4e7054dbadcc4971d543b92d158106899b81921a63134883178ddce0ba8",
+      "license": "Apache-2.0 (synthetic test vector)"
+    },
+    {
+      "path": "parity/cross_source.py",
+      "source": "research/learnlog-episodes/cross_source.py",
+      "sha256": "f66cf88569b7bacb03d7dfb6bda8f3ae52c70f086e0c9aa4d8869455703e9ce0",
+      "license": "Apache-2.0 (test-only; not published)"
+    },
+    {
+      "path": "parity/assistments_episodes.py",
+      "source": "research/learnlog-episodes/assistments_episodes.py",
+      "sha256": "a0dfea524cd5a5e2157c8a7c4956edd8b4e5d5dc264a40fbecc8172e64348525",
+      "license": "Apache-2.0 (test-only; not published)"
+    },
+    {
+      "path": "parity/aggregate.py",
+      "source": "tools/qlm-transformer/qlm_transformer/capture/reference/analysis/aggregate.py",
+      "sha256": "6b92a40d4c83e56a392a54cbd4d475ec345a6a590c5d55830726647ce6245538",
+      "license": "MIT (test-only; not published)"
+    },
+    {
+      "path": "data/preprint/README.md",
+      "source": "research/learnlog-episodes/README.md",
+      "sha256": "c74cd3b7a9e7a1192f622a50db7e8f16ba36df805e9166acc912a2751980953c",
+      "license": "Apache-2.0 (qlm-measure repository)"
+    },
+    {
+      "path": "data/preprint/cross_source_episodes.json",
+      "source": "research/learnlog-episodes/cross_source_episodes.json",
+      "sha256": "1a515df80c8d660d8ec52143ae4a05a0f960dc7008ef08beea3b33b685173c14",
+      "license": "Apache-2.0 (aggregate counts only)"
+    },
+    {
+      "path": "data/preprint/assistments_episodes.json",
+      "source": "research/learnlog-episodes/assistments_episodes.json",
+      "sha256": "e55f43fa9cdf0605f6c33a6ed08795260fd2909ead64aac8ecf144c761100b26",
+      "license": "Apache-2.0 (aggregate counts only)"
+    }
+  ]
+}
