@@ -1,6 +1,12 @@
 # Changelog
 
-## 0.2.0 (not yet published)
+## 0.2.1 (October 24, 2026)
+
+The first release on npm, as `@qlm/learnlog-mcp`. 0.2.0 was never published.
+
+- README: what to do when Claude Desktop can't start the server because it can't find Node (an app opened from the Dock on a Mac gets no `PATH`).
+
+## 0.2.0 (not published)
 
 Misconceptions and LabPath worlds by default:
 
@@ -30,7 +36,7 @@ Every answer now fits what an assistant can take in at once (30,000 characters o
 - `qlm_learning_graph` shows 10 links per direction by default (was 25), each edge's first 8 concepts (with `concepts_total`), full standards only for the asked-about activity and standard codes for linked ones (`linked_mode_standards`). If a limit still wouldn't fit, it is lowered and `limit_lowered` says so. The most it accepts is 50 (was 200).
 - Any answer that still wouldn't fit is refused with its size and what to ask for instead.
 
-## 0.1.0 (not yet published)
+## 0.1.0 (not published)
 
 First release. Six read-only tools over stdio:
 

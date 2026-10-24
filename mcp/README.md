@@ -40,6 +40,20 @@ Add this to `claude_desktop_config.json` (Settings, Developer, Edit Config), the
 }
 ```
 
+If Claude Desktop says the server failed to start, it probably can't find Node. On a Mac, an app opened from the Dock doesn't get your Terminal's `PATH`, and giving the full path to `npx` isn't enough on its own, because `npx` then looks for `node`. Run `which npx` in Terminal and use that folder in both places, for example with Homebrew:
+
+```json
+{
+  "mcpServers": {
+    "learnlog": {
+      "command": "/opt/homebrew/bin/npx",
+      "args": ["-y", "@qlm/learnlog-mcp"],
+      "env": { "PATH": "/opt/homebrew/bin:/usr/bin:/bin" }
+    }
+  }
+}
+```
+
 Any MCP client that can start a command over stdio works the same way.
 
 ## Tools
