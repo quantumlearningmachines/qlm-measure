@@ -1,10 +1,12 @@
 # Learnlog MCP: LinkedIn demo script
 
-A short screen recording. An assistant is asked what a tutoring dataset actually records about help. It calls the transformer and the inventory, and answers with the counts and what they can't show.
+A short screen recording in three scenes. An assistant is asked what a tutoring dataset actually records about help. Then it compares the preprint's datasets. Then it looks up a misconception and what comes before it in LabPath.
 
-No video was recorded for this script. The tool outputs below are real: they come from one local run of the built server (`node scripts/demo-run.mjs`, which starts `dist/bin.js` over stdio with the MCP SDK client, exactly as Claude Desktop does) in the Linux workspace on Kumar's Mac (Node 22) on October 23, 2026. Run it again and only these values change: record IDs, salts, learner pseudonyms, hashes that depend on them, and timestamps. Every count stays the same.
+No video was recorded for this script. The tool outputs below are real: they come from one run of the built server, version 0.2.0 (`node scripts/demo-run.mjs`, which starts `dist/bin.js` over stdio with the MCP SDK client, exactly as Claude Desktop does), on Kumar's Mac on October 24, 2026 (01:17 UTC). Scenes 1 and 2 ran locally. Scene 3 read QLM's public LabPath datasets from play.quantumlearningmachines.com, one request per dataset.
 
-The assistant's own words are not recorded here, because they vary from run to run. Under each prompt is what a correct answer says, taken from the outputs.
+If you run it again, some values change in scenes 1 and 2: record IDs, salts, learner pseudonyms, the hashes that depend on them, and timestamps. Every count stays the same. Scene 3 shows whatever the LabPath datasets hold that day.
+
+The assistant's own words aren't recorded here, because they vary from run to run. Under each prompt is what a correct answer says, taken from the outputs.
 
 ## Before recording
 
@@ -19,7 +21,7 @@ The assistant's own words are not recorded here, because they vary from run to r
 ```
 
 2. Until the package is on npm, point Claude Desktop at the local build instead: `"command": "node", "args": ["<full path to>/qlm-measure/mcp/dist/bin.js"]`.
-3. In a new chat, open the tools menu and check that the six Learnlog tools are listed.
+3. In a new chat, open the tools menu and check that the eight Learnlog tools are listed.
 
 ## Scene 1: what does this tutoring dataset record about help?
 
@@ -32,7 +34,7 @@ The assistant's own words are not recorded here, because they vary from run to r
 1. `learnlog_transform` with `{"format":"tutormoments","use_sample":true}`
 2. `assistance_inventory` with `{"format":"tutormoments","use_sample":true}`
 
-**What a correct answer says** (from the outputs below):
+**What a correct answer says:**
 
 - It's 2 real tutoring sessions, 310 transcript turns (168 tutor, 142 student), from Ai2's TutorMoments-Preview, CC BY 4.0. The file matched the pinned public excerpt byte for byte.
 - All six help stages are **not recorded**: requested, offered, generated, transmitted, displayed and accepted. The data keeps who spoke and what they said. A tutor turn isn't a help event.
@@ -47,7 +49,7 @@ The assistant's own words are not recorded here, because they vary from run to r
 
 **Tool call to expect:** `assistance_inventory` with `{}`. With no files given, it returns the preprint's published figures and says they weren't recomputed.
 
-**What a correct answer says** (from the output below):
+**What a correct answer says:**
 
 - The Zenodo hint study records requests and displays: 1,050 requests, 738 followed by a recorded display, 312 not (266 with an error).
 - IDETrace records 59 chat queries. It has no display event; the episode rule counts a response as a display.
@@ -56,6 +58,29 @@ The assistant's own words are not recorded here, because they vary from run to r
 - None of this is a help rate or a learning effect.
 
 Optional on-screen line: "Every number here is recomputed and matched exactly when you give the tool your own copies of the three datasets."
+
+## Scene 3: which misconception might be behind passing only with hints?
+
+**Prompt, exactly:**
+
+> Which misconception might explain students passing force problems only with hints, and what should the teacher try?
+
+**Tool calls to expect:**
+
+1. `qlm_misconceptions` with `{"search":"force","domain":"physics","limit":5}`
+2. `qlm_learning_graph` with `{"mode_id":"forcefield","direction":"before","kinds":["prerequisite","labpath-sequence","reinforcement"]}`, using the first misconception's first LabPath mode.
+
+**What a correct answer says:**
+
+- The dataset doesn't link hint use to any misconception. These are candidates to check, not a diagnosis of these students.
+- 19 physics misconceptions match "force". The first is "Force means velocity" (critical, grades 6-8, 9-12): students think a constant force on an object means it moves at a constant speed. In fact, a constant net force produces constant acceleration (F = ma). The object continuously speeds up, not moves at a fixed speed.
+- What to try: Use a fan cart on an air track. Students predict speed at intervals and plot velocity vs. time to see the linear increase under constant force. Source: Halloun & Hestenes 1985, Common Sense Concepts and Force; Hestenes et al 1992, Force Concept Inventory.
+- It's an evaluation-tier record, so its diagnostic question and trigger patterns are withheld for benchmark integrity.
+- Before LabPath's forcefield activity, the graph has 41 links of those three kinds; the tool shows the first 25. None is a prerequisite link (those would be listed first), and all 25 shown are labpath-sequence links. Only one gives a specific reason (simpleforces: "Simple forces provide the intuition that Newton's laws formalize."). The other 24 share one generic reason, and none of the 25 carries a misconception id.
+- forcefield is aligned to 14 standards, from K-PS2-1 to HS-PS3-2.
+- The graph is LabPath's design, not evidence that these students need a step. Every edge's priority is "high", so priority doesn't rank them.
+
+Cite: QLM LabPath Dataset v1.0, Quantum Learning Machines, 2026, CC BY 4.0, https://doi.org/10.5281/zenodo.21800324.
 
 ## Real tool outputs
 
@@ -109,22 +134,22 @@ Optional on-screen line: "Every number here is recomputed and matched exactly wh
   ],
   "warnings": [],
   "heads": {
-    "a4b58baf-4640-42ad-9620-29b618661372": {
+    "fe2c4047-4182-4a3d-9cf0-8241cc1c34ab": {
       "seq": 149,
-      "entry_hash": "f6364380949b992abdcc1c7bd86b496caa324af94350902555d59ed034b1c3c3"
+      "entry_hash": "96f8d024c9047aa9ee8dbdcb08c5e34097a7ead3cef5df23da6b28a906678c8e"
     },
-    "f6c4c3d8-fe08-4fef-a87f-1f5774f5e898": {
+    "2867dce9-6a1a-42fa-a119-63b971e586cb": {
       "seq": 161,
-      "entry_hash": "2ecfe9ea533e33730f3c53ed6c85e9deab1eaf4ecfd13c777738ad10da00c1e0"
+      "entry_hash": "d55b40332c575142d9aca45afda9671956fe81fbb5586ff41d762e4a3c83b91e"
     }
   },
   "pseudonyms": "Learner IDs are replaced with HMAC pseudonyms keyed by a random secret made when this server started. They don't match across restarts or other tools.",
   "preview": {
     "header": {
-      "record_id": "a4b58baf-4640-42ad-9620-29b618661372",
-      "subject": "qlm:a2ef2b4aec518063ccec31c53bae959c86673c588eefd72b6cf5ec7e41ab5075",
+      "record_id": "fe2c4047-4182-4a3d-9cf0-8241cc1c34ab",
+      "subject": "qlm:89412b78d79bd0b34787f17a00ea67d158cccb298dd409e9f5df31024b31cec5",
       "hash_alg": "sha-256",
-      "created": "2026-10-24T00:13:21.021Z",
+      "created": "2026-10-24T01:17:05.129Z",
       "producer": {
         "name": "QLM-transformer research adapters",
         "version": "0.4.0-research-adapters"
@@ -213,13 +238,13 @@ Optional on-screen line: "Every number here is recomputed and matched exactly wh
     "entries": [
       {
         "seq": 1,
-        "time": "2026-10-24T00:13:21.021Z",
-        "event_hash": "1bcffbd21d17a4ccdbdd8063a03938c8220aaf231442344afb7a08104bebb132",
-        "prev_hash": "8a2ca4ec4ca681ff2464344344ef21263320802aeceaa99b5738b9c5bf0c1319",
-        "entry_hash": "e4b13a253a7cbc1079fdf0e2b710346f2227409026bd83e83081112108b7820a",
+        "time": "2026-10-24T01:17:05.129Z",
+        "event_hash": "ab1749571662642666a01ddfb057a129d86ca57efbfe28a6739fe4da9fc0a937",
+        "prev_hash": "3fbd7afb34d9e01c9b1f1f94a1085ab2510ffbd9e6b9402d3c4925405de75903",
+        "entry_hash": "4ac5a2544b7111817726c42a982bb7f0437c9958644dfb0ba23c2bf5355fb4d9",
         "event": {
           "name": "qlm_import:dialogue_turn_observed",
-          "salt": "2ze33I_usP28sMNiJ8bF2w",
+          "salt": "6Jl1q-y54tMlmETFirNFEA",
           "data": {
             "provenance": {
               "platform": "tutormoments",
@@ -227,7 +252,7 @@ Optional on-screen line: "Every number here is recomputed and matched exactly wh
               "source_sha256": "7df51fda0fff9c454ba14a33a0d2964d5e94b2556eff1d3897ec4f41373c8a66",
               "source_row": 1,
               "source_record_sha256": "61cbdc2ee22e5576471d7e6d1e9884b42a3cc937a27649b2fdc726c7871d8612",
-              "imported_at": "2026-10-24T00:13:21.021Z",
+              "imported_at": "2026-10-24T01:17:05.129Z",
               "mapping_sha256": "204390794ea5bee215be3bad0b0908fd634449b1b2647a0d6383fae2c399c303",
               "source_file_sha256": "34b5d4483302593043f3d9be3bf37f1cde6cba5b031fd2d20d75a15d5498f276",
               "source_file_row": 366,
@@ -688,6 +713,2197 @@ Optional on-screen line: "Every number here is recomputed and matched exactly wh
     "Any learner row, identity, dialogue or code. Only counts leave the files.",
     "Help outside the instrumented tools: other apps, people or AI.",
     "Whether any help worked."
+  ]
+}
+```
+
+### `qlm_misconceptions` {"search":"force","domain":"physics","limit":5}
+
+```json
+{
+  "dataset": {
+    "source": "https://play.quantumlearningmachines.com/api/labpath/dataset-export?dataset=misconceptions",
+    "version": "1.0.0",
+    "license": "CC-BY-4.0",
+    "citation": "QLM LabPath Dataset v1.0, Quantum Learning Machines, 2026",
+    "exported_at": "2026-10-24T01:17:05.513Z",
+    "archived": "QLM LabPath Dataset v1.0, Zenodo, https://doi.org/10.5281/zenodo.21800324 (CC BY 4.0; the archived v1.0 holds the 423 released misconceptions)",
+    "records_in_export": 437,
+    "records_by_tier": {
+      "evaluation": 120,
+      "public": 317
+    }
+  },
+  "total_matching": 19,
+  "returned": 5,
+  "misconceptions": [
+    {
+      "id": "phys-mech-force-velocity",
+      "tier": "evaluation",
+      "domain": "physics",
+      "subdomain": "mechanics",
+      "gradeBands": [
+        "6-8",
+        "9-12"
+      ],
+      "name": "Force means velocity",
+      "studentBelief": "A constant force on an object means it moves at a constant speed.",
+      "scientificReality": "A constant net force produces constant acceleration (F = ma). The object continuously speeds up, not moves at a fixed speed.",
+      "counterexample": "A ball rolling down a frictionless ramp accelerates the entire way down even though gravity is constant.",
+      "teacherIntervention": "Use a fan cart on an air track. Students predict speed at intervals and plot velocity vs. time to see the linear increase under constant force.",
+      "researchSource": "Halloun & Hestenes 1985, Common Sense Concepts and Force; Hestenes et al 1992, Force Concept Inventory",
+      "severity": "critical",
+      "frequency": "very-high",
+      "persistence": "deep",
+      "modes": [
+        "forcefield",
+        "buildlab",
+        "aerospacelab"
+      ],
+      "withheld": "triggerPatterns and diagnosticQuestion are withheld for evaluation-tier records, for benchmark integrity."
+    },
+    {
+      "id": "phys-mech-action-reaction-cancel",
+      "tier": "evaluation",
+      "domain": "physics",
+      "subdomain": "mechanics",
+      "gradeBands": [
+        "9-12"
+      ],
+      "name": "Action-reaction forces cancel",
+      "studentBelief": "Newton's third law action-reaction pairs cancel each other out, so nothing should ever move.",
+      "scientificReality": "Action-reaction pairs act on different objects, so they never cancel. Forces cancel only when they act on the same object.",
+      "counterexample": "When you push off a wall, you accelerate backward. The wall pushes you (reaction) while you push the wall (action). They act on different bodies.",
+      "teacherIntervention": "Use two spring scales connected together and pull from both ends. Identify which force acts on which object using free-body diagrams.",
+      "researchSource": "Halloun & Hestenes 1985; Hestenes et al 1992",
+      "severity": "critical",
+      "frequency": "high",
+      "persistence": "deep",
+      "modes": [
+        "forcefield",
+        "buildlab"
+      ],
+      "withheld": "triggerPatterns and diagnosticQuestion are withheld for evaluation-tier records, for benchmark integrity."
+    },
+    {
+      "id": "phys-mech-impetus-theory",
+      "tier": "evaluation",
+      "domain": "physics",
+      "subdomain": "mechanics",
+      "gradeBands": [
+        "6-8",
+        "9-12"
+      ],
+      "name": "Impetus theory of motion",
+      "studentBelief": "A thrown object carries an internal 'impetus' or force that keeps it moving and gradually runs out.",
+      "scientificReality": "Once released, no forward force acts on the object (ignoring air resistance). It continues moving due to inertia (Newton's first law), not an internal force.",
+      "counterexample": "A puck sliding on an air hockey table does not slow down appreciably because there is no friction — there is no 'impetus' draining away.",
+      "teacherIntervention": "Use a dry-ice puck on a smooth surface. After a single push, students observe the puck moves in a straight line at constant velocity with no 'impetus' force.",
+      "researchSource": "Halloun & Hestenes 1985; McCloskey 1983, Intuitive Physics",
+      "severity": "critical",
+      "frequency": "very-high",
+      "persistence": "deep",
+      "modes": [
+        "forcefield",
+        "aerospacelab"
+      ],
+      "withheld": "triggerPatterns and diagnosticQuestion are withheld for evaluation-tier records, for benchmark integrity."
+    },
+    {
+      "id": "phys-mech-gravity-needs-medium",
+      "tier": "public",
+      "domain": "physics",
+      "subdomain": "mechanics",
+      "gradeBands": [
+        "6-8",
+        "9-12"
+      ],
+      "name": "Gravity requires a medium",
+      "studentBelief": "Gravity needs air or some medium to work; there is no gravity in space.",
+      "scientificReality": "Gravity is a fundamental force that acts across a vacuum. The Moon orbits Earth through empty space purely due to gravity.",
+      "counterexample": "The International Space Station orbits Earth in near-vacuum; gravity is what keeps it in orbit (astronauts are in free fall, not zero gravity).",
+      "teacherIntervention": "Show ISS footage and ask students to identify the forces acting on it. Discuss why astronauts float (free fall) vs. zero gravity.",
+      "researchSource": "Halloun & Hestenes 1985; Bar et al 1997, Children's Conceptions of Gravity",
+      "severity": "moderate",
+      "frequency": "high",
+      "persistence": "moderate",
+      "modes": [
+        "forcefield",
+        "orbitlab",
+        "stellarlab"
+      ],
+      "diagnosticQuestion": "If gravity requires air, how does the Moon stay in orbit around Earth through the vacuum of space?",
+      "triggerPatterns": [
+        "no gravity in space",
+        "gravity needs air",
+        "gravity only on Earth"
+      ]
+    },
+    {
+      "id": "phys-mech-weight-equals-mass",
+      "tier": "evaluation",
+      "domain": "physics",
+      "subdomain": "mechanics",
+      "gradeBands": [
+        "6-8",
+        "9-12"
+      ],
+      "name": "Weight and mass are the same",
+      "studentBelief": "Weight and mass are identical concepts.",
+      "scientificReality": "Mass is the quantity of matter (measured in kg), while weight is the gravitational force on that mass (W = mg, measured in N). Mass is constant; weight varies with gravitational field strength.",
+      "counterexample": "An astronaut has the same mass on the Moon as on Earth, but weighs about 1/6 as much on the Moon because g_Moon is approximately 1.6 m/s^2.",
+      "teacherIntervention": "Have students measure the same object with a balance (mass) and a spring scale (weight). Discuss what would happen on different planets.",
+      "researchSource": "Halloun & Hestenes 1985; Galili & Lehavi 2003",
+      "severity": "moderate",
+      "frequency": "very-high",
+      "persistence": "moderate",
+      "modes": [
+        "forcefield",
+        "orbitlab"
+      ],
+      "withheld": "triggerPatterns and diagnosticQuestion are withheld for evaluation-tier records, for benchmark integrity."
+    }
+  ],
+  "available": {
+    "domains": {
+      "physics": 70,
+      "biology": 70,
+      "chemistry": 53,
+      "math": 106,
+      "cs": 35,
+      "earth_science": 26,
+      "history": 27,
+      "ela": 18,
+      "health": 32
+    },
+    "grade_bands": {
+      "6-8": 282,
+      "9-12": 289,
+      "3-5": 89,
+      "K-2": 10,
+      "postsecondary": 14
+    }
+  },
+  "does_not_show": [
+    "Whether any student holds one of these. They are curated, research-based descriptions of common misconceptions, not observations of a learner.",
+    "Held-out records, kept back for benchmark integrity; they aren't in the export at all.",
+    "Evaluation-tier trigger patterns and diagnostic questions, withheld for benchmark integrity.",
+    "How often a misconception occurs in your setting. Frequency, persistence and severity are the dataset's research-based bands."
+  ]
+}
+```
+
+### `qlm_learning_graph` {"mode_id":"forcefield","direction":"before","kinds":["prerequisite","labpath-sequence","reinforcement"]}
+
+```json
+{
+  "modes": [
+    "forcefield"
+  ],
+  "before": [
+    {
+      "from": "simpleforces",
+      "to": "forcefield",
+      "kind": "labpath-sequence",
+      "priority": "high",
+      "concepts": [
+        "force",
+        "push",
+        "pull",
+        "friction",
+        "Balanced pushes leave an object still; an unbalanced push moves it toward the harder side",
+        "Earth's gravity pulls objects toward its center; 'down' means toward the center, not the bottom of the picture",
+        "pushes",
+        "still",
+        "toward",
+        "forces",
+        "interactions",
+        "cause",
+        "Cause and effect in motion",
+        "moves",
+        "effect",
+        "direction",
+        "Pushes and Pulls",
+        "object",
+        "Gravity and Air Resistance",
+        "balanced",
+        "unbalanced",
+        "pulls",
+        "nothing",
+        "Newton's Third Law Force Pairs",
+        "out",
+        "Electromagnetic Induction",
+        "more",
+        "A repeating motion can be predicted from a few observed ticks; motion without a pattern cannot",
+        "Force, mass, and acceleration",
+        "data",
+        "reading",
+        "graph",
+        "motion",
+        "moving",
+        "has",
+        "two",
+        "can",
+        "use",
+        "every",
+        "one",
+        "Force, motion, and simple machines",
+        "confusing",
+        "ignoring",
+        "system",
+        "evidence",
+        "first",
+        "vocabulary"
+      ],
+      "misconceptions": [],
+      "teacher_facing_reason": "Simple forces provide the intuition that Newton's laws formalize.",
+      "student_facing_reason": "You pushed and pulled. Now diagram and calculate those forces."
+    },
+    {
+      "from": "bioforge",
+      "to": "forcefield",
+      "kind": "labpath-sequence",
+      "priority": "high",
+      "concepts": [
+        "Enzyme Kinetics",
+        "Force, mass, and acceleration",
+        "models",
+        "analyze",
+        "data",
+        "always",
+        "speed",
+        "Pushes and Pulls",
+        "determine",
+        "effects",
+        "need",
+        "Gravity and Air Resistance",
+        "than",
+        "Newton's Third Law Force Pairs",
+        "using",
+        "reaction",
+        "Electromagnetic Induction",
+        "explain",
+        "predict",
+        "regardless"
+      ],
+      "misconceptions": [],
+      "teacher_facing_reason": "LabPath nodes share concept/prerequisite/misconception language, making this a candidate for accelerated sequencing.",
+      "student_facing_reason": "This next lab uses a similar idea in a new situation."
+    },
+    {
+      "from": "buildlab",
+      "to": "forcefield",
+      "kind": "labpath-sequence",
+      "priority": "high",
+      "concepts": [
+        "A material is identified by its properties, and only when the measured properties rule out every other material",
+        "Earth's gravity pulls objects toward its center; 'down' means toward the center, not the bottom of the picture",
+        "its",
+        "reading",
+        "not",
+        "Pushes and Pulls",
+        "out",
+        "different",
+        "two",
+        "Gravity and Air Resistance",
+        "only",
+        "when",
+        "matter",
+        "Newton's Third Law Force Pairs",
+        "every",
+        "other",
+        "one",
+        "Materials have properties; the test for the job, not the material's reputation, decides which one fits",
+        "Force, mass, and acceleration",
+        "cause",
+        "effect",
+        "data",
+        "test",
+        "objects",
+        "for",
+        "can",
+        "have",
+        "more"
+      ],
+      "misconceptions": [],
+      "teacher_facing_reason": "LabPath nodes share concept/prerequisite/misconception language, making this a candidate for accelerated sequencing.",
+      "student_facing_reason": "This next lab uses a similar idea in a new situation."
+    },
+    {
+      "from": "cellworld",
+      "to": "forcefield",
+      "kind": "labpath-sequence",
+      "priority": "high",
+      "concepts": [
+        "Cell structure and function",
+        "Force, mass, and acceleration",
+        "systems",
+        "ignoring",
+        "system",
+        "Plant Cell Structures",
+        "Earth's gravity pulls objects toward its center; 'down' means toward the center, not the bottom of the picture",
+        "argument",
+        "support",
+        "things",
+        "not",
+        "Pushes and Pulls",
+        "different",
+        "make",
+        "Gravity and Air Resistance",
+        "construct",
+        "use",
+        "energy",
+        "knows",
+        "can",
+        "understands",
+        "Electromagnetic Induction",
+        "inside",
+        "Cell Membrane Transport",
+        "out",
+        "rather",
+        "than",
+        "always",
+        "move",
+        "matter",
+        "faster",
+        "because",
+        "Newton's Third Law Force Pairs",
+        "relationship",
+        "between",
+        "stronger"
+      ],
+      "misconceptions": [],
+      "teacher_facing_reason": "LabPath nodes share concept/prerequisite/misconception language, making this a candidate for accelerated sequencing.",
+      "student_facing_reason": "This next lab uses a similar idea in a new situation."
+    },
+    {
+      "from": "climateengine",
+      "to": "forcefield",
+      "kind": "labpath-sequence",
+      "priority": "high",
+      "concepts": [
+        "Climate feedback mechanisms and modeling",
+        "Force, mass, and acceleration",
+        "effect",
+        "data",
+        "systems",
+        "cause",
+        "always",
+        "models",
+        "Earth's gravity pulls objects toward its center; 'down' means toward the center, not the bottom of the picture",
+        "earth",
+        "things",
+        "Cause and effect in motion",
+        "Pushes and Pulls",
+        "change",
+        "has",
+        "Gravity and Air Resistance",
+        "energy",
+        "Electromagnetic Induction"
+      ],
+      "misconceptions": [],
+      "teacher_facing_reason": "LabPath nodes share concept/prerequisite/misconception language, making this a candidate for accelerated sequencing.",
+      "student_facing_reason": "This next lab uses a similar idea in a new situation."
+    },
+    {
+      "from": "ecosystem",
+      "to": "forcefield",
+      "kind": "labpath-sequence",
+      "priority": "high",
+      "concepts": [
+        "Group size changes survival, and the best size differs by animal; a claim needs more than one season",
+        "Force, mass, and acceleration",
+        "cause",
+        "effect",
+        "always",
+        "Earth's gravity pulls objects toward its center; 'down' means toward the center, not the bottom of the picture",
+        "claim",
+        "interactions",
+        "engaging",
+        "argument",
+        "Cause and effect in motion",
+        "Pushes and Pulls",
+        "size",
+        "than",
+        "need",
+        "comparing",
+        "Gravity and Air Resistance",
+        "evidence",
+        "Newton's Third Law Force Pairs",
+        "changes",
+        "more",
+        "one",
+        "Electromagnetic Induction",
+        "Living Thing Needs",
+        "things",
+        "not",
+        "observations",
+        "change",
+        "because",
+        "move",
+        "use",
+        "construct",
+        "for",
+        "can",
+        "only",
+        "how",
+        "Food Chain Energy Flow",
+        "sunlight",
+        "energy",
+        "matter",
+        "most"
+      ],
+      "misconceptions": [],
+      "teacher_facing_reason": "LabPath nodes share concept/prerequisite/misconception language, making this a candidate for accelerated sequencing.",
+      "student_facing_reason": "This next lab uses a similar idea in a new situation."
+    },
+    {
+      "from": "fluidlab",
+      "to": "forcefield",
+      "kind": "labpath-sequence",
+      "priority": "high",
+      "concepts": [
+        "Fluid Pressure and Depth",
+        "Force, mass, and acceleration",
+        "force",
+        "mass",
+        "heavier",
+        "always",
+        "Cause and effect in motion",
+        "direction",
+        "Pushes and Pulls",
+        "design",
+        "because",
+        "Gravity and Air Resistance",
+        "for",
+        "only",
+        "gravity",
+        "Newton's Third Law Force Pairs",
+        "relationship",
+        "more",
+        "Electromagnetic Induction",
+        "explain",
+        "principle",
+        "predict",
+        "how"
+      ],
+      "misconceptions": [],
+      "teacher_facing_reason": "LabPath nodes share concept/prerequisite/misconception language, making this a candidate for accelerated sequencing.",
+      "student_facing_reason": "This next lab uses a similar idea in a new situation."
+    },
+    {
+      "from": "magnetlab",
+      "to": "forcefield",
+      "kind": "labpath-sequence",
+      "priority": "high",
+      "concepts": [
+        "The strength of a magnetic pull depends on distance, current, turns and core; one variable at a time shows which",
+        "Force, mass, and acceleration",
+        "cause",
+        "effect",
+        "reading",
+        "Earth's gravity pulls objects toward its center; 'down' means toward the center, not the bottom of the picture",
+        "forces",
+        "interactions",
+        "does",
+        "Cause and effect in motion",
+        "motion",
+        "Pushes and Pulls",
+        "pull",
+        "out",
+        "Gravity and Air Resistance",
+        "not",
+        "matter",
+        "can",
+        "holding",
+        "Newton's Third Law Force Pairs",
+        "one",
+        "Electromagnetic Induction",
+        "magnetic",
+        "current",
+        "more",
+        "magnet",
+        "stronger",
+        "A magnetic field exerts force across a gap; a reading is evidence only when what else could cause it has been ruled out",
+        "force",
+        "evidence",
+        "has",
+        "only",
+        "when",
+        "exerts",
+        "field",
+        "magnets",
+        "Magnetic field interactions",
+        "confusing",
+        "ignoring",
+        "system",
+        "first",
+        "vocabulary",
+        "two",
+        "explain"
+      ],
+      "misconceptions": [],
+      "teacher_facing_reason": "LabPath nodes share concept/prerequisite/misconception language, making this a candidate for accelerated sequencing.",
+      "student_facing_reason": "This next lab uses a similar idea in a new situation."
+    },
+    {
+      "from": "moleculeforge",
+      "to": "forcefield",
+      "kind": "labpath-sequence",
+      "priority": "high",
+      "concepts": [
+        "Molecular arrangement sets material properties; a design claim binds each requirement to the reading that decides it",
+        "Earth's gravity pulls objects toward its center; 'down' means toward the center, not the bottom of the picture",
+        "claim",
+        "reading",
+        "does",
+        "not",
+        "Pushes and Pulls",
+        "design",
+        "need",
+        "always",
+        "Gravity and Air Resistance",
+        "matter",
+        "can",
+        "Electromagnetic Induction",
+        "properties",
+        "Molecular Orbital Theory",
+        "two",
+        "because",
+        "all",
+        "construct",
+        "energy",
+        "for",
+        "Newton's Third Law Force Pairs",
+        "between",
+        "its",
+        "must",
+        "predict",
+        "magnetic",
+        "based",
+        "basics"
+      ],
+      "misconceptions": [],
+      "teacher_facing_reason": "LabPath nodes share concept/prerequisite/misconception language, making this a candidate for accelerated sequencing.",
+      "student_facing_reason": "This next lab uses a similar idea in a new situation."
+    },
+    {
+      "from": "opticsbench",
+      "to": "forcefield",
+      "kind": "labpath-sequence",
+      "priority": "high",
+      "concepts": [
+        "Refraction and Snell's Law",
+        "Force, mass, and acceleration",
+        "speed",
+        "measurement",
+        "always",
+        "Earth's gravity pulls objects toward its center; 'down' means toward the center, not the bottom of the picture",
+        "its",
+        "toward",
+        "down",
+        "does",
+        "not",
+        "Pushes and Pulls",
+        "two",
+        "different",
+        "because",
+        "rather",
+        "than",
+        "Gravity and Air Resistance",
+        "use",
+        "can",
+        "Newton's Third Law Force Pairs",
+        "law",
+        "between",
+        "Electromagnetic Induction",
+        "explain",
+        "predict",
+        "properties"
+      ],
+      "misconceptions": [],
+      "teacher_facing_reason": "LabPath nodes share concept/prerequisite/misconception language, making this a candidate for accelerated sequencing.",
+      "student_facing_reason": "This next lab uses a similar idea in a new situation."
+    },
+    {
+      "from": "orbitlab",
+      "to": "forcefield",
+      "kind": "labpath-sequence",
+      "priority": "high",
+      "concepts": [
+        "Orbital mechanics and gravitational systems",
+        "Force, mass, and acceleration",
+        "mechanics",
+        "systems",
+        "faster",
+        "always",
+        "means",
+        "Earth's gravity pulls objects toward its center; 'down' means toward the center, not the bottom of the picture",
+        "interactions",
+        "gravity",
+        "forces",
+        "Cause and effect in motion",
+        "Pushes and Pulls",
+        "because",
+        "Gravity and Air Resistance",
+        "energy",
+        "there",
+        "space",
+        "Newton's Third Law Force Pairs",
+        "Electromagnetic Induction",
+        "conservation"
+      ],
+      "misconceptions": [],
+      "teacher_facing_reason": "LabPath nodes share concept/prerequisite/misconception language, making this a candidate for accelerated sequencing.",
+      "student_facing_reason": "This next lab uses a similar idea in a new situation."
+    },
+    {
+      "from": "reactionlab",
+      "to": "forcefield",
+      "kind": "labpath-sequence",
+      "priority": "high",
+      "concepts": [
+        "Reaction rate, yield, and energy",
+        "Electromagnetic Induction",
+        "rate",
+        "energy",
+        "investigation",
+        "Whether mixing two substances makes a new substance is decided by checks, not by bubbles",
+        "Force, mass, and acceleration",
+        "cause",
+        "effect",
+        "reading",
+        "means",
+        "Earth's gravity pulls objects toward its center; 'down' means toward the center, not the bottom of the picture",
+        "not",
+        "Cause and effect in motion",
+        "Pushes and Pulls",
+        "two",
+        "out",
+        "comparing",
+        "Gravity and Air Resistance",
+        "matter",
+        "nothing",
+        "can",
+        "Newton's Third Law Force Pairs",
+        "Conservation of Mass in Reactions",
+        "mass",
+        "measurement",
+        "evidence",
+        "counts",
+        "different",
+        "because",
+        "rather",
+        "than",
+        "when",
+        "ones",
+        "between",
+        "changes",
+        "conservation",
+        "produce",
+        "properties",
+        "Chemical Equilibrium",
+        "system",
+        "models",
+        "analyze",
+        "always",
+        "has",
+        "use",
+        "balanced",
+        "reaction",
+        "must",
+        "equal",
+        "principle",
+        "predict",
+        "explain"
+      ],
+      "misconceptions": [],
+      "teacher_facing_reason": "LabPath nodes share concept/prerequisite/misconception language, making this a candidate for accelerated sequencing.",
+      "student_facing_reason": "This next lab uses a similar idea in a new situation."
+    },
+    {
+      "from": "terramap",
+      "to": "forcefield",
+      "kind": "labpath-sequence",
+      "priority": "high",
+      "concepts": [
+        "Earth's features cluster in patterns a map can show; a claim about the pattern has to match the count",
+        "Force, mass, and acceleration",
+        "systems",
+        "data",
+        "reading",
+        "Earth's gravity pulls objects toward its center; 'down' means toward the center, not the bottom of the picture",
+        "earth",
+        "claim",
+        "does",
+        "not",
+        "Pushes and Pulls",
+        "has",
+        "all",
+        "need",
+        "Gravity and Air Resistance",
+        "can",
+        "Earth's spheres interact through carriers; a model of a river valley shows how living things change what water does to rock",
+        "system",
+        "models",
+        "cause",
+        "effect",
+        "things",
+        "words",
+        "Cause and effect in motion",
+        "change",
+        "two",
+        "Newton's Third Law Force Pairs",
+        "using",
+        "each",
+        "other",
+        "one",
+        "Electromagnetic Induction",
+        "how",
+        "affect",
+        "Erosion, weathering, and landform formation",
+        "happens",
+        "surface"
+      ],
+      "misconceptions": [],
+      "teacher_facing_reason": "LabPath nodes share concept/prerequisite/misconception language, making this a candidate for accelerated sequencing.",
+      "student_facing_reason": "This next lab uses a similar idea in a new situation."
+    },
+    {
+      "from": "waveworld",
+      "to": "forcefield",
+      "kind": "labpath-sequence",
+      "priority": "high",
+      "concepts": [
+        "Amplitude and wavelength are different measurements on different axes; the wave moves, the cork does not travel",
+        "Force, mass, and acceleration",
+        "models",
+        "reading",
+        "graph",
+        "Earth's gravity pulls objects toward its center; 'down' means toward the center, not the bottom of the picture",
+        "does",
+        "not",
+        "Sound as Vibration",
+        "evidence",
+        "objects",
+        "Pushes and Pulls",
+        "compare",
+        "plan",
+        "conduct",
+        "make",
+        "move",
+        "Gravity and Air Resistance",
+        "use",
+        "provide",
+        "Newton's Third Law Force Pairs",
+        "one",
+        "faster",
+        "than",
+        "Electromagnetic Induction",
+        "energy",
+        "always"
+      ],
+      "misconceptions": [],
+      "teacher_facing_reason": "LabPath nodes share concept/prerequisite/misconception language, making this a candidate for accelerated sequencing.",
+      "student_facing_reason": "This next lab uses a similar idea in a new situation."
+    },
+    {
+      "from": "bodyatlas",
+      "to": "forcefield",
+      "kind": "labpath-sequence",
+      "priority": "high",
+      "concepts": [
+        "Body Part Functions",
+        "Pushes and Pulls",
+        "design",
+        "solution",
+        "not",
+        "determine",
+        "make",
+        "because",
+        "Gravity and Air Resistance",
+        "use",
+        "them",
+        "construct",
+        "only",
+        "Electromagnetic Induction",
+        "how"
+      ],
+      "misconceptions": [],
+      "teacher_facing_reason": "LabPath nodes share concept/prerequisite/misconception language, making this a candidate for accelerated sequencing.",
+      "student_facing_reason": "This next lab uses a similar idea in a new situation."
+    },
+    {
+      "from": "bodyintro",
+      "to": "forcefield",
+      "kind": "labpath-sequence",
+      "priority": "high",
+      "concepts": [
+        "Body systems introduction",
+        "Force, mass, and acceleration",
+        "systems",
+        "cause",
+        "effect",
+        "system",
+        "confusing",
+        "ignoring",
+        "Earth's gravity pulls objects toward its center; 'down' means toward the center, not the bottom of the picture",
+        "evidence",
+        "Cause and effect in motion",
+        "first",
+        "Pushes and Pulls",
+        "vocabulary"
+      ],
+      "misconceptions": [],
+      "teacher_facing_reason": "LabPath nodes share concept/prerequisite/misconception language, making this a candidate for accelerated sequencing.",
+      "student_facing_reason": "This next lab uses a similar idea in a new situation."
+    },
+    {
+      "from": "energytransfer",
+      "to": "forcefield",
+      "kind": "labpath-sequence",
+      "priority": "high",
+      "concepts": [
+        "Every stage of an energy converter loses some energy; input equals useful output plus losses, and no stage can output more than it takes in",
+        "Earth's gravity pulls objects toward its center; 'down' means toward the center, not the bottom of the picture",
+        "test",
+        "still",
+        "not",
+        "Pushes and Pulls",
+        "than",
+        "out",
+        "two",
+        "Gravity and Air Resistance",
+        "energy",
+        "can",
+        "takes",
+        "matter",
+        "Newton's Third Law Force Pairs",
+        "every",
+        "more",
+        "changes",
+        "one",
+        "Electromagnetic Induction",
+        "Energy conservation and transfer",
+        "Force, mass, and acceleration",
+        "cause",
+        "effect",
+        "confusing",
+        "ignoring",
+        "system",
+        "evidence",
+        "Cause and effect in motion",
+        "first",
+        "vocabulary",
+        "conservation",
+        "explain"
+      ],
+      "misconceptions": [],
+      "teacher_facing_reason": "LabPath nodes share concept/prerequisite/misconception language, making this a candidate for accelerated sequencing.",
+      "student_facing_reason": "This next lab uses a similar idea in a new situation."
+    },
+    {
+      "from": "evolvesim",
+      "to": "forcefield",
+      "kind": "labpath-sequence",
+      "priority": "high",
+      "concepts": [
+        "Natural Selection Mechanism",
+        "Pushes and Pulls",
+        "data",
+        "change",
+        "need",
+        "all",
+        "has",
+        "different",
+        "Gravity and Air Resistance",
+        "construct",
+        "explanation",
+        "nothing",
+        "Newton's Third Law Force Pairs",
+        "using",
+        "one",
+        "Electromagnetic Induction",
+        "based"
+      ],
+      "misconceptions": [],
+      "teacher_facing_reason": "LabPath nodes share concept/prerequisite/misconception language, making this a candidate for accelerated sequencing.",
+      "student_facing_reason": "This next lab uses a similar idea in a new situation."
+    },
+    {
+      "from": "genelab",
+      "to": "forcefield",
+      "kind": "labpath-sequence",
+      "priority": "high",
+      "concepts": [
+        "Gene Expression Regulation",
+        "Pushes and Pulls",
+        "rather",
+        "than",
+        "analyze",
+        "different",
+        "has",
+        "change",
+        "Gravity and Air Resistance",
+        "use",
+        "can",
+        "Electromagnetic Induction",
+        "explain",
+        "how"
+      ],
+      "misconceptions": [],
+      "teacher_facing_reason": "LabPath nodes share concept/prerequisite/misconception language, making this a candidate for accelerated sequencing.",
+      "student_facing_reason": "This next lab uses a similar idea in a new situation."
+    },
+    {
+      "from": "k2bioshell",
+      "to": "forcefield",
+      "kind": "labpath-sequence",
+      "priority": "high",
+      "concepts": [
+        "Where a living thing lives depends on what it needs; parts have jobs; young are the same kind but not the same; a place that meets more needs holds more kinds",
+        "Earth's gravity pulls objects toward its center; 'down' means toward the center, not the bottom of the picture",
+        "not",
+        "earth",
+        "things",
+        "Pushes and Pulls",
+        "different",
+        "size",
+        "rather",
+        "than",
+        "Gravity and Air Resistance",
+        "for",
+        "Newton's Third Law Force Pairs",
+        "have",
+        "more",
+        "Electromagnetic Induction"
+      ],
+      "misconceptions": [],
+      "teacher_facing_reason": "LabPath nodes share concept/prerequisite/misconception language, making this a candidate for accelerated sequencing.",
+      "student_facing_reason": "This next lab uses a similar idea in a new situation."
+    },
+    {
+      "from": "adaptationlab",
+      "to": "forcefield",
+      "kind": "labpath-sequence",
+      "priority": "high",
+      "concepts": [
+        "Natural selection mechanisms",
+        "Force, mass, and acceleration",
+        "cause",
+        "effect",
+        "confusing",
+        "ignoring",
+        "system",
+        "Earth's gravity pulls objects toward its center; 'down' means toward the center, not the bottom of the picture",
+        "evidence",
+        "Cause and effect in motion",
+        "first",
+        "Pushes and Pulls",
+        "vocabulary"
+      ],
+      "misconceptions": [],
+      "teacher_facing_reason": "LabPath nodes share concept/prerequisite/misconception language, making this a candidate for accelerated sequencing.",
+      "student_facing_reason": "This next lab uses a similar idea in a new situation."
+    },
+    {
+      "from": "celldivision",
+      "to": "forcefield",
+      "kind": "labpath-sequence",
+      "priority": "high",
+      "concepts": [
+        "Mitosis and meiosis",
+        "Force, mass, and acceleration",
+        "cause",
+        "effect",
+        "confusing",
+        "ignoring",
+        "system",
+        "Earth's gravity pulls objects toward its center; 'down' means toward the center, not the bottom of the picture",
+        "evidence",
+        "Cause and effect in motion",
+        "first",
+        "Pushes and Pulls",
+        "vocabulary"
+      ],
+      "misconceptions": [],
+      "teacher_facing_reason": "LabPath nodes share concept/prerequisite/misconception language, making this a candidate for accelerated sequencing.",
+      "student_facing_reason": "This next lab uses a similar idea in a new situation."
+    },
+    {
+      "from": "earthhistory",
+      "to": "forcefield",
+      "kind": "labpath-sequence",
+      "priority": "high",
+      "concepts": [
+        "Geologic time and fossils",
+        "Force, mass, and acceleration",
+        "cause",
+        "effect",
+        "confusing",
+        "ignoring",
+        "system",
+        "Earth's gravity pulls objects toward its center; 'down' means toward the center, not the bottom of the picture",
+        "evidence",
+        "Cause and effect in motion",
+        "first",
+        "Pushes and Pulls",
+        "vocabulary"
+      ],
+      "misconceptions": [],
+      "teacher_facing_reason": "LabPath nodes share concept/prerequisite/misconception language, making this a candidate for accelerated sequencing.",
+      "student_facing_reason": "This next lab uses a similar idea in a new situation."
+    },
+    {
+      "from": "foodweb",
+      "to": "forcefield",
+      "kind": "labpath-sequence",
+      "priority": "high",
+      "concepts": [
+        "Trophic cascades",
+        "Force, mass, and acceleration",
+        "cause",
+        "effect",
+        "confusing",
+        "ignoring",
+        "system",
+        "Earth's gravity pulls objects toward its center; 'down' means toward the center, not the bottom of the picture",
+        "evidence",
+        "Cause and effect in motion",
+        "first",
+        "Pushes and Pulls",
+        "vocabulary"
+      ],
+      "misconceptions": [],
+      "teacher_facing_reason": "LabPath nodes share concept/prerequisite/misconception language, making this a candidate for accelerated sequencing.",
+      "student_facing_reason": "This next lab uses a similar idea in a new situation."
+    },
+    {
+      "from": "geoforge",
+      "to": "forcefield",
+      "kind": "labpath-sequence",
+      "priority": "high",
+      "concepts": [
+        "Rock Cycle Processes",
+        "Gravity and Air Resistance",
+        "evidence",
+        "earth",
+        "energy",
+        "nothing",
+        "matter",
+        "Newton's Third Law Force Pairs",
+        "using",
+        "Electromagnetic Induction",
+        "basics",
+        "change",
+        "being"
+      ],
+      "misconceptions": [],
+      "teacher_facing_reason": "LabPath nodes share concept/prerequisite/misconception language, making this a candidate for accelerated sequencing.",
+      "student_facing_reason": "This next lab uses a similar idea in a new situation."
+    }
+  ],
+  "truncated": {
+    "before": 41
+  },
+  "standards": {
+    "forcefield": [
+      {
+        "code": "K-PS2-1",
+        "description": "Plan and conduct an investigation to compare the effects of different strengths or different directions of pushes and pulls on the motion of an object.",
+        "gradeBand": "K-2",
+        "disciplinaryCore": "PS2.A: Forces and Motion",
+        "discipline": "Physical Science"
+      },
+      {
+        "code": "K-PS2-2",
+        "description": "Analyze data to determine if a design solution works as intended to change the speed or direction of an object with a push or a pull.",
+        "gradeBand": "K-2",
+        "disciplinaryCore": "PS2.A: Forces and Motion",
+        "discipline": "Physical Science"
+      },
+      {
+        "code": "3-PS2-1",
+        "description": "Plan and conduct an investigation to provide evidence of the effects of balanced and unbalanced forces on the motion of an object.",
+        "gradeBand": "3-5",
+        "disciplinaryCore": "PS2.A: Forces and Motion",
+        "discipline": "Physical Science"
+      },
+      {
+        "code": "4-PS3-1",
+        "description": "Use evidence to construct an explanation relating the speed of an object to the energy of that object.",
+        "gradeBand": "3-5",
+        "disciplinaryCore": "PS3.A: Definitions of Energy",
+        "discipline": "Physical Science"
+      },
+      {
+        "code": "MS-PS2-1",
+        "description": "Apply Newton's Third Law to design a solution to a problem involving the motion of two colliding objects.",
+        "gradeBand": "6-8",
+        "disciplinaryCore": "PS2.A: Forces and Motion",
+        "discipline": "Physical Science"
+      },
+      {
+        "code": "MS-PS2-2",
+        "description": "Plan an investigation to provide evidence that the change in an object's motion depends on the sum of the forces acting on the object and the mass of the object.",
+        "gradeBand": "6-8",
+        "disciplinaryCore": "PS2.A: Forces and Motion",
+        "discipline": "Physical Science"
+      },
+      {
+        "code": "MS-PS2-4",
+        "description": "Construct and present arguments using evidence to support the claim that gravitational interactions are attractive and depend on the masses of interacting objects.",
+        "gradeBand": "6-8",
+        "disciplinaryCore": "PS2.B: Types of Interactions",
+        "discipline": "Physical Science"
+      },
+      {
+        "code": "MS-PS3-1",
+        "description": "Construct and interpret graphical displays of data to describe the relationships of kinetic energy to the mass of an object and to the speed of an object.",
+        "gradeBand": "6-8",
+        "disciplinaryCore": "PS3.A: Definitions of Energy",
+        "discipline": "Physical Science"
+      },
+      {
+        "code": "MS-PS3-5",
+        "description": "Construct, use, and present arguments to support the claim that when the kinetic energy of an object changes, energy is transferred to or from the object.",
+        "gradeBand": "6-8",
+        "disciplinaryCore": "PS3.B: Conservation of Energy and Energy Transfer",
+        "discipline": "Physical Science"
+      },
+      {
+        "code": "HS-PS2-1",
+        "description": "Analyze data to support the claim that Newton's second law of motion describes the mathematical relationship among the net force on a macroscopic object, its mass, and its acceleration.",
+        "gradeBand": "9-12",
+        "disciplinaryCore": "PS2.A: Forces and Motion",
+        "discipline": "Physical Science"
+      },
+      {
+        "code": "HS-PS2-3",
+        "description": "Apply scientific and engineering ideas to design, evaluate, and refine a device that minimizes the force on a macroscopic object during a collision.",
+        "gradeBand": "9-12",
+        "disciplinaryCore": "PS2.A: Forces and Motion",
+        "discipline": "Physical Science"
+      },
+      {
+        "code": "HS-PS2-4",
+        "description": "Use mathematical representations of Newton's Law of Gravitation and Coulomb's Law to describe and predict the gravitational and electrostatic forces between objects.",
+        "gradeBand": "9-12",
+        "disciplinaryCore": "PS2.B: Types of Interactions",
+        "discipline": "Physical Science"
+      },
+      {
+        "code": "HS-PS3-1",
+        "description": "Create a computational model to calculate the change in the energy of one component in a system when the conditions of other components in the system change.",
+        "gradeBand": "9-12",
+        "disciplinaryCore": "PS3.A: Definitions of Energy",
+        "discipline": "Physical Science"
+      },
+      {
+        "code": "HS-PS3-2",
+        "description": "Develop and use models to illustrate that energy at the macroscopic scale can be accounted for as a combination of energy associated with the motions of particles (objects) and energy associated with the relative positions of particles (objects).",
+        "gradeBand": "9-12",
+        "disciplinaryCore": "PS3.A: Definitions of Energy",
+        "discipline": "Physical Science"
+      }
+    ],
+    "simpleforces": [],
+    "bioforge": [
+      {
+        "code": "HS-LS1-1",
+        "description": "Construct an explanation based on evidence for how the structure of DNA determines the structure of proteins which carry out the essential functions of life through systems of specialized cells.",
+        "gradeBand": "9-12",
+        "disciplinaryCore": "LS1.A: Structure and Function",
+        "discipline": "Life Science"
+      },
+      {
+        "code": "HS-LS1-4",
+        "description": "Use a model to illustrate the role of cellular division (mitosis) and differentiation in producing and maintaining complex organisms.",
+        "gradeBand": "9-12",
+        "disciplinaryCore": "LS1.B: Growth and Development of Organisms",
+        "discipline": "Life Science"
+      },
+      {
+        "code": "HS-LS1-6",
+        "description": "Construct and revise an explanation based on evidence for how carbon, hydrogen, and oxygen from sugar molecules may combine with other elements to form amino acids and/or other large carbon-based molecules.",
+        "gradeBand": "9-12",
+        "disciplinaryCore": "LS1.C: Organization for Matter and Energy Flow in Organisms",
+        "discipline": "Life Science"
+      },
+      {
+        "code": "HS-LS3-1",
+        "description": "Ask questions to clarify relationships about the role of DNA and chromosomes in coding the instructions for characteristic traits passed from parents to offspring.",
+        "gradeBand": "9-12",
+        "disciplinaryCore": "LS3.A: Inheritance of Traits",
+        "discipline": "Life Science"
+      },
+      {
+        "code": "HS-LS3-2",
+        "description": "Make and defend a claim based on evidence that inheritable genetic variations may result from: (1) new genetic combinations through meiosis, (2) viable errors occurring during replication, and/or (3) mutations caused by environmental factors.",
+        "gradeBand": "9-12",
+        "disciplinaryCore": "LS3.B: Variation of Traits",
+        "discipline": "Life Science"
+      },
+      {
+        "code": "HS-ETS1-2",
+        "description": "Design a solution to a complex real-world problem by breaking it down into smaller, more manageable problems that can be solved through engineering.",
+        "gradeBand": "9-12",
+        "disciplinaryCore": "ETS1.B: Developing Possible Solutions",
+        "discipline": "Engineering"
+      },
+      {
+        "code": "HS-ETS1-3",
+        "description": "Evaluate a solution to a complex real-world problem based on prioritized criteria and trade-offs that account for a range of constraints, including cost, safety, reliability, and aesthetics, as well as possible social, cultural, and environmental impacts.",
+        "gradeBand": "9-12",
+        "disciplinaryCore": "ETS1.B: Developing Possible Solutions",
+        "discipline": "Engineering"
+      }
+    ],
+    "buildlab": [
+      {
+        "code": "3-5-ETS1-1",
+        "description": "Define a simple design problem reflecting a need or a want that includes specified criteria for success and constraints on materials, time, or cost.",
+        "gradeBand": "3-5",
+        "disciplinaryCore": "ETS1.A: Defining and Delimiting Engineering Problems",
+        "discipline": "Engineering"
+      },
+      {
+        "code": "3-5-ETS1-2",
+        "description": "Generate and compare multiple possible solutions to a problem based on how well each is likely to meet the criteria and constraints of the problem.",
+        "gradeBand": "3-5",
+        "disciplinaryCore": "ETS1.B: Developing Possible Solutions",
+        "discipline": "Engineering"
+      },
+      {
+        "code": "MS-ETS1-1",
+        "description": "Define the criteria and constraints of a design problem with sufficient precision to ensure a successful solution.",
+        "gradeBand": "6-8",
+        "disciplinaryCore": "ETS1.A: Defining and Delimiting Engineering Problems",
+        "discipline": "Engineering"
+      },
+      {
+        "code": "MS-ETS1-3",
+        "description": "Analyze data from tests to determine similarities and differences among several design solutions to identify the best characteristics of each that can be combined into a new solution to better meet the criteria for success.",
+        "gradeBand": "6-8",
+        "disciplinaryCore": "ETS1.B: Developing Possible Solutions",
+        "discipline": "Engineering"
+      },
+      {
+        "code": "MS-ETS1-4",
+        "description": "Develop a model to generate data for iterative testing and modification of a proposed object, tool, or process such that an optimal design can be achieved.",
+        "gradeBand": "6-8",
+        "disciplinaryCore": "ETS1.B: Developing Possible Solutions",
+        "discipline": "Engineering"
+      },
+      {
+        "code": "HS-ETS1-1",
+        "description": "Analyze a major global challenge to specify qualitative and quantitative criteria and constraints for solutions that account for societal needs and wants.",
+        "gradeBand": "9-12",
+        "disciplinaryCore": "ETS1.A: Defining and Delimiting Engineering Problems",
+        "discipline": "Engineering"
+      },
+      {
+        "code": "HS-ETS1-2",
+        "description": "Design a solution to a complex real-world problem by breaking it down into smaller, more manageable problems that can be solved through engineering.",
+        "gradeBand": "9-12",
+        "disciplinaryCore": "ETS1.B: Developing Possible Solutions",
+        "discipline": "Engineering"
+      },
+      {
+        "code": "HS-ETS1-3",
+        "description": "Evaluate a solution to a complex real-world problem based on prioritized criteria and trade-offs that account for a range of constraints, including cost, safety, reliability, and aesthetics, as well as possible social, cultural, and environmental impacts.",
+        "gradeBand": "9-12",
+        "disciplinaryCore": "ETS1.B: Developing Possible Solutions",
+        "discipline": "Engineering"
+      },
+      {
+        "code": "HS-ETS1-4",
+        "description": "Use a computer simulation to model the impact of proposed solutions to a complex real-world problem with numerous criteria and constraints on interactions within and between systems relevant to the problem.",
+        "gradeBand": "9-12",
+        "disciplinaryCore": "ETS1.C: Optimizing the Design Solution",
+        "discipline": "Engineering"
+      }
+    ],
+    "cellworld": [
+      {
+        "code": "MS-LS1-1",
+        "description": "Conduct an investigation to provide evidence that living things are made of cells; either one cell or many different numbers and types of cells.",
+        "gradeBand": "6-8",
+        "disciplinaryCore": "LS1.A: Structure and Function",
+        "discipline": "Life Science"
+      },
+      {
+        "code": "MS-LS1-2",
+        "description": "Develop and use a model to describe the function of a cell as a whole and ways the parts of cells contribute to the function.",
+        "gradeBand": "6-8",
+        "disciplinaryCore": "LS1.A: Structure and Function",
+        "discipline": "Life Science"
+      },
+      {
+        "code": "MS-LS1-3",
+        "description": "Use argument supported by evidence for how the body is a system of interacting subsystems composed of groups of cells.",
+        "gradeBand": "6-8",
+        "disciplinaryCore": "LS1.A: Structure and Function",
+        "discipline": "Life Science"
+      },
+      {
+        "code": "MS-LS1-5",
+        "description": "Construct a scientific explanation based on evidence for how environmental and genetic factors influence the growth of organisms.",
+        "gradeBand": "6-8",
+        "disciplinaryCore": "LS1.B: Growth and Development of Organisms",
+        "discipline": "Life Science"
+      },
+      {
+        "code": "MS-LS1-6",
+        "description": "Construct a scientific explanation based on evidence for the role of photosynthesis in the cycling of matter and flow of energy into and out of organisms.",
+        "gradeBand": "6-8",
+        "disciplinaryCore": "LS1.C: Organization for Matter and Energy Flow in Organisms",
+        "discipline": "Life Science"
+      },
+      {
+        "code": "MS-LS1-7",
+        "description": "Develop a model to describe how food is rearranged through chemical reactions forming new molecules that support growth and/or release energy as this matter moves through an organism.",
+        "gradeBand": "6-8",
+        "disciplinaryCore": "LS1.C: Organization for Matter and Energy Flow in Organisms",
+        "discipline": "Life Science"
+      },
+      {
+        "code": "HS-LS1-1",
+        "description": "Construct an explanation based on evidence for how the structure of DNA determines the structure of proteins which carry out the essential functions of life through systems of specialized cells.",
+        "gradeBand": "9-12",
+        "disciplinaryCore": "LS1.A: Structure and Function",
+        "discipline": "Life Science"
+      },
+      {
+        "code": "HS-LS1-2",
+        "description": "Develop and use a model to illustrate the hierarchical organization of interacting systems that provide specific functions within multicellular organisms.",
+        "gradeBand": "9-12",
+        "disciplinaryCore": "LS1.A: Structure and Function",
+        "discipline": "Life Science"
+      },
+      {
+        "code": "HS-LS1-3",
+        "description": "Plan and conduct an investigation to provide evidence that feedback mechanisms maintain homeostasis.",
+        "gradeBand": "9-12",
+        "disciplinaryCore": "LS1.A: Structure and Function",
+        "discipline": "Life Science"
+      },
+      {
+        "code": "HS-LS1-4",
+        "description": "Use a model to illustrate the role of cellular division (mitosis) and differentiation in producing and maintaining complex organisms.",
+        "gradeBand": "9-12",
+        "disciplinaryCore": "LS1.B: Growth and Development of Organisms",
+        "discipline": "Life Science"
+      },
+      {
+        "code": "HS-LS1-5",
+        "description": "Use a model to illustrate how photosynthesis transforms light energy into stored chemical energy.",
+        "gradeBand": "9-12",
+        "disciplinaryCore": "LS1.C: Organization for Matter and Energy Flow in Organisms",
+        "discipline": "Life Science"
+      },
+      {
+        "code": "HS-LS1-6",
+        "description": "Construct and revise an explanation based on evidence for how carbon, hydrogen, and oxygen from sugar molecules may combine with other elements to form amino acids and/or other large carbon-based molecules.",
+        "gradeBand": "9-12",
+        "disciplinaryCore": "LS1.C: Organization for Matter and Energy Flow in Organisms",
+        "discipline": "Life Science"
+      },
+      {
+        "code": "HS-LS1-7",
+        "description": "Use a model to illustrate that cellular respiration is a chemical process whereby the bonds of food molecules and oxygen molecules are broken and the bonds in new compounds are formed resulting in a net transfer of energy.",
+        "gradeBand": "9-12",
+        "disciplinaryCore": "LS1.C: Organization for Matter and Energy Flow in Organisms",
+        "discipline": "Life Science"
+      }
+    ],
+    "climateengine": [
+      {
+        "code": "MS-ESS2-6",
+        "description": "Develop and use a model to describe how unequal heating and rotation of the Earth cause patterns of atmospheric and oceanic circulation that determine regional climates.",
+        "gradeBand": "6-8",
+        "disciplinaryCore": "ESS2.D: Weather and Climate",
+        "discipline": "Earth & Space Science"
+      },
+      {
+        "code": "MS-ESS3-3",
+        "description": "Apply scientific principles to design a method for monitoring and minimizing a human impact on the environment.",
+        "gradeBand": "6-8",
+        "disciplinaryCore": "ESS3.C: Human Impacts on Earth Systems",
+        "discipline": "Earth & Space Science"
+      },
+      {
+        "code": "MS-ESS3-5",
+        "description": "Ask questions to clarify evidence of the factors that have caused the rise in global temperatures over the past century.",
+        "gradeBand": "6-8",
+        "disciplinaryCore": "ESS3.D: Global Climate Change",
+        "discipline": "Earth & Space Science"
+      },
+      {
+        "code": "HS-ESS2-4",
+        "description": "Use a model to describe how variations in the flow of energy into and out of Earth's systems result in changes in climate.",
+        "gradeBand": "9-12",
+        "disciplinaryCore": "ESS2.D: Weather and Climate",
+        "discipline": "Earth & Space Science"
+      },
+      {
+        "code": "HS-ESS2-6",
+        "description": "Develop a quantitative model to describe the cycling of carbon among the hydrosphere, atmosphere, geosphere, and biosphere.",
+        "gradeBand": "9-12",
+        "disciplinaryCore": "ESS2.D: Weather and Climate",
+        "discipline": "Earth & Space Science"
+      },
+      {
+        "code": "HS-ESS3-1",
+        "description": "Construct an explanation based on evidence for how the availability of natural resources, occurrence of natural hazards, and changes in climate have influenced human activity.",
+        "gradeBand": "9-12",
+        "disciplinaryCore": "ESS3.A: Natural Resources",
+        "discipline": "Earth & Space Science"
+      },
+      {
+        "code": "HS-ESS3-4",
+        "description": "Evaluate or refine a technological solution that reduces impacts of human activities on natural systems.",
+        "gradeBand": "9-12",
+        "disciplinaryCore": "ESS3.C: Human Impacts on Earth Systems",
+        "discipline": "Earth & Space Science"
+      },
+      {
+        "code": "HS-ESS3-5",
+        "description": "Analyze geoscience data and the results from global climate models to make an evidence-based forecast of the current rate of global or regional climate change and associated future impacts to Earth systems.",
+        "gradeBand": "9-12",
+        "disciplinaryCore": "ESS3.D: Global Climate Change",
+        "discipline": "Earth & Space Science"
+      },
+      {
+        "code": "HS-ESS3-6",
+        "description": "Use a computational representation to illustrate the relationships among Earth systems and how those relationships are being modified due to human activity.",
+        "gradeBand": "9-12",
+        "disciplinaryCore": "ESS3.D: Global Climate Change",
+        "discipline": "Earth & Space Science"
+      }
+    ],
+    "ecosystem": [
+      {
+        "code": "K-LS1-1",
+        "description": "Use observations to describe patterns of what plants and animals (including humans) need to survive.",
+        "gradeBand": "K-2",
+        "disciplinaryCore": "LS1.C: Organization for Matter and Energy Flow in Organisms",
+        "discipline": "Life Science"
+      },
+      {
+        "code": "K-ESS3-1",
+        "description": "Use a model to represent the relationship between the needs of different plants or animals (including humans) and the places they live.",
+        "gradeBand": "K-2",
+        "disciplinaryCore": "ESS3.A: Natural Resources",
+        "discipline": "Earth & Space Science"
+      },
+      {
+        "code": "2-LS2-1",
+        "description": "Plan and conduct an investigation to determine if plants need sunlight and water to grow.",
+        "gradeBand": "K-2",
+        "disciplinaryCore": "LS2.A: Interdependent Relationships in Ecosystems",
+        "discipline": "Life Science"
+      },
+      {
+        "code": "2-LS4-1",
+        "description": "Make observations of plants and animals to compare the diversity of life in different habitats.",
+        "gradeBand": "K-2",
+        "disciplinaryCore": "LS4.D: Biodiversity and Humans",
+        "discipline": "Life Science"
+      },
+      {
+        "code": "5-LS2-1",
+        "description": "Develop a model to describe the movement of matter among plants, animals, decomposers, and the environment.",
+        "gradeBand": "3-5",
+        "disciplinaryCore": "LS2.A: Interdependent Relationships in Ecosystems",
+        "discipline": "Life Science"
+      },
+      {
+        "code": "3-LS4-3",
+        "description": "Construct an argument with evidence that in a particular habitat some organisms can survive well, some survive less well, and some cannot survive at all.",
+        "gradeBand": "3-5",
+        "disciplinaryCore": "LS4.C: Adaptation",
+        "discipline": "Life Science"
+      },
+      {
+        "code": "MS-LS2-1",
+        "description": "Analyze and interpret data to provide evidence for the effects of resource availability on organisms and populations of organisms in an ecosystem.",
+        "gradeBand": "6-8",
+        "disciplinaryCore": "LS2.A: Interdependent Relationships in Ecosystems",
+        "discipline": "Life Science"
+      },
+      {
+        "code": "MS-LS2-2",
+        "description": "Construct an explanation that predicts patterns of interactions among organisms across multiple ecosystems.",
+        "gradeBand": "6-8",
+        "disciplinaryCore": "LS2.A: Interdependent Relationships in Ecosystems",
+        "discipline": "Life Science"
+      },
+      {
+        "code": "MS-LS2-3",
+        "description": "Develop a model to describe the cycling of matter and flow of energy among living and nonliving parts of an ecosystem.",
+        "gradeBand": "6-8",
+        "disciplinaryCore": "LS2.B: Cycles of Matter and Energy Transfer in Ecosystems",
+        "discipline": "Life Science"
+      },
+      {
+        "code": "MS-LS2-4",
+        "description": "Construct an argument supported by empirical evidence that changes to physical or biological components of an ecosystem affect populations.",
+        "gradeBand": "6-8",
+        "disciplinaryCore": "LS2.C: Ecosystem Dynamics, Functioning, and Resilience",
+        "discipline": "Life Science"
+      },
+      {
+        "code": "HS-LS2-1",
+        "description": "Use mathematical and/or computational representations to support explanations of factors that affect carrying capacity of ecosystems at different scales.",
+        "gradeBand": "9-12",
+        "disciplinaryCore": "LS2.A: Interdependent Relationships in Ecosystems",
+        "discipline": "Life Science"
+      },
+      {
+        "code": "HS-LS2-2",
+        "description": "Use mathematical representations to support and revise explanations based on evidence about factors affecting biodiversity and populations in ecosystems.",
+        "gradeBand": "9-12",
+        "disciplinaryCore": "LS2.A: Interdependent Relationships in Ecosystems",
+        "discipline": "Life Science"
+      },
+      {
+        "code": "HS-LS2-4",
+        "description": "Use mathematical representations to support claims for the cycling of matter and flow of energy among organisms in an ecosystem.",
+        "gradeBand": "9-12",
+        "disciplinaryCore": "LS2.B: Cycles of Matter and Energy Transfer in Ecosystems",
+        "discipline": "Life Science"
+      },
+      {
+        "code": "HS-LS2-6",
+        "description": "Evaluate the claims, evidence, and reasoning that the complex interactions in ecosystems maintain relatively consistent numbers and types of organisms in stable conditions, but changing conditions may result in a new ecosystem.",
+        "gradeBand": "9-12",
+        "disciplinaryCore": "LS2.C: Ecosystem Dynamics, Functioning, and Resilience",
+        "discipline": "Life Science"
+      },
+      {
+        "code": "HS-LS2-7",
+        "description": "Design, evaluate, and refine a solution for reducing the impacts of human activities on the environment and biodiversity.",
+        "gradeBand": "9-12",
+        "disciplinaryCore": "LS2.C: Ecosystem Dynamics, Functioning, and Resilience",
+        "discipline": "Life Science"
+      },
+      {
+        "code": "MS-ESS3-3",
+        "description": "Apply scientific principles to design a method for monitoring and minimizing a human impact on the environment.",
+        "gradeBand": "6-8",
+        "disciplinaryCore": "ESS3.C: Human Impacts on Earth Systems",
+        "discipline": "Earth & Space Science"
+      },
+      {
+        "code": "HS-ESS3-4",
+        "description": "Evaluate or refine a technological solution that reduces impacts of human activities on natural systems.",
+        "gradeBand": "9-12",
+        "disciplinaryCore": "ESS3.C: Human Impacts on Earth Systems",
+        "discipline": "Earth & Space Science"
+      }
+    ],
+    "fluidlab": [
+      {
+        "code": "MS-PS1-4",
+        "description": "Develop a model that predicts and describes changes in particle motion, temperature, and state of a pure substance when thermal energy is added or removed.",
+        "gradeBand": "6-8",
+        "disciplinaryCore": "PS1.A: Structure and Properties of Matter",
+        "discipline": "Physical Science"
+      },
+      {
+        "code": "MS-ESS2-6",
+        "description": "Develop and use a model to describe how unequal heating and rotation of the Earth cause patterns of atmospheric and oceanic circulation that determine regional climates.",
+        "gradeBand": "6-8",
+        "disciplinaryCore": "ESS2.D: Weather and Climate",
+        "discipline": "Earth & Space Science"
+      },
+      {
+        "code": "HS-PS3-2",
+        "description": "Develop and use models to illustrate that energy at the macroscopic scale can be accounted for as a combination of energy associated with the motions of particles (objects) and energy associated with the relative positions of particles (objects).",
+        "gradeBand": "9-12",
+        "disciplinaryCore": "PS3.A: Definitions of Energy",
+        "discipline": "Physical Science"
+      },
+      {
+        "code": "HS-ESS2-4",
+        "description": "Use a model to describe how variations in the flow of energy into and out of Earth's systems result in changes in climate.",
+        "gradeBand": "9-12",
+        "disciplinaryCore": "ESS2.D: Weather and Climate",
+        "discipline": "Earth & Space Science"
+      }
+    ],
+    "magnetlab": [],
+    "moleculeforge": [
+      {
+        "code": "5-PS1-1",
+        "description": "Develop a model to describe that matter is made of particles too small to be seen.",
+        "gradeBand": "3-5",
+        "disciplinaryCore": "PS1.A: Structure and Properties of Matter",
+        "discipline": "Physical Science"
+      },
+      {
+        "code": "5-PS1-3",
+        "description": "Make observations and measurements to identify materials based on their properties.",
+        "gradeBand": "3-5",
+        "disciplinaryCore": "PS1.A: Structure and Properties of Matter",
+        "discipline": "Physical Science"
+      },
+      {
+        "code": "MS-PS1-1",
+        "description": "Develop models to describe the atomic composition of simple molecules and extended structures.",
+        "gradeBand": "6-8",
+        "disciplinaryCore": "PS1.A: Structure and Properties of Matter",
+        "discipline": "Physical Science"
+      },
+      {
+        "code": "MS-PS1-2",
+        "description": "Analyze and interpret data on the properties of substances before and after the substances interact to determine if a chemical reaction has occurred.",
+        "gradeBand": "6-8",
+        "disciplinaryCore": "PS1.A: Structure and Properties of Matter",
+        "discipline": "Physical Science"
+      },
+      {
+        "code": "MS-PS1-4",
+        "description": "Develop a model that predicts and describes changes in particle motion, temperature, and state of a pure substance when thermal energy is added or removed.",
+        "gradeBand": "6-8",
+        "disciplinaryCore": "PS1.A: Structure and Properties of Matter",
+        "discipline": "Physical Science"
+      },
+      {
+        "code": "MS-PS1-5",
+        "description": "Develop and use a model to describe how the total number of atoms does not change in a chemical reaction and thus mass is conserved.",
+        "gradeBand": "6-8",
+        "disciplinaryCore": "PS1.B: Chemical Reactions",
+        "discipline": "Physical Science"
+      },
+      {
+        "code": "HS-PS1-1",
+        "description": "Use the periodic table as a model to predict the relative properties of elements based on the patterns of electrons in the outermost energy level of atoms.",
+        "gradeBand": "9-12",
+        "disciplinaryCore": "PS1.A: Structure and Properties of Matter",
+        "discipline": "Physical Science"
+      },
+      {
+        "code": "HS-PS1-2",
+        "description": "Construct and revise an explanation for the outcome of a simple chemical reaction based on the outermost electron states of atoms, trends in the periodic table, and knowledge of the patterns of chemical properties.",
+        "gradeBand": "9-12",
+        "disciplinaryCore": "PS1.A: Structure and Properties of Matter",
+        "discipline": "Physical Science"
+      },
+      {
+        "code": "HS-PS1-4",
+        "description": "Develop a model to illustrate that the release or absorption of energy from a chemical reaction system depends upon the changes in total bond energy.",
+        "gradeBand": "9-12",
+        "disciplinaryCore": "PS1.B: Chemical Reactions",
+        "discipline": "Physical Science"
+      },
+      {
+        "code": "HS-PS1-7",
+        "description": "Use mathematical representations to support the claim that atoms, and therefore mass, are conserved during a chemical reaction.",
+        "gradeBand": "9-12",
+        "disciplinaryCore": "PS1.B: Chemical Reactions",
+        "discipline": "Physical Science"
+      }
+    ],
+    "opticsbench": [
+      {
+        "code": "K-PS3-1",
+        "description": "Make observations to determine the effect of sunlight on Earth's surface.",
+        "gradeBand": "K-2",
+        "disciplinaryCore": "PS3.B: Conservation of Energy and Energy Transfer",
+        "discipline": "Physical Science"
+      },
+      {
+        "code": "4-PS4-1",
+        "description": "Develop a model of waves to describe patterns in terms of amplitude and wavelength and that waves can cause objects to move.",
+        "gradeBand": "3-5",
+        "disciplinaryCore": "PS4.A: Wave Properties",
+        "discipline": "Physical Science"
+      },
+      {
+        "code": "MS-PS4-1",
+        "description": "Use mathematical representations to describe a simple model for waves that includes how the amplitude of a wave is related to the energy in a wave.",
+        "gradeBand": "6-8",
+        "disciplinaryCore": "PS4.A: Wave Properties",
+        "discipline": "Physical Science"
+      },
+      {
+        "code": "MS-PS4-2",
+        "description": "Develop and use a model to describe that waves are reflected, absorbed, or transmitted through various materials.",
+        "gradeBand": "6-8",
+        "disciplinaryCore": "PS4.A: Wave Properties",
+        "discipline": "Physical Science"
+      },
+      {
+        "code": "HS-PS4-1",
+        "description": "Use mathematical representations to support a claim regarding relationships among the frequency, wavelength, and speed of waves traveling in various media.",
+        "gradeBand": "9-12",
+        "disciplinaryCore": "PS4.A: Wave Properties",
+        "discipline": "Physical Science"
+      },
+      {
+        "code": "HS-PS4-3",
+        "description": "Evaluate the claims, evidence, and reasoning behind the idea that electromagnetic radiation can be described either by a wave model or a particle model.",
+        "gradeBand": "9-12",
+        "disciplinaryCore": "PS4.A: Wave Properties",
+        "discipline": "Physical Science"
+      },
+      {
+        "code": "HS-PS4-5",
+        "description": "Communicate technical information about how some technological devices use the principles of wave behavior and wave interactions with matter to transmit and capture information and energy.",
+        "gradeBand": "9-12",
+        "disciplinaryCore": "PS4.C: Information Technologies and Instrumentation",
+        "discipline": "Physical Science"
+      }
+    ],
+    "orbitlab": [
+      {
+        "code": "5-ESS1-1",
+        "description": "Support an argument that differences in the apparent brightness of the sun compared to other stars is due to their relative distances from Earth.",
+        "gradeBand": "3-5",
+        "disciplinaryCore": "ESS1.A: The Universe and its Stars",
+        "discipline": "Earth & Space Science"
+      },
+      {
+        "code": "MS-ESS1-1",
+        "description": "Develop and use a model of the Earth-sun-moon system to describe the cyclic patterns of lunar phases, eclipses of the sun and moon, and seasons.",
+        "gradeBand": "6-8",
+        "disciplinaryCore": "ESS1.A: The Universe and its Stars",
+        "discipline": "Earth & Space Science"
+      },
+      {
+        "code": "MS-ESS1-2",
+        "description": "Develop and use a model to describe the role of gravity in the motions within galaxies and the solar system.",
+        "gradeBand": "6-8",
+        "disciplinaryCore": "ESS1.B: Earth and the Solar System",
+        "discipline": "Earth & Space Science"
+      },
+      {
+        "code": "HS-ESS1-1",
+        "description": "Develop a model based on evidence to illustrate the life span of the sun and the role of nuclear fusion in the sun's core to release energy that eventually transfers to Earth in the form of radiation.",
+        "gradeBand": "9-12",
+        "disciplinaryCore": "ESS1.A: The Universe and its Stars",
+        "discipline": "Earth & Space Science"
+      },
+      {
+        "code": "HS-ESS1-4",
+        "description": "Use mathematical or computational representations to predict the motion of orbiting objects in the solar system.",
+        "gradeBand": "9-12",
+        "disciplinaryCore": "ESS1.B: Earth and the Solar System",
+        "discipline": "Earth & Space Science"
+      },
+      {
+        "code": "HS-PS2-4",
+        "description": "Use mathematical representations of Newton's Law of Gravitation and Coulomb's Law to describe and predict the gravitational and electrostatic forces between objects.",
+        "gradeBand": "9-12",
+        "disciplinaryCore": "PS2.B: Types of Interactions",
+        "discipline": "Physical Science"
+      }
+    ],
+    "reactionlab": [
+      {
+        "code": "MS-PS1-2",
+        "description": "Analyze and interpret data on the properties of substances before and after the substances interact to determine if a chemical reaction has occurred.",
+        "gradeBand": "6-8",
+        "disciplinaryCore": "PS1.A: Structure and Properties of Matter",
+        "discipline": "Physical Science"
+      },
+      {
+        "code": "MS-PS1-5",
+        "description": "Develop and use a model to describe how the total number of atoms does not change in a chemical reaction and thus mass is conserved.",
+        "gradeBand": "6-8",
+        "disciplinaryCore": "PS1.B: Chemical Reactions",
+        "discipline": "Physical Science"
+      },
+      {
+        "code": "HS-PS1-2",
+        "description": "Construct and revise an explanation for the outcome of a simple chemical reaction based on the outermost electron states of atoms, trends in the periodic table, and knowledge of the patterns of chemical properties.",
+        "gradeBand": "9-12",
+        "disciplinaryCore": "PS1.A: Structure and Properties of Matter",
+        "discipline": "Physical Science"
+      },
+      {
+        "code": "HS-PS1-4",
+        "description": "Develop a model to illustrate that the release or absorption of energy from a chemical reaction system depends upon the changes in total bond energy.",
+        "gradeBand": "9-12",
+        "disciplinaryCore": "PS1.B: Chemical Reactions",
+        "discipline": "Physical Science"
+      },
+      {
+        "code": "HS-PS1-5",
+        "description": "Apply scientific principles and evidence to provide an explanation about the effects of changing the temperature or concentration of the reacting particles on the rate at which a reaction occurs.",
+        "gradeBand": "9-12",
+        "disciplinaryCore": "PS1.B: Chemical Reactions",
+        "discipline": "Physical Science"
+      },
+      {
+        "code": "HS-PS1-7",
+        "description": "Use mathematical representations to support the claim that atoms, and therefore mass, are conserved during a chemical reaction.",
+        "gradeBand": "9-12",
+        "disciplinaryCore": "PS1.B: Chemical Reactions",
+        "discipline": "Physical Science"
+      }
+    ],
+    "terramap": [
+      {
+        "code": "5-ESS2-1",
+        "description": "Develop a model using an example to describe ways the geosphere, biosphere, hydrosphere, and/or atmosphere interact.",
+        "gradeBand": "3-5",
+        "disciplinaryCore": "ESS2.A: Earth Materials and Systems",
+        "discipline": "Earth & Space Science"
+      },
+      {
+        "code": "MS-ESS2-1",
+        "description": "Develop a model to describe the cycling of Earth's materials and the flow of energy that drives this process.",
+        "gradeBand": "6-8",
+        "disciplinaryCore": "ESS2.A: Earth Materials and Systems",
+        "discipline": "Earth & Space Science"
+      },
+      {
+        "code": "MS-ESS2-2",
+        "description": "Construct an explanation based on evidence for how geoscience processes have changed Earth's surface at varying time and spatial scales.",
+        "gradeBand": "6-8",
+        "disciplinaryCore": "ESS2.A: Earth Materials and Systems",
+        "discipline": "Earth & Space Science"
+      },
+      {
+        "code": "MS-ESS2-6",
+        "description": "Develop and use a model to describe how unequal heating and rotation of the Earth cause patterns of atmospheric and oceanic circulation that determine regional climates.",
+        "gradeBand": "6-8",
+        "disciplinaryCore": "ESS2.D: Weather and Climate",
+        "discipline": "Earth & Space Science"
+      },
+      {
+        "code": "MS-ESS3-3",
+        "description": "Apply scientific principles to design a method for monitoring and minimizing a human impact on the environment.",
+        "gradeBand": "6-8",
+        "disciplinaryCore": "ESS3.C: Human Impacts on Earth Systems",
+        "discipline": "Earth & Space Science"
+      },
+      {
+        "code": "HS-ESS2-1",
+        "description": "Develop a model to illustrate how Earth's internal and surface processes operate at different spatial and temporal scales to form continental and ocean-floor features.",
+        "gradeBand": "9-12",
+        "disciplinaryCore": "ESS2.A: Earth Materials and Systems",
+        "discipline": "Earth & Space Science"
+      },
+      {
+        "code": "HS-ESS2-2",
+        "description": "Analyze geoscience data to make the claim that one change to Earth's surface can create feedbacks that cause changes to other Earth systems.",
+        "gradeBand": "9-12",
+        "disciplinaryCore": "ESS2.A: Earth Materials and Systems",
+        "discipline": "Earth & Space Science"
+      },
+      {
+        "code": "HS-ESS2-4",
+        "description": "Use a model to describe how variations in the flow of energy into and out of Earth's systems result in changes in climate.",
+        "gradeBand": "9-12",
+        "disciplinaryCore": "ESS2.D: Weather and Climate",
+        "discipline": "Earth & Space Science"
+      },
+      {
+        "code": "HS-ESS3-4",
+        "description": "Evaluate or refine a technological solution that reduces impacts of human activities on natural systems.",
+        "gradeBand": "9-12",
+        "disciplinaryCore": "ESS3.C: Human Impacts on Earth Systems",
+        "discipline": "Earth & Space Science"
+      },
+      {
+        "code": "CCC-7",
+        "description": "Stability and Change",
+        "gradeBand": "9-12",
+        "disciplinaryCore": "Crosscutting Concepts",
+        "discipline": "Life Science"
+      }
+    ],
+    "waveworld": [
+      {
+        "code": "4-PS4-1",
+        "description": "Develop a model of waves to describe patterns in terms of amplitude and wavelength and that waves can cause objects to move.",
+        "gradeBand": "3-5",
+        "disciplinaryCore": "PS4.A: Wave Properties",
+        "discipline": "Physical Science"
+      },
+      {
+        "code": "MS-PS4-1",
+        "description": "Use mathematical representations to describe a simple model for waves that includes how the amplitude of a wave is related to the energy in a wave.",
+        "gradeBand": "6-8",
+        "disciplinaryCore": "PS4.A: Wave Properties",
+        "discipline": "Physical Science"
+      },
+      {
+        "code": "MS-PS4-2",
+        "description": "Develop and use a model to describe that waves are reflected, absorbed, or transmitted through various materials.",
+        "gradeBand": "6-8",
+        "disciplinaryCore": "PS4.A: Wave Properties",
+        "discipline": "Physical Science"
+      },
+      {
+        "code": "HS-PS4-1",
+        "description": "Use mathematical representations to support a claim regarding relationships among the frequency, wavelength, and speed of waves traveling in various media.",
+        "gradeBand": "9-12",
+        "disciplinaryCore": "PS4.A: Wave Properties",
+        "discipline": "Physical Science"
+      },
+      {
+        "code": "HS-PS4-3",
+        "description": "Evaluate the claims, evidence, and reasoning behind the idea that electromagnetic radiation can be described either by a wave model or a particle model.",
+        "gradeBand": "9-12",
+        "disciplinaryCore": "PS4.A: Wave Properties",
+        "discipline": "Physical Science"
+      },
+      {
+        "code": "HS-PS4-5",
+        "description": "Communicate technical information about how some technological devices use the principles of wave behavior and wave interactions with matter to transmit and capture information and energy.",
+        "gradeBand": "9-12",
+        "disciplinaryCore": "PS4.C: Information Technologies and Instrumentation",
+        "discipline": "Physical Science"
+      }
+    ],
+    "bodyatlas": [
+      {
+        "code": "4-LS1-1",
+        "description": "Construct an argument that plants and animals have internal and external structures that function to support survival, growth, behavior, and reproduction.",
+        "gradeBand": "3-5",
+        "disciplinaryCore": "LS1.A: Structure and Function",
+        "discipline": "Life Science"
+      },
+      {
+        "code": "4-LS1-2",
+        "description": "Use a model to describe that animals receive different types of information through their senses, process the information in their brain, and respond to the information in different ways.",
+        "gradeBand": "3-5",
+        "disciplinaryCore": "LS1.D: Information Processing",
+        "discipline": "Life Science"
+      },
+      {
+        "code": "MS-LS1-1",
+        "description": "Conduct an investigation to provide evidence that living things are made of cells; either one cell or many different numbers and types of cells.",
+        "gradeBand": "6-8",
+        "disciplinaryCore": "LS1.A: Structure and Function",
+        "discipline": "Life Science"
+      },
+      {
+        "code": "MS-LS1-2",
+        "description": "Develop and use a model to describe the function of a cell as a whole and ways the parts of cells contribute to the function.",
+        "gradeBand": "6-8",
+        "disciplinaryCore": "LS1.A: Structure and Function",
+        "discipline": "Life Science"
+      },
+      {
+        "code": "MS-LS1-3",
+        "description": "Use argument supported by evidence for how the body is a system of interacting subsystems composed of groups of cells.",
+        "gradeBand": "6-8",
+        "disciplinaryCore": "LS1.A: Structure and Function",
+        "discipline": "Life Science"
+      },
+      {
+        "code": "HS-LS1-2",
+        "description": "Develop and use a model to illustrate the hierarchical organization of interacting systems that provide specific functions within multicellular organisms.",
+        "gradeBand": "9-12",
+        "disciplinaryCore": "LS1.A: Structure and Function",
+        "discipline": "Life Science"
+      },
+      {
+        "code": "HS-LS1-3",
+        "description": "Plan and conduct an investigation to provide evidence that feedback mechanisms maintain homeostasis.",
+        "gradeBand": "9-12",
+        "disciplinaryCore": "LS1.A: Structure and Function",
+        "discipline": "Life Science"
+      }
+    ],
+    "bodyintro": [],
+    "energytransfer": [],
+    "evolvesim": [
+      {
+        "code": "MS-LS4-1",
+        "description": "Analyze and interpret data for patterns in the fossil record that document the existence, diversity, extinction, and change of life forms throughout the history of life on Earth.",
+        "gradeBand": "6-8",
+        "disciplinaryCore": "LS4.A: Evidence of Common Ancestry and Diversity",
+        "discipline": "Life Science"
+      },
+      {
+        "code": "MS-LS4-4",
+        "description": "Construct an explanation based on evidence that describes how genetic variations of traits in a population increase some individuals' probability of surviving and reproducing in a specific environment.",
+        "gradeBand": "6-8",
+        "disciplinaryCore": "LS4.B: Natural Selection",
+        "discipline": "Life Science"
+      },
+      {
+        "code": "MS-LS4-6",
+        "description": "Use mathematical representations to support explanations of how natural selection may lead to increases and decreases of specific traits in populations over time.",
+        "gradeBand": "6-8",
+        "disciplinaryCore": "LS4.C: Adaptation",
+        "discipline": "Life Science"
+      },
+      {
+        "code": "HS-LS4-1",
+        "description": "Communicate scientific information that common ancestry and biological evolution are supported by multiple lines of empirical evidence.",
+        "gradeBand": "9-12",
+        "disciplinaryCore": "LS4.A: Evidence of Common Ancestry and Diversity",
+        "discipline": "Life Science"
+      },
+      {
+        "code": "HS-LS4-2",
+        "description": "Construct an explanation based on evidence that the process of evolution primarily results from four factors: (1) the potential for a species to increase in number, (2) the heritable genetic variation of individuals in a species due to mutation and sexual reproduction, (3) competition for limited resources, and (4) the proliferation of those organisms that are better able to survive and reproduce in the environment.",
+        "gradeBand": "9-12",
+        "disciplinaryCore": "LS4.B: Natural Selection",
+        "discipline": "Life Science"
+      },
+      {
+        "code": "HS-LS4-3",
+        "description": "Apply concepts of statistics and probability to support explanations that organisms with an advantageous heritable trait tend to increase in proportion to organisms lacking this trait.",
+        "gradeBand": "9-12",
+        "disciplinaryCore": "LS4.B: Natural Selection",
+        "discipline": "Life Science"
+      },
+      {
+        "code": "HS-LS4-4",
+        "description": "Construct an explanation based on evidence for how natural selection leads to adaptation of populations.",
+        "gradeBand": "9-12",
+        "disciplinaryCore": "LS4.C: Adaptation",
+        "discipline": "Life Science"
+      },
+      {
+        "code": "HS-LS4-5",
+        "description": "Evaluate the evidence supporting claims that changes in environmental conditions may result in: (1) increases in the number of individuals of some species, (2) the emergence of new species over time, and (3) the extinction of other species.",
+        "gradeBand": "9-12",
+        "disciplinaryCore": "LS4.C: Adaptation",
+        "discipline": "Life Science"
+      },
+      {
+        "code": "HS-LS4-6",
+        "description": "Create or revise a simulation to test a solution to mitigate adverse impacts of human activity on biodiversity.",
+        "gradeBand": "9-12",
+        "disciplinaryCore": "LS4.D: Biodiversity and Humans",
+        "discipline": "Life Science"
+      }
+    ],
+    "genelab": [
+      {
+        "code": "MS-LS3-1",
+        "description": "Develop and use a model to describe why structural changes to genes (mutations) located on chromosomes may affect proteins and may result in harmful, beneficial, or neutral effects to the structure and function of the organism.",
+        "gradeBand": "6-8",
+        "disciplinaryCore": "LS3.A: Inheritance of Traits",
+        "discipline": "Life Science"
+      },
+      {
+        "code": "MS-LS3-2",
+        "description": "Develop and use a model to describe why asexual reproduction results in offspring with identical genetic information and sexual reproduction results in offspring with genetic variation.",
+        "gradeBand": "6-8",
+        "disciplinaryCore": "LS3.B: Variation of Traits",
+        "discipline": "Life Science"
+      },
+      {
+        "code": "HS-LS1-1",
+        "description": "Construct an explanation based on evidence for how the structure of DNA determines the structure of proteins which carry out the essential functions of life through systems of specialized cells.",
+        "gradeBand": "9-12",
+        "disciplinaryCore": "LS1.A: Structure and Function",
+        "discipline": "Life Science"
+      },
+      {
+        "code": "HS-LS3-1",
+        "description": "Ask questions to clarify relationships about the role of DNA and chromosomes in coding the instructions for characteristic traits passed from parents to offspring.",
+        "gradeBand": "9-12",
+        "disciplinaryCore": "LS3.A: Inheritance of Traits",
+        "discipline": "Life Science"
+      },
+      {
+        "code": "HS-LS3-2",
+        "description": "Make and defend a claim based on evidence that inheritable genetic variations may result from: (1) new genetic combinations through meiosis, (2) viable errors occurring during replication, and/or (3) mutations caused by environmental factors.",
+        "gradeBand": "9-12",
+        "disciplinaryCore": "LS3.B: Variation of Traits",
+        "discipline": "Life Science"
+      },
+      {
+        "code": "HS-LS3-3",
+        "description": "Apply concepts of statistics and probability to explain the variation and distribution of expressed traits in a population.",
+        "gradeBand": "9-12",
+        "disciplinaryCore": "LS3.B: Variation of Traits",
+        "discipline": "Life Science"
+      },
+      {
+        "code": "HS-LS4-2",
+        "description": "Construct an explanation based on evidence that the process of evolution primarily results from four factors: (1) the potential for a species to increase in number, (2) the heritable genetic variation of individuals in a species due to mutation and sexual reproduction, (3) competition for limited resources, and (4) the proliferation of those organisms that are better able to survive and reproduce in the environment.",
+        "gradeBand": "9-12",
+        "disciplinaryCore": "LS4.B: Natural Selection",
+        "discipline": "Life Science"
+      },
+      {
+        "code": "HS-LS4-3",
+        "description": "Apply concepts of statistics and probability to support explanations that organisms with an advantageous heritable trait tend to increase in proportion to organisms lacking this trait.",
+        "gradeBand": "9-12",
+        "disciplinaryCore": "LS4.B: Natural Selection",
+        "discipline": "Life Science"
+      }
+    ],
+    "k2bioshell": [],
+    "adaptationlab": [],
+    "celldivision": [],
+    "earthhistory": [],
+    "foodweb": [],
+    "geoforge": [
+      {
+        "code": "5-ESS2-1",
+        "description": "Develop a model using an example to describe ways the geosphere, biosphere, hydrosphere, and/or atmosphere interact.",
+        "gradeBand": "3-5",
+        "disciplinaryCore": "ESS2.A: Earth Materials and Systems",
+        "discipline": "Earth & Space Science"
+      },
+      {
+        "code": "MS-ESS2-1",
+        "description": "Develop a model to describe the cycling of Earth's materials and the flow of energy that drives this process.",
+        "gradeBand": "6-8",
+        "disciplinaryCore": "ESS2.A: Earth Materials and Systems",
+        "discipline": "Earth & Space Science"
+      },
+      {
+        "code": "MS-ESS2-2",
+        "description": "Construct an explanation based on evidence for how geoscience processes have changed Earth's surface at varying time and spatial scales.",
+        "gradeBand": "6-8",
+        "disciplinaryCore": "ESS2.A: Earth Materials and Systems",
+        "discipline": "Earth & Space Science"
+      },
+      {
+        "code": "HS-ESS2-1",
+        "description": "Develop a model to illustrate how Earth's internal and surface processes operate at different spatial and temporal scales to form continental and ocean-floor features.",
+        "gradeBand": "9-12",
+        "disciplinaryCore": "ESS2.A: Earth Materials and Systems",
+        "discipline": "Earth & Space Science"
+      },
+      {
+        "code": "HS-ESS2-2",
+        "description": "Analyze geoscience data to make the claim that one change to Earth's surface can create feedbacks that cause changes to other Earth systems.",
+        "gradeBand": "9-12",
+        "disciplinaryCore": "ESS2.A: Earth Materials and Systems",
+        "discipline": "Earth & Space Science"
+      }
+    ]
+  },
+  "priority_note": "Every edge in the export has priority \"high\", so priority doesn't rank these links.",
+  "dataset": {
+    "source": "https://play.quantumlearningmachines.com/api/labpath/dataset-export?dataset=learning-graph",
+    "version": "1.0.0",
+    "license": "CC-BY-4.0",
+    "citation": "QLM LabPath Dataset v1.0, Quantum Learning Machines, 2026",
+    "exported_at": "2026-10-24T01:17:05.905Z",
+    "archived": "QLM LabPath Dataset v1.0, Zenodo, https://doi.org/10.5281/zenodo.21800324 (CC BY 4.0; the archived v1.0 holds the 423 released misconceptions)",
+    "standards_source": "https://play.quantumlearningmachines.com/api/labpath/dataset-export?dataset=standards",
+    "edges_in_export": 7737,
+    "edges_by_kind": {
+      "extension": 7,
+      "reinforcement": 117,
+      "transfer": 5486,
+      "labpath-sequence": 2119,
+      "prerequisite": 8
+    },
+    "standards_rows_in_export": 394
+  },
+  "does_not_show": [
+    "Whether a particular student needs a step. This is LabPath's designed sequence, not evidence about a learner.",
+    "How strong a link is. Priority is the export's coarse band of a tuned ranking, not a measured effect.",
+    "An official alignment. Standards are LabPath's own mapping of its modes to NGSS-style codes, not a standards body's.",
+    "The misconceptions themselves. Edges carry misconception ids; look them up with qlm_misconceptions."
   ]
 }
 ```

@@ -1,7 +1,8 @@
 /**
  * End to end: start the BUILT server (dist/bin.js, as npx runs it) over stdio with the SDK client,
- * list the six tools and call each one. verify_credential is called with input it refuses before
- * any request, so this test makes no network call; the one live call is scripts/live-smoke.mjs.
+ * list the eight tools and call each one. The three network tools are called with input they refuse
+ * before any request, so this test makes no network call; the live calls are scripts/live-smoke.mjs
+ * (credential) and scripts/demo-run.mjs (the LabPath datasets).
  */
 import { Client } from "@modelcontextprotocol/sdk/client/index.js";
 import { StdioClientTransport } from "@modelcontextprotocol/sdk/client/stdio.js";
@@ -25,9 +26,9 @@ afterAll(async () => {
 });
 
 describe("the built server over stdio", () => {
-  it("lists the six tools", async () => {
+  it("lists the eight tools", async () => {
     const { tools } = await client.listTools();
-    expect(tools.map((t) => t.name).sort()).toEqual(["assistance_inventory", "learnlog_formats", "learnlog_transform", "learnlog_validate", "verify_credential", "verify_evidence"]);
+    expect(tools.map((t) => t.name).sort()).toEqual(["assistance_inventory", "learnlog_formats", "learnlog_transform", "learnlog_validate", "qlm_learning_graph", "qlm_misconceptions", "verify_credential", "verify_evidence"]);
   });
   it("calls each one", async () => {
     expect(body(await client.callTool({ name: "learnlog_formats", arguments: {} })).formats).toHaveLength(3);
@@ -43,5 +44,10 @@ describe("the built server over stdio", () => {
     const cred = await client.callTool({ name: "verify_credential", arguments: { credential: "https://app.qlmdev.com/v1/evidence?id=3f2b8c1e-9a4d-4e6b-8f1a-2c7d5e9b0a13" } });
     expect(cred.isError).toBe(true);
     expect(body(cred).error).toMatch(/evidence record link/);
+    const graph = await client.callTool({ name: "qlm_learning_graph", arguments: {} });
+    expect(graph.isError).toBe(true);
+    expect(body(graph).error).toMatch(/Give either mode_id or standard/);
+    const mis = await client.callTool({ name: "qlm_misconceptions", arguments: { limit: 0 } });
+    expect(mis.isError).toBe(true);
   });
 });

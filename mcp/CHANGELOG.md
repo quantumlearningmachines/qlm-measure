@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.2.0 (not yet published)
+
+Two new read-only tools, which read QLM's public LabPath datasets (CC BY 4.0) from `https://play.quantumlearningmachines.com/api/labpath/dataset-export` with GET only, a timeout, no redirects and one request per dataset per session:
+
+- `qlm_misconceptions`: searches the misconception dataset by words, domain, grade band or id. Evaluation-tier trigger patterns and diagnostic questions are never returned.
+- `qlm_learning_graph`: what comes before or after a LabPath activity, from a mode id or a standard code, with teacher-facing reasons, linked misconception ids and aligned standards.
+
 ## 0.1.0 (not yet published)
 
 First release. Six read-only tools over stdio:

@@ -14,17 +14,22 @@ import { learnlogTransform } from "./tools/transform.js";
 import { learnlogValidate } from "./tools/validate.js";
 import { verifyCredential } from "./tools/verify-credential.js";
 import { verifyEvidence } from "./tools/verify-evidence.js";
+import { EDGE_KINDS, qlmLearningGraph } from "./tools/learning-graph.js";
+import { qlmMisconceptions } from "./tools/misconceptions.js";
+import { DatasetClient } from "./tools/qlm-datasets.js";
 import { FORMAT_IDS } from "./transformer.js";
 
-export const TOOL_NAMES = ["learnlog_formats", "learnlog_transform", "learnlog_validate", "assistance_inventory", "verify_evidence", "verify_credential"] as const;
+export const TOOL_NAMES = ["learnlog_formats", "learnlog_transform", "learnlog_validate", "assistance_inventory", "verify_evidence", "verify_credential", "qlm_misconceptions", "qlm_learning_graph"] as const;
 
-const INSTRUCTIONS = `Learnlog MCP answers questions about what learning records actually show about help, using Learnlog (${LEARNLOG_DRAFT}). Keep the six assistance stages apart: requested, offered, generated, transmitted, displayed, accepted. One never implies the next. A stage that wasn't captured is "not recorded", never "none" or zero. Every answer has a does_not_show list: pass those limits on to the person. All tools are read-only. Five read local files only; verify_credential sends one request to app.qlmdev.com.`;
+const INSTRUCTIONS = `Learnlog MCP answers questions about what learning records actually show about help, using Learnlog (${LEARNLOG_DRAFT}). Keep the six assistance stages apart: requested, offered, generated, transmitted, displayed, accepted. One never implies the next. A stage that wasn't captured is "not recorded", never "none" or zero. Every answer has a does_not_show list: pass those limits on to the person. All tools are read-only. Five read local files only. verify_credential sends one request to app.qlmdev.com; qlm_misconceptions and qlm_learning_graph read QLM's public LabPath datasets from play.quantumlearningmachines.com.`;
 
 const LOCAL = { readOnlyHint: true, destructiveHint: false, idempotentHint: true, openWorldHint: false };
 const path = (what: string) => z.string().describe(`Full path to ${what} on this computer (absolute, or starting with ~/).`);
 
 export function createServer(options: { fetch?: typeof fetch } = {}): McpServer {
   const server = new McpServer({ name: NAME, version: VERSION }, { instructions: INSTRUCTIONS });
+  const datasets = new DatasetClient(options.fetch);
+  const NETWORK = { readOnlyHint: true, destructiveHint: false, idempotentHint: true, openWorldHint: true };
 
   server.registerTool(
     "learnlog_formats",
@@ -110,9 +115,43 @@ export function createServer(options: { fetch?: typeof fetch } = {}): McpServer 
       title: "Verify a QLM credential",
       description: "Is this QLM credential real and current? Give its ID (urn:uuid:...) or a link that contains it. Sends one request to https://app.qlmdev.com/v1/verify and returns whether it verified, each check with its result, the issuer, the achievement, the date and the AI-help summary by stage. The report has no personal data.",
       inputSchema: { credential: z.string().min(1).max(2048).describe("The credential ID, or a link containing it.") },
-      annotations: { readOnlyHint: true, destructiveHint: false, idempotentHint: true, openWorldHint: true },
+      annotations: NETWORK,
     },
     async (args) => guard(() => verifyCredential(args, options.fetch)),
+  );
+
+  server.registerTool(
+    "qlm_misconceptions",
+    {
+      title: "QLM misconceptions",
+      description: "Which student misconception might be behind this? Searches QLM's public, research-based misconception dataset (LabPath Dataset v1.0, CC BY 4.0) by search words, domain, grade band or id. Returns each misconception's student belief, the scientific reality, a counterexample, a teacher intervention, its research source, severity, grade bands and LabPath modes, with the citation. Reads https://play.quantumlearningmachines.com once per session.",
+      inputSchema: {
+        search: z.string().max(200).optional().describe("Words that must all appear, for example: force motion."),
+        domain: z.string().max(50).optional().describe("For example physics, chemistry, biology, math, cs, health."),
+        grade_band: z.string().max(30).optional().describe("For example K-2, 3-5, 6-8, 9-12, postsecondary."),
+        id: z.string().max(50).optional().describe("A misconception id, for example from qlm_learning_graph."),
+        limit: z.number().int().min(1).max(50).optional().describe("How many to return. Default 10."),
+      },
+      annotations: NETWORK,
+    },
+    async (args) => guard(() => qlmMisconceptions(args, datasets)),
+  );
+
+  server.registerTool(
+    "qlm_learning_graph",
+    {
+      title: "QLM learning graph",
+      description: "What comes before or after this LabPath activity? Give a LabPath mode id (from qlm_misconceptions) or a standard code. Returns the linked activities in LabPath's designed learning graph, with the teacher-facing reason for each link, the misconception ids it carries, and the standards aligned to each activity. Reads https://play.quantumlearningmachines.com once per session.",
+      inputSchema: {
+        mode_id: z.string().min(1).max(100).optional().describe("A LabPath mode id, for example from a misconception's modes."),
+        standard: z.string().min(1).max(50).optional().describe("A standard code, for example HS-PS2-1."),
+        direction: z.enum(["before", "after", "both"]).optional().describe("Default both."),
+        kinds: z.array(z.enum(EDGE_KINDS)).min(1).optional().describe("Edge kinds to include. Default all."),
+        limit: z.number().int().min(1).max(200).optional().describe("Most edges per direction. Default 25."),
+      },
+      annotations: NETWORK,
+    },
+    async (args) => guard(() => qlmLearningGraph(args, datasets)),
   );
 
   return server;

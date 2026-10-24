@@ -25,6 +25,12 @@ names each file, its source path, the commit and its SHA-256.
 - data/preprint/ and vendor/transformer/cross-source-analysis-data.mjs:
   aggregate counts published with the Learnlog preprint. No learner rows.
 
+qlm_misconceptions and qlm_learning_graph read, at run time and without
+bundling them, the LabPath misconception, learning-graph and standards
+datasets: QLM LabPath Dataset v1.0, Quantum Learning Machines, 2026, CC BY 4.0,
+https://play.quantumlearningmachines.com/api/labpath/dataset-export, archived
+as https://doi.org/10.5281/zenodo.21800324.
+
 The selection, attribution and limits of each excerpt are in
 data/THIRD_PARTY_DATA.md and data/provenance/. No source author endorses this
 software.
