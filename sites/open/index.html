@@ -1,0 +1,298 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Open at QLM · Quantum Learning Machines</title>
+<meta name="description" content="Everything Quantum Learning Machines publishes in the open: tools for districts, open datasets, trained models, preprints, SDKs and the Learnlog Internet-Draft. Every item shows its license.">
+<meta property="og:title" content="Open at QLM">
+<meta property="og:description" content="Tools for districts, open datasets, trained models, preprints, SDKs and the Learnlog Internet-Draft, in one place. Every item shows its license.">
+<meta property="og:url" content="https://open.quantumlearningmachines.com/">
+<meta name="twitter:card" content="summary">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+<style>
+:root{--navy:#0B1726;--navy2:#102A3F;--line:#23405C;--cream:#F3F1EA;--ink:#0B1726;--teal:#14B8A6;--teal-l:#5EEAD4;--teal-d:#0F766E;--muted:#9FB3C8;--soft:#C9D6E3;--slate:#334155;--amber:#FCD34D}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%;scroll-behavior:smooth}
+body{margin:0;background:var(--navy);color:var(--cream);font:400 18px/1.55 Inter,system-ui,sans-serif}
+a{color:var(--teal-l);text-underline-offset:3px}
+.wrap{max-width:1120px;margin:0 auto;padding:0 24px}
+header{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:22px 0}
+.brand{display:flex;align-items:center;gap:12px;color:var(--muted);text-decoration:none;font-weight:600;font-size:13px;letter-spacing:.12em;text-transform:uppercase}
+.q{width:36px;height:36px;border-radius:9px;background:var(--teal);color:var(--navy);display:grid;place-items:center;font:600 20px Fraunces,Georgia,serif;letter-spacing:0}
+.hero{padding:48px 0 28px}
+.eyebrow{font-size:13px;letter-spacing:.14em;text-transform:uppercase;color:var(--teal-l);font-weight:600}
+h1{font:500 clamp(42px,6.5vw,78px)/1.04 Fraunces,Georgia,serif;letter-spacing:-.015em;margin:14px 0 18px}
+h1 em{font-style:normal;color:var(--teal-l)}
+.lede{font-size:clamp(18px,2.2vw,22px);color:var(--soft);max-width:780px;margin:0}
+.jump{display:flex;flex-wrap:wrap;gap:8px;margin:30px 0 0;padding:0;list-style:none}
+.jump a{display:inline-block;border:1px solid var(--line);border-radius:999px;padding:7px 14px;font-size:15px;color:var(--soft);text-decoration:none}
+.jump a:hover{border-color:var(--teal);color:var(--teal-l)}
+section{padding:52px 0;border-top:1px solid var(--line)}
+h2{font:500 clamp(28px,3.6vw,40px)/1.1 Fraunces,Georgia,serif;margin:0 0 10px;letter-spacing:-.01em}
+.sub{color:var(--soft);max-width:740px;margin:0 0 24px;font-size:17px}
+.list{list-style:none;margin:0;padding:0;display:grid;gap:12px}
+.item{background:var(--navy2);border:1px solid var(--line);border-radius:14px;padding:18px 20px;display:grid;grid-template-columns:minmax(0,1fr) auto;gap:6px 18px;align-items:start}
+.item h3{margin:0;font:600 18px/1.35 Inter,system-ui,sans-serif}
+.item p{margin:0;color:var(--soft);font-size:16px;grid-column:1}
+.links{grid-column:1;display:flex;flex-wrap:wrap;gap:4px 16px;font-size:15px;font-weight:500;margin-top:4px}
+.lic{grid-column:2;grid-row:1 / span 3;justify-self:end;font-size:12px;letter-spacing:.06em;text-transform:uppercase;font-weight:600;border-radius:6px;padding:4px 8px;white-space:nowrap;background:rgba(94,234,212,.12);color:var(--teal-l);border:1px solid rgba(94,234,212,.35)}
+.lic.free{background:rgba(201,214,227,.08);color:var(--soft);border-color:var(--line)}
+.lic.limit{background:rgba(252,211,77,.1);color:var(--amber);border-color:rgba(252,211,77,.4)}
+.meta{color:var(--muted);font-size:14px}
+.group{font-size:13px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);font-weight:600;margin:28px 0 10px}
+.key{display:flex;flex-wrap:wrap;gap:10px 18px;margin:22px 0 0;font-size:15px;color:var(--muted);align-items:center}
+.key .lic{grid-row:auto;margin-right:6px}
+footer{padding:36px 0 48px;color:var(--muted);font-size:15px;border-top:1px solid var(--line)}
+footer .wrap{display:flex;flex-wrap:wrap;justify-content:space-between;gap:12px}
+@media (max-width:760px){
+  .wrap{padding:0 16px}
+  .hero{padding-top:24px}
+  section{padding:40px 0}
+  .item{grid-template-columns:minmax(0,1fr);padding:16px}
+  .lic{grid-column:1;grid-row:auto;justify-self:start;order:-1}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <a class="brand" href="https://quantumlearningmachines.com/"><span class="q">Q</span>Quantum Learning Machines</a>
+  </header>
+
+  <div class="hero">
+    <div class="eyebrow">Open at QLM</div>
+    <h1>Everything we publish <em>in the open</em>, in one place.</h1>
+    <p class="lede">Tools for districts, open datasets, trained models, papers, SDKs and the Learnlog draft standard. Each item shows its license. Free tools that aren't open source say so.</p>
+    <ul class="jump">
+      <li><a href="#districts">For districts</a></li>
+      <li><a href="#tools">Free tools</a></li>
+      <li><a href="#data">Datasets</a></li>
+      <li><a href="#models">Models</a></li>
+      <li><a href="#code">SDKs and code</a></li>
+      <li><a href="#standard">Learnlog draft</a></li>
+      <li><a href="#papers">Papers</a></li>
+    </ul>
+    <div class="key">
+      <span><span class="lic">CC BY 4.0</span>open license</span>
+      <span><span class="lic limit">Limits</span>open, with conditions</span>
+      <span><span class="lic free">Free to use</span>no cost, not open source</span>
+    </div>
+  </div>
+</div>
+
+<section id="districts">
+  <div class="wrap">
+    <h2>For districts and schools</h2>
+    <p class="sub">Ready to use with a team this week. No sign-in.</p>
+    <ul class="list">
+      <li class="item"><h3>Norming protocol with scoring sheet</h3>
+        <p>A 40-minute session for teacher teams grading on proficiency scales. It ends in two dated agreement percentages.</p>
+        <div class="links"><a href="https://yardstick.quantumlearningmachines.com/resources/files/QLM_Norming_Protocol_Scoring_Sheet.pdf">PDF</a><a href="https://yardstick.quantumlearningmachines.com/resources/files/QLM_Norming_Protocol_Scoring_Sheet.docx">Word</a><a href="https://doi.org/10.5281/zenodo.23024222">DOI</a></div>
+        <span class="lic">CC BY 4.0</span></li>
+      <li class="item"><h3>Revision credit rule template</h3>
+        <p>One page for deciding how student support counts toward a proficiency decision.</p>
+        <div class="links"><a href="https://yardstick.quantumlearningmachines.com/resources/files/QLM_Revision_Credit_Rule_Template.pdf">PDF</a><a href="https://yardstick.quantumlearningmachines.com/resources/files/QLM_Revision_Credit_Rule_Template.docx">Word</a><a href="https://doi.org/10.5281/zenodo.23024265">DOI</a></div>
+        <span class="lic">CC BY 4.0</span></li>
+      <li class="item"><h3>Norming calculator</h3>
+        <p>Exact and adjacent agreement from a norming grid. It makes no network calls and works offline, so your data stays on your computer.</p>
+        <div class="links"><a href="https://yardstick.quantumlearningmachines.com/resources/norming-calculator.html">Open the calculator</a></div>
+        <span class="lic free">Free to use</span></li>
+      <li class="item"><h3>The open measurement checklist</h3>
+        <p>Five questions every district should ask every education-AI vendor, with what a good answer looks like.</p>
+        <div class="links"><a href="https://play.quantumlearningmachines.com/resources/open-measurement-checklist">Read online</a><a href="https://play.quantumlearningmachines.com/resources/open-measurement-checklist.pdf">PDF</a></div>
+        <span class="lic">CC BY 4.0</span></li>
+      <li class="item"><h3>The open measurement layer</h3>
+        <p>A three-page brief on why open education AI needs a shared, checkable way to measure what works.</p>
+        <div class="links"><a href="https://play.quantumlearningmachines.com/resources/open-measurement-layer">Read online</a><a href="https://play.quantumlearningmachines.com/resources/open-measurement-layer.pdf">PDF</a></div>
+        <span class="lic free">Free to read</span></li>
+      <li class="item"><h3>AI in the classroom</h3>
+        <p>A four-page guide to assignments where the process is the evidence, so using AI to skip the thinking doesn't work.</p>
+        <div class="links"><a href="https://play.quantumlearningmachines.com/resources/ai-in-the-classroom.pdf">PDF</a></div>
+        <span class="lic free">Free to read</span></li>
+    </ul>
+  </div>
+</section>
+
+<section id="tools">
+  <div class="wrap">
+    <h2>Free tools</h2>
+    <p class="sub">Free to use. These are QLM products, not open source.</p>
+    <ul class="list">
+      <li class="item"><h3>LabPath worlds</h3>
+        <p>Interactive science and math worlds, by grade band and subject. Students predict and experiment, and teachers see misconception evidence.</p>
+        <div class="links"><a href="https://play.quantumlearningmachines.com/ecogenesis/worlds">Browse the worlds</a><a href="https://play.quantumlearningmachines.com/ecogenesis/worlds/graph?grade=6-8">Curriculum learning graph</a></div>
+        <span class="lic free">Free to use</span></li>
+      <li class="item"><h3>TeachProof</h3>
+        <p>Practice teaching with virtual students and get coaching on each session. Five free sessions a day.</p>
+        <div class="links"><a href="https://teachproof.quantumlearningmachines.com/">Open TeachProof</a></div>
+        <span class="lic free">Free to use</span></li>
+      <li class="item"><h3>TeachProof Clinical</h3>
+        <p>AI patients with gated histories: you draw out the facts by asking. Optometry and nursing programs.</p>
+        <div class="links"><a href="https://teachproof.quantumlearningmachines.com/clinical">Try a clinical consult</a></div>
+        <span class="lic free">Free to use</span></li>
+      <li class="item"><h3>Credentials</h3>
+        <p>Credentials that record what a student demonstrated, not just what they completed. Programs in clinical optometry, clinical nursing and general medicine.</p>
+        <div class="links"><a href="https://play.quantumlearningmachines.com/credentials">See the programs</a></div>
+        <span class="lic free">Free to use</span></li>
+      <li class="item"><h3>YardStick</h3>
+        <p>Measurement infrastructure for researchers and districts: run studies, share results others can check, and calibrate content.</p>
+        <div class="links"><a href="https://yardstick.quantumlearningmachines.com/">Open YardStick</a><a href="https://yardstick.quantumlearningmachines.com/for-districts">For districts</a></div>
+        <span class="lic free">Free to use</span></li>
+      <li class="item"><h3>SAT Mastery free diagnostic</h3>
+        <p>Fifteen real questions for the SAT, ACT or AP. No sign-up. You get an estimated score, the gaps, and a study plan.</p>
+        <div class="links"><a href="https://sat-mastery.com/free-diagnostic">Take the diagnostic</a></div>
+        <span class="lic free">Free to use</span></li>
+    </ul>
+  </div>
+</section>
+
+<section id="data">
+  <div class="wrap">
+    <h2>Open datasets</h2>
+    <p class="sub">Download them, cite them, build on them.</p>
+    <ul class="list">
+      <li class="item"><h3>QLM misconception ontology v1.0</h3>
+        <p>423 research-cited mathematics misconceptions, K-16, built for the LabPath worlds.</p>
+        <div class="links"><a href="https://doi.org/10.5281/zenodo.21800324">Zenodo</a><a href="https://play.quantumlearningmachines.com/developer">Developer page and API</a></div>
+        <span class="lic">CC BY 4.0</span></li>
+      <li class="item"><h3>LabPath open datasets</h3>
+        <p>The learning graph, NGSS standards alignment, and a crosswalk that maps QLM misconceptions to other datasets.</p>
+        <div class="links"><a href="https://doi.org/10.5281/zenodo.23024332">Zenodo</a></div>
+        <span class="lic">CC BY 4.0</span></li>
+      <li class="item"><h3>Misconceptions by Common Core standard</h3>
+        <p>Browse the ontology by Common Core math standard.</p>
+        <div class="links"><a href="https://play.quantumlearningmachines.com/developer/misconceptions">Browse</a></div>
+        <span class="lic free">Free to use</span></li>
+      <li class="item"><h3>YardStick verification registry</h3>
+        <p>Two calibrations on public ASSISTments data, each with its report and parameter file, plus synthetic recovery checks, labeled as synthetic.</p>
+        <div class="links"><a href="https://yardstick.quantumlearningmachines.com/analyses">Open the registry</a><a href="https://yardstick.quantumlearningmachines.com/reports/calibration_params_finding_percents.csv">Finding percents (CSV)</a><a href="https://yardstick.quantumlearningmachines.com/reports/calibration_params_ordering_fractions.csv">Ordering fractions (CSV)</a></div>
+        <span class="lic free">Free to read</span></li>
+    </ul>
+  </div>
+</section>
+
+<section id="models">
+  <div class="wrap">
+    <h2>Trained models</h2>
+    <p class="sub">On Hugging Face. Each model card leads with its limitations; read them before you use a model.</p>
+    <ul class="list">
+      <li class="item"><h3>qlm-map-classifier</h3>
+        <p>Labels a K-12 math student response with the misconception it shows, from 39 grouped categories. It catches most misconceptions, and about half of what it flags is wrong.</p>
+        <div class="links"><a href="https://huggingface.co/QuantumLearningMachines/qlm-map-classifier">Hugging Face</a><a href="https://doi.org/10.57967/hf/10655">DOI</a></div>
+        <span class="lic">MIT</span></li>
+      <li class="item"><h3>qlm-nto-classifier</h3>
+        <p>Labels an utterance from K-12 math classroom dialogue with the teaching talk move it performs.</p>
+        <div class="links"><a href="https://huggingface.co/QuantumLearningMachines/qlm-nto-classifier">Hugging Face</a><a href="https://doi.org/10.57967/hf/10654">DOI</a></div>
+        <span class="lic limit">CC BY-NC-SA 4.0 · non-commercial</span></li>
+      <li class="item"><h3>qlm-math-tutor</h3>
+        <p>An 8B math tutoring model built on Llama 3.1 8B Instruct. Access is gated: request it on Hugging Face.</p>
+        <div class="links"><a href="https://huggingface.co/QuantumLearningMachines/qlm-math-tutor">Hugging Face</a></div>
+        <span class="lic limit">Llama 3.1 license · gated</span></li>
+    </ul>
+  </div>
+</section>
+
+<section id="code">
+  <div class="wrap">
+    <h2>SDKs and code</h2>
+    <p class="sub">Open source. Install it, read it, change it.</p>
+    <ul class="list">
+      <li class="item"><h3>qlm-measure SDK</h3>
+        <p>Evidence events, record verification and dataset tools for education AI, in JavaScript and Python.</p>
+        <div class="links"><a href="https://github.com/quantumlearningmachines/qlm-measure">GitHub</a><a href="https://www.npmjs.com/package/qlm-measure">npm</a><a href="https://pypi.org/project/qlm-measure/">PyPI</a><a href="https://doi.org/10.5281/zenodo.21800501">Zenodo</a></div>
+        <span class="lic">Apache-2.0</span></li>
+      <li class="item"><h3>QLM Transformer and adapters</h3>
+        <p>Turns the logs you already have into Learnlog records. Adapters for TutorMoments, OATutor, Sandpiper (the National Tutoring Observatory's annotation app) and an explicit help-event format, plus an Apache Airflow pipeline.</p>
+        <div class="links"><a href="https://github.com/quantumlearningmachines/qlm-measure/tree/main/tools/qlm-transformer">Transformer</a><a href="https://github.com/quantumlearningmachines/qlm-measure/tree/main/integrations/airflow">Airflow pipeline</a><a href="https://transformer.quantumlearningmachines.com/">Try it in your browser</a></div>
+        <span class="lic">Apache-2.0</span></li>
+      <li class="item"><h3>Learnlog MCP</h3>
+        <p>Ask your AI assistant what learning records actually show about help. Eight read-only tools and four Claude skills.</p>
+        <div class="links"><a href="https://www.npmjs.com/package/@qlm/learnlog-mcp">npm</a><a href="https://github.com/quantumlearningmachines/qlm-measure/tree/main/mcp">GitHub</a><a href="https://learnlog-site.vercel.app/">Watch the demo</a></div>
+        <span class="lic">Apache-2.0</span></li>
+      <li class="item"><h3>Verify a record</h3>
+        <p>Drop in a measurement record and check it. The page can't make network requests, so nothing leaves your device.</p>
+        <div class="links"><a href="https://qlm-verify-deploy.vercel.app/">Open the verifier</a></div>
+        <span class="lic">Apache-2.0</span></li>
+      <li class="item"><h3>yardstick-studies</h3>
+        <p>A kernel for studies with an LLM in the loop that others can rerun and check.</p>
+        <div class="links"><a href="https://github.com/quantumkumar/yardstick-studies">GitHub</a><a href="https://doi.org/10.5281/zenodo.22743788">Zenodo</a></div>
+        <span class="lic">Apache-2.0</span></li>
+    </ul>
+  </div>
+</section>
+
+<section id="standard">
+  <div class="wrap">
+    <h2>The Learnlog draft standard</h2>
+    <p class="sub">Learnlog is a proposed open format for recording AI help in learning. It keeps each stage of help apart, and it never turns "not recorded" into "none."</p>
+    <ul class="list">
+      <li class="item"><h3>Learnlog Assistance Capture Profile and Optional Event File Representation</h3>
+        <p>An individual Internet-Draft, revision 03. It is a proposal, not an approved IETF standard.</p>
+        <div class="links"><a href="https://datatracker.ietf.org/doc/draft-srivastava-learnlog/">IETF Datatracker</a><a href="https://learnlog-site.vercel.app/">About Learnlog</a></div>
+        <span class="lic free">IETF Trust</span></li>
+    </ul>
+  </div>
+</section>
+
+<section id="papers">
+  <div class="wrap">
+    <h2>Papers</h2>
+    <p class="sub">Preprints, a standards paper, and preregistrations, newest first.</p>
+    <div class="group">Preprints on EdArXiv</div>
+    <ul class="list">
+      <li class="item"><h3>A corrective note that names the learner's stated belief, against a plain note: a preregistered randomized trial run in one conference session</h3>
+        <p class="meta">October 13, 2026</p>
+        <div class="links"><a href="https://doi.org/10.35542/osf.io/fd64m_v1">doi:10.35542/osf.io/fd64m_v1</a></div>
+        <span class="lic">CC BY 4.0</span></li>
+      <li class="item"><h3>Crediting assisted work inflates mastery: a preregistered comparison of evidence rules in intelligent tutoring logs</h3>
+        <p class="meta">September 18, 2026</p>
+        <div class="links"><a href="https://doi.org/10.35542/osf.io/wzbqa_v1">doi:10.35542/osf.io/wzbqa_v1</a></div>
+        <span class="lic">CC BY 4.0</span></li>
+      <li class="item"><h3>Scaffold-Conditioned Evidence Weighting for Misconception Tracking: A Sealed-Truth Synthetic Validation</h3>
+        <p class="meta">August 29, 2026</p>
+        <div class="links"><a href="https://doi.org/10.35542/osf.io/5byze_v1">doi:10.35542/osf.io/5byze_v1</a></div>
+        <span class="lic">CC BY 4.0</span></li>
+      <li class="item"><h3>Credentials That Carry Their Evidence: Credential design, dynamic tiering, and approved use when AI agents can do the work</h3>
+        <p class="meta">August 18, 2026</p>
+        <div class="links"><a href="https://doi.org/10.35542/osf.io/63rea_v1">doi:10.35542/osf.io/63rea_v1</a></div>
+        <span class="lic">CC BY 4.0</span></li>
+      <li class="item"><h3>The Open Measurement Layer: Toward Shared, Auditable Infrastructure for Evaluating Educational AI</h3>
+        <p class="meta">August 12, 2026</p>
+        <div class="links"><a href="https://doi.org/10.35542/osf.io/becxs_v1">doi:10.35542/osf.io/becxs_v1</a></div>
+        <span class="lic">CC BY 4.0</span></li>
+      <li class="item"><h3>Embedded Measurement Infrastructure for Continuous Education Research: Design, Statistical Operating Characteristics, and a Simulation Study</h3>
+        <p class="meta">August 11, 2026</p>
+        <div class="links"><a href="https://doi.org/10.35542/osf.io/ze4wd_v1">doi:10.35542/osf.io/ze4wd_v1</a><a href="https://doi.org/10.5281/zenodo.21800154">Also on Zenodo</a></div>
+        <span class="lic">CC BY 4.0</span></li>
+    </ul>
+    <div class="group">Standards paper</div>
+    <ul class="list">
+      <li class="item"><h3>A verifiable-study standard for LLM-in-the-loop research</h3>
+        <p class="meta">September 28, 2026 · Zenodo</p>
+        <div class="links"><a href="https://doi.org/10.5281/zenodo.23003118">doi:10.5281/zenodo.23003118</a></div>
+        <span class="lic">CC BY 4.0</span></li>
+    </ul>
+    <div class="group">Preregistrations on OSF</div>
+    <ul class="list">
+      <li class="item"><h3>Believable is not valid: LLM-simulated student populations reproduce the marginals of real response data and not its structure</h3>
+        <p class="meta">Registered October 2, 2026</p>
+        <div class="links"><a href="https://osf.io/ev2ns">osf.io/ev2ns</a></div>
+        <span class="lic">CC BY 4.0</span></li>
+      <li class="item"><h3>Believable Is Not Valid: A preregistered severe test of LLM student avatars as a substitute for human pilot data in assessment development</h3>
+        <p class="meta">Registered July 31, 2026</p>
+        <div class="links"><a href="https://osf.io/7k2u3">osf.io/7k2u3</a></div>
+        <span class="lic">CC0 1.0</span></li>
+    </ul>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <span>Kumar Srivastava &middot; <a href="https://quantumlearningmachines.com/">Quantum Learning Machines</a> &middot; <a href="mailto:kumar@quantumlearningmachines.com?subject=Open%20at%20QLM">kumar@quantumlearningmachines.com</a></span>
+    <span>Every link on this page was checked on October 24, 2026.</span>
+  </div>
+</footer>
+</body>
+</html>
