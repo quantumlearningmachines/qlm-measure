@@ -2,837 +2,963 @@ TAP version 13
 # Subtest: Each metric counts only the observed lifecycle and keeps other observations unknown
 ok 1 - Each metric counts only the observed lifecycle and keeps other observations unknown
   ---
-  duration_ms: 1.452396
+  duration_ms: 3.103125
   type: 'test'
   ...
 # Subtest: A display record does not imply a request or generation observation
 ok 2 - A display record does not imply a request or generation observation
   ---
-  duration_ms: 0.274687
+  duration_ms: 0.376333
   type: 'test'
   ...
 # Subtest: Synthetic illustrations are isolated from empirical engine and aggregate
 ok 3 - Synthetic illustrations are isolated from empirical engine and aggregate
   ---
-  duration_ms: 1.270066
+  duration_ms: 1.7225
   type: 'test'
   ...
 # Subtest: Malformed and nonillustrative inputs cannot silently become observations
 ok 4 - Malformed and nonillustrative inputs cannot silently become observations
   ---
-  duration_ms: 0.667181
+  duration_ms: 0.33375
   type: 'test'
   ...
 # Subtest: The page introduces capture rules before the transformer and retains real source controls
 ok 5 - The page introduces capture rules before the transformer and retains real source controls
   ---
-  duration_ms: 0.320516
+  duration_ms: 0.170333
   type: 'test'
   ...
 # Subtest: Standards positioning acknowledges existing mechanisms and the limits of the proposal
 ok 6 - Standards positioning acknowledges existing mechanisms and the limits of the proposal
   ---
-  duration_ms: 0.248619
+  duration_ms: 0.112166
   type: 'test'
   ...
 # Subtest: Packaged full binding examples equal the generated Python JSON without browser conversion
 ok 7 - Packaged full binding examples equal the generated Python JSON without browser conversion
   ---
-  duration_ms: 5.046402
+  duration_ms: 2.235833
   type: 'test'
   ...
 # Subtest: Full xAPI and Caliper examples preserve the same capture payload and actual source lifecycle
 ok 8 - Full xAPI and Caliper examples preserve the same capture payload and actual source lifecycle
   ---
-  duration_ms: 0.83557
+  duration_ms: 0.979292
   type: 'test'
   ...
 # Subtest: Binding selector rejects missing carrier fixtures and page distinguishes optional legacy carrier
 ok 9 - Binding selector rejects missing carrier fixtures and page distinguishes optional legacy carrier
   ---
-  duration_ms: 2.571187
+  duration_ms: 0.51125
   type: 'test'
   ...
 # Subtest: Selected descriptive counts reproduce the pipeline-generated aggregate facts
 ok 10 - Selected descriptive counts reproduce the pipeline-generated aggregate facts
   ---
-  duration_ms: 1.159431
+  duration_ms: 2.56475
   type: 'test'
   ...
 # Subtest: Remove, re-add, reorder and repeated selections do not double count a source
 ok 11 - Remove, re-add, reorder and repeated selections do not double count a source
   ---
-  duration_ms: 0.942469
+  duration_ms: 0.946459
   type: 'test'
   ...
 # Subtest: No source selection is zero selected records, not evidence of zero actual assistance
 ok 12 - No source selection is zero selected records, not evidence of zero actual assistance
   ---
-  duration_ms: 0.239616
+  duration_ms: 0.092166
   type: 'test'
   ...
 # Subtest: Selection cannot invent a source, accept duplicates in the source definition or sum invalid counts
 ok 13 - Selection cannot invent a source, accept duplicates in the source definition or sum invalid counts
   ---
-  duration_ms: 1.343995
+  duration_ms: 3.276167
   type: 'test'
   ...
 # Subtest: Browser data equals the generated summary and the new panel stays separate from earlier aggregates
 ok 14 - Browser data equals the generated summary and the new panel stays separate from earlier aggregates
   ---
-  duration_ms: 0.997962
+  duration_ms: 1.078375
   type: 'test'
   ...
 # Subtest: Airflow download matches its published byte count and SHA-256
 ok 15 - Airflow download matches its published byte count and SHA-256
   ---
-  duration_ms: 1.631583
+  duration_ms: 3.276209
   type: 'test'
   ...
 # Subtest: Website CTA points to the actual downloadable package
 ok 16 - Website CTA points to the actual downloadable package
   ---
-  duration_ms: 0.658367
+  duration_ms: 2.518292
   type: 'test'
   ...
 # Subtest: Assistance-profile CTA has a separate packaged implementation download
 ok 17 - Assistance-profile CTA has a separate packaged implementation download
   ---
-  duration_ms: 4.06836
+  duration_ms: 2.257333
   type: 'test'
   ...
 # Subtest: Airflow ZIP directory contains source and examples without runtime data or credentials
 ok 18 - Airflow ZIP directory contains source and examples without runtime data or credentials
   ---
-  duration_ms: 1.880942
+  duration_ms: 0.882375
   type: 'test'
   ...
 # Subtest: Built-in adapters are two differently structured, verified research sources
 ok 19 - Built-in adapters are two differently structured, verified research sources
   ---
-  duration_ms: 2.501854
+  duration_ms: 1.888792
   type: 'test'
   ...
 # Subtest: Embedded samples equal downloadable source excerpt bytes and metadata hashes
 ok 20 - Embedded samples equal downloadable source excerpt bytes and metadata hashes
   ---
-  duration_ms: 12.320631
+  duration_ms: 5.27475
   type: 'test'
   ...
 # Subtest: Real dialogue turns become 310 events in two session records
 ok 21 - Real dialogue turns become 310 events in two session records
   ---
-  duration_ms: 5.675736
+  duration_ms: 2.638208
   type: 'test'
   ...
 # Subtest: Recorded request and tutor response are retained without invented semantic labels
 ok 22 - Recorded request and tutor response are retained without invented semantic labels
   ---
-  duration_ms: 1.271418
+  duration_ms: 0.373041
   type: 'test'
   ...
 # Subtest: No absolute source clock is fabricated from relative transcript offsets
 ok 23 - No absolute source clock is fabricated from relative transcript offsets
   ---
-  duration_ms: 1.387445
+  duration_ms: 0.149833
   type: 'test'
   ...
 # Subtest: Source array order is retained even if turn numbers and offsets run backwards
 ok 24 - Source array order is retained even if turn numbers and offsets run backwards
   ---
-  duration_ms: 4.80251
+  duration_ms: 5.741625
   type: 'test'
   ...
 # Subtest: Dialogue identifiers and model-generated enrichments are omitted from event fields
 ok 25 - Dialogue identifiers and model-generated enrichments are omitted from event fields
   ---
-  duration_ms: 8.937539
+  duration_ms: 6.200833
   type: 'test'
   ...
 # Subtest: Participant table preserves original columns and reports assignment, not help delivery
 ok 26 - Participant table preserves original columns and reports assignment, not help delivery
   ---
-  duration_ms: 0.975448
+  duration_ms: 0.451042
   type: 'test'
   ...
 # Subtest: Missing source metrics remain explicit, with no substituted scores or usage
 ok 27 - Missing source metrics remain explicit, with no substituted scores or usage
   ---
-  duration_ms: 4.415937
+  duration_ms: 5.010292
   type: 'test'
   ...
 # Subtest: Verified sample provenance binds exact original-file row locators
 ok 28 - Verified sample provenance binds exact original-file row locators
   ---
-  duration_ms: 0.492281
+  duration_ms: 0.385958
   type: 'test'
   ...
 # Subtest: A changed byte or fabricated caller sourceKind cannot confer published provenance
 ok 29 - A changed byte or fabricated caller sourceKind cannot confer published provenance
   ---
-  duration_ms: 27.957295
+  duration_ms: 13.627625
   type: 'test'
   ...
 # Subtest: Renamed identical public sample remains an exact verified byte match
 ok 30 - Renamed identical public sample remains an exact verified byte match
   ---
-  duration_ms: 23.382539
+  duration_ms: 13.482875
   type: 'test'
   ...
 # Subtest: UTF-8 BOM and CRLF are hashed as exact original input bytes
 ok 31 - UTF-8 BOM and CRLF are hashed as exact original input bytes
   ---
-  duration_ms: 18.612813
+  duration_ms: 12.691291
   type: 'test'
   ...
 # Subtest: Mixed-source aggregation counts event types and keeps measurement units distinct
 ok 32 - Mixed-source aggregation counts event types and keeps measurement units distinct
   ---
-  duration_ms: 1.115215
+  duration_ms: 0.494291
   type: 'test'
   ...
 # Subtest: Two source sessions with the same subject produce separate scoped records
 ok 33 - Two source sessions with the same subject produce separate scoped records
   ---
-  duration_ms: 9.456239
+  duration_ms: 8.271416
   type: 'test'
   ...
 # Subtest: Reimport has fresh record IDs and salts, without silently merging records
 ok 34 - Reimport has fresh record IDs and salts, without silently merging records
   ---
-  duration_ms: 19.064353
+  duration_ms: 11.671167
   type: 'test'
   ...
 # Subtest: HMAC matches independent Node cryptography and scopes source plus tenant
 ok 35 - HMAC matches independent Node cryptography and scopes source plus tenant
   ---
-  duration_ms: 1.787163
+  duration_ms: 1.010833
   type: 'test'
   ...
 # Subtest: RFC 8785 precomputed digest vector 1
 ok 36 - RFC 8785 precomputed digest vector 1
   ---
-  duration_ms: 0.741861
+  duration_ms: 0.321791
   type: 'test'
   ...
 # Subtest: RFC 8785 precomputed digest vector 2
 ok 37 - RFC 8785 precomputed digest vector 2
   ---
-  duration_ms: 0.373514
+  duration_ms: 0.220417
   type: 'test'
   ...
 # Subtest: RFC 8785 precomputed digest vector 3
 ok 38 - RFC 8785 precomputed digest vector 3
   ---
-  duration_ms: 0.296611
+  duration_ms: 0.159125
   type: 'test'
   ...
 # Subtest: Canonicalization rejects unsupported JSON and unpaired Unicode
 ok 39 - Canonicalization rejects unsupported JSON and unpaired Unicode
   ---
-  duration_ms: 0.4515
+  duration_ms: 0.239917
   type: 'test'
   ...
 # Subtest: Edited dialogue event text fails chain verification
 ok 40 - Edited dialogue event text fails chain verification
   ---
-  duration_ms: 9.63525
+  duration_ms: 4.027041
   type: 'test'
   ...
 # Subtest: Edited header fails chain verification
 ok 41 - Edited header fails chain verification
   ---
-  duration_ms: 1.564038
+  duration_ms: 0.504166
   type: 'test'
   ...
 # Subtest: Tail deletion is detected against the independently stored checkpoint
 ok 42 - Tail deletion is detected against the independently stored checkpoint
   ---
-  duration_ms: 120.957575
+  duration_ms: 77.037291
   type: 'test'
   ...
 # Subtest: Duplicate record IDs and unsupported truncation are rejected
 ok 43 - Duplicate record IDs and unsupported truncation are rejected
   ---
-  duration_ms: 3.059302
+  duration_ms: 1.450041
   type: 'test'
   ...
 # Subtest: CSV quoted commas and embedded newlines preserve original strings
 ok 44 - CSV quoted commas and embedded newlines preserve original strings
   ---
-  duration_ms: 0.690996
+  duration_ms: 0.140958
   type: 'test'
   ...
 # Subtest: Reject malformed or lossy JSON 1
 ok 45 - Reject malformed or lossy JSON 1
   ---
-  duration_ms: 0.296109
+  duration_ms: 0.088041
   type: 'test'
   ...
 # Subtest: Reject malformed or lossy JSON 2
 ok 46 - Reject malformed or lossy JSON 2
   ---
-  duration_ms: 0.064646
+  duration_ms: 0.036666
   type: 'test'
   ...
 # Subtest: Reject malformed or lossy JSON 3
 ok 47 - Reject malformed or lossy JSON 3
   ---
-  duration_ms: 0.04673
+  duration_ms: 0.03225
   type: 'test'
   ...
 # Subtest: Reject malformed or lossy JSON 4
 ok 48 - Reject malformed or lossy JSON 4
   ---
-  duration_ms: 0.096242
+  duration_ms: 0.033875
   type: 'test'
   ...
 # Subtest: Reject malformed or lossy JSON 5
 ok 49 - Reject malformed or lossy JSON 5
   ---
-  duration_ms: 0.052267
+  duration_ms: 0.034542
   type: 'test'
   ...
 # Subtest: Reject malformed or lossy JSON 6
 ok 50 - Reject malformed or lossy JSON 6
   ---
-  duration_ms: 0.061422
+  duration_ms: 0.051708
   type: 'test'
   ...
 # Subtest: Reject malformed or lossy JSON 7
 ok 51 - Reject malformed or lossy JSON 7
   ---
-  duration_ms: 0.043134
+  duration_ms: 0.037667
   type: 'test'
   ...
 # Subtest: Reject duplicate CSV headers
 ok 52 - Reject duplicate CSV headers
   ---
-  duration_ms: 0.142582
+  duration_ms: 0.055833
   type: 'test'
   ...
 # Subtest: Reject malformed quoted CSV
 ok 53 - Reject malformed quoted CSV
   ---
-  duration_ms: 0.099627
+  duration_ms: 0.043541
   type: 'test'
   ...
 # Subtest: Reject invalid learner identifier true
 ok 54 - Reject invalid learner identifier true
   ---
-  duration_ms: 2.36497
+  duration_ms: 1.641292
   type: 'test'
   ...
 # Subtest: Reject invalid learner identifier false
 ok 55 - Reject invalid learner identifier false
   ---
-  duration_ms: 0.645529
+  duration_ms: 0.631292
   type: 'test'
   ...
 # Subtest: Reject invalid learner identifier null
 ok 56 - Reject invalid learner identifier null
   ---
-  duration_ms: 1.965228
+  duration_ms: 0.557375
   type: 'test'
   ...
 # Subtest: Reject invalid learner identifier 1.0
 ok 57 - Reject invalid learner identifier 1.0
   ---
-  duration_ms: 0.944883
+  duration_ms: 1.215041
   type: 'test'
   ...
 # Subtest: Reject invalid learner identifier 1e2
 ok 58 - Reject invalid learner identifier 1e2
   ---
-  duration_ms: 1.247092
+  duration_ms: 0.519042
   type: 'test'
   ...
 # Subtest: Reject invalid learner identifier {}
 ok 59 - Reject invalid learner identifier {}
   ---
-  duration_ms: 3.794765
+  duration_ms: 0.525
   type: 'test'
   ...
 # Subtest: Reject invalid learner identifier []
 ok 60 - Reject invalid learner identifier []
   ---
-  duration_ms: 0.938233
+  duration_ms: 0.550708
   type: 'test'
   ...
 # Subtest: Reject invalid learner identifier ""
 ok 61 - Reject invalid learner identifier ""
   ---
-  duration_ms: 0.863552
+  duration_ms: 0.545125
   type: 'test'
   ...
 # Subtest: Reject missing mapped activity
 ok 62 - Reject missing mapped activity
   ---
-  duration_ms: 1.503753
+  duration_ms: 0.948542
   type: 'test'
   ...
 # Subtest: Reject unknown source adapter
 ok 63 - Reject unknown source adapter
   ---
-  duration_ms: 0.259516
+  duration_ms: 0.193042
   type: 'test'
   ...
 # Subtest: Reject too-short pseudonym key
 ok 64 - Reject too-short pseudonym key
   ---
-  duration_ms: 1.245339
+  duration_ms: 0.97675
   type: 'test'
   ...
 # Subtest: Reject invalid import calendar date
 ok 65 - Reject invalid import calendar date
   ---
-  duration_ms: 0.352203
+  duration_ms: 0.269417
   type: 'test'
   ...
 # Subtest: Reject empty input
 ok 66 - Reject empty input
   ---
-  duration_ms: 0.162882
+  duration_ms: 0.195042
   type: 'test'
   ...
 # Subtest: Bound nested dialogue expansion before hashing events
 ok 67 - Bound nested dialogue expansion before hashing events
   ---
-  duration_ms: 66.774714
+  duration_ms: 25.040417
   type: 'test'
   ...
 # Subtest: Reject unsupported roles and impossible source offsets
 ok 68 - Reject unsupported roles and impossible source offsets
   ---
-  duration_ms: 9.832258
+  duration_ms: 4.929416
   type: 'test'
   ...
 # Subtest: Reject duplicate source turn numbers instead of creating ambiguous locators
 ok 69 - Reject duplicate source turn numbers instead of creating ambiguous locators
   ---
-  duration_ms: 1.655017
+  duration_ms: 1.098041
   type: 'test'
   ...
 # Subtest: Reject absent or undocumented participant assignment rather than imply observed help
 ok 70 - Reject absent or undocumented participant assignment rather than imply observed help
   ---
-  duration_ms: 5.660593
+  duration_ms: 3.569625
   type: 'test'
   ...
 # Subtest: Additional uploaded identity columns are not copied into participant event data
 ok 71 - Additional uploaded identity columns are not copied into participant event data
   ---
-  duration_ms: 2.677009
+  duration_ms: 1.406459
   type: 'test'
   ...
 # Subtest: Source activity fields require text, matching both published schemas
 ok 72 - Source activity fields require text, matching both published schemas
   ---
-  duration_ms: 4.303239
+  duration_ms: 1.679167
   type: 'test'
   ...
 # Subtest: Unverified transcript role strings do not establish human actor identity
 ok 73 - Unverified transcript role strings do not establish human actor identity
   ---
-  duration_ms: 89.783323
+  duration_ms: 57.687208
   type: 'test'
   ...
 # Subtest: Unverified participant input reports adapter limits rather than absence of help in that file
 ok 74 - Unverified participant input reports adapter limits rather than absence of help in that file
   ---
-  duration_ms: 1.978397
+  duration_ms: 1.677625
+  type: 'test'
+  ...
+# Subtest: landing page offers exactly five calls to action
+ok 75 - landing page offers exactly five calls to action
+  ---
+  duration_ms: 1.800625
+  type: 'test'
+  ...
+# Subtest: landing page links resolve to the full demo, the draft, the code and contact
+ok 76 - landing page links resolve to the full demo, the draft, the code and contact
+  ---
+  duration_ms: 0.45225
+  type: 'test'
+  ...
+# Subtest: landing page keeps the strict content security policy and no inline script
+ok 77 - landing page keeps the strict content security policy and no inline script
+  ---
+  duration_ms: 0.129458
+  type: 'test'
+  ...
+# Subtest: Pre-sandpiper fixtures are the six recorded real outputs for the three existing sources
+ok 78 - Pre-sandpiper fixtures are the six recorded real outputs for the three existing sources
+  ---
+  duration_ms: 7.476209
+  type: 'test'
+  ...
+# Subtest: Every pre-sandpiper document still verifies with its recorded chain heads
+ok 79 - Every pre-sandpiper document still verifies with its recorded chain heads
+  ---
+  duration_ms: 134.514834
+  type: 'test'
+  ...
+# Subtest: Existing sources still produce the same documents as before sandpiper was added
+ok 80 - Existing sources still produce the same documents as before sandpiper was added
+  ---
+  duration_ms: 210.531334
+  type: 'test'
+  ...
+# Subtest: An old document re-bound to the new profile version is rejected
+ok 81 - An old document re-bound to the new profile version is rejected
+  ---
+  duration_ms: 1.526916
   type: 'test'
   ...
 # Subtest: Release state does not claim public code or preprint publication
-ok 75 - Release state does not claim public code or preprint publication
+ok 82 - Release state does not claim public code or preprint publication
   ---
-  duration_ms: 4.343529
+  duration_ms: 1.008666
   type: 'test'
   ...
 # Subtest: Every displayed download checksum binds to the actual packaged bytes
-ok 76 - Every displayed download checksum binds to the actual packaged bytes
+ok 83 - Every displayed download checksum binds to the actual packaged bytes
   ---
-  duration_ms: 3.237666
+  duration_ms: 1.177917
   type: 'test'
   ...
 # Subtest: Release metadata mounts without network requests or HTML injection
-ok 77 - Release metadata mounts without network requests or HTML injection
+ok 84 - Release metadata mounts without network requests or HTML injection
   ---
-  duration_ms: 2.228354
+  duration_ms: 0.171542
   type: 'test'
   ...
 # Subtest: Published semantic and event schema files exactly match embedded offline specifications
-ok 78 - Published semantic and event schema files exactly match embedded offline specifications
+ok 85 - Published semantic and event schema files exactly match embedded offline specifications
   ---
-  duration_ms: 2.241407
+  duration_ms: 2.325875
   type: 'test'
   ...
 # Subtest: Unknown context remains unknown and permission never becomes observed use
-ok 79 - Unknown context remains unknown and permission never becomes observed use
+ok 86 - Unknown context remains unknown and permission never becomes observed use
   ---
-  duration_ms: 0.162821
+  duration_ms: 0.124334
   type: 'test'
   ...
 # Subtest: Coverage cannot claim completeness without a boundary; malformed context is rejected
-ok 80 - Coverage cannot claim completeness without a boundary; malformed context is rejected
+ok 87 - Coverage cannot claim completeness without a boundary; malformed context is rejected
   ---
-  duration_ms: 0.319524
+  duration_ms: 0.246125
   type: 'test'
   ...
 # Subtest: All five explicit lifecycle states remain distinct without inferring later states
-ok 81 - All five explicit lifecycle states remain distinct without inferring later states
+ok 88 - All five explicit lifecycle states remain distinct without inferring later states
   ---
-  duration_ms: 0.192016
+  duration_ms: 0.127292
   type: 'test'
   ...
 # Subtest: Synthetic fixture is unmistakably separate from authenticated empirical research
-ok 82 - Synthetic fixture is unmistakably separate from authenticated empirical research
+ok 89 - Synthetic fixture is unmistakably separate from authenticated empirical research
   ---
-  duration_ms: 1.381921
+  duration_ms: 1.023667
   type: 'test'
   ...
 # Subtest: Explicit unknown origin and native hint depth are not converted to delivery order
-ok 83 - Explicit unknown origin and native hint depth are not converted to delivery order
+ok 90 - Explicit unknown origin and native hint depth are not converted to delivery order
   ---
-  duration_ms: 7.211767
+  duration_ms: 5.671042
   type: 'test'
   ...
 # Subtest: Declared source clock is preserved separately from import clock and phase is not inferred
-ok 84 - Declared source clock is preserved separately from import clock and phase is not inferred
+ok 91 - Declared source clock is preserved separately from import clock and phase is not inferred
   ---
-  duration_ms: 2.614081
+  duration_ms: 1.949708
   type: 'test'
   ...
 # Subtest: Native event identity is stable across imports, revisions and key changes, while subject is source scoped
-ok 85 - Native event identity is stable across imports, revisions and key changes, while subject is source scoped
+ok 92 - Native event identity is stable across imports, revisions and key changes, while subject is source scoped
   ---
-  duration_ms: 8.695118
+  duration_ms: 5.418417
   type: 'test'
   ...
 # Subtest: Ambiguous native identities, boolean revisions, unsupported states and conflicting origins are rejected
-ok 86 - Ambiguous native identities, boolean revisions, unsupported states and conflicting origins are rejected
+ok 93 - Ambiguous native identities, boolean revisions, unsupported states and conflicting origins are rejected
   ---
-  duration_ms: 12.207915
+  duration_ms: 6.721459
   type: 'test'
   ...
 # Subtest: A same-batch request link must resolve to a request by the same learner and activity
-ok 87 - A same-batch request link must resolve to a request by the same learner and activity
+ok 94 - A same-batch request link must resolve to a request by the same learner and activity
   ---
-  duration_ms: 5.692962
+  duration_ms: 3.185
   type: 'test'
   ...
 # Subtest: Schema interpretation and semantic profile are bound in hashed headers and verified
-ok 88 - Schema interpretation and semantic profile are bound in hashed headers and verified
+ok 95 - Schema interpretation and semantic profile are bound in hashed headers and verified
   ---
-  duration_ms: 5.736116
+  duration_ms: 1.976042
   type: 'test'
   ...
 # Subtest: Compatibility screen can pass complete declarations without claiming verified review or causal validity
-ok 89 - Compatibility screen can pass complete declarations without claiming verified review or causal validity
+ok 96 - Compatibility screen can pass complete declarations without claiming verified review or causal validity
   ---
-  duration_ms: 0.909881
+  duration_ms: 0.281583
   type: 'test'
   ...
 # Subtest: Every required measurement dimension independently blocks pooling when missing or incompatible
-ok 90 - Every required measurement dimension independently blocks pooling when missing or incompatible
+ok 97 - Every required measurement dimension independently blocks pooling when missing or incompatible
   ---
-  duration_ms: 1.578213
+  duration_ms: 0.936125
   type: 'test'
   ...
 # Subtest: Unreviewed, undocumented, synthetic and malformed descriptors are blocked without crashing
-ok 91 - Unreviewed, undocumented, synthetic and malformed descriptors are blocked without crashing
+ok 98 - Unreviewed, undocumented, synthetic and malformed descriptors are blocked without crashing
   ---
-  duration_ms: 0.66666
+  duration_ms: 0.635083
   type: 'test'
   ...
 # Subtest: Real-source mappings identify semantic losses and block heterogeneous pooling
-ok 92 - Real-source mappings identify semantic losses and block heterogeneous pooling
+ok 99 - Real-source mappings identify semantic losses and block heterogeneous pooling
   ---
-  duration_ms: 184.613588
+  duration_ms: 129.786959
   type: 'test'
   ...
 # Subtest: Public source attribution and schema contracts are immutable module definitions
-ok 93 - Public source attribution and schema contracts are immutable module definitions
+ok 100 - Public source attribution and schema contracts are immutable module definitions
   ---
-  duration_ms: 0.579461
+  duration_ms: 0.340958
   type: 'test'
   ...
 # Subtest: Conflicting request revisions are rejected regardless of source array order
-ok 94 - Conflicting request revisions are rejected regardless of source array order
+ok 101 - Conflicting request revisions are rejected regardless of source array order
   ---
-  duration_ms: 5.127412
+  duration_ms: 2.268834
   type: 'test'
   ...
 # Subtest: Explicit context primitives and oversize native identifiers are rejected
-ok 95 - Explicit context primitives and oversize native identifiers are rejected
+ok 102 - Explicit context primitives and oversize native identifiers are rejected
   ---
-  duration_ms: 9.445773
+  duration_ms: 5.526291
   type: 'test'
   ...
 # Subtest: Contradictory operational definitions cannot pass on matching labels
-ok 96 - Contradictory operational definitions cannot pass on matching labels
+ok 103 - Contradictory operational definitions cannot pass on matching labels
   ---
-  duration_ms: 0.408406
+  duration_ms: 0.20175
   type: 'test'
   ...
 # Subtest: Rehashed lifecycle provenance cannot contradict source kind, native identity or revision
-ok 97 - Rehashed lifecycle provenance cannot contradict source kind, native identity or revision
+ok 104 - Rehashed lifecycle provenance cannot contradict source kind, native identity or revision
   ---
-  duration_ms: 7.001114
+  duration_ms: 2.736833
+  type: 'test'
+  ...
+# Subtest: Sandpiper is an engine adapter, labeled SYNTHETIC, and not added to the demo page list
+ok 105 - Sandpiper is an engine adapter, labeled SYNTHETIC, and not added to the demo page list
+  ---
+  duration_ms: 2.283917
+  type: 'test'
+  ...
+# Subtest: The browser profile matches the Python profile file exactly
+ok 106 - The browser profile matches the Python profile file exactly
+  ---
+  duration_ms: 0.379416
+  type: 'test'
+  ...
+# Subtest: Profile v0.2.0 only adds the sandpiper contract; existing platforms keep v0.1.0
+ok 107 - Profile v0.2.0 only adds the sandpiper contract; existing platforms keep v0.1.0
+  ---
+  duration_ms: 8.328958
+  type: 'test'
+  ...
+# Subtest: The sandpiper contract is explicit, partial, unreviewed and records no help stage
+ok 108 - The sandpiper contract is explicit, partial, unreviewed and records no help stage
+  ---
+  duration_ms: 0.23325
+  type: 'test'
+  ...
+# Subtest: Sample: SYNTHETIC fixture, one record per session, entries in sequence order
+ok 109 - Sample: SYNTHETIC fixture, one record per session, entries in sequence order
+  ---
+  duration_ms: 18.855166
+  type: 'test'
+  ...
+# Subtest: Rows are ordered by numeric sequence_id, sessions by first appearance
+ok 110 - Rows are ordered by numeric sequence_id, sessions by first appearance
+  ---
+  duration_ms: 5.242916
+  type: 'test'
+  ...
+# Subtest: Utterances keep source text and unparsed time strings; empty times become null
+ok 111 - Utterances keep source text and unparsed time strings; empty times become null
+  ---
+  duration_ms: 8.286084
+  type: 'test'
+  ...
+# Subtest: Any nonempty role label is kept exactly
+ok 112 - Any nonempty role label is kept exactly
+  ---
+  duration_ms: 3.382667
+  type: 'test'
+  ...
+# Subtest: Annotation codes are inferred assertions and never set a help stage
+ok 113 - Annotation codes are inferred assertions and never set a help stage
+  ---
+  duration_ms: 7.757875
+  type: 'test'
+  ...
+# Subtest: Annotator name, slot index, fields and identifiedBy are kept in column order
+ok 114 - Annotator name, slot index, fields and identifiedBy are kept in column order
+  ---
+  duration_ms: 5.116083
+  type: 'test'
+  ...
+# Subtest: Pooling screens a sandpiper run by its own contract and blocks it
+ok 115 - Pooling screens a sandpiper run by its own contract and blocks it
+  ---
+  duration_ms: 5.3755
+  type: 'test'
+  ...
+# Subtest: Same sequence_id in different sessions is allowed
+ok 116 - Same sequence_id in different sessions is allowed
+  ---
+  duration_ms: 3.11375
+  type: 'test'
+  ...
+# Subtest: Invalid exports are rejected with clear errors
+ok 117 - Invalid exports are rejected with clear errors
+  ---
+  duration_ms: 14.024875
+  type: 'test'
+  ...
+# Subtest: Verifier rejects reinterpretation even with a recalculated chain
+ok 118 - Verifier rejects reinterpretation even with a recalculated chain
+  ---
+  duration_ms: 95.186792
   type: 'test'
   ...
 # Subtest: Published companion aggregates10 exact source spans, not60 repeated annotation rows or322 observations
-ok 98 - Published companion aggregates10 exact source spans, not60 repeated annotation rows or322 observations
+ok 119 - Published companion aggregates10 exact source spans, not60 repeated annotation rows or322 observations
   ---
-  duration_ms: 1.769327
+  duration_ms: 1.791209
   type: 'test'
   ...
 # Subtest: Interval evidence comes from the actual transformed Learnlog records, with source humanSAR and field anchors
-ok 99 - Interval evidence comes from the actual transformed Learnlog records, with source humanSAR and field anchors
+ok 120 - Interval evidence comes from the actual transformed Learnlog records, with source humanSAR and field anchors
   ---
-  duration_ms: 1.556631
+  duration_ms: 0.537041
   type: 'test'
   ...
 # Subtest: Summary-only and empty datasets are explicitly unmeasured; assigned help conditions do not create scaffold events
-ok 100 - Summary-only and empty datasets are explicitly unmeasured; assigned help conditions do not create scaffold events
+ok 121 - Summary-only and empty datasets are explicitly unmeasured; assigned help conditions do not create scaffold events
   ---
-  duration_ms: 0.269951
+  duration_ms: 0.147791
   type: 'test'
   ...
 # Subtest: Duplicated runs and repeated source sessions do not inflate interval, annotation, session or provider totals
-ok 101 - Duplicated runs and repeated source sessions do not inflate interval, annotation, session or provider totals
+ok 122 - Duplicated runs and repeated source sessions do not inflate interval, annotation, session or provider totals
   ---
-  duration_ms: 10.382164
+  duration_ms: 6.686375
   type: 'test'
   ...
 # Subtest: Companion measurement leaves the original322 observed Learnlog entries unchanged
-ok 102 - Companion measurement leaves the original322 observed Learnlog entries unchanged
+ok 123 - Companion measurement leaves the original322 observed Learnlog entries unchanged
   ---
-  duration_ms: 7.62174
+  duration_ms: 3.782
   type: 'test'
   ...
 # Subtest: Edited raw inputs, caller verification flags and wrong sourceSHA cannot inherit source annotations
-ok 103 - Edited raw inputs, caller verification flags and wrong sourceSHA cannot inherit source annotations
+ok 124 - Edited raw inputs, caller verification flags and wrong sourceSHA cannot inherit source annotations
   ---
-  duration_ms: 167.58985
+  duration_ms: 80.897459
   type: 'test'
   ...
 # Subtest: All transformed turns bind labels, including uncoded dialogue outside highlighted intervals
-ok 104 - All transformed turns bind labels, including uncoded dialogue outside highlighted intervals
+ok 125 - All transformed turns bind labels, including uncoded dialogue outside highlighted intervals
   ---
-  duration_ms: 50.141867
+  duration_ms: 28.967416
   type: 'test'
   ...
 # Subtest: Changed rawsourcefields or per-entry provenance cannot masquerade as unchanged pinned dialogue
-ok 105 - Changed rawsourcefields or per-entry provenance cannot masquerade as unchanged pinned dialogue
+ok 126 - Changed rawsourcefields or per-entry provenance cannot masquerade as unchanged pinned dialogue
   ---
-  duration_ms: 73.353867
+  duration_ms: 25.318875
   type: 'test'
   ...
 # Subtest: CSV contains exactly10 intervalrows with denominator and complete source binding, preserving all original evidence text
-ok 106 - CSV contains exactly10 intervalrows with denominator and complete source binding, preserving all original evidence text
+ok 127 - CSV contains exactly10 intervalrows with denominator and complete source binding, preserving all original evidence text
   ---
-  duration_ms: 9.556668
+  duration_ms: 3.361084
   type: 'test'
   ...
 # Subtest: CSV formula guard protects mutable export identity fields without altering JSON evidence
-ok 107 - CSV formula guard protects mutable export identity fields without altering JSON evidence
+ok 128 - CSV formula guard protects mutable export identity fields without altering JSON evidence
   ---
-  duration_ms: 20.006181
+  duration_ms: 2.575917
   type: 'test'
   ...
 # Subtest: Generated JSON andJS evidence agree, raw excerpt hashes and60humanSAR anchors verify
-ok 108 - Generated JSON andJS evidence agree, raw excerpt hashes and60humanSAR anchors verify
+ok 129 - Generated JSON andJS evidence agree, raw excerpt hashes and60humanSAR anchors verify
   ---
-  duration_ms: 6.301776
+  duration_ms: 2.135667
   type: 'test'
   ...
 # Subtest: Typed turn binding rejects booleans posing as numeric turn numbers
-ok 109 - Typed turn binding rejects booleans posing as numeric turn numbers
+ok 130 - Typed turn binding rejects booleans posing as numeric turn numbers
   ---
-  duration_ms: 8.141467
+  duration_ms: 5.281916
   type: 'test'
   ...
 # Subtest: Escaping prevents user transcript text from becoming HTML or attributes
-ok 110 - Escaping prevents user transcript text from becoming HTML or attributes
+ok 131 - Escaping prevents user transcript text from becoming HTML or attributes
   ---
-  duration_ms: 1.318447
+  duration_ms: 1.166417
   type: 'test'
   ...
 # Subtest: JSON highlighting adds only fixed spans around escaped source values
-ok 111 - JSON highlighting adds only fixed spans around escaped source values
+ok 132 - JSON highlighting adds only fixed spans around escaped source values
   ---
-  duration_ms: 0.53162
+  duration_ms: 0.3875
   type: 'test'
   ...
 # Subtest: Display preserves original string/number/boolean representations
-ok 112 - Display preserves original string/number/boolean representations
+ok 133 - Display preserves original string/number/boolean representations
   ---
-  duration_ms: 0.157785
+  duration_ms: 0.097375
   type: 'test'
   ...
 # Subtest: Flattening retains every released transcript turn and source locator without invented help classification
-ok 113 - Flattening retains every released transcript turn and source locator without invented help classification
+ok 134 - Flattening retains every released transcript turn and source locator without invented help classification
   ---
-  duration_ms: 7.777136
+  duration_ms: 4.925292
   type: 'test'
   ...
 # Subtest: Participant fields retain original CSV header names, values and absent hint-use evidence
-ok 114 - Participant fields retain original CSV header names, values and absent hint-use evidence
+ok 135 - Participant fields retain original CSV header names, values and absent hint-use evidence
   ---
-  duration_ms: 3.449241
+  duration_ms: 0.352167
   type: 'test'
   ...
 # Subtest: Evidence coverage separates utterance roles from assigned help conditions and incompatible units
-ok 115 - Evidence coverage separates utterance roles from assigned help conditions and incompatible units
+ok 136 - Evidence coverage separates utterance roles from assigned help conditions and incompatible units
   ---
-  duration_ms: 4.39168
+  duration_ms: 0.369292
   type: 'test'
   ...
 # Subtest: Dataset export retains contained files, checkpoints, mappings and verified source identity
-ok 116 - Dataset export retains contained files, checkpoints, mappings and verified source identity
+ok 137 - Dataset export retains contained files, checkpoints, mappings and verified source identity
   ---
-  duration_ms: 2.071055
+  duration_ms: 0.974416
   type: 'test'
   ...
 # Subtest: Edited input cannot export an authenticated source attribution or remain a published excerpt
-ok 117 - Edited input cannot export an authenticated source attribution or remain a published excerpt
+ok 138 - Edited input cannot export an authenticated source attribution or remain a published excerpt
   ---
-  duration_ms: 24.456508
+  duration_ms: 13.239416
   type: 'test'
   ...
 # Subtest: Export helpers cannot turn a caller provenance label into verification
-ok 118 - Export helpers cannot turn a caller provenance label into verification
+ok 139 - Export helpers cannot turn a caller provenance label into verification
   ---
-  duration_ms: 0.614693
+  duration_ms: 0.2085
   type: 'test'
   ...
 # Subtest: Observation CSV preserves source text, typed JSON fields, provenance and all310 transcript turns
-ok 119 - Observation CSV preserves source text, typed JSON fields, provenance and all310 transcript turns
+ok 140 - Observation CSV preserves source text, typed JSON fields, provenance and all310 transcript turns
   ---
-  duration_ms: 41.178078
+  duration_ms: 24.096833
   type: 'test'
   ...
 # Subtest: CSV keeps original participant metric strings and explicit help-condition evidence
-ok 120 - CSV keeps original participant metric strings and explicit help-condition evidence
+ok 141 - CSV keeps original participant metric strings and explicit help-condition evidence
   ---
-  duration_ms: 1.09081
+  duration_ms: 1.400375
   type: 'test'
   ...
 # Subtest: CSV formula guard protects untrusted source filename "=HYPERLINK(\\"https://example.test\\")"
-ok 121 - CSV formula guard protects untrusted source filename "=HYPERLINK(\\"https://example.test\\")"
+ok 142 - CSV formula guard protects untrusted source filename "=HYPERLINK(\\"https://example.test\\")"
   ---
-  duration_ms: 1.193792
+  duration_ms: 0.78625
   type: 'test'
   ...
 # Subtest: CSV formula guard protects untrusted source filename "+cmd"
-ok 122 - CSV formula guard protects untrusted source filename "+cmd"
+ok 143 - CSV formula guard protects untrusted source filename "+cmd"
   ---
-  duration_ms: 1.052954
+  duration_ms: 0.603541
   type: 'test'
   ...
 # Subtest: CSV formula guard protects untrusted source filename "@SUM(1,1)"
-ok 123 - CSV formula guard protects untrusted source filename "@SUM(1,1)"
+ok 144 - CSV formula guard protects untrusted source filename "@SUM(1,1)"
   ---
-  duration_ms: 0.705067
+  duration_ms: 0.513375
   type: 'test'
   ...
 # Subtest: CSV formula guard protects untrusted source filename "-1+2"
-ok 124 - CSV formula guard protects untrusted source filename "-1+2"
+ok 145 - CSV formula guard protects untrusted source filename "-1+2"
   ---
-  duration_ms: 1.956815
+  duration_ms: 0.653083
   type: 'test'
   ...
 # Subtest: CSV formula guard protects untrusted source filename "\\t=1+1"
-ok 125 - CSV formula guard protects untrusted source filename "\\t=1+1"
+ok 146 - CSV formula guard protects untrusted source filename "\\t=1+1"
   ---
-  duration_ms: 0.897442
+  duration_ms: 0.59325
   type: 'test'
   ...
 # Subtest: CSV formula guard protects untrusted source filename "\\r=1+1"
-ok 126 - CSV formula guard protects untrusted source filename "\\r=1+1"
+ok 147 - CSV formula guard protects untrusted source filename "\\r=1+1"
   ---
-  duration_ms: 0.754039
+  duration_ms: 0.556833
   type: 'test'
   ...
 # Subtest: CSV formula guard protects untrusted source filename " \\n=1+1"
-ok 127 - CSV formula guard protects untrusted source filename " \\n=1+1"
+ok 148 - CSV formula guard protects untrusted source filename " \\n=1+1"
   ---
-  duration_ms: 0.764515
+  duration_ms: 0.548833
   type: 'test'
   ...
 # Subtest: Known raw excerpt hashes match preserved UTF-8 bytes including JSONL and CRLF
-ok 128 - Known raw excerpt hashes match preserved UTF-8 bytes including JSONL and CRLF
+ok 149 - Known raw excerpt hashes match preserved UTF-8 bytes including JSONL and CRLF
   ---
-  duration_ms: 11.963681
+  duration_ms: 2.592875
   type: 'test'
   ...
 # Subtest: Upload decoding rejects lossy UTF-8 replacement and preserves BOM/CRLF bytes
-ok 129 - Upload decoding rejects lossy UTF-8 replacement and preserves BOM/CRLF bytes
+ok 150 - Upload decoding rejects lossy UTF-8 replacement and preserves BOM/CRLF bytes
   ---
-  duration_ms: 0.44469
+  duration_ms: 0.2925
   type: 'test'
   ...
 # Subtest: All statically referenced UI elements exist exactly once, including provenance and source dialogue
-ok 130 - All statically referenced UI elements exist exactly once, including provenance and source dialogue
+ok 151 - All statically referenced UI elements exist exactly once, including provenance and source dialogue
   ---
-  duration_ms: 0.521204
+  duration_ms: 0.470333
   type: 'test'
   ...
 # Subtest: Visible copy describes genuine research releases and does not claim fabricated vendor support
-ok 131 - Visible copy describes genuine research releases and does not claim fabricated vendor support
+ok 152 - Visible copy describes genuine research releases and does not claim fabricated vendor support
   ---
-  duration_ms: 0.705578
+  duration_ms: 0.608625
   type: 'test'
   ...
 # Subtest: Processing remains local without network calls, analytics or persistent storage
-ok 132 - Processing remains local without network calls, analytics or persistent storage
+ok 153 - Processing remains local without network calls, analytics or persistent storage
   ---
-  duration_ms: 1.618873
+  duration_ms: 1.491875
   type: 'test'
   ...
 # Subtest: Curated dialogue windows apply only to the exact verified public sample
-ok 133 - Curated dialogue windows apply only to the exact verified public sample
+ok 154 - Curated dialogue windows apply only to the exact verified public sample
   ---
-  duration_ms: 168.106588
+  duration_ms: 73.578
   type: 'test'
   ...
 # Subtest: Measurement presentation uses the coded-interval denominator, not heterogeneous source rows
-ok 134 - Measurement presentation uses the coded-interval denominator, not heterogeneous source rows
+ok 155 - Measurement presentation uses the coded-interval denominator, not heterogeneous source rows
   ---
-  duration_ms: 8.779834
+  duration_ms: 9.945042
   type: 'test'
   ...
 # Subtest: Excluding the transcript source makes the measure unmeasured, never zero scaffolding
-ok 135 - Excluding the transcript source makes the measure unmeasured, never zero scaffolding
+ok 156 - Excluding the transcript source makes the measure unmeasured, never zero scaffolding
   ---
-  duration_ms: 0.3368
+  duration_ms: 0.139292
   type: 'test'
   ...
 # Subtest: Combined dataset and measurement CSV retain the same inspectable interval evidence
-ok 136 - Combined dataset and measurement CSV retain the same inspectable interval evidence
+ok 157 - Combined dataset and measurement CSV retain the same inspectable interval evidence
   ---
-  duration_ms: 4.469826
+  duration_ms: 3.8385
   type: 'test'
   ...
 # Subtest: Primary source locators remain concise while exports keep full provenance hashes
-ok 137 - Primary source locators remain concise while exports keep full provenance hashes
+ok 158 - Primary source locators remain concise while exports keep full provenance hashes
   ---
-  duration_ms: 0.398071
+  duration_ms: 0.28625
   type: 'test'
   ...
 # Subtest: Measurement UI defaults to source-coded evidence and exposes audit and export controls
-ok 138 - Measurement UI defaults to source-coded evidence and exposes audit and export controls
+ok 159 - Measurement UI defaults to source-coded evidence and exposes audit and export controls
   ---
-  duration_ms: 0.543077
+  duration_ms: 0.498583
   type: 'test'
   ...
-1..138
-# tests 138
+1..159
+# tests 159
 # suites 0
-# pass 138
+# pass 159
 # fail 0
 # cancelled 0
 # skipped 0
 # todo 0
-# duration_ms 856.096524
+# duration_ms 548.136166

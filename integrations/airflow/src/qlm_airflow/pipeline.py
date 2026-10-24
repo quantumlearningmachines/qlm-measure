@@ -326,10 +326,10 @@ def aggregate(root, manifest, run_id, artifacts):
             for entry in record["entries"]:
                 event = entry["event"]
                 data = event["data"]
-                if event["name"] not in ("qlm_import:dialogue_turn_observed", "qlm_import:participant_summary_observed", "qlm_import:assistance_lifecycle_observed"):
+                if event["name"] not in ("qlm_import:dialogue_turn_observed", "qlm_import:participant_summary_observed", "qlm_import:assistance_lifecycle_observed", "qlm_import:transcript_utterance_observed"):
                     raise ValueError("unsupported research observation semantics")
                 assistance = data["assistance"]
-                if assistance not in ("tutor_utterance_recorded", "student_utterance_recorded", "assigned_condition_only", "help_requested", "help_generated", "help_transmitted", "help_displayed", "learner_response_observed"):
+                if assistance not in ("tutor_utterance_recorded", "student_utterance_recorded", "assigned_condition_only", "help_requested", "help_generated", "help_transmitted", "help_displayed", "learner_response_observed", "utterance_recorded_no_help_stage"):
                     raise ValueError("unsupported assistance evidence label")
                 local_counts[assistance] = local_counts.get(assistance, 0) + 1
                 assistance_counts[assistance] = assistance_counts.get(assistance, 0) + 1
@@ -346,7 +346,7 @@ def aggregate(root, manifest, run_id, artifacts):
                        "missing_metrics": data["missing_metrics"], "metric_notes": metadata["metric_notes"],
                        "assistance": assistance, "raw_source_fields": data["raw_source_fields"],
                        "assistance_context": data["assistance_context"], "original_source_timestamp": data["original_source_timestamp"],
-                       **{name: data[name] for name in ("dialogue", "source_time_basis", "help_evidence", "lifecycle") if name in data}}
+                       **{name: data[name] for name in ("dialogue", "source_time_basis", "help_evidence", "lifecycle", "utterance", "inferred_annotations", "assistance_stages") if name in data}}
                 current.append(row)
                 if "lifecycle" in data:
                     lifecycle = data["lifecycle"]
@@ -382,6 +382,8 @@ def aggregate(root, manifest, run_id, artifacts):
                            "Tutor utterances are not automatically classified as hints or effective scaffolding.",
                            "Assigned OATutor conditions do not establish actual hint delivery/use or absence of outside AI.",
                            "Original metric values are preserved; there is no pooled score or causal comparison."]}
+    if any(dataset["platform"] == "sandpiper" for dataset in expected.values()):
+        coverage["limits"].append("Sandpiper annotation codes are inferred assertions by a named annotator, not help events; every assistance stage is not recorded for that source, and its start/end times stay unparsed strings.")
     scaffolding = measure_scaffolding(measurement_runs, measurement_evidence)
     compatibility = pooling_compatibility(contracts)
     context_coverage = {}

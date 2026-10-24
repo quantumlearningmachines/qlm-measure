@@ -1,8 +1,8 @@
 {
   "filename": "qlm-transformer-airflow.zip",
-  "bytes": 390670,
-  "sha256": "cbd6944bf02bfbf5aac7502385f1638cefec4490e75d93675c92c4ed1d34bc7d",
-  "files": 185,
+  "bytes": 561338,
+  "sha256": "81b0ea012d64c19622bc3b2218d44d7d9ffeafd787b9cc2ec55d87bcaf872ed4",
+  "files": 200,
   "pipeline_version": "0.5.0rc1",
   "transformer_version": "0.3.0rc1",
   "contained_writer_version": "0.2.1",

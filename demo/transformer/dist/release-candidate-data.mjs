@@ -19,8 +19,8 @@ export default {
       "bytes": 111350
     },
     "qlm-transformer-airflow.zip": {
-      "sha256": "cbd6944bf02bfbf5aac7502385f1638cefec4490e75d93675c92c4ed1d34bc7d",
-      "bytes": 390670
+      "sha256": "81b0ea012d64c19622bc3b2218d44d7d9ffeafd787b9cc2ec55d87bcaf872ed4",
+      "bytes": 561338
     }
   },
   "assistance_rules": [

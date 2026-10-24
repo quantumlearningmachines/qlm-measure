@@ -1,7 +1,8 @@
 # Published research data and attribution
 
 The application's MIT code license does not relicense these data. Both supplied
-excerpts are distributed under the publishers' **CC BY 4.0** grants. The original
+research excerpts are distributed under the publishers' **CC BY 4.0** grants.
+The Sandpiper fixture is synthetic and carries Sandpiper's MIT notice. The original
 publisher-deidentified data, citations, source restrictions and selection rules
 are documented in each `dist/provenance/*.json` file. No original recording,
 private export or personal identity mapping is included.
@@ -67,6 +68,43 @@ these are not recordings of live tutor conversations. The paper reports correctn
 bottom-out answers in the no-hint condition too; this label does not mean no
 assistance. No timestamp, inquiry, hint text or event sequence is
 supplied by that table. No learning effect is estimated by the demonstration.
+
+## Sandpiper documentation examples: SYNTHETIC fixture (MIT)
+
+`dist/samples/sandpiper-SYNTHETIC.csv` is a SYNTHETIC fixture, not research
+data. It arranges eight example utterances and one example annotation from the
+documentation of Sandpiper, the National Tutoring Observatory's open-source
+annotation app (<https://github.com/National-Tutoring-Observatory/sandpiper>,
+commit `28e0d25c069ce07c759d802184d4ab914e9cfe8b`), in the layout of
+Sandpiper's PER_UTTERANCE utterances CSV (`app/functions/outputRunDataToCSV`).
+QLM did the arranging. There is no public National Tutoring Observatory dataset
+here: no real learner, session or Sandpiper export is included. The adapter
+keeps each utterance as an observed dialogue turn and each annotation code as an
+inferred assertion by its annotator; no code is counted as help. The engine
+offers this adapter to callers such as the Learnlog MCP; the demo page does not
+list it.
+
+> MIT License
+>
+> Copyright (c) 2025 National Tutoring Observatory
+>
+> Permission is hereby granted, free of charge, to any person obtaining a copy
+> of this software and associated documentation files (the "Software"), to deal
+> in the Software without restriction, including without limitation the rights
+> to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+> copies of the Software, and to permit persons to whom the Software is
+> furnished to do so, subject to the following conditions:
+>
+> The above copyright notice and this permission notice shall be included in all
+> copies or substantial portions of the Software.
+>
+> THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+> IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+> FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+> AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+> LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+> OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+> SOFTWARE.
 
 ## Separate cross-source request analysis: aggregate facts only
 

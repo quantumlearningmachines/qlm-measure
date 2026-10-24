@@ -1,5 +1,5 @@
 {
-  "checked_at": "2026-10-20T20:53:28.713497+00:00",
+  "checked_at": "2026-10-24T19:48:33.817404+00:00",
   "passed": true,
   "scope": "Current prepared demo, synthetic carrier fixtures, bounded research transformations and regenerated download checksums.",
   "command": [
@@ -10,16 +10,19 @@
     "tests/cross-source-analysis.test.mjs",
     "tests/download.test.mjs",
     "tests/engine.test.mjs",
+    "tests/landing.test.mjs",
+    "tests/pre-sandpiper-compat.test.mjs",
     "tests/release-candidate.test.mjs",
     "tests/research-semantics.test.mjs",
+    "tests/sandpiper.test.mjs",
     "tests/scaffolding.test.mjs",
     "tests/view-model.test.mjs"
   ],
   "exit_code": 0,
-  "node_version": "v24.19.0",
+  "node_version": "v26.0.0",
   "tests": {
-    "tests": 138,
-    "pass": 138,
+    "tests": 159,
+    "pass": 159,
     "fail": 0,
     "cancelled": 0,
     "skipped": 0,
@@ -42,19 +45,19 @@
       "matches": true
     },
     "qlm-transformer-airflow.zip": {
-      "expected_sha256": "cbd6944bf02bfbf5aac7502385f1638cefec4490e75d93675c92c4ed1d34bc7d",
-      "actual_sha256": "cbd6944bf02bfbf5aac7502385f1638cefec4490e75d93675c92c4ed1d34bc7d",
+      "expected_sha256": "81b0ea012d64c19622bc3b2218d44d7d9ffeafd787b9cc2ec55d87bcaf872ed4",
+      "actual_sha256": "81b0ea012d64c19622bc3b2218d44d7d9ffeafd787b9cc2ec55d87bcaf872ed4",
       "matches": true
     }
   },
   "artifact_sha256": {
-    "dist/index.html": "d894d4390989c6f0d702c310e5a4b74dd622a514b6a0babd393508150e7821de",
+    "dist/demo.html": "803ab2e1c2a819f76deb764f356a18be50370817854e7ba5a3128165a3f8fb0b",
     "dist/styles.css": "7e72bca01a32afee4053f858e7db86ad7497c4402c4b0bcf756e6dfec156d2fb",
     "dist/assistance-gap.mjs": "873d7d7c7c3cfdd6a973cfdfc91c11663f9f21b1c9fba69028c6f8f3388789e7",
     "dist/assistance-profile-examples.mjs": "2a402fb51f05ec6a4815bf1f92524519e2d307690ba07a6b997bc0b626a51a72",
     "dist/examples/assistance-profile-bindings.json": "6a216630c9be3c2e3d2af561ad97b9068ca8e44ec02e41c6d82400bf4e7afbac",
     "dist/downloads/learnlog-assistance-profile-draft.zip": "3917b2e601e2a3ea5b87036e181aefdc929d8fd8dea5ce46a2c66f5745eab073",
-    "dist/downloads/qlm-transformer-airflow.zip": "cbd6944bf02bfbf5aac7502385f1638cefec4490e75d93675c92c4ed1d34bc7d"
+    "dist/downloads/qlm-transformer-airflow.zip": "81b0ea012d64c19622bc3b2218d44d7d9ffeafd787b9cc2ec55d87bcaf872ed4"
   },
   "binding_fixture_provenance": {
     "generated_at": "2026-10-20T15:23:43.228Z",

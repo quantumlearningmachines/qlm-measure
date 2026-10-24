@@ -403,6 +403,49 @@ pinned source registry, not only a caller-editable profile hash. Modifying sampl
 hashes or publisher metadata cannot promote arbitrary data to a published sample.
 An exact match verifies published bytes, not the underlying classroom activity.
 
+## Sandpiper utterance exports (SYNTHETIC sample)
+
+`profiles/sandpiper.json` reads the utterances CSV that Sandpiper, the National
+Tutoring Observatory's open-source annotation app, writes for a PER_UTTERANCE
+run: columns `_id, session_id, sequence_id, role, content, start_time,
+end_time`, then annotation columns named `annotator[<name>][<index>]<field>`.
+Any other column is refused. There is no public NTO dataset; the bundled
+`tests/fixtures/sandpiper-SYNTHETIC.csv` is SYNTHETIC, built from Sandpiper's
+documented example rows (MIT, see `DATA_LICENSES.md`).
+
+- One record per `session_id`, with entries ordered by `sequence_id`. Each
+  `sequence_id` must be a positive integer string, unique within its session.
+  Sandpiper's human-annotation template documentation shows 0-based numbering;
+  such files are refused, not renumbered.
+- Each row is an observed dialogue turn. `role` is kept exactly as the source
+  labels it, `content` is kept as text, and `start_time`/`end_time` stay the
+  source's unparsed strings (an empty cell becomes null).
+- Annotation codes are kept per utterance as inferred assertions: annotator
+  name, column index, field values, and `identifiedBy` when a column carries
+  it. Sandpiper's run export does not write `identifiedBy`, and the annotator
+  name (for example `AI-0`) is kept as given, not read as model or person.
+- No code sets a help stage. All six assistance stages are `not_recorded`
+  for this source, and not recorded is never the same as none.
+- Exports carry no learner identifier, so each record's subject is an HMAC
+  pseudonym of its session, not of a person.
+
+Run it through the pipeline with a manifest dataset such as
+`{"id": "sandpiper_synthetic", "platform": "sandpiper", "input":
+"tests/fixtures/sandpiper-SYNTHETIC.csv", "profile": "profiles/sandpiper.json",
+"metric_notes": {}}`.
+
+### Profile versions
+
+Adding Sandpiper's mapping contract needed a new profile version,
+`qlm:assistance-context:0.2.0`, because the contract is part of the hashed
+profile. Version 0.2.0 equals 0.1.0 plus the `sandpiper` contract. Each
+platform's records bind the version that introduced its contract: TutorMoments,
+OATutor and the explicit lifecycle contract keep binding 0.1.0, and Sandpiper
+binds 0.2.0. So documents and ledger payloads written before Sandpiper existed
+keep their exact binding and still verify (see
+`tests/test_pre_sandpiper_compat.py`). Sandpiper events use their own schema,
+`schemas/sandpiper-utterance-v1.json`.
+
 ## Cumulative batches and corrections (SYNTHETIC software demonstration)
 
 The three `config/synthetic-*.json` manifests read explicitly authored fixtures

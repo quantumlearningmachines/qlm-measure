@@ -309,7 +309,7 @@ class PipelineTests(unittest.TestCase):
         self.assertEqual({file.name for file in (PACKAGE_ROOT / 'samples').iterdir() if file.is_file()},
                          {'tutormoments-real-transcripts.jsonl', 'oatutor-real-participants.csv'})
         self.assertEqual({file.name for file in (PACKAGE_ROOT / 'profiles').iterdir() if file.is_file()},
-                         {'tutormoments.json', 'oatutor.json', 'explicit-assistance-events.json'})
+                         {'tutormoments.json', 'oatutor.json', 'explicit-assistance-events.json', 'sandpiper.json'})
 
     def test_published_coded_intervals_are_measured_without_new_observation_events(self):
         result = p.run(self.root)
