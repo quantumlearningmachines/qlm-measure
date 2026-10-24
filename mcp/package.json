@@ -1,6 +1,6 @@
 {
   "name": "@qlm/learnlog-mcp",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "Learnlog MCP: ask your AI assistant what learning records actually show about help. Read-only tools for Learnlog records, QLM credential verification, and QLM's public misconception and learning-graph datasets.",
   "license": "Apache-2.0",
   "author": "Kumar Srivastava <kumar@quantumlearningmachines.com> (https://quantumlearningmachines.com)",
