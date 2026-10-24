@@ -1,0 +1,43 @@
+Learnlog MCP (@qlm/learnlog-mcp)
+Copyright 2026 Quantum Learning Machines
+
+This product includes software developed at Quantum Learning Machines
+(https://quantumlearningmachines.com). It is licensed under the Apache
+License, Version 2.0 (see LICENSE).
+
+It includes, unchanged, files from the qlm-measure repository
+(https://github.com/quantumlearningmachines/qlm-measure). vendor/PROVENANCE.json
+names each file, its source path, the commit and its SHA-256.
+
+- vendor/qlm-measure/: the qlm-measure 0.9.0 verifier build. Apache-2.0.
+- vendor/transformer/: the QLM transformer engine. MIT; its license is in
+  vendor/transformer/LICENSE.txt and is kept with those files.
+- data/samples/tutormoments-real-transcripts.jsonl and the TutorMoments
+  sample embedded in vendor/transformer/profiles.mjs: excerpts of
+  TutorMoments-Preview, Albert Zhang and colleagues, Ai2 and collaborators
+  (2026), https://huggingface.co/datasets/allenai/tutormoments-preview,
+  revision 3bb0c104d65e29facffca7ba864ef10fa22d0e78. CC BY 4.0.
+- data/samples/oatutor-real-participants.csv and the OATutor sample embedded
+  in vendor/transformer/profiles.mjs: an excerpt of Pardos and Bhandari
+  (2023), https://doi.org/10.6084/m9.figshare.23935269.v1. CC BY 4.0.
+- data/samples/explicit-assistance-SYNTHETIC.jsonl and data/examples/: QLM's
+  synthetic fixtures and test vectors. No learner data.
+- data/samples/sandpiper-SYNTHETIC.csv and the Sandpiper sample embedded in
+  vendor/transformer/profiles.mjs: a SYNTHETIC fixture arranging example rows
+  from the documentation of Sandpiper,
+  https://github.com/National-Tutoring-Observatory/sandpiper, commit
+  28e0d25c069ce07c759d802184d4ab914e9cfe8b. MIT, Copyright (c) 2025 National
+  Tutoring Observatory; the license text is in data/THIRD_PARTY_DATA.md. No
+  NTO data and no learner data.
+- data/preprint/ and vendor/transformer/cross-source-analysis-data.mjs:
+  aggregate counts published with the Learnlog preprint. No learner rows.
+
+qlm_misconceptions and qlm_learning_graph read, at run time and without
+bundling them, the LabPath misconception, learning-graph and standards
+datasets: QLM LabPath Dataset v1.0, Quantum Learning Machines, 2026, CC BY 4.0,
+https://play.quantumlearningmachines.com/api/labpath/dataset-export, archived
+as https://doi.org/10.5281/zenodo.21800324.
+
+The selection, attribution and limits of each excerpt are in
+data/THIRD_PARTY_DATA.md and data/provenance/. No source author endorses this
+software.

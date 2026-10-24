@@ -1,8 +1,10 @@
 # Published research data and attribution
 
 The source code's MIT license does not relicense the following source excerpts.
-Both are redistributed under the publishers' **Creative Commons Attribution
-4.0 International** license: <https://creativecommons.org/licenses/by/4.0/>.
+The two research excerpts are redistributed under the publishers' **Creative
+Commons Attribution 4.0 International** license:
+<https://creativecommons.org/licenses/by/4.0/>. The Sandpiper fixture below is
+synthetic and carries Sandpiper's MIT notice.
 Preserve this attribution and the accompanying provenance when redistributing.
 
 ## TutorMoments-Preview
@@ -77,6 +79,48 @@ The no-hint control still offered correctness feedback and an optional
 bottom-out answer according to the associated paper; it is not labelled
 unassisted here. Stored `learningGain` values are retained rather than
 recomputed from rounded pre/post values.
+
+## Sandpiper documentation examples (SYNTHETIC fixture, MIT)
+
+`tests/fixtures/sandpiper-SYNTHETIC.csv` is not research data. It arranges
+eight example utterances and one example annotation from the documentation of
+Sandpiper, the National Tutoring Observatory's open-source annotation app, in
+the layout of Sandpiper's PER_UTTERANCE utterances CSV. QLM did the arranging.
+No National Tutoring Observatory data, real learner, real session or real
+Sandpiper export is included.
+
+- Source: <https://github.com/National-Tutoring-Observatory/sandpiper>, commit
+  `28e0d25c069ce07c759d802184d4ab914e9cfe8b` (origin `main` when cloned on
+  2026-10-24).
+- Files used: `documentation/transcripts.md`,
+  `documentation/schemas/examples/transcript-per-utterance.json`, and
+  `app/functions/outputRunDataToCSV/app.ts` for the column layout.
+- Fixture SHA-256: `d7b1a265f2e8abf37b0e070becc2e7c8a446576375de607322481c5015515ec0`.
+- Profile: `profiles/sandpiper.json`.
+
+Sandpiper is distributed under this license, which covers the example text:
+
+> MIT License
+>
+> Copyright (c) 2025 National Tutoring Observatory
+>
+> Permission is hereby granted, free of charge, to any person obtaining a copy
+> of this software and associated documentation files (the "Software"), to deal
+> in the Software without restriction, including without limitation the rights
+> to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+> copies of the Software, and to permit persons to whom the Software is
+> furnished to do so, subject to the following conditions:
+>
+> The above copyright notice and this permission notice shall be included in all
+> copies or substantial portions of the Software.
+>
+> THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+> IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+> FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+> AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+> LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+> OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+> SOFTWARE.
 
 ## Transformed outputs
 

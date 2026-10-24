@@ -1,9 +1,10 @@
 // QLM research-data adapters. QLM-authored code: MIT.
 // These adapters preserve documented observations, without inferring help delivery
 // from an assigned condition or classifying dialogue without a validated annotation.
-import {PROFILES, ALL_PROFILES, getProfile, getSample} from './profiles.mjs';
-import {ASSISTANCE_CONTEXT_PROFILE,IMPORT_EVENT_SCHEMA,LIFECYCLE_EVENT_SCHEMA,normalizeContext,getSemanticContract,ASSISTANCE_EVENT_TYPES,assessPoolingCompatibility} from './research-semantics.mjs';
-export {PROFILES, ALL_PROFILES, getSample, normalizeContext, getSemanticContract, assessPoolingCompatibility};
+import {PROFILES, ALL_PROFILES, ADAPTER_PROFILES, getProfile, getSample} from './profiles.mjs';
+import {IMPORT_EVENT_SCHEMA,LIFECYCLE_EVENT_SCHEMA,SANDPIPER_EVENT_SCHEMA,normalizeContext,getSemanticContract,semanticProfileFor,ASSISTANCE_EVENT_TYPES,assessPoolingCompatibility} from './research-semantics.mjs';
+// ALL_PROFILES are the sources the demo page offers; ADAPTER_PROFILES adds engine-only adapters (sandpiper).
+export {PROFILES, ALL_PROFILES, ADAPTER_PROFILES, getSample, normalizeContext, getSemanticContract, assessPoolingCompatibility};
 export const ENGINE_VERSION = '0.4.0-research-adapters';
 export const IMPORT_SCHEMA = 'https://transformer.quantumlearningmachines.com/schemas/research-import-v2.json';
 export const LIFECYCLE_SCHEMA = LIFECYCLE_EVENT_SCHEMA.$id;
@@ -180,19 +181,125 @@ function validateLifecycle(row,index) {
   if(row.content!==undefined&&typeof row.content!=='string')throw new Error(label+'content must be text.');
   normalizeContext(row.context===undefined?{}:row.context);
 }
+// Sandpiper (National Tutoring Observatory) PER_UTTERANCE utterances CSV, as written by
+// app/functions/outputRunDataToCSV: these utterance columns, then annotator[<name>][<index>]<field> columns.
+const SANDPIPER_COLUMNS=['_id','session_id','sequence_id','role','content','start_time','end_time'];
+const SANDPIPER_ANNOTATION=/^annotator\[([\s\S]+?)\]\[(0|[1-9][0-9]*)\]([\s\S]+)$/;
+const SANDPIPER_EVENT='qlm_import:transcript_utterance_observed';
+const SANDPIPER_COVERAGE='source_dialogue_and_inferred_codes_only_no_help_stage_recorded';
+const SANDPIPER_ORDER='source_sequence_id_numeric_order';
+const HELP_STAGES=['requested','offered','generated','transmitted','displayed','accepted'];
+// sequence_id is a positive integer string without leading zeros: length, then text, is numeric order.
+const sequenceOrder=(a,b)=>a.length-b.length||(a<b?-1:a>b?1:0);
+function sandpiperAnnotationColumns(row) {
+  const columns=[];
+  for(const name of Object.keys(row)){
+    if(SANDPIPER_COLUMNS.includes(name))continue;
+    const match=SANDPIPER_ANNOTATION.exec(name);
+    if(!match)throw new Error('Column '+JSON.stringify(name)+' is neither a Sandpiper utterance column nor annotator[<name>][<index>]<field>.');
+    const index=Number(match[2]);
+    if(!Number.isSafeInteger(index))throw new Error('The annotation index in column '+JSON.stringify(name)+' exceeds the exact integer range.');
+    columns.push([name,match[1],index,match[3]]);
+  }
+  return columns;
+}
+/**
+ * Validate an utterances export and group its rows by session_id, each in sequence_id order.
+ * Callers pass parseInput rows (1–5,000 plain objects) or one plain raw_source_fields object.
+ */
+function sandpiperSessions(rows) {
+  const sessions=new Map();
+  for(const [index,row]of rows.entries()){
+    const label='Row '+(index+1)+': ';
+    const missing=SANDPIPER_COLUMNS.filter(name=>!own(row,name));
+    if(missing.length)throw new Error(label+'missing Sandpiper utterance column '+missing.join(', ')+'.');
+    sandpiperAnnotationColumns(row);
+    for(const [name,value]of Object.entries(row))if(typeof value!=='string')throw new Error(label+'Sandpiper export cells must be text; '+name+' is not.');
+    if(!row.session_id.trim())throw new Error(label+'session_id must be nonempty text.');
+    if(!row.role)throw new Error(label+'role must be nonempty text.');
+    if(!/^[1-9][0-9]*$/.test(row.sequence_id))throw new Error(label+'sequence_id must be a positive integer string (1, 2, 3, ...).');
+    if(!sessions.has(row.session_id))sessions.set(row.session_id,[]);
+    const items=sessions.get(row.session_id);
+    if(items.some(([,other])=>other.sequence_id===row.sequence_id))throw new Error(label+'sequence_id must be unique within a session.');
+    items.push([index+1,row]);
+  }
+  for(const items of sessions.values())items.sort((a,b)=>sequenceOrder(a[1].sequence_id,b[1].sequence_id));
+  return sessions;
+}
+function sandpiperUtterance(row) {
+  const utterance=Object.fromEntries(SANDPIPER_COLUMNS.map(name=>[name,row[name]]));
+  // Sandpiper writes an empty cell for an absent time; time text is never parsed.
+  for(const name of ['start_time','end_time'])utterance[name]=row[name]===''?null:row[name];
+  return utterance;
+}
+/** Annotation codes are inferred assertions by a named annotator, never help events. */
+function sandpiperAnnotations(row) {
+  const groups=new Map();
+  for(const [column,annotator,index,field]of sandpiperAnnotationColumns(row)){
+    const value=row[column];
+    if(value==='')continue;
+    const key=JSON.stringify([annotator,index]);
+    if(!groups.has(key))groups.set(key,{annotation:{basis:'inferred',annotator,index},fields:[],identifiedBy:null});
+    const group=groups.get(key);
+    if(field==='identifiedBy')group.identifiedBy=value;else group.fields.push([field,value]);
+  }
+  return [...groups.values()].map(({annotation,fields,identifiedBy})=>({...annotation,fields:Object.fromEntries(fields),...(identifiedBy===null?{}:{identifiedBy})}));
+}
+function verifySandpiperRecord(record) {
+  // verify() has already required source_platform sandpiper for this import mode.
+  const header=record.header;
+  if(header.assistance_coverage!==SANDPIPER_COVERAGE||header.event_order_basis!==SANDPIPER_ORDER)throw new Error('Sandpiper record coverage or order declaration differs.');
+  let previous=null;const sessions=new Set();
+  for(const entry of record.entries){
+    const sequence=entry.event.data.utterance.sequence_id;
+    sessions.add(entry.event.activity.id);
+    if(sessions.size!==1)throw new Error('A Sandpiper record holds one session, named by its activity.');
+    if(previous!==null&&sequenceOrder(sequence,previous)<=0)throw new Error('Sandpiper entries must be in strictly increasing sequence_id order.');
+    previous=sequence;
+  }
+}
+async function validateSandpiperEvent(event,data) {
+  const same=(value,keys)=>plain(value)&&canonicalize(Object.keys(value).sort())===canonicalize([...keys].sort());
+  if(event.name!==SANDPIPER_EVENT||!same(event,['name','salt','data','activity','actor'])||!same(event.activity,['id']))throw new Error('Invalid imported Sandpiper event shape.');
+  if(!same(data,['provenance','time_basis','source_time_basis','original_source_timestamp','utterance','inferred_annotations','assistance','assistance_stages','raw_source_fields','reported_metrics','missing_metrics','assistance_context'])||!same(data.provenance,['platform','source_sha256','source_row','source_record_sha256','imported_at','mapping_sha256','source_kind']))throw new Error('Invalid imported Sandpiper data shape.');
+  if(data.provenance.source_kind==='verified_public_sample')throw new Error('No Sandpiper input is a verified public sample.');
+  if(data.source_time_basis!=='source_strings_unparsed'||data.original_source_timestamp!==null||data.assistance!=='utterance_recorded_no_help_stage'||canonicalize(data.assistance_stages)!==canonicalize(Object.fromEntries(HELP_STAGES.map(stage=>[stage,'not_recorded'])))||Object.keys(data.reported_metrics).length||data.missing_metrics.length)throw new Error('Invalid imported Sandpiper semantics: annotation codes never set a help stage.');
+  const raw=data.raw_source_fields;
+  try{sandpiperSessions([raw]);}catch(error){throw new Error('Sandpiper raw source row is not a valid utterance row: '+error.message);}
+  if(data.provenance.source_record_sha256!==await digest(raw))throw new Error('Sandpiper raw source row differs from its recorded digest.');
+  if(canonicalize(data.utterance)!==canonicalize(sandpiperUtterance(raw))||canonicalize(data.inferred_annotations)!==canonicalize(sandpiperAnnotations(raw)))throw new Error('Sandpiper utterance or inferred annotations differ from the raw source row.');
+  if(event.activity.id!==raw.session_id)throw new Error('A Sandpiper record holds one session, named by its activity.');
+}
 export async function transform({profileId,text,secret=SESSION_SECRET,tenant='demo',sourceName='input.json',sourceKind='unverified_user_input',importedAt=new Date().toISOString().replace('.000Z','Z')}) {
   const profile=getProfile(profileId),mapping=profile.mapping,rows=parseInput(text,sourceName);
   if(typeof tenant!=='string'||!tenant.trim())throw new Error('A tenant scope is required.');
   timestamp(importedAt);
-  const sourceHash=await sha256(text),mappingHash=await digest(mapping),semanticContract=getSemanticContract(profileId);
-  const eventSchema=profile.mode==='assistance_events'?LIFECYCLE_EVENT_SCHEMA:IMPORT_EVENT_SCHEMA;
-  const semanticBinding={id:ASSISTANCE_CONTEXT_PROFILE.profile_id,version:ASSISTANCE_CONTEXT_PROFILE.version,sha256:await digest(ASSISTANCE_CONTEXT_PROFILE),hash_basis:'RFC8785'};
+  const sourceHash=await sha256(text),mappingHash=await digest(mapping),semanticContract=getSemanticContract(profileId),semanticProfile=semanticProfileFor(profileId);
+  const eventSchema=profile.mode==='assistance_events'?LIFECYCLE_EVENT_SCHEMA:profile.mode==='annotated_dialogue'?SANDPIPER_EVENT_SCHEMA:IMPORT_EVENT_SCHEMA;
+  const semanticBinding={id:semanticProfile.profile_id,version:semanticProfile.version,sha256:await digest(semanticProfile),hash_basis:'RFC8785'};
   const eventSchemaBinding={id:eventSchema.$id,sha256:await digest(eventSchema),hash_basis:'RFC8785'};
   const sourceVerified=!!profile.source?.sampleSha256&&sourceHash===profile.source.sampleSha256;
   // Caller descriptions cannot establish published provenance. Only exact public
   // sample bytes bind this import to the pinned, independently inspected source.
   const verifiedKind=sourceVerified?'verified_public_sample':profile.source?.fixtureSha256===sourceHash?'synthetic_fixture':'unverified_user_input';
   const publishedSource=sourceVerified?sourceDetails(profile):null;
+  if(profile.mode==='annotated_dialogue'){
+    const records=[];
+    for(const [session,items]of sandpiperSessions(rows)){
+      const record={header:{record_id:crypto.randomUUID(),subject:await subjectId(profileId,tenant,session,secret),hash_alg:'sha-256',created:importedAt,producer:{name:'QLM-transformer research adapters',version:ENGINE_VERSION},source_platform:profileId,source_sha256:sourceHash,mapping_sha256:mappingHash,import_mode:profile.mode,source_kind:verifiedKind,subject_scope:profile.subjectScope,record_scope:profile.recordScope,semantic_profile_binding:semanticBinding,event_schema_bindings:[eventSchemaBinding],semantic_mapping:semanticContract,assistance_coverage:SANDPIPER_COVERAGE,event_order_basis:SANDPIPER_ORDER},event_schemas:[eventSchema.$id],entries:[]};
+      const recordHash=await digest(record.header);
+      for(const [sourceRow,row]of items){
+        const event={name:SANDPIPER_EVENT,salt:randomSalt(),data:{provenance:{platform:profileId,source_kind:verifiedKind,source_sha256:sourceHash,source_row:sourceRow,source_record_sha256:await digest(row),imported_at:importedAt,mapping_sha256:mappingHash},time_basis:'import_time',source_time_basis:'source_strings_unparsed',original_source_timestamp:null,utterance:sandpiperUtterance(row),inferred_annotations:sandpiperAnnotations(row),assistance:'utterance_recorded_no_help_stage',assistance_stages:Object.fromEntries(HELP_STAGES.map(stage=>[stage,'not_recorded'])),raw_source_fields:{...row},reported_metrics:{},missing_metrics:[],assistance_context:normalizeContext()},activity:{id:session},actor:{role:'system',kind:'software',id:'QLM-transformer'}};
+        const entry={seq:record.entries.length+1,time:importedAt,event_hash:await digest(event),prev_hash:record.entries.length?record.entries.at(-1).entry_hash:recordHash};
+        entry.entry_hash=await digest({record_hash:recordHash,...entry});entry.event=event;record.entries.push(entry);
+      }
+      records.push(record);
+    }
+    const document={file_schema:'urn:ietf:params:learnlog:file:contained',serialization_format:'application/learnlog+json',records};
+    const checkpoint=await verify(document),eventCount=records.reduce((n,record)=>n+record.entries.length,0);
+    const summary={inputRowCount:rows.length,rowCount:eventCount,recordCount:records.length,eventCount,unit:'transcript_utterances',eventTypes:{[SANDPIPER_EVENT]:eventCount},missingMetricCount:0,assistanceUnknownCount:0};
+    return {id:crypto.randomUUID(),profile,semanticContract,sourceNamespace:profileId,rows,document,records,checkpoint,sourceName,sourceHash,mappingHash,sourceKind:verifiedKind,sourceVerified,requestedSourceKind:sourceKind,summary};
+  }
   if(profile.mode==='dialogue') {
     for(const [index,row]of rows.entries())validateTurns(row,index);
     if(rows.reduce((n,row)=>n+row.turns.length,0)>5000)throw new Error('This browser demo accepts at most 5,000 dialogue turns.');
@@ -279,6 +386,8 @@ async function validateImportedEvent(event,header,entryTime) {
     validateLifecycle({...lifecycle,subject_id:header.subject,activity_id:event.activity.id,context:data.assistance_context},0);
     if(p.native_identity_sha256!==await digest([header.source_platform,lifecycle.source_id,lifecycle.event_id])||p.source_revision!==lifecycle.source_revision)throw new Error('Native event identity or revision contradicts import provenance.');
     if(data.assistance!==lifecycle.event_type||data.original_source_timestamp!==lifecycle.source_timestamp||lifecycle.source_id!==header.source_namespace||Object.keys(data.reported_metrics).length||data.missing_metrics.length)throw new Error('Invalid imported lifecycle semantics.');
+  }else if(header.import_mode==='annotated_dialogue'){
+    await validateSandpiperEvent(event,data);
   }else throw new Error('Unsupported import mode.');
 }
 export async function verify(document,expectedHeads) {
@@ -289,9 +398,12 @@ export async function verify(document,expectedHeads) {
     if('truncated' in record||'signed_heads' in record)throw new Error('This browser subset does not verify signatures or truncated records.');
     timestamp(record.header.created);
     if(own(heads,record.header.record_id))throw new Error('Duplicate record identifier.');
+    // Each platform has exactly one accepted profile binding: the version that introduced its contract.
     const semantic=record.header.semantic_profile_binding;
-    if(!plain(semantic)||semantic.id!==ASSISTANCE_CONTEXT_PROFILE.profile_id||semantic.version!==ASSISTANCE_CONTEXT_PROFILE.version||semantic.hash_basis!=='RFC8785'||semantic.sha256!==await digest(ASSISTANCE_CONTEXT_PROFILE))throw new Error('Unsupported or mismatched semantic profile binding.');
-    const schema=record.header.import_mode==='assistance_events'?LIFECYCLE_EVENT_SCHEMA:IMPORT_EVENT_SCHEMA;
+    let expectedProfile=null;try{expectedProfile=semanticProfileFor(record.header.source_platform);}catch{expectedProfile=null;}
+    if(!expectedProfile||!plain(semantic)||semantic.id!==expectedProfile.profile_id||semantic.version!==expectedProfile.version||semantic.hash_basis!=='RFC8785'||semantic.sha256!==await digest(expectedProfile))throw new Error('Unsupported or mismatched semantic profile binding.');
+    if((record.header.source_platform==='sandpiper')!==(record.header.import_mode==='annotated_dialogue'))throw new Error('Sandpiper records require the annotated_dialogue import mode.');
+    const schema=record.header.import_mode==='assistance_events'?LIFECYCLE_EVENT_SCHEMA:record.header.import_mode==='annotated_dialogue'?SANDPIPER_EVENT_SCHEMA:IMPORT_EVENT_SCHEMA;
     const bindings=record.header.event_schema_bindings;
     if(!Array.isArray(bindings)||bindings.length!==1||bindings[0].id!==schema.$id||bindings[0].hash_basis!=='RFC8785'||bindings[0].sha256!==await digest(schema)||canonicalize(record.event_schemas)!==canonicalize([schema.$id]))throw new Error('Unsupported or mismatched event schema binding.');
     if(canonicalize(record.header.semantic_mapping)!==canonicalize(getSemanticContract(record.header.source_platform)))throw new Error('Semantic mapping does not match the versioned profile.');
@@ -307,6 +419,7 @@ export async function verify(document,expectedHeads) {
       const computed=await digest({record_hash:recordHash,seq:entry.seq,time:entry.time,event_hash:entry.event_hash,prev_hash:entry.prev_hash});
       if(computed!==entry.entry_hash)throw new Error('LearnLog entry hash mismatch.');prev=computed;
     }
+    if(record.header.import_mode==='annotated_dialogue')verifySandpiperRecord(record);
     heads[record.header.record_id]={seq:record.entries.length,entry_hash:prev};
   }
   if(expectedHeads&&canonicalize(heads)!==canonicalize(expectedHeads))throw new Error('External checkpoint mismatch.');

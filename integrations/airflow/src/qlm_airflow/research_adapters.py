@@ -1,28 +1,39 @@
 """Source-specific research adapters around the unchanged QLM writer/verifier.
 
-The two schemas here are not claimed to be supported upstream vendor exports.
+The source schemas here are not claimed to be supported upstream vendor exports.
 New event data is the QLM research-import extension, not standard assistance
 vocabulary. Published-source provenance is attached only on an exact sample-byte
 match. Source metadata is not an independent verification of underlying events.
 """
 from copy import deepcopy
 import hashlib
+import json
 import math
 import re
 
 from qlm_transformer.core import digest, subject_id, transform, verify
 from qlm_transformer.core import timestamp
-from .semantics import IMPORT_SCHEMA as IMPORT_EVENT_SCHEMA, LIFECYCLE_SCHEMA, PROFILE, apply_semantic_header, normalize_context, resource, binding, mapping_contract
+from .semantics import IMPORT_SCHEMA as IMPORT_EVENT_SCHEMA, LIFECYCLE_SCHEMA, PROFILE, SANDPIPER_SCHEMA, apply_semantic_header, normalize_context, resource, binding, mapping_contract, profile_for
 from jsonschema import Draft202012Validator, FormatChecker
 
 ADAPTER_VERSION = "0.4.0-research-adapters"
 IMPORT_SCHEMA = IMPORT_EVENT_SCHEMA["$id"]
-SOURCES = ("tutormoments", "oatutor", "explicit-assistance-events")
+SOURCES = ("tutormoments", "oatutor", "explicit-assistance-events", "sandpiper")
 TURN_FIELDS = ("turn_number", "start_seconds", "end_seconds", "role", "text")
 SUMMARY_FIELDS = ("lesson", "condition", "preTest", "postTest", "sessionTime", "totalUniqueSteps", "learningGain")
 SOURCE_KEYS = ("kind", "url", "downloadUrl", "revision", "license", "licenseUrl", "citation",
                "selectionNote", "limitations", "sampleSha256", "sourceSha256", "sourceRows", "summary")
 PUBLIC_SOURCE_BINDINGS = resource("public-source-bindings-v1.json")
+# Sandpiper (National Tutoring Observatory) PER_UTTERANCE utterances CSV, as written by
+# app/functions/outputRunDataToCSV: these utterance columns, then annotation columns.
+SANDPIPER_COLUMNS = ("_id", "session_id", "sequence_id", "role", "content", "start_time", "end_time")
+SANDPIPER_ANNOTATION = re.compile(r"annotator\[(.+?)\]\[(0|[1-9][0-9]*)\](.+)", re.S)
+SANDPIPER_SEQUENCE = re.compile(r"[1-9][0-9]*")
+SANDPIPER_EVENT = "qlm_import:transcript_utterance_observed"
+SANDPIPER_COVERAGE = "source_dialogue_and_inferred_codes_only_no_help_stage_recorded"
+SANDPIPER_ORDER = "source_sequence_id_numeric_order"
+HELP_STAGES = ("requested", "offered", "generated", "transmitted", "displayed", "accepted")
+MAX_SAFE_INTEGER = 2 ** 53 - 1
 
 
 def verify_import_document(document, checkpoint=None):
@@ -31,8 +42,10 @@ def verify_import_document(document, checkpoint=None):
     for record in document["records"]:
         header = record["header"]
         platform = header.get("source_platform")
-        schema = LIFECYCLE_SCHEMA if platform == "explicit-assistance-events" else IMPORT_EVENT_SCHEMA
-        if header.get("semantic_profile_binding") != binding(PROFILE) or header.get("semantic_mapping") != mapping_contract(platform):
+        schema = LIFECYCLE_SCHEMA if platform == "explicit-assistance-events" else SANDPIPER_SCHEMA if platform == "sandpiper" else IMPORT_EVENT_SCHEMA
+        # Each platform has exactly one accepted profile binding: the version that
+        # introduced its contract (see semantics.PROFILES).
+        if header.get("semantic_profile_binding") != binding(profile_for(platform)) or header.get("semantic_mapping") != mapping_contract(platform):
             raise ValueError("semantic profile or mapping binding mismatch")
         if header.get("event_schema_bindings") != [binding(schema)] or record.get("event_schemas") != [schema["$id"]]:
             raise ValueError("event schema interpretation binding mismatch")
@@ -67,7 +80,37 @@ def verify_import_document(document, checkpoint=None):
                     raise ValueError("native event revision binding mismatch")
             elif data["original_source_timestamp"] is not None:
                 raise ValueError("research source has no reported absolute event timestamp")
+        if platform == "sandpiper" or header.get("import_mode") == "annotated_dialogue":
+            _verify_sandpiper_record(record)
     return result
+
+
+def _verify_sandpiper_record(record):
+    """Re-derive every utterance and inferred annotation from its kept source row."""
+    header = record["header"]
+    if header.get("source_platform") != "sandpiper" or header.get("import_mode") != "annotated_dialogue":
+        raise ValueError("sandpiper records require the annotated_dialogue import mode")
+    if header.get("assistance_coverage") != SANDPIPER_COVERAGE or header.get("event_order_basis") != SANDPIPER_ORDER:
+        raise ValueError("sandpiper record coverage or order declaration differs")
+    previous, sessions = None, set()
+    for entry in record["entries"]:
+        event, data = entry["event"], entry["event"]["data"]
+        raw = data["raw_source_fields"]
+        try:
+            _sandpiper_sessions([raw])
+        except ValueError as error:
+            raise ValueError("sandpiper raw source row is not a valid utterance row") from error
+        if data["provenance"]["source_record_sha256"] != digest(raw):
+            raise ValueError("sandpiper raw source row differs from its recorded digest")
+        if data["utterance"] != _sandpiper_utterance(raw) or data["inferred_annotations"] != _sandpiper_annotations(raw):
+            raise ValueError("sandpiper utterance or inferred annotations differ from the raw source row")
+        sequence = raw["sequence_id"]
+        sessions.add(raw["session_id"])
+        if event["activity"]["id"] != raw["session_id"] or len(sessions) != 1:
+            raise ValueError("a sandpiper record holds one session, named by its activity")
+        if previous is not None and _sequence_key(sequence) <= previous:
+            raise ValueError("sandpiper entries must be in strictly increasing sequence_id order")
+        previous = _sequence_key(sequence)
 
 
 def _path(value, name):
@@ -92,7 +135,8 @@ def _checked_profile(profile):
     if not isinstance(profile, dict) or profile.get("id") not in SOURCES:
         raise ValueError("use an explicit supported source adapter")
     mapping = profile.get("mapping")
-    expected_mode = {"tutormoments": "dialogue", "oatutor": "summary", "explicit-assistance-events": "assistance_events"}[profile["id"]]
+    expected_mode = {"tutormoments": "dialogue", "oatutor": "summary", "explicit-assistance-events": "assistance_events",
+                     "sandpiper": "annotated_dialogue"}[profile["id"]]
     if not isinstance(mapping, dict) or mapping.get("platform") != profile["id"] or mapping.get("mode") != expected_mode:
         raise ValueError("research profile mode/platform mismatch")
     fields = mapping.get("fields", {})
@@ -124,6 +168,8 @@ def expected_subjects(rows, profile, tenant, key):
     if profile["id"] == "explicit-assistance-events":
         _validate_assistance_rows(rows)
         return [subject_id(profile["id"] + ":" + row["source_id"], tenant, row["subject_id"], key) for row in rows]
+    if profile["id"] == "sandpiper":
+        return [subject_id(profile["id"], tenant, session, key) for session in _sandpiper_sessions(rows)]
     return [subject_id(profile["id"], tenant, _path(row, mapping["fields"]["subject_id"]), key) for row in rows]
 
 
@@ -131,6 +177,8 @@ def adapt(rows, raw, profile, key, tenant, imported_at):
     mapping = _checked_profile(profile)
     if profile["id"] == "explicit-assistance-events":
         return _adapt_assistance(rows, raw, profile, key, tenant, imported_at)
+    if profile["id"] == "sandpiper":
+        return _adapt_sandpiper(rows, raw, profile, key, tenant, imported_at)
     platform = profile["id"]
     status = source_status(raw, profile)
     source_hash = hashlib.sha256(raw).hexdigest()
@@ -303,6 +351,121 @@ def _adapt_assistance(rows, raw, profile, key, tenant, imported_at):
                                "reported_metrics": {}, "missing_metrics": [], "assistance": row["event_type"],
                                "lifecycle": lifecycle, "assistance_context": context,
                                "raw_source_fields": {**deepcopy(lifecycle), "context": deepcopy(row.get("context", {}))}}})
+        _rechain(record)
+        document["records"].append(record)
+    verify(document)
+    return document, status
+
+
+def _sequence_key(sequence):
+    # sequence_id is a positive integer string without leading zeros, so length then
+    # text order is numeric order, with no integer-precision limit.
+    return len(sequence), sequence
+
+
+def _sandpiper_annotation_columns(row):
+    columns = []
+    for name in row:
+        if name in SANDPIPER_COLUMNS:
+            continue
+        match = SANDPIPER_ANNOTATION.fullmatch(name) if isinstance(name, str) else None
+        if match is None:
+            raise ValueError("column " + json.dumps(name, ensure_ascii=False) + " is neither a Sandpiper utterance column nor annotator[<name>][<index>]<field>")
+        index = int(match.group(2))
+        if index > MAX_SAFE_INTEGER:
+            raise ValueError("annotation index in column " + json.dumps(name, ensure_ascii=False) + " exceeds the exact integer range")
+        columns.append((name, match.group(1), index, match.group(3)))
+    return columns
+
+
+def _sandpiper_sessions(rows):
+    """Validate an utterances export and group its rows by session, in sequence order."""
+    if not isinstance(rows, list) or not rows:
+        raise ValueError("a Sandpiper export needs 1–5000 utterance rows")
+    if len(rows) > 5000:
+        raise ValueError("a Sandpiper import is limited to 5000 utterance rows")
+    sessions = {}
+    for number, row in enumerate(rows, 1):
+        label = "row " + str(number) + ": "
+        if not isinstance(row, dict):
+            raise ValueError(label + "each utterance row must be an object")
+        missing = [name for name in SANDPIPER_COLUMNS if name not in row]
+        if missing:
+            raise ValueError(label + "missing Sandpiper utterance column " + ", ".join(missing))
+        _sandpiper_annotation_columns(row)
+        for name, value in row.items():
+            if not isinstance(value, str):
+                raise ValueError(label + "Sandpiper export cells must be text; " + name + " is not")
+        if not row["session_id"].strip():
+            raise ValueError(label + "session_id must be nonempty text")
+        if not row["role"]:
+            raise ValueError(label + "role must be nonempty text")
+        if not SANDPIPER_SEQUENCE.fullmatch(row["sequence_id"]):
+            raise ValueError(label + "sequence_id must be a positive integer string (1, 2, 3, ...)")
+        items = sessions.setdefault(row["session_id"], [])
+        if any(other["sequence_id"] == row["sequence_id"] for _, other in items):
+            raise ValueError(label + "sequence_id must be unique within a session")
+        items.append((number, row))
+    for items in sessions.values():
+        items.sort(key=lambda item: _sequence_key(item[1]["sequence_id"]))
+    return sessions
+
+
+def _sandpiper_utterance(row):
+    utterance = {name: row[name] for name in SANDPIPER_COLUMNS}
+    for name in ("start_time", "end_time"):
+        # Sandpiper writes an empty cell for an absent time; the text is never parsed.
+        utterance[name] = row[name] if row[name] != "" else None
+    return utterance
+
+
+def _sandpiper_annotations(row):
+    """Annotation codes are inferred assertions by a named annotator, never help events."""
+    groups = {}
+    for column, annotator, index, field in _sandpiper_annotation_columns(row):
+        value = row[column]
+        if value == "":
+            continue
+        group = groups.setdefault((annotator, index), {"basis": "inferred", "annotator": annotator, "index": index, "fields": {}})
+        if field == "identifiedBy":
+            group["identifiedBy"] = value
+        else:
+            group["fields"][field] = value
+    return list(groups.values())
+
+
+def _adapt_sandpiper(rows, raw, profile, key, tenant, imported_at):
+    sessions = _sandpiper_sessions(rows)
+    platform = profile["id"]
+    status = source_status(raw, profile)
+    source_hash, mapping_hash = hashlib.sha256(raw).hexdigest(), digest(profile["mapping"])
+    document = {"file_schema": "urn:ietf:params:learnlog:file:contained",
+                "serialization_format": "application/learnlog+json", "records": []}
+    for session, items in sessions.items():
+        seed_rows = [{"_subject": session, "_activity": session} for _ in items]
+        seed_profile = {"platform": platform, "mode": "summary", "fields": {"subject_id": "_subject", "activity_id": "_activity"}, "metrics": {}}
+        record = transform(seed_rows, platform, seed_profile, key, tenant, imported_at, source_hash, custom_platforms=SOURCES)["records"][0]
+        header = record["header"]
+        header.update({"producer": {"name": "QLM-transformer research adapters", "version": ADAPTER_VERSION},
+                       "upstream_writer": {"name": "QLM-transformer", "version": "0.2.1", "scope": "contained writer and verifier; source events added by research adapter"},
+                       "mapping_sha256": mapping_hash, "import_mode": "annotated_dialogue", "source_kind": status["sourceKind"],
+                       "record_scope": profile["recordScope"], "subject_scope": profile["subjectScope"],
+                       "assistance_coverage": SANDPIPER_COVERAGE, "event_order_basis": SANDPIPER_ORDER})
+        apply_semantic_header(header, platform, SANDPIPER_SCHEMA)
+        record["event_schemas"] = [SANDPIPER_SCHEMA["$id"]]
+        for entry, (number, row) in zip(record["entries"], items):
+            event = entry["event"]
+            event.update({"name": SANDPIPER_EVENT, "actor": {"role": "system", "kind": "software", "id": "QLM-transformer"},
+                          "data": {"provenance": {"platform": platform, "source_sha256": source_hash, "source_row": number,
+                                                  "source_record_sha256": digest(row), "imported_at": imported_at,
+                                                  "mapping_sha256": mapping_hash, "source_kind": status["sourceKind"]},
+                                   "time_basis": "import_time", "source_time_basis": "source_strings_unparsed",
+                                   "original_source_timestamp": None, "utterance": _sandpiper_utterance(row),
+                                   "inferred_annotations": _sandpiper_annotations(row),
+                                   "assistance": "utterance_recorded_no_help_stage",
+                                   "assistance_stages": {stage: "not_recorded" for stage in HELP_STAGES},
+                                   "raw_source_fields": deepcopy(row), "reported_metrics": {}, "missing_metrics": [],
+                                   "assistance_context": normalize_context()}})
         _rechain(record)
         document["records"].append(record)
     verify(document)

@@ -230,8 +230,80 @@ export const EXPLICIT_ASSISTANCE_PROFILE = {
   }
 };
 export const ALL_PROFILES = [...PROFILES, EXPLICIT_ASSISTANCE_PROFILE];
+// Sandpiper (National Tutoring Observatory) utterance export. Its sample is SYNTHETIC: Sandpiper's documented
+// example rows (MIT), never NTO data. It is an engine/API adapter; the demo page lists ALL_PROFILES only.
+export const SANDPIPER_PROFILE = {
+  "id": "sandpiper",
+  "name": "Sandpiper utterance export \u00b7 SYNTHETIC",
+  "description": "SYNTHETIC sample only. Sandpiper (National Tutoring Observatory) PER_UTTERANCE utterances CSV: each utterance is an observed dialogue turn, and annotation codes are kept as inferred assertions by their annotator, never as help.",
+  "mode": "annotated_dialogue",
+  "status": "source_specific_adapter_checked_against_documentation_not_a_real_export",
+  "fields": {
+    "subject_id": "session_id",
+    "activity_id": "session_id"
+  },
+  "metrics": {},
+  "mapping": {
+    "platform": "sandpiper",
+    "version": "0.1.0",
+    "mode": "annotated_dialogue",
+    "status": "source_specific_adapter_checked_against_documentation_not_a_real_export",
+    "fields": {
+      "subject_id": "session_id",
+      "activity_id": "session_id"
+    },
+    "metrics": {},
+    "source_unit": "sandpiper_session",
+    "time_basis": "import_time_with_unparsed_source_time_strings",
+    "event_name": "qlm_import:transcript_utterance_observed",
+    "identifier_handling": "session_id is HMAC-pseudonymized as the record subject and kept as text in each utterance and activity; Sandpiper exports carry no learner identifier. Utterance text is kept. This is not a general anonymizer.",
+    "utterance_columns": [
+      "_id",
+      "session_id",
+      "sequence_id",
+      "role",
+      "content",
+      "start_time",
+      "end_time"
+    ],
+    "annotation_columns": "annotator[<annotatorName>][<index>]<field>",
+    "annotation_basis": "inferred",
+    "order": "sequence_id as a positive integer string, unique within a session",
+    "excluded_observed_fields": [
+      "session-level annotations",
+      "sessions and meta CSVs"
+    ]
+  },
+  "sampleName": "sandpiper-SYNTHETIC.csv",
+  "subjectScope": "adapter + session_id + tenant + key; a session pseudonym, not a learner",
+  "recordScope": "sandpiper_session",
+  "source": {
+    "kind": "synthetic_contract_fixture",
+    "url": "https://github.com/National-Tutoring-Observatory/sandpiper/blob/28e0d25c069ce07c759d802184d4ab914e9cfe8b/documentation/transcripts.md",
+    "revision": "28e0d25c069ce07c759d802184d4ab914e9cfe8b",
+    "license": "MIT (Sandpiper documentation examples, Copyright (c) 2025 National Tutoring Observatory; arrangement by QLM, MIT)",
+    "licenseUrl": "https://github.com/National-Tutoring-Observatory/sandpiper/blob/28e0d25c069ce07c759d802184d4ab914e9cfe8b/LICENSE",
+    "citation": "Utterances and the one annotation are Sandpiper's own documented examples (documentation/transcripts.md and documentation/schemas/examples/transcript-per-utterance.json at the pinned revision), arranged by QLM in the PER_UTTERANCE utterances-CSV layout written by app/functions/outputRunDataToCSV/app.ts. Not National Tutoring Observatory data and not a real Sandpiper export.",
+    "selectionNote": "Eight documented example utterances in two sessions: session_001 (six utterances with documented start/end times and one AI annotation, given_praise = Great!) and session_002 (two utterances from the CSV upload example, no times). Annotation columns follow the export's naming for annotator AI-0, slot 0: the prompt field given_praise plus the markedAs and votingReason columns the export always adds. _id values for session_002 follow the 0-based pattern of the documented JSON example.",
+    "limitations": [
+      "SYNTHETIC fixture built from Sandpiper's documentation examples. There is no public National Tutoring Observatory dataset here: no real learner, tutor, session or Sandpiper run export is included or was examined.",
+      "The layout follows Sandpiper's export code at the pinned revision. Real exports from other Sandpiper versions may differ, and a matching shape does not authenticate where a file came from.",
+      "Annotation codes, from a model or a person, are inferred assertions about an utterance. They are not observations of help being requested, offered, generated, transmitted, displayed or accepted, and no code sets a help stage.",
+      "start_time and end_time are kept as the source's unparsed strings (Sandpiper allows any format); an empty cell is kept as null. No clock time is derived.",
+      "Sandpiper's run export writes prompt-schema fields plus markedAs and votingReason; it does not write identifiedBy. identifiedBy is kept only when a column carries it, and an annotator name such as AI-0 is kept as given, not read as model or person.",
+      "sequence_id must be a positive integer string. Sandpiper's human-annotation template documentation shows sequence_id starting at 0; such files are refused rather than renumbered.",
+      "Session-level (PER_SESSION) annotations, the sessions and meta CSVs, prompts and model details are not imported."
+    ],
+    "fixtureSha256": "d7b1a265f2e8abf37b0e070becc2e7c8a446576375de607322481c5015515ec0",
+    "summary": "2 SYNTHETIC sessions \u00b7 8 utterances \u00b7 1 inferred annotation code \u00b7 0 observed learners",
+    "sampleUrl": "./samples/sandpiper-SYNTHETIC.csv",
+    "downloadUrl": "./samples/sandpiper-SYNTHETIC.csv"
+  }
+};
+export const ADAPTER_PROFILES = [...ALL_PROFILES, SANDPIPER_PROFILE];
 samples['explicit-assistance-events']="{\"source_id\":\"synthetic-contract-test\",\"subject_id\":\"fixture-learner-1\",\"activity_id\":\"fixture-task-1\",\"source_revision\":0,\"source_timestamp\":null,\"assistance_id\":\"fixture-help-1\",\"request_event_id\":null,\"request_origin\":\"unknown\",\"native_hint_depth\":null,\"delivery_order\":null,\"context\":{\"phase\":\"practice\",\"permission\":\"permitted\",\"observed_use\":\"recorded\",\"capture\":\"complete_within_boundary\",\"capture_boundary\":\"SYNTHETIC contract-test lifecycle assertions only; no real learner activity.\"},\"event_id\":\"fixture-event-1\",\"event_type\":\"help_requested\",\"content\":\"SYNTHETIC contract test for help_requested; not observed research data.\"}\n{\"source_id\":\"synthetic-contract-test\",\"subject_id\":\"fixture-learner-1\",\"activity_id\":\"fixture-task-1\",\"source_revision\":0,\"source_timestamp\":null,\"assistance_id\":\"fixture-help-1\",\"request_event_id\":\"fixture-event-1\",\"request_origin\":\"requested\",\"native_hint_depth\":null,\"delivery_order\":null,\"context\":{\"phase\":\"practice\",\"permission\":\"permitted\",\"observed_use\":\"recorded\",\"capture\":\"complete_within_boundary\",\"capture_boundary\":\"SYNTHETIC contract-test lifecycle assertions only; no real learner activity.\"},\"event_id\":\"fixture-event-2\",\"event_type\":\"help_generated\",\"content\":\"SYNTHETIC contract test for help_generated; not observed research data.\"}\n{\"source_id\":\"synthetic-contract-test\",\"subject_id\":\"fixture-learner-1\",\"activity_id\":\"fixture-task-1\",\"source_revision\":0,\"source_timestamp\":null,\"assistance_id\":\"fixture-help-1\",\"request_event_id\":\"fixture-event-1\",\"request_origin\":\"requested\",\"native_hint_depth\":null,\"delivery_order\":null,\"context\":{\"phase\":\"practice\",\"permission\":\"permitted\",\"observed_use\":\"recorded\",\"capture\":\"complete_within_boundary\",\"capture_boundary\":\"SYNTHETIC contract-test lifecycle assertions only; no real learner activity.\"},\"event_id\":\"fixture-event-3\",\"event_type\":\"help_transmitted\",\"content\":\"SYNTHETIC contract test for help_transmitted; not observed research data.\"}\n{\"source_id\":\"synthetic-contract-test\",\"subject_id\":\"fixture-learner-1\",\"activity_id\":\"fixture-task-1\",\"source_revision\":0,\"source_timestamp\":null,\"assistance_id\":\"fixture-help-1\",\"request_event_id\":\"fixture-event-1\",\"request_origin\":\"requested\",\"native_hint_depth\":3,\"delivery_order\":1,\"context\":{\"phase\":\"practice\",\"permission\":\"permitted\",\"observed_use\":\"recorded\",\"capture\":\"complete_within_boundary\",\"capture_boundary\":\"SYNTHETIC contract-test lifecycle assertions only; no real learner activity.\"},\"event_id\":\"fixture-event-4\",\"event_type\":\"help_displayed\",\"content\":\"SYNTHETIC contract test for help_displayed; not observed research data.\"}\n{\"source_id\":\"synthetic-contract-test\",\"subject_id\":\"fixture-learner-1\",\"activity_id\":\"fixture-task-1\",\"source_revision\":0,\"source_timestamp\":null,\"assistance_id\":\"fixture-help-1\",\"request_event_id\":\"fixture-event-1\",\"request_origin\":\"requested\",\"native_hint_depth\":null,\"delivery_order\":null,\"context\":{\"phase\":\"practice\",\"permission\":\"permitted\",\"observed_use\":\"recorded\",\"capture\":\"complete_within_boundary\",\"capture_boundary\":\"SYNTHETIC contract-test lifecycle assertions only; no real learner activity.\"},\"event_id\":\"fixture-event-5\",\"event_type\":\"learner_response_observed\",\"content\":\"SYNTHETIC contract test for learner_response_observed; not observed research data.\"}\n";
+samples['sandpiper']="_id,session_id,sequence_id,role,content,start_time,end_time,annotator[AI-0][0]given_praise,annotator[AI-0][0]markedAs,annotator[AI-0][0]votingReason\n0,session_001,1,Tutor,Hello! Today we're going to work on fractions.,00:00:00,00:00:05,,,\n1,session_001,2,Student,Hi! I'm ready to learn.,00:00:05,00:00:08,,,\n2,session_001,3,Tutor,Great! Let's start with a simple example.,00:00:08,00:00:12,Great!,,\n3,session_001,4,Student,Okay I'm listening.,00:00:12,00:00:14,,,\n4,session_001,5,Tutor,A fraction shows a part of a whole.,00:00:14,00:00:18,,,\n5,session_001,6,Student,Got it. Can you show me an example?,00:00:18,00:00:21,,,\n0,session_002,1,Tutor,Welcome back! Let's review decimals today.,,,,,\n1,session_002,2,Student,Hello! I've been practicing.,,,,,\n";
 function freezeProfile(value){if(value&&typeof value==='object'){for(const child of Object.values(value))freezeProfile(child);Object.freeze(value);}}
-freezeProfile(ALL_PROFILES);freezeProfile(PROFILES);
-export function getProfile(id) { const p=ALL_PROFILES.find(p=>p.id===id); if(!p) throw new Error("Choose an available source adapter."); return p; }
+freezeProfile(ADAPTER_PROFILES);freezeProfile(ALL_PROFILES);freezeProfile(PROFILES);
+export function getProfile(id) { const p=ADAPTER_PROFILES.find(p=>p.id===id); if(!p) throw new Error("Choose an available source adapter."); return p; }
 export function getSample(id) { getProfile(id); return samples[id]; }

@@ -14,7 +14,9 @@ MODULE = ROOT / 'dist/research-semantics.mjs'
 DEFINITIONS = (
     ('ASSISTANCE_CONTEXT_PROFILE', 'assistance-context-v0.1.0.json', 'export const IMPORT_EVENT_SCHEMA'),
     ('IMPORT_EVENT_SCHEMA', 'research-import-v2.json', 'export const LIFECYCLE_EVENT_SCHEMA'),
-    ('LIFECYCLE_EVENT_SCHEMA', 'assistance-lifecycle-v1.json', '\n\nfunction deepFreeze'),
+    ('LIFECYCLE_EVENT_SCHEMA', 'assistance-lifecycle-v1.json', 'export const ASSISTANCE_CONTEXT_PROFILE_V0_2'),
+    ('ASSISTANCE_CONTEXT_PROFILE_V0_2', 'assistance-context-v0.2.0.json', 'export const SANDPIPER_EVENT_SCHEMA'),
+    ('SANDPIPER_EVENT_SCHEMA', 'sandpiper-utterance-v1.json', '\n\nfunction deepFreeze'),
 )
 
 
@@ -36,7 +38,7 @@ def main():
     if args.check:
         if updated != original:
             raise SystemExit('Embedded semantic definitions are stale; run scripts/build_semantic_definitions.py')
-        print('Embedded semantic definitions match all three JSON source files.')
+        print('Embedded semantic definitions match all ' + str(len(DEFINITIONS)) + ' JSON source files.')
     else:
         MODULE.write_text(updated, encoding='utf-8')
         print('Embedded semantic definitions refreshed.')

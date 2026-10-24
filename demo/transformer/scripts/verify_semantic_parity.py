@@ -14,12 +14,12 @@ from qlm_airflow.research_adapters import adapt, verify_import_document
 from qlm_airflow.semantics import normalize_context, pooling_compatibility
 
 NODE = r"""
-import {transform,getSample,ALL_PROFILES} from './dist/engine.mjs';
+import {transform,getSample,ADAPTER_PROFILES} from './dist/engine.mjs';
 import {getSemanticContract,normalizeContext,assessPoolingCompatibility} from './dist/research-semantics.mjs';
 const clone=x=>JSON.parse(JSON.stringify(x));
 const imports=[];
-for(const id of ['tutormoments','oatutor','explicit-assistance-events']){
- const profile=ALL_PROFILES.find(p=>p.id===id);
+for(const id of ['tutormoments','oatutor','explicit-assistance-events','sandpiper']){
+ const profile=ADAPTER_PROFILES.find(p=>p.id===id);
  for(const changed of [false,true]){
   const text=getSample(id)+(changed?'\n':'');
   const run=await transform({profileId:id,text,sourceName:profile.sampleName,tenant:'semantic-parity',secret:'semantic-parity-key-only-not-for-production',importedAt:'2026-10-17T00:30:00Z'});
@@ -44,6 +44,11 @@ process.stdout.write(JSON.stringify({imports,cases:Object.fromEntries(Object.ent
 """
 
 
+# Sandpiper is new, so its records are also compared on every interpretation header field.
+SANDPIPER_HEADER_FIELDS = ("source_platform", "import_mode", "source_kind", "record_scope", "subject_scope",
+                           "assistance_coverage", "event_order_basis", "created")
+
+
 def event_without_salt(event):
     return {key: value for key, value in event.items() if key != "salt"}
 
@@ -66,6 +71,10 @@ def verify():
             for field in ("subject", "source_sha256", "mapping_sha256", "semantic_profile_binding",
                           "semantic_mapping", "event_schema_bindings", "assistance_context"):
                 assert actual_record["header"].get(field) == expected_record["header"].get(field), (case["id"], field)
+            if case["id"] == "sandpiper":
+                for field in SANDPIPER_HEADER_FIELDS:
+                    assert field in actual_record["header"] and actual_record["header"][field] == expected_record["header"].get(field), (case["id"], field)
+                assert actual_record["event_schemas"] == expected_record["event_schemas"], case["id"]
             assert len(actual_record["entries"]) == len(expected_record["entries"])
             for actual, target in zip(actual_record["entries"], expected_record["entries"]):
                 assert actual["time"] == target["time"]

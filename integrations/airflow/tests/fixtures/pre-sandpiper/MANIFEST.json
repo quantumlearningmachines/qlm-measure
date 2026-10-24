@@ -1,0 +1,234 @@
+{
+  "generated_by": "integrations/airflow/src/qlm_airflow/research_adapters.py adapt() before the sandpiper source was added",
+  "generator_commit": "bdfe72b25c4cd1d20f8c476fb38ef36aa723e326",
+  "adapter_version": "0.4.0-research-adapters",
+  "tenant": "pre-sandpiper-fixture",
+  "pseudonym_key_utf8": "pre-sandpiper-fixture-key-only-not-for-production",
+  "imported_at": "2026-10-24T00:00:00Z",
+  "documents": [
+    {
+      "file": "tutormoments.learnlog.json",
+      "platform": "tutormoments",
+      "input": "integrations/airflow/samples/tutormoments-real-transcripts.jsonl",
+      "input_byte_changed": false,
+      "source_kind": "verified_public_sample",
+      "records": 2,
+      "entries": 310,
+      "heads": {
+        "329ce466-9c02-4d00-9d6d-964a381b7008": {
+          "seq": 149,
+          "entry_hash": "162cd445db702e4ccdeb7203132606343b09e671deec9239501a6c63387b6602"
+        },
+        "29bc865c-a2bf-48b6-8e46-243da721f7b7": {
+          "seq": 161,
+          "entry_hash": "a4ba88fe73035447834b7dd164504f58008de6b6582f730429dd3614d018a368"
+        }
+      },
+      "sha256": "a31876712274710204fcf2d30120409137252293ba5c50df6698cd0fa443e937"
+    },
+    {
+      "file": "tutormoments-byte-changed.learnlog.json",
+      "platform": "tutormoments",
+      "input": "integrations/airflow/samples/tutormoments-real-transcripts.jsonl",
+      "input_byte_changed": true,
+      "source_kind": "unverified_user_input",
+      "records": 2,
+      "entries": 310,
+      "heads": {
+        "ac2d2cbb-fef0-4f04-8b38-31d577d5ba6d": {
+          "seq": 149,
+          "entry_hash": "ddd68df2f599fe47c683a56b49a96902d3689eb19a72a46b9df2e85b4751ba5b"
+        },
+        "1f27cf81-b9e6-4bdf-9b4b-ca5a30ce19b2": {
+          "seq": 161,
+          "entry_hash": "9c12463e2c1f2c50df966bb3d01aae46ed86bf491500cf21d501efef48bcf0c6"
+        }
+      },
+      "sha256": "601ec30065f1dc7a82b36e617688afa63806a67afce2255e0b41fe7be2843241"
+    },
+    {
+      "file": "oatutor.learnlog.json",
+      "platform": "oatutor",
+      "input": "integrations/airflow/samples/oatutor-real-participants.csv",
+      "input_byte_changed": false,
+      "source_kind": "verified_public_sample",
+      "records": 12,
+      "entries": 12,
+      "heads": {
+        "2c3d48e6-d03e-4556-bb29-2a765958bc19": {
+          "seq": 1,
+          "entry_hash": "823fbb4883a9025c24ebae7758536e11397cb446241cb56ea3ea364e24880c49"
+        },
+        "fc36b5eb-c620-4577-af00-ffa0f7424f9b": {
+          "seq": 1,
+          "entry_hash": "2f97a53991e843b8bb72ce5d8793f9b1eb69c14476e88983d88b3063f2a68fc5"
+        },
+        "b5bc3753-a95e-4174-b8b3-862efea7493e": {
+          "seq": 1,
+          "entry_hash": "676c28d0aae7258384fec25b02751a0025714e79aef55a4f359c5353379cce08"
+        },
+        "75c09f2e-0e8a-424f-9ebb-da09e4ac7e00": {
+          "seq": 1,
+          "entry_hash": "3ec9faebdac0dbf63c1ede2d63e654a65b7040fe190b3d2f1136d97a306a9395"
+        },
+        "07c0afe2-9198-4812-a6a3-bfbf583aaaff": {
+          "seq": 1,
+          "entry_hash": "c88df8ae90fade727498f3ae5fa77ab2385d2e0b176578de4f7c5ee381504889"
+        },
+        "8a9db57b-45b1-4a64-aa72-3dcc1f267ec8": {
+          "seq": 1,
+          "entry_hash": "77c25ded5b03e35e2311bdff5d71edfb44af44856b482289abd85d7962c9d7e3"
+        },
+        "a8181053-185b-4251-935c-9e9631998142": {
+          "seq": 1,
+          "entry_hash": "1a845aba30a1923668904e3b228fc48efcef82c1732bd206b47c6ef98c101ef4"
+        },
+        "32d7efc4-748b-4d7f-8e0c-79c07276f403": {
+          "seq": 1,
+          "entry_hash": "e7aade8ad11ff25209adb30e429fc3d549838e74196eb3f8071d03e8b5d7ee2e"
+        },
+        "2e5e01ec-ca40-4ea3-8755-4d2daf748001": {
+          "seq": 1,
+          "entry_hash": "4d4373012ed6dadd32b3ed08d1e90fc11e0155b7f060493b64beab7983116199"
+        },
+        "9e992bcc-0267-4503-86eb-78c22e701ea1": {
+          "seq": 1,
+          "entry_hash": "2820fa0088ca695cfd50de2c24d70886d7d4f12e3f4d2916ed0d43da0ade43e4"
+        },
+        "faca7685-ba42-48ad-a9ce-dca5880222d7": {
+          "seq": 1,
+          "entry_hash": "804b66be2d770e9faac1975ceaf87fa990d7afae4b1e24d80ff46ea95738c7ae"
+        },
+        "0f1d4ef1-0ec3-41c4-9445-338eccccd5d5": {
+          "seq": 1,
+          "entry_hash": "5897ff82a155976b3b39433461f530dd1433f96029c79b66b250df543748bd4b"
+        }
+      },
+      "sha256": "cba2ebd7b401d636ba066d9d218a1ec610abb68b429abc83a7bff8bc497bd2b2"
+    },
+    {
+      "file": "oatutor-byte-changed.learnlog.json",
+      "platform": "oatutor",
+      "input": "integrations/airflow/samples/oatutor-real-participants.csv",
+      "input_byte_changed": true,
+      "source_kind": "unverified_user_input",
+      "records": 12,
+      "entries": 12,
+      "heads": {
+        "76a60152-0916-4cb9-ad01-8ed80c6dc5e1": {
+          "seq": 1,
+          "entry_hash": "6d7cbfdfb35d2a4f1c101230eb30993cdef5496950bd5318bfb721c90d595d1b"
+        },
+        "f41eb593-46dd-42a9-a36e-c3ba03245743": {
+          "seq": 1,
+          "entry_hash": "c206077e96965481a133cf69b7b13bf2cd59e6a17a9b8683d35ab8c92a44d4b8"
+        },
+        "ee194b6e-e9dc-4f8c-b245-644134fc18fc": {
+          "seq": 1,
+          "entry_hash": "529893e54715416c02140b775bfae301a887b868bec40b002ce358088a9167da"
+        },
+        "da5f3176-3779-449c-b38a-e784f32246f0": {
+          "seq": 1,
+          "entry_hash": "413bbd8eec61f61c24f8858fcc4a3038ef87f1a49c1371c0a1625a0b17e60f49"
+        },
+        "e4945833-3408-441f-8689-36dd00d4e4c6": {
+          "seq": 1,
+          "entry_hash": "2a0016883f5bcf46efc13a5c3c69d2120980dcf61d7bbd4c4f369cb5180e27f4"
+        },
+        "5290c270-67c2-473d-b8a2-e7fc5add77d0": {
+          "seq": 1,
+          "entry_hash": "e3caa2f22cb084289269c007e90fb7f1ea09b1fc51a9d2354e30bd5a8f0c7719"
+        },
+        "0ba5fb30-b3f2-460e-b750-535761603b0d": {
+          "seq": 1,
+          "entry_hash": "cb3ffc51165a489872e091cfe2bf03f0d327d756dba6d7b4baf03fdedeeae1c7"
+        },
+        "f5bc552c-c43d-4174-940d-93e5c1b5b0dc": {
+          "seq": 1,
+          "entry_hash": "0b748ab65f3c6baf147837d8c5783932bc595a70acc1e850db6e1aa6832e524a"
+        },
+        "582a9d73-571f-42c7-82d7-4dedd6b82e23": {
+          "seq": 1,
+          "entry_hash": "ab2b6d0a771e2d03a56016abb5ba99ed16bf85307f4c74d20979805ee30eeacd"
+        },
+        "d2dac798-f710-4d39-b27c-b906d04d08ef": {
+          "seq": 1,
+          "entry_hash": "286a4a536f52566d26f55df1532a28b09176974c9de7a0a1746af04cde65d2c7"
+        },
+        "e3f55bf1-a614-4525-beb8-2948278f4670": {
+          "seq": 1,
+          "entry_hash": "93a2fa4a6565ae822c3ee2654c96c074ac222bab78962fb71875162cdd95635b"
+        },
+        "00d7b633-e6bd-46ea-aa30-6640643ffebf": {
+          "seq": 1,
+          "entry_hash": "747c9a96ab4b0759c5ddd6d689aff601ed725ddd293f37d733fd263e7d485f26"
+        }
+      },
+      "sha256": "6fa23352293926edeb8b0ba3511b71a44bd19378f6b3e70998b98f5c742898ec"
+    },
+    {
+      "file": "explicit-assistance-events.learnlog.json",
+      "platform": "explicit-assistance-events",
+      "input": "demo/transformer/dist/samples/explicit-assistance-SYNTHETIC.jsonl",
+      "input_byte_changed": false,
+      "source_kind": "synthetic_fixture",
+      "records": 5,
+      "entries": 5,
+      "heads": {
+        "54c37f2e-e00b-409b-9373-a8ede42ca88f": {
+          "seq": 1,
+          "entry_hash": "769c20f1cdfad91c3907982fae85fcdcfaefec36c741f9a510098d6b87ea6f2d"
+        },
+        "e29956ce-0aee-4d94-a99c-8577a4543120": {
+          "seq": 1,
+          "entry_hash": "85154dca6b513f8dec1cb60be16bf02544a814f210a4297f55c35fd2083453a9"
+        },
+        "c9dda580-97cb-4986-80ce-ff49c786b10b": {
+          "seq": 1,
+          "entry_hash": "64a08b4515b6498724ba7110a828409955f401ea913ffb38ae50b02f5a5c4428"
+        },
+        "54ec59be-e351-4d5f-a4e7-3eefba93845f": {
+          "seq": 1,
+          "entry_hash": "aa4fdc016b5d90234419b95e5e7e73a9c234f373602264dd91cfbcfb06d43331"
+        },
+        "bd37cc40-a921-4913-872a-ca97c932cdd8": {
+          "seq": 1,
+          "entry_hash": "d9944a68a5803c122dc97e78a5a845b5dfcce0e4ae4ec2295dbc62c872213c7a"
+        }
+      },
+      "sha256": "a432d3886cd7e7c0130bc5c0499451985f9e9064138e6eb000670a7522d87b80"
+    },
+    {
+      "file": "explicit-assistance-events-byte-changed.learnlog.json",
+      "platform": "explicit-assistance-events",
+      "input": "demo/transformer/dist/samples/explicit-assistance-SYNTHETIC.jsonl",
+      "input_byte_changed": true,
+      "source_kind": "unverified_user_input",
+      "records": 5,
+      "entries": 5,
+      "heads": {
+        "8ec867c1-f78e-4c38-9baf-be2c643e781d": {
+          "seq": 1,
+          "entry_hash": "a5da8e3bf226fdb2a839024a6b4443ca43335f89bc70a0167b9690934a3eaf5c"
+        },
+        "7128f5ad-1a77-44f6-a931-5cd85394ff80": {
+          "seq": 1,
+          "entry_hash": "4c399cd84cf6cd8a1c8374e0cb6520aec1ec46cc6e9363d8ce13f86e8c0596a9"
+        },
+        "ce403005-3072-41cc-ad6f-faf55e479b93": {
+          "seq": 1,
+          "entry_hash": "7813d49a60513ee4771d33a02fc2d60415b7efb9d3d0d22024d345115ced8576"
+        },
+        "6ffc8bd0-3b19-4cdc-9673-1f61c00fc958": {
+          "seq": 1,
+          "entry_hash": "a9c11f7d5b2f70adc2e689aec318edfcd752772f91cd5d7f515a1a00f7af4b9a"
+        },
+        "e69db29e-39d5-48e2-b02b-204064cdca45": {
+          "seq": 1,
+          "entry_hash": "0fd56b82f4d91bc1e439213c0a803200876b8b564e3bb89cc01f092485fa0267"
+        }
+      },
+      "sha256": "fb1f07336f21b6a89f3b5f1fef1a830cc87440747c1737bc9509d9a674a88826"
+    }
+  ]
+}

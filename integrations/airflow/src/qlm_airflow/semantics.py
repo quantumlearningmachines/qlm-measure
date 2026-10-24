@@ -15,8 +15,15 @@ def resource(name):
 
 
 PROFILE = resource("assistance-context-v0.1.0.json")
+# Profile versions in order. A later version only adds platform contracts; it never
+# changes an earlier one. Each platform's documents bind the version that introduced
+# its contract, so documents (and ledger payloads) written before a new platform was
+# added keep their exact binding and still verify.
+PROFILE_V0_2 = resource("assistance-context-v0.2.0.json")
+PROFILES = (PROFILE, PROFILE_V0_2)
 IMPORT_SCHEMA = resource("research-import-v2.json")
 LIFECYCLE_SCHEMA = resource("assistance-lifecycle-v1.json")
+SANDPIPER_SCHEMA = resource("sandpiper-utterance-v1.json")
 _MISSING = object()
 
 
@@ -46,15 +53,20 @@ def binding(schema):
     return result
 
 
+def profile_for(platform):
+    """The profile version that introduced this platform's mapping contract."""
+    for profile in PROFILES:
+        if isinstance(platform, str) and platform in profile["semantics"]:
+            return profile
+    raise ValueError("source has no declared semantic mapping contract")
+
+
 def mapping_contract(platform):
-    try:
-        return deepcopy(PROFILE["semantics"][platform])
-    except KeyError:
-        raise ValueError("source has no declared semantic mapping contract") from None
+    return deepcopy(profile_for(platform)["semantics"][platform])
 
 
 def apply_semantic_header(header, platform, schema):
-    header["semantic_profile_binding"] = binding(PROFILE)
+    header["semantic_profile_binding"] = binding(profile_for(platform))
     header["semantic_mapping"] = mapping_contract(platform)
     header["event_schema_bindings"] = [binding(schema)]
 
