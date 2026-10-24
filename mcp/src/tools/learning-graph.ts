@@ -1,5 +1,6 @@
 /** qlm_learning_graph: what comes before or after a LabPath activity (mode), with its standards. */
 import { Refusal } from "../files.js";
+import { ANSWER_BUDGET, answerSize } from "../respond.js";
 import { DatasetClient, datasetInfo } from "./qlm-datasets.js";
 
 type Obj = Record<string, unknown>;
@@ -16,7 +17,23 @@ export interface LearningGraphInput {
   limit?: number | undefined;
 }
 
-const edge = (e: Obj) => ({ from: e.fromModeId, to: e.toModeId, kind: e.kind, priority: e.priority, concepts: e.concepts, misconceptions: e.misconceptions, teacher_facing_reason: e.teacherFacingReason, student_facing_reason: e.studentFacingReason });
+/** An edge keeps its first CONCEPTS_SHOWN concepts; concepts_total says how many it has when that's more. */
+export const CONCEPTS_SHOWN = 8;
+export const DEFAULT_LIMIT = 10;
+const edge = (e: Obj) => {
+  const concepts = Array.isArray(e.concepts) ? (e.concepts as unknown[]) : [];
+  return {
+    from: e.fromModeId,
+    to: e.toModeId,
+    kind: e.kind,
+    priority: e.priority,
+    concepts: concepts.slice(0, CONCEPTS_SHOWN),
+    ...(concepts.length > CONCEPTS_SHOWN ? { concepts_total: concepts.length } : {}),
+    misconceptions: e.misconceptions,
+    teacher_facing_reason: e.teacherFacingReason,
+    student_facing_reason: e.studentFacingReason,
+  };
+};
 
 export async function qlmLearningGraph(input: LearningGraphInput, client: DatasetClient): Promise<Obj> {
   if ((input.mode_id === undefined) === (input.standard === undefined)) throw new Refusal("Give either mode_id or standard, not both and not neither.");
@@ -39,25 +56,39 @@ export async function qlmLearningGraph(input: LearningGraphInput, client: Datase
   }
   const kinds = new Set<string>(input.kinds ?? EDGE_KINDS);
   const direction = input.direction ?? "both";
-  const limit = input.limit ?? 25;
-  const out: Obj = { modes };
-  const truncated: Obj = {};
-  const linked = new Set<string>(modes);
+  const asked = input.limit ?? DEFAULT_LIMIT;
+  const lists: Partial<Record<"before" | "after", Obj[]>> = {};
   for (const side of ["before", "after"] as const) {
     if (direction !== "both" && direction !== side) continue;
-    const list = edges.filter((e) => kinds.has(e.kind as string) && modes.includes((side === "before" ? e.toModeId : e.fromModeId) as string)).sort((a, b) => rank(a) - rank(b));
-    if (list.length > limit) truncated[side] = list.length;
-    out[side] = list.slice(0, limit).map((e) => {
-      linked.add(e.fromModeId as string);
-      linked.add(e.toModeId as string);
-      return edge(e);
-    });
+    lists[side] = edges.filter((e) => kinds.has(e.kind as string) && modes.includes((side === "before" ? e.toModeId : e.fromModeId) as string)).sort((a, b) => rank(a) - rank(b));
   }
-  if (Object.keys(truncated).length) out.truncated = truncated;
-  if (![out.before, out.after].some((l) => Array.isArray(l) && l.length)) out.note = `${modes.join(", ")} has no edges of the kinds asked for in this direction.`;
-  out.standards = Object.fromEntries(
-    [...linked].map((m) => [m, rows.filter((s) => s.modeId === m).map((s) => ({ code: s.code, description: s.description, gradeBand: s.gradeBand, disciplinaryCore: s.disciplinaryCore, discipline: s.discipline }))]),
-  );
+  const build = (limit: number): Obj => {
+    const out: Obj = { modes };
+    const truncated: Obj = {};
+    const linked = new Set<string>();
+    for (const side of ["before", "after"] as const) {
+      const list = lists[side];
+      if (!list) continue;
+      if (list.length > limit) truncated[side] = list.length;
+      out[side] = list.slice(0, limit).map((e) => {
+        for (const m of [e.fromModeId as string, e.toModeId as string]) if (!modes.includes(m)) linked.add(m);
+        return edge(e);
+      });
+    }
+    if (Object.keys(truncated).length) out.truncated = truncated;
+    if (![out.before, out.after].some((l) => Array.isArray(l) && l.length)) out.note = `${modes.join(", ")} has no edges of the kinds asked for in this direction.`;
+    out.standards = Object.fromEntries(modes.map((m) => [m, rows.filter((s) => s.modeId === m).map((s) => ({ code: s.code, description: s.description, gradeBand: s.gradeBand, disciplinaryCore: s.disciplinaryCore, discipline: s.discipline }))]));
+    out.linked_mode_standards = Object.fromEntries([...linked].map((m) => [m, rows.filter((s) => s.modeId === m).map((s) => s.code)]));
+    return out;
+  };
+  // Fit the answer: lower the per-direction limit until it does, and say so.
+  let used = asked;
+  let out = build(used);
+  while (used > 1 && answerSize({ ...out, does_not_show: ["x"] }) > ANSWER_BUDGET - 2_000) {
+    used = Math.floor(used * 0.75);
+    out = build(used);
+  }
+  if (used < asked) out.limit_lowered = { asked, used, why: `${asked} links per direction would not fit in one answer, so ${used} are shown. Ask for one direction or fewer kinds to see others.` };
   const priorities = new Set(edges.map((e) => e.priority));
   if (priorities.size === 1) out.priority_note = `Every edge in the export has priority "${String([...priorities][0])}", so priority doesn't rank these links.`;
   const byKind: Record<string, number> = {};

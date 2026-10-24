@@ -1,6 +1,7 @@
 /** learnlog_transform: a local export into Learnlog records, with source and capture details kept. */
 import { basename } from "node:path";
 import { Refusal, readLocalText } from "../files.js";
+import { ANSWER_BUDGET, answerSize } from "../respond.js";
 import { engine, formatStages, profileOf, sourceWarnings, unknownsOf, type TransformRun } from "../transformer.js";
 
 export interface TransformInput {
@@ -27,7 +28,7 @@ export async function learnlogTransform(input: TransformInput): Promise<Record<s
   const run = await runTransform(input);
   const s = run.profile.source;
   const first = run.records[0]!;
-  return {
+  const body: Record<string, unknown> = {
     format: run.profile.id,
     source: {
       file: run.sourceName,
@@ -43,11 +44,24 @@ export async function learnlogTransform(input: TransformInput): Promise<Record<s
     heads: run.checkpoint,
     pseudonyms: "Learner IDs are replaced with HMAC pseudonyms keyed by a random secret made when this server started. They don't match across restarts or other tools.",
     preview: { header: first.header, entries: first.entries.slice(0, 1) },
-    ...(input.include_document ? { document: run.document } : { document_note: "Set include_document: true to get the whole Learnlog document. This tool never writes it to disk." }),
     does_not_show: [
       "Help that happened outside what the source recorded. A Learnlog record keeps what the export asserts, and nothing else.",
       "Whether the source's assertions are true. The transformer checks structure and keeps provenance; it can't check a recording against the world.",
       "Learning or the effect of help. These are records, not estimates.",
     ],
+  };
+  const limits = body.does_not_show;
+  delete body.does_not_show;
+  if (!input.include_document) return { ...body, document_note: "Set include_document: true to get the whole Learnlog document. This tool never writes it to disk.", does_not_show: limits };
+  const whole = { ...body, document: run.document, does_not_show: limits };
+  if (answerSize(whole) <= ANSWER_BUDGET) return whole;
+  const characters = JSON.stringify(run.document, null, 2).length;
+  return {
+    ...body,
+    document_omitted: {
+      characters,
+      note: `The whole Learnlog document is ${characters.toLocaleString("en-US")} characters, too large to send in one answer (the limit is ${ANSWER_BUDGET.toLocaleString("en-US")}). The summary, heads, unknowns and preview here describe it. Nothing was written to disk.`,
+    },
+    does_not_show: limits,
   };
 }

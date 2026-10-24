@@ -46,13 +46,13 @@ export function createServer(options: { fetch?: typeof fetch } = {}): McpServer 
     "learnlog_transform",
     {
       title: "Transform to Learnlog",
-      description: "Turn an export into Learnlog records, keeping source and capture details. Give a format (see learnlog_formats) and either a local file path or use_sample: true for the format's bundled public sample. Returns a summary, the records' hash-chain heads, the unknowns they keep and a preview; set include_document for the whole Learnlog document. Nothing is written to disk.",
+      description: "Turn an export into Learnlog records, keeping source and capture details. Give a format (see learnlog_formats) and either a local file path or use_sample: true for the format's bundled public sample. Returns a summary, the records' hash-chain heads, the unknowns they keep and a preview; set include_document for the whole Learnlog document, which comes back only when it fits in one answer (small exports). Nothing is written to disk.",
       inputSchema: {
         format: z.enum(FORMAT_IDS).describe("The source format."),
         path: path("the export file").optional(),
         use_sample: z.boolean().optional().describe("Use the format's bundled public sample instead of a file."),
         tenant: z.string().min(1).max(200).optional().describe("A scope name for the learner pseudonyms. Default: local."),
-        include_document: z.boolean().optional().describe("Return the whole Learnlog document."),
+        include_document: z.boolean().optional().describe("Return the whole Learnlog document if it fits in one answer; otherwise its size is reported instead."),
       },
       annotations: LOCAL,
     },
@@ -141,13 +141,13 @@ export function createServer(options: { fetch?: typeof fetch } = {}): McpServer 
     "qlm_learning_graph",
     {
       title: "QLM learning graph",
-      description: "What comes before or after this LabPath activity? Give a LabPath mode id (from qlm_misconceptions) or a standard code. Returns the linked activities in LabPath's designed learning graph, with the teacher-facing reason for each link, the misconception ids it carries, and the standards aligned to each activity. Reads https://play.quantumlearningmachines.com once per session.",
+      description: "What comes before or after this LabPath activity? Give a LabPath mode id (from qlm_misconceptions) or a standard code. Returns the linked activities in LabPath's designed learning graph, with the teacher-facing reason for each link, its first 8 concepts, the misconception ids it carries, the full standards for the asked-about activity, and the standard codes of each linked one. Reads https://play.quantumlearningmachines.com once per session.",
       inputSchema: {
         mode_id: z.string().min(1).max(100).optional().describe("A LabPath mode id, for example from a misconception's modes."),
         standard: z.string().min(1).max(50).optional().describe("A standard code, for example HS-PS2-1."),
         direction: z.enum(["before", "after", "both"]).optional().describe("Default both."),
         kinds: z.array(z.enum(EDGE_KINDS)).min(1).optional().describe("Edge kinds to include. Default all."),
-        limit: z.number().int().min(1).max(200).optional().describe("Most edges per direction. Default 25."),
+        limit: z.number().int().min(1).max(50).optional().describe("Most edges per direction. Default 10. Lowered, and said so, if the answer would not fit."),
       },
       annotations: NETWORK,
     },

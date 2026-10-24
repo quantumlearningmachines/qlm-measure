@@ -81,7 +81,7 @@ It returns whether the credential verified, each check with its result, the issu
 
 Evaluation-tier records never include their trigger patterns or diagnostic question; they're kept back for benchmark integrity. Held-out records aren't in the dataset at all.
 
-**`qlm_learning_graph`** says what comes before or after a LabPath activity, from a mode id or a standard code. It returns each link's kind (prerequisite, labpath-sequence, reinforcement, transfer, extension), the teacher-facing reason, the misconception ids it carries, and the standards aligned to each activity.
+**`qlm_learning_graph`** says what comes before or after a LabPath activity, from a mode id or a standard code. It returns each link's kind (prerequisite, labpath-sequence, reinforcement, transfer, extension), the teacher-facing reason, its first 8 concepts, the misconception ids it carries, the full standards for the activity you asked about, and the standard codes of each linked activity. It shows 10 links per direction unless you ask for more.
 > "What should students do before the forces activity, and which standards does it cover?"
 
 The graph is LabPath's designed sequence, not evidence that a student needs a step. The standards are LabPath's own mapping to NGSS-style codes.

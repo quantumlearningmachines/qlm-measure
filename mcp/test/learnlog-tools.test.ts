@@ -5,7 +5,7 @@ import { ROOT } from "../src/package.js";
 import { STAGES } from "../src/stages.js";
 import { learnlogFormats } from "../src/tools/formats.js";
 import { assistanceInventoryOfRecords } from "../src/tools/inventory.js";
-import { learnlogTransform } from "../src/tools/transform.js";
+import { learnlogTransform, runTransform } from "../src/tools/transform.js";
 import { learnlogValidate } from "../src/tools/validate.js";
 import { workdir, writeFixture } from "./helpers/python.js";
 
@@ -56,9 +56,10 @@ describe("learnlog_transform", () => {
     expect(Object.values(r.help_stages).every((v) => String(v).startsWith("not recorded"))).toBe(true);
     expect(r.does_not_show.length).toBeGreaterThan(0);
   });
-  it("returns the whole Learnlog document when asked", async () => {
-    const r = (await learnlogTransform({ format: "oatutor", use_sample: true, include_document: true, tenant: "district-7" })) as Obj;
-    expect(r.document.records).toHaveLength(12);
+  it("converts every OATutor participant row into a record and keeps what the table doesn't report", async () => {
+    const run = (await runTransform({ format: "oatutor", use_sample: true, tenant: "district-7" })) as Obj;
+    expect(run.document.records).toHaveLength(12);
+    const r = (await learnlogTransform({ format: "oatutor", use_sample: true, tenant: "district-7" })) as Obj;
     expect(r.unknowns).toContain("Actual help use not reported in participant table on 12 of 12 entries");
   });
   it("transforms a user's own file, which is not a pinned sample", async () => {
@@ -88,21 +89,21 @@ describe("learnlog_transform", () => {
 describe("learnlog_validate", () => {
   it("passes a transformer-made Learnlog file and lists the unknowns each record keeps", async () => {
     const dir = workdir();
-    const run = (await learnlogTransform({ format: "explicit-assistance-events", use_sample: true, include_document: true })) as Obj;
+    const run = (await runTransform({ format: "explicit-assistance-events", use_sample: true })) as Obj;
     const file = writeFixture(dir, "doc.learnlog.json", JSON.stringify(run.document));
     const v = (await learnlogValidate({ path: file })) as Obj;
     expect(v.valid).toBe(true);
     expect(v.errors).toEqual([]);
     expect(v.records).toHaveLength(5);
     expect(v.records[0].unknowns).toEqual(expect.arrayContaining([expect.stringMatching(/^Source event time not recorded on/)]));
-    expect(v.heads).toEqual(run.heads);
+    expect(v.heads).toEqual(run.checkpoint);
     expect(v.warnings).toContain("This is a SYNTHETIC contract fixture, not learner data.");
     expect(v.not_checked.length).toBeGreaterThan(0);
   });
   it("lists every kind of unknown a dialogue or summary record keeps", async () => {
     const dir = workdir();
     for (const format of ["tutormoments", "oatutor"] as const) {
-      const run = (await learnlogTransform({ format, use_sample: true, include_document: true })) as Obj;
+      const run = (await runTransform({ format, use_sample: true })) as Obj;
       const v = (await learnlogValidate({ path: writeFixture(dir, `${format}.json`, JSON.stringify(run.document)) })) as Obj;
       expect(v.valid).toBe(true);
       const all = v.records.flatMap((r: Obj) => r.unknowns).join("\n");
@@ -113,7 +114,7 @@ describe("learnlog_validate", () => {
   });
   it("fails a file whose chain was changed after it was made, naming the check", async () => {
     const dir = workdir();
-    const run = (await learnlogTransform({ format: "explicit-assistance-events", use_sample: true, include_document: true })) as Obj;
+    const run = (await runTransform({ format: "explicit-assistance-events", use_sample: true })) as Obj;
     run.document.records[0].entries[0].event.data.lifecycle.event_type = "help_displayed";
     run.document.records[0].entries[0].event.data.assistance = "help_displayed";
     run.document.records[0].entries[0].event.data.raw_source_fields.event_type = "help_displayed";
@@ -176,7 +177,7 @@ describe("assistance_inventory on Learnlog records", () => {
   });
   it("reads a Learnlog file made earlier, and refuses one that does not verify", async () => {
     const dir = workdir();
-    const run = (await learnlogTransform({ format: "oatutor", use_sample: true, include_document: true })) as Obj;
+    const run = (await runTransform({ format: "oatutor", use_sample: true })) as Obj;
     const file = writeFixture(dir, "doc.json", JSON.stringify(run.document));
     const r = (await assistanceInventoryOfRecords({ learnlog_path: file })) as Obj;
     expect(r.sources[0].records).toBe(12);

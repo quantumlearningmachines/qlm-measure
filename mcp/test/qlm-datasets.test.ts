@@ -98,8 +98,10 @@ describe("qlm_learning_graph", () => {
     expect(r.after.map((x: Obj) => [x.to, x.kind, x.priority])).toEqual([["newton-lab", "labpath-sequence", "medium"], ["gravity-drop", "transfer", "low"]]);
     expect(r.before[0]).toEqual({ from: "intro-motion", to: "forces-motion", kind: "prerequisite", priority: "high", concepts: ["net force"], misconceptions: ["PHY-001"], teacher_facing_reason: "Mission graph already encodes intro-motion as a prerequisite for forces-motion.", student_facing_reason: "This next lab uses a similar idea in a new situation." });
     expect(r.standards["forces-motion"].map((x: Obj) => x.code)).toEqual(["HS-PS2-1", "MS-PS2-2"]);
-    expect(r.standards["intro-motion"]).toEqual([]);
-    expect(r.standards["gravity-drop"][0]).toEqual({ code: "MS-PS2-4", description: "Construct an argument about gravitational interactions.", gradeBand: "6-8", disciplinaryCore: "PS2.A: Forces and Motion", discipline: "Physical Science" });
+    expect(r.standards["forces-motion"][1]).toEqual({ code: "MS-PS2-2", description: "Plan an investigation of balanced and unbalanced forces.", gradeBand: "6-8", disciplinaryCore: "PS2.A: Forces and Motion", discipline: "Physical Science" });
+    expect(Object.keys(r.standards)).toEqual(["forces-motion"]);
+    expect(r.linked_mode_standards).toEqual({ "intro-motion": [], "friction-lab": [], "newton-lab": ["HS-PS2-1"], "gravity-drop": ["MS-PS2-4"] });
+    expect(r.before[0]).not.toHaveProperty("concepts_total");
     expect(r.dataset).toEqual(expect.objectContaining({ license: "CC-BY-4.0", edges_in_export: 6, standards_rows_in_export: 4 }));
     expect(r.dataset.edges_by_kind).toEqual({ prerequisite: 1, "labpath-sequence": 1, transfer: 2, reinforcement: 1, extension: 1 });
     expect(r.does_not_show.join(" ")).toMatch(/LabPath's design/);
@@ -144,6 +146,16 @@ describe("records missing optional fields", () => {
     expect(r.available.grade_bands).toEqual({});
     const g = (await qlmMisconceptions({ grade_band: "6-8" }, c)) as Obj;
     expect(g.total_matching).toBe(0);
+  });
+});
+
+describe("an edge without concepts", () => {
+  it("lists no concepts rather than inventing any", async () => {
+    const bare = { fromModeId: "intro-motion", toModeId: "forces-motion", kind: "prerequisite", priority: "high", misconceptions: [] };
+    const c = new DatasetClient(datasetFetch({ "learning-graph": { ...GRAPH_BODY, learningGraph: [bare] }, standards: STANDARDS_BODY }).f);
+    const r = (await qlmLearningGraph({ mode_id: "forces-motion" }, c)) as Obj;
+    expect(r.before[0].concepts).toEqual([]);
+    expect(r.before[0]).not.toHaveProperty("concepts_total");
   });
 });
 
