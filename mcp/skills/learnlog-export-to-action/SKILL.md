@@ -3,7 +3,7 @@ name: learnlog-export-to-action
 description: Take a tutoring or learning export (TutorMoments, OATutor, explicit help events, or a Sandpiper run), convert it to Learnlog on this computer, say what it records about help and what it can't show, then name likely misconceptions and the LabPath worlds that work on them.
 ---
 
-# From an export to the next teaching move
+# From an export to what to check first
 
 Use this when someone gives you an export file, or asks what their logs say about help.
 
@@ -29,3 +29,4 @@ Always finish here.
 2. **Name the likely beliefs.** Call `qlm_misconceptions` with words from the topic, and a domain when it's clear. For the top two or three matches give the student belief, one way to check for it (its diagnostic question when it has one), and its teacher intervention.
 3. **Suggest LabPath worlds.** Each match lists its `worlds`. Suggest them by name, with each world's link exactly as the tool gives it. Never write a link the tool didn't return. For a science topic, `qlm_learning_graph` on a world says what to do before and after it.
 4. **Say what this is.** These are research-based possibilities to check with the students, not a diagnosis of them.
+5. **Stay at the class level.** Answer for the class or group the data covers: what to check first, the likely misconceptions, one teacher move from QLM's dataset and the worlds to use. Don't plan for an individual student, put lessons in order, or say what to do if a move doesn't work. Each learner's next move, and checking later that a fix held, is QLM's Q-core engine. It isn't part of this MCP. If someone asks for that, say so in one line.

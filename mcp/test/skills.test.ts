@@ -35,11 +35,23 @@ describe("the shipped skills", () => {
         expect(text).toMatch(/## Then: misconceptions and LabPath worlds/);
         expect(text).toMatch(/world's link/);
       });
+      it("stays at the class level: no plans for a learner, no lesson sequence, and Q-core named for per-learner next moves", () => {
+        expect(text).toMatch(/\*\*Stay at the class level\.\*\*/);
+        expect(text).toMatch(/Q-core/);
+        expect(text).not.toMatch(/plan for the teacher/i);
+        expect(text).not.toMatch(/doesn't stick|does not stick/i);
+        expect(text).not.toMatch(/next teaching move/i);
+      });
       it("keeps observed and inferred apart, and never reads not recorded as none", () => {
         expect(text).toMatch(/[Nn]ot recorded" is never "none"|"[Nn]ot recorded" is never "none"/);
       });
     });
   }
+  it("tells the assistant the argument Learning Commons requires for a standard code", () => {
+    // In the Oct 25, 2026 recording the assistant first sent `identifier` and Learning Commons replied "missing field `statementCode`".
+    const text = readFileSync(join(DIR, "learnlog-learning-commons", "SKILL.md"), "utf8");
+    expect(text).toMatch(/`find_standard_statement` with `statementCode`/);
+  });
   it("ship in the npm package", () => {
     expect(JSON.parse(readFileSync(join(ROOT, "package.json"), "utf8")).files).toContain("skills");
   });
