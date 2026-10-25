@@ -29,7 +29,7 @@ describe("the MCP server", () => {
       expect(t.description!.length, t.name).toBeGreaterThan(80);
     }
     expect(client.getInstructions()).toMatch(/not recorded/);
-    expect(client.getServerVersion()).toEqual({ name: "learnlog-mcp", version: "0.2.2" });
+    expect(client.getServerVersion()).toEqual({ name: "learnlog-mcp", version: "0.2.3" });
   });
 
   it("answers through each tool", async () => {

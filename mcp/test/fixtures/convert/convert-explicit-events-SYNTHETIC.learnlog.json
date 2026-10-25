@@ -1,0 +1,106 @@
+{
+  "file_schema": "urn:ietf:params:learnlog:file:contained",
+  "serialization_format": "application/learnlog+json",
+  "records": [
+    {
+      "header": {
+        "record_id": "9f6cd9f9-3149-48ca-9953-a76d33ec02ae",
+        "subject": "qlm:911de8a318a7689f8c3f07d1fa2b9ded6312a5d4db29115fe582de56a7d97dc8",
+        "hash_alg": "sha-256",
+        "created": "2026-10-25T20:01:02.898927Z",
+        "producer": {
+          "name": "QLM-transformer",
+          "version": "0.2.1"
+        },
+        "source_platform": "mathia",
+        "source_sha256": "5ea5845316968c2271985819dcd9803388802fcc927cd663f91728e4e767b896",
+        "mapping_sha256": "0509a83f3b3f800eb1f910dbf9e4b6fc6ec38d42423933b8d1fc9d4e611905c0",
+        "import_mode": "events",
+        "assistance_coverage": "not_established",
+        "event_order_basis": "input_row_order_not_independently_verified"
+      },
+      "event_schemas": [
+        "https://example.org/qlm-transformer/schemas/import-v0.2",
+        "urn:ietf:params:learnlog:events:assist"
+      ],
+      "entries": [
+        {
+          "seq": 1,
+          "time": "2026-10-08T12:00:00Z",
+          "event_hash": "9ca4381c51bf59c58ca8a1b6daba485453bbe498ac57f92870211ff5ac191331",
+          "prev_hash": "7218a0efcaf2abb2b59095342fedfd12045f3dd05ab55c7fcd425d74a527f8c1",
+          "entry_hash": "6a639f1657f836af0bf02d86ad0b70f07ebfa57fdad82e7f9471b37e62f5dc60",
+          "event": {
+            "name": "assist:help_requested",
+            "salt": "cHmkSxw83ePCMdfNjt3oqQ",
+            "data": {
+              "provenance": {
+                "platform": "mathia",
+                "source_sha256": "5ea5845316968c2271985819dcd9803388802fcc927cd663f91728e4e767b896",
+                "source_row": 1,
+                "imported_at": "2026-10-25T20:01:02.898927Z",
+                "mapping_sha256": "0509a83f3b3f800eb1f910dbf9e4b6fc6ec38d42423933b8d1fc9d4e611905c0"
+              }
+            },
+            "activity": {
+              "id": "fractions"
+            }
+          }
+        },
+        {
+          "seq": 2,
+          "time": "2026-10-08T12:00:01Z",
+          "event_hash": "d495a0b54a13797f9658f410271bb63344650c732f3c62b3f448158eeb89cd7c",
+          "prev_hash": "6a639f1657f836af0bf02d86ad0b70f07ebfa57fdad82e7f9471b37e62f5dc60",
+          "entry_hash": "c84ee9b997594c92db6ec2c84adb40b6c7956b8ed5d7a23e4b61766a1aca234f",
+          "event": {
+            "name": "assist:scaffold_provided",
+            "salt": "jg3fXkaCE0fR24cBb4Q__g",
+            "data": {
+              "provenance": {
+                "platform": "mathia",
+                "source_sha256": "5ea5845316968c2271985819dcd9803388802fcc927cd663f91728e4e767b896",
+                "source_row": 2,
+                "imported_at": "2026-10-25T20:01:02.898927Z",
+                "mapping_sha256": "0509a83f3b3f800eb1f910dbf9e4b6fc6ec38d42423933b8d1fc9d4e611905c0"
+              },
+              "type": "hint"
+            },
+            "actor": {
+              "role": "instructor",
+              "kind": "software",
+              "id": "demo-tutor"
+            },
+            "activity": {
+              "id": "fractions"
+            }
+          }
+        },
+        {
+          "seq": 3,
+          "time": "2026-10-08T12:00:02Z",
+          "event_hash": "0fe6de82cc48dfc72cbae8c7592c3bede30fa8f80cb087849bce03e6969dc86e",
+          "prev_hash": "c84ee9b997594c92db6ec2c84adb40b6c7956b8ed5d7a23e4b61766a1aca234f",
+          "entry_hash": "2862071268178d43af4c8bace866c2e9b9aa4fe36251141759253966a0297d9d",
+          "event": {
+            "name": "qlm_import:response_observed",
+            "salt": "XSLSg46_ToHEozWXslHhPQ",
+            "data": {
+              "provenance": {
+                "platform": "mathia",
+                "source_sha256": "5ea5845316968c2271985819dcd9803388802fcc927cd663f91728e4e767b896",
+                "source_row": 3,
+                "imported_at": "2026-10-25T20:01:02.898927Z",
+                "mapping_sha256": "0509a83f3b3f800eb1f910dbf9e4b6fc6ec38d42423933b8d1fc9d4e611905c0"
+              },
+              "response": "1/2"
+            },
+            "activity": {
+              "id": "fractions"
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

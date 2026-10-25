@@ -1,0 +1,63 @@
+{
+  "file_schema": "urn:ietf:params:learnlog:file:contained",
+  "serialization_format": "application/learnlog+json",
+  "records": [
+    {
+      "header": {
+        "record_id": "bbfcaab3-b1b8-47e5-abcf-42837992bfa9",
+        "subject": "qlm:911de8a318a7689f8c3f07d1fa2b9ded6312a5d4db29115fe582de56a7d97dc8",
+        "hash_alg": "sha-256",
+        "created": "2026-10-25T20:01:02.717991Z",
+        "producer": {
+          "name": "QLM-transformer",
+          "version": "0.2.1"
+        },
+        "source_platform": "mathia",
+        "source_sha256": "d591788ac75e793c6d0f465937ebeb2dc65a5de7ad57faa56a601d5f46048c7b",
+        "mapping_sha256": "7a711f0ba6b1b36cd731dbadcf4f1bfa75b876f288b4b5154859e4dc51c05b88",
+        "import_mode": "summary",
+        "assistance_coverage": "not_established",
+        "event_order_basis": "input_row_order_not_independently_verified"
+      },
+      "event_schemas": [
+        "https://example.org/qlm-transformer/schemas/import-v0.2"
+      ],
+      "entries": [
+        {
+          "seq": 1,
+          "time": "2026-10-25T20:01:02.717991Z",
+          "event_hash": "d4288b9be3e9b7c44b9a242ab09e0253130729a574255c94ed038856e9b3f698",
+          "prev_hash": "14f3fa6d72e03754040b170bc4177c87df820a30074f8fd160fda2a31abe4f04",
+          "entry_hash": "c29c9eb269fd1c0ed32e63363897a509adc0dfb5c4b6b1c0ed80bd62bb35aee9",
+          "event": {
+            "name": "qlm_import:summary_observed",
+            "salt": "hduJ3GEeG7aT4EbsLe6qjg",
+            "data": {
+              "provenance": {
+                "platform": "mathia",
+                "source_sha256": "d591788ac75e793c6d0f465937ebeb2dc65a5de7ad57faa56a601d5f46048c7b",
+                "source_row": 1,
+                "imported_at": "2026-10-25T20:01:02.717991Z",
+                "mapping_sha256": "7a711f0ba6b1b36cd731dbadcf4f1bfa75b876f288b4b5154859e4dc51c05b88"
+              },
+              "reported_metrics": {
+                "vendor_average_performance_score": "0.8",
+                "workspace_time_hms": "00:15:00"
+              },
+              "missing_metrics": [],
+              "assistance": "unknown"
+            },
+            "actor": {
+              "role": "system",
+              "kind": "software",
+              "id": "QLM-transformer"
+            },
+            "activity": {
+              "id": "Linear equations"
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

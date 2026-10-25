@@ -57,5 +57,7 @@ export const ENGINE_VERSION: string;
 export function getSample(id: string): string;
 export function getSemanticContract(id: string): Record<string, unknown>;
 export function parseStrictJSON(text: string): unknown;
+/** SHA-256, as lowercase hex, of the value's JSON Canonicalization Scheme (RFC 8785) form: the draft's H(C(v)). */
+export function digest(value: unknown): Promise<string>;
 export function transform(options: { profileId: string; text: string; tenant?: string; sourceName?: string }): Promise<TransformRun>;
 export function verify(document: unknown, expectedHeads?: unknown): Promise<Record<string, { seq: number; entry_hash: string }>>;

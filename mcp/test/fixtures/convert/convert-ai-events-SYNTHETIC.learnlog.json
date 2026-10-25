@@ -1,0 +1,186 @@
+{
+  "file_schema": "urn:ietf:params:learnlog:file:contained",
+  "serialization_format": "application/learnlog+json",
+  "records": [
+    {
+      "header": {
+        "record_id": "3f8860e1-efcd-4a30-aaf6-7ccbd261ec1a",
+        "subject": "qlm:911de8a318a7689f8c3f07d1fa2b9ded6312a5d4db29115fe582de56a7d97dc8",
+        "hash_alg": "sha-256",
+        "created": "2026-10-25T20:01:03.068069Z",
+        "producer": {
+          "name": "QLM-transformer",
+          "version": "0.2.1"
+        },
+        "source_platform": "mathia",
+        "source_sha256": "3b0f5a790155eda6c7c1a2e8d4136426bf43aae03511af5b06339fa32848fe8e",
+        "mapping_sha256": "17c75a2bdd465a7fa7191993de4268e6ca373b948bb3c979b1545219fda4d0c8",
+        "import_mode": "events",
+        "assistance_coverage": "not_established",
+        "event_order_basis": "input_row_order_not_independently_verified",
+        "ai_context": {
+          "profile_id": "https://example.org/learnlog/102026/ai-use/v0.1.0",
+          "profile_version": "0.1.0",
+          "context_id": "synthetic-transformer-context-1",
+          "phase": "learning",
+          "activity": {
+            "id": "fractions",
+            "version": "synthetic-1"
+          },
+          "policy": {
+            "id": "synthetic-policy-1",
+            "version": "1",
+            "phase": "learning",
+            "permission": "permitted",
+            "allowed_assistance": [
+              "metacognitive_prompt"
+            ],
+            "authority": "synthetic_fixture_author",
+            "statement": "Constructed policy permits model-generated prompts within this learning task. Permission is not observed use, compliance or data-use consent.",
+            "scope": {
+              "actor": "subject",
+              "activity_id": "fractions"
+            }
+          },
+          "observation": {
+            "domain": "producer_activity_only",
+            "declaration_kind": "producer_asserted",
+            "capture_status": "partial",
+            "scope": {
+              "session": "qlm:85978a155a5980a7ef575a5235da1950cd668c3f5268c921c171340f4396ca7b",
+              "first_seq": 1,
+              "last_seq": 3
+            },
+            "planned_channels": [
+              "in_product_help",
+              "responses"
+            ],
+            "claimed_channels": [
+              "imported_in_product_events"
+            ],
+            "exclusions": [
+              {
+                "source": "external_ai_or_other_help",
+                "status": "unknown",
+                "reason": "outside_observation",
+                "detail": "Other devices, products, offline help and internal cognition are outside this constructed input."
+              }
+            ],
+            "basis": "Synthetic import fixture with explicit event rows. No real logging completeness or observed chronology has been verified."
+          }
+        }
+      },
+      "event_schemas": [
+        "https://example.org/qlm-transformer/schemas/import-v0.2",
+        "urn:ietf:params:learnlog:events:assist"
+      ],
+      "entries": [
+        {
+          "seq": 1,
+          "time": "2026-10-08T12:00:00Z",
+          "event_hash": "b5b62130a90c64444067cd6aa75cc5aa951051d3bfa6ee72cce4711a3a8e578a",
+          "prev_hash": "356e60f3cf68ff0524c3b8f06745cc46d5c08e8afd0181a0a9f5a5cc6d4fd29a",
+          "entry_hash": "ca2cb9a4797c92ef03568b6b724f7ef22dc1dada069946002c0faa3b9335fce4",
+          "event": {
+            "name": "assist:help_requested",
+            "salt": "Sa9GS-KJT5dr9hUWVoJW3Q",
+            "data": {
+              "provenance": {
+                "platform": "mathia",
+                "source_sha256": "3b0f5a790155eda6c7c1a2e8d4136426bf43aae03511af5b06339fa32848fe8e",
+                "source_row": 1,
+                "imported_at": "2026-10-25T20:01:03.068069Z",
+                "mapping_sha256": "17c75a2bdd465a7fa7191993de4268e6ca373b948bb3c979b1545219fda4d0c8"
+              }
+            },
+            "activity": {
+              "id": "fractions",
+              "version": "synthetic-1"
+            },
+            "session": "qlm:85978a155a5980a7ef575a5235da1950cd668c3f5268c921c171340f4396ca7b",
+            "ai_context": {
+              "context_id": "synthetic-transformer-context-1",
+              "stage": "learning",
+              "policy_id": "synthetic-policy-1"
+            }
+          }
+        },
+        {
+          "seq": 2,
+          "time": "2026-10-08T12:00:01Z",
+          "event_hash": "e63a379d0059c6b15ab570ade259a8c1eb64d069277ecc97e6d0ac20ce2a2fe6",
+          "prev_hash": "ca2cb9a4797c92ef03568b6b724f7ef22dc1dada069946002c0faa3b9335fce4",
+          "entry_hash": "59d57276625ceec9489d9689fdf59f1c519647ae53f2153b2196fcae9e62322d",
+          "event": {
+            "name": "assist:scaffold_provided",
+            "salt": "2ujI2A8ovLAtnV6K-OUJsA",
+            "data": {
+              "provenance": {
+                "platform": "mathia",
+                "source_sha256": "3b0f5a790155eda6c7c1a2e8d4136426bf43aae03511af5b06339fa32848fe8e",
+                "source_row": 2,
+                "imported_at": "2026-10-25T20:01:03.068069Z",
+                "mapping_sha256": "17c75a2bdd465a7fa7191993de4268e6ca373b948bb3c979b1545219fda4d0c8"
+              },
+              "type": "hint",
+              "content": "Which quantities are given? Explain your plan before calculating.",
+              "reveals_answer": false
+            },
+            "actor": {
+              "role": "instructor",
+              "kind": "software",
+              "id": "synthetic-ai-tutor"
+            },
+            "instrument": {
+              "source": "model",
+              "model": "synthetic-model-no-live-call",
+              "config_hash": "22ce24c5810a57c28dfaf82bd49010e1ad4eaa56a8ce7fa4b01e2a9d19e9dcac",
+              "validated": false
+            },
+            "activity": {
+              "id": "fractions",
+              "version": "synthetic-1"
+            },
+            "session": "qlm:85978a155a5980a7ef575a5235da1950cd668c3f5268c921c171340f4396ca7b",
+            "ai_context": {
+              "context_id": "synthetic-transformer-context-1",
+              "stage": "learning",
+              "policy_id": "synthetic-policy-1"
+            }
+          }
+        },
+        {
+          "seq": 3,
+          "time": "2026-10-08T12:00:02Z",
+          "event_hash": "93732c25d932795c110a185a0b4da84eb006efd84edfa8647bec2f22d476c3eb",
+          "prev_hash": "59d57276625ceec9489d9689fdf59f1c519647ae53f2153b2196fcae9e62322d",
+          "entry_hash": "ac3dfdbbb15d94a5000cf8cbf57cae6a818f99ca1e35f9fab157fe3cd67551d6",
+          "event": {
+            "name": "qlm_import:response_observed",
+            "salt": "6TsUbO_fTbNUxsS6naOdIQ",
+            "data": {
+              "provenance": {
+                "platform": "mathia",
+                "source_sha256": "3b0f5a790155eda6c7c1a2e8d4136426bf43aae03511af5b06339fa32848fe8e",
+                "source_row": 3,
+                "imported_at": "2026-10-25T20:01:03.068069Z",
+                "mapping_sha256": "17c75a2bdd465a7fa7191993de4268e6ca373b948bb3c979b1545219fda4d0c8"
+              },
+              "response": "1/2"
+            },
+            "activity": {
+              "id": "fractions",
+              "version": "synthetic-1"
+            },
+            "session": "qlm:85978a155a5980a7ef575a5235da1950cd668c3f5268c921c171340f4396ca7b",
+            "ai_context": {
+              "context_id": "synthetic-transformer-context-1",
+              "stage": "learning",
+              "policy_id": "synthetic-policy-1"
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -68,7 +68,7 @@ There are four formats: `tutormoments` (TutorMoments transcripts), `oatutor` (OA
 **`learnlog_transform`** turns an export into Learnlog records, keeping source and capture details. Use your own file, or `use_sample: true` for a bundled public sample.
 > "Turn the TutorMoments sample into Learnlog and tell me what it keeps and what it leaves unknown."
 
-**`learnlog_validate`** replays a Learnlog file's hash chains, checks its profile bindings, and lists the unknowns each record keeps.
+**`learnlog_validate`** replays a Learnlog file's hash chains, checks its profile bindings, and lists the unknowns each record keeps. A file from another Learnlog producer, such as `qlm-transformer convert`, gets the draft's own checks: structure, timestamps and the hash chain. The answer says that's all it got. `assistance_inventory` reads those files too, counting events by name. Only `assist:help_requested`, the one stage the draft names an event for, counts as a stage.
 > "Is ~/exports/session.learnlog.json a valid Learnlog file? What doesn't it record?"
 
 **`assistance_inventory`** says which stages a dataset records, with counts by source and what can't be concluded.

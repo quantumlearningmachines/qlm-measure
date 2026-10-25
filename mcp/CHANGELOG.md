@@ -1,5 +1,15 @@
 # Changelog
 
+## 0.2.3 (October 25, 2026)
+
+Fixes [#22](https://github.com/quantumlearningmachines/qlm-measure/issues/22). The MCP rejected Learnlog files that follow draft-srivastava-learnlog-03 but don't come from the browser transformer, such as those written by `qlm-transformer convert`.
+
+- `learnlog_validate` checks every record against the draft itself: the contained-file shape, timestamps (UTC, up to nine fractional digits, a real date and time), the hash chain (JCS and SHA-256), events and parties. Redacted entries are reported, not failed, as the draft's Section 8.3 says.
+- Records that bind a QLM semantic profile still get the vendored transformer's verifier, unchanged. A file that mixes the two gets both checks.
+- Records without a profile pass with a warning that only the draft's rules were checked, not what their events mean. The answer adds `checked_with_draft`, and `not_checked` says the same.
+- `assistance_inventory` with `learnlog_path` reads those records too, counting events by name. Only `assist:help_requested` counts as a stage (requested), because it's the only stage the draft names an event for. `assist:scaffold_provided` is listed but not counted as any stage, since the draft doesn't equate them.
+- Tests use three SYNTHETIC files from `qlm-transformer convert` (`test/fixtures/convert/`). They check that each one validates with the heads its own checker recorded, and that a one-character change is caught. They also check every structural rule and timestamp case, and mixed files.
+
 ## 0.2.2 (October 25, 2026)
 
 - The four skills stay at the class level: what to check first, the likely misconceptions, one teacher move and the worlds. They don't plan for an individual student, order lessons, or say what to do if a move doesn't work. Each learner's next move, and checking later that a fix held, is QLM's Q-core engine, which isn't part of this MCP.
