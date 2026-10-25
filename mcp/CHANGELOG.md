@@ -1,5 +1,9 @@
 # Changelog
 
+## Unreleased
+
+- The four skills stay at the class level: what to check first, the likely misconceptions, one teacher move and the worlds. They don't plan for an individual student, order lessons, or say what to do if a move doesn't work. Each learner's next move, and checking later that a fix held, is QLM's Q-core engine, which isn't part of this MCP.
+
 ## 0.2.1 (October 24, 2026)
 
 The first release on npm, as `@qlm/learnlog-mcp`. 0.2.0 was never published.
