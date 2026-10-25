@@ -1,5 +1,6 @@
 /** learnlog_validate: is this a valid Learnlog file, and what does each record leave unknown? */
 import { readLocalText } from "../files.js";
+import { verifyLearnlog } from "../draft03.js";
 import { VENDORED_FROM } from "../package.js";
 import { engine, sourceWarnings, unknownsOf } from "../transformer.js";
 
@@ -7,8 +8,9 @@ const isObj = (v: unknown): v is Record<string, unknown> => typeof v === "object
 
 export const NOT_CHECKED = [
   "Signed heads and signatures: the transformer's verifier refuses files that carry them, so they are not verified here.",
-  "Truncated or redacted records: refused, not checked.",
-  "Learnlog files from other producers: their header bindings won't match this transformer's profile, so they fail here even when their own chains are sound.",
+  "Truncated records and signed heads: refused, not checked.",
+  "Redacted entries: the draft allows them in records without a QLM profile, and the chain still checks, but what they held can't be checked.",
+  "Records without a QLM semantic profile (for example from qlm-transformer convert): only draft-03's structure, timestamps and hash chain are checked, not what their events mean.",
   "Whether any asserted event happened. Passing shows structural consistency under the stated rules, not that an event occurred (draft Section 2).",
 ];
 
@@ -21,6 +23,7 @@ export async function learnlogValidate(input: { path: string }): Promise<Record<
   }
   const base = {
     checked_with: `QLM transformer verifier ${engine.ENGINE_VERSION} (vendored from ${VENDORED_FROM})`,
+    checked_with_draft: "draft-srivastava-learnlog-03 structure, timestamps and hash chain, for records without a QLM semantic profile",
     not_checked: NOT_CHECKED,
     does_not_show: ["What a valid record means for learning. Validation checks the chain, the profile bindings and the import rules, not the learner."],
   };
@@ -40,7 +43,13 @@ export async function learnlogValidate(input: { path: string }): Promise<Record<
   });
   warnings.push(...sourceWarnings(list));
   try {
-    const heads = await engine.verify(doc);
+    const { heads, unprofiled, redacted } = await verifyLearnlog(doc);
+    if (unprofiled) warnings.push(unprofiled === 1
+      ? "1 record carries no QLM semantic profile, so it was checked against draft-srivastava-learnlog-03 only: structure, timestamps and the hash chain. What its events mean wasn't checked against a profile."
+      : `${unprofiled} records carry no QLM semantic profile, so they were checked against draft-srivastava-learnlog-03 only: structure, timestamps and the hash chain. What their events mean wasn't checked against a profile.`);
+    if (redacted) warnings.push(redacted === 1
+      ? "1 entry is redacted. The chain still checks, but what it held can't be."
+      : `${redacted} entries are redacted. The chain still checks, but what they held can't be.`);
     return { valid: true, errors: [], warnings, records, heads, ...base };
   } catch (e) {
     return { valid: false, errors: [(e as Error).message], warnings, records, ...base };

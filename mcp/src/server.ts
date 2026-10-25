@@ -63,7 +63,7 @@ export function createServer(options: { fetch?: typeof fetch } = {}): McpServer 
     "learnlog_validate",
     {
       title: "Validate Learnlog",
-      description: "Is this a valid Learnlog file? Replays each record's hash chain and checks the transformer's profile bindings, then lists errors, warnings and the unknowns each record keeps (for example source time, capture coverage or model version not recorded).",
+      description: "Is this a valid Learnlog file? Replays each record's hash chain under draft-srivastava-learnlog-03. Records that bind a QLM semantic profile also get the transformer's profile checks; records without one (for example from qlm-transformer convert) get the draft's structure, timestamp and chain checks only, and say so. Then lists errors, warnings and the unknowns each record keeps (for example source time, capture coverage or model version not recorded).",
       inputSchema: { path: path("the Learnlog JSON file") },
       annotations: LOCAL,
     },

@@ -4,6 +4,7 @@
  * records (made now from an export, or from a Learnlog file), or the preprint's three released
  * datasets (see preprint.ts).
  */
+import { isProfiled, verifyLearnlog } from "../draft03.js";
 import { Refusal, readLocalText } from "../files.js";
 import { LEARNLOG_DRAFT, NOT_RECORDED, STAGE_VERB, TRANSFORMER_EVENT_STAGE, byStage } from "../stages.js";
 import { engine, type LearnlogRecord } from "../transformer.js";
@@ -29,7 +30,7 @@ async function recordsFrom(input: RecordsInput): Promise<LearnlogRecord[]> {
     throw new Refusal(`${input.learnlog_path} isn't valid JSON: ${(e as Error).message}`);
   }
   try {
-    await engine.verify(doc);
+    await verifyLearnlog(doc);
   } catch (e) {
     throw new Refusal(`${input.learnlog_path} does not verify, so it isn't inventoried: ${(e as Error).message} Run learnlog_validate for details.`);
   }
@@ -137,6 +138,37 @@ function sourceInventory(records: LearnlogRecord[]): Obj {
   };
 }
 
+const DRAFT_STAGE_NOTE = "The draft defines no core event for this stage, so a file without a QLM profile can't record it. Product-specific event names in this file aren't mapped to it.";
+
+/** A source whose records bind no QLM profile: counted by event name, with only the draft's own stage mapping (assist:help_requested is requested). */
+function draftSourceInventory(records: LearnlogRecord[]): Obj {
+  const h = records[0]!.header as Obj;
+  const names: Record<string, number> = {};
+  let redacted = 0;
+  for (const e of records.flatMap((r) => r.entries) as Obj[]) {
+    if (e.redacted === true) redacted++;
+    else inc(names, (e.event as Obj).name as string);
+  }
+  const requested = names["assist:help_requested"] ?? 0;
+  const unmapped = Object.fromEntries(Object.entries(names).filter(([n]) => n !== "assist:help_requested"));
+  const recorded: Obj = { unit: "events", events: Object.values(names).reduce((a, b) => a + b, 0), event_names: names, redacted_entries: redacted, not_mapped_to_a_stage: unmapped };
+  if ("assist:scaffold_provided" in names) recorded.note = "assist:scaffold_provided says support was given; the draft doesn't equate it with any stage, so it isn't counted as offered, shown or accepted.";
+  return {
+    source: typeof h.source_platform === "string" ? h.source_platform : "not stated",
+    import_mode: typeof h.import_mode === "string" ? h.import_mode : "not stated",
+    profile: "none",
+    records: records.length,
+    entries: records.reduce((a, r) => a + r.entries.length, 0),
+    what_is_recorded: recorded,
+    stages: byStage((stage) => {
+      if (stage !== "requested") return { status: NOT_RECORDED, note: DRAFT_STAGE_NOTE };
+      if (requested === 0) return { status: NOT_RECORDED, note: "No assist:help_requested events in this file. Not recorded is not proof that no help was asked for: capture of this stage isn't established." };
+      return { status: "recorded", count: requested, note: `${requested} assist:help_requested event${requested === 1 ? "" : "s"} in this file. Each is the producer's assertion, and a count isn't a total unless capture was complete.` };
+    }),
+    coverage: { help_coverage: typeof h.assistance_coverage === "string" ? h.assistance_coverage : "not stated", mapping_coverage: "no QLM semantic profile" },
+  };
+}
+
 export const RECORD_LIMITS = [
   "An inventory isn't a help rate: there is no denominator of opportunities, time or learners.",
   "A missing record isn't proof that no help was given. Not recorded is never the same as none.",
@@ -148,13 +180,13 @@ export async function assistanceInventoryOfRecords(input: RecordsInput): Promise
   const records = await recordsFrom(input);
   const groups = new Map<string, LearnlogRecord[]>();
   for (const r of records) {
-    const key = JSON.stringify([r.header.source_platform, r.header.source_namespace ?? null]);
+    const key = JSON.stringify([isProfiled(r), r.header.source_platform, r.header.source_namespace ?? null]);
     groups.set(key, [...(groups.get(key) ?? []), r]);
   }
   return {
     kind: "learnlog_records",
     learnlog: LEARNLOG_DRAFT,
-    sources: [...groups.values()].map(sourceInventory),
+    sources: [...groups.values()].map((g) => (isProfiled(g[0]) ? sourceInventory(g) : draftSourceInventory(g))),
     cannot_conclude: RECORD_LIMITS,
     does_not_show: [
       "Help outside the recorded source: other apps, devices, people or AI tools.",
