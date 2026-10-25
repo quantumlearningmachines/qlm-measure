@@ -47,6 +47,11 @@ describe("the shipped skills", () => {
       });
     });
   }
+  it("tells the assistant the argument Learning Commons requires for a standard code", () => {
+    // In the Oct 25, 2026 recording the assistant first sent `identifier` and Learning Commons replied "missing field `statementCode`".
+    const text = readFileSync(join(DIR, "learnlog-learning-commons", "SKILL.md"), "utf8");
+    expect(text).toMatch(/`find_standard_statement` with `statementCode`/);
+  });
   it("ship in the npm package", () => {
     expect(JSON.parse(readFileSync(join(ROOT, "package.json"), "utf8")).files).toContain("skills");
   });

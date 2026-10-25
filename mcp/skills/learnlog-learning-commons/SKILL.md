@@ -12,7 +12,7 @@ Use this when someone names a standard (for example `7.RP.A.2` or `HS-PS2-1`) or
 - The Learnlog MCP (`npx -y @qlm/learnlog-mcp`).
 
 ## Steps
-1. **Pin the standard.** Call Learning Commons `find_standard_statement` with the code. If the person described a struggle instead of a code, propose the most likely code and say it is your proposal. Keep the returned `caseIdentifierUUID`.
+1. **Pin the standard.** Call Learning Commons `find_standard_statement` with `statementCode` set to the code (for example `"7.RP.A.2"`). If the person described a struggle instead of a code, propose the most likely code and say it is your proposal. Keep the returned `caseIdentifierUUID`.
 2. **Break it down (math).** Call `find_learning_components_from_standard` with that UUID. Learning components are available for math and K-2 ELA. For any other standard, say plainly that Learning Commons has no components for it.
 3. **Look back (math).** Call `find_standards_progression_from_standard` with `direction: "backward"` to find unfinished learning that may sit underneath. Progressions are math only.
 4. **Find the activities (science).** For a science standard, call Learnlog `qlm_learning_graph` with `standard` set to the code, to find the LabPath worlds aligned to it and what comes before and after them.

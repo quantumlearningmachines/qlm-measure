@@ -1,8 +1,9 @@
 # Changelog
 
-## Unreleased
+## 0.2.2 (October 25, 2026)
 
 - The four skills stay at the class level: what to check first, the likely misconceptions, one teacher move and the worlds. They don't plan for an individual student, order lessons, or say what to do if a move doesn't work. Each learner's next move, and checking later that a fix held, is QLM's Q-core engine, which isn't part of this MCP.
+- The Learning Commons skill names the argument `find_standard_statement` needs, `statementCode`. Without it an assistant could send `identifier` first and get "missing field `statementCode`".
 
 ## 0.2.1 (October 24, 2026)
 
